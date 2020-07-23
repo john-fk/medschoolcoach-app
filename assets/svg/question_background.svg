@@ -1,0 +1,13 @@
+<svg width="375" height="725" viewBox="0 0 375 725" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g opacity="0.3">
+        <path opacity="0.05" fill-rule="evenodd" clip-rule="evenodd"
+            d="M545 494C657.666 494 749 402.666 749 290C749 177.334 657.666 86 545 86C432.334 86 341 177.334 341 290C341 402.666 432.334 494 545 494Z"
+            stroke="white" stroke-width="80" />
+        <path opacity="0.1" fill-rule="evenodd" clip-rule="evenodd"
+            d="M113 266C175.408 266 226 215.408 226 153C226 90.5918 175.408 40 113 40C50.5918 40 0 90.5918 0 153C0 215.408 50.5918 266 113 266Z"
+            stroke="white" stroke-width="80" />
+        <path opacity="0.15" fill-rule="evenodd" clip-rule="evenodd"
+            d="M225 811C308.947 811 377 742.947 377 659C377 575.053 308.947 507 225 507C141.053 507 73 575.053 73 659C73 742.947 141.053 811 225 811Z"
+            stroke="white" stroke-width="80" />
+    </g>
+</svg>

@@ -1,0 +1,298 @@
+general:
+  cancel: Cancel
+  continue: Continue
+  success: Success
+  error: Error
+  congratulations: Congratulations!
+  warning: Warning
+common:
+  tutoring: Tutoring
+  premium: Premium
+  flash_cards: Flashcards
+  questions: Questions
+home_screen:
+  user_header: Hello {user}!
+  premium_account: PREMIUM ACCOUNT
+  recently_watched: Recently Watched
+  categories: Lesson Categories
+  up_next: "Up Next"
+  day: "Day {number}"
+  continue_watching: CONTINUE WATCHING
+  watched: "{number}% watched"
+  lesson: "LESSON {number}"
+  see_full_schedule_button: See full schedule
+  get_started: Get Started
+  pick_schedule: Let’s rock your MCAT
+  video_watched_toast: Video marked as watched
+  video_unwatched_toast: Video marked as unwatched
+bloc_example_screen:
+  title: Provider BLoC example
+  click_to_delete: Click to delete
+api_example_screen:
+  title: Api example
+  fetched_only_once: This image is fetched only once and can be refetched by pressing FAB button
+  fetched_every_10s: This image is fetched every 10 seconds
+login_screen:
+  login_header: Login
+  login_button_text: Sign in
+  password_label: Password
+  forgot_password: Forgot Password?
+  need_an_account: Need an account?
+text_field_labels:
+  email_label: Email
+  first_name: First Name
+  last_name: Last Name
+  phone: Phone Number
+  password_label: Password
+  school_label: Undergraduate School​
+  graduation_year_label​: Graduation Year​
+  test_date_label: Projected MCAT Test Date
+  new_password: New Password
+  confirm_new_password: Confirm New Password
+validator_errors:
+  required: This field cannot be empty
+  email: Wrong email format
+  lenght: "This field must contain at least {number} characters"
+  password: "Your password must contain: "
+  country_code: Wrong format
+  phone_too_short: Phone number too short
+forgot_password_screen:
+  forgot_password_header: Forgot password?
+  forgot_password_description: Please enter your email address. We will send you a link to reset your password.
+  forgot_password_button_text: Reset password
+  forgot_password_resend: "Having trouble logging in? Please contact "
+  dialog_title: Password reset request sent!
+  dialog_message: A password reset message was sent to your email address. Please click the link in the message to reset your password.
+welcome_screen:
+  header: All you need to achieve MCAT success
+  register: Sign up! It's free.
+  login: Already have an account? Sign in
+  session_expired_dialog_title: Session expired
+  session_expired_dialog_text: Your session has expired. Please sign in again.
+navigation_bar:
+  home: Home
+  search: Search
+  more: More
+  close: Close
+  tutoring: Tutoring
+  schedule: Schedule
+register_screen:
+  register_header: Register
+  register_button_text: Sign Up
+  terms_of_service_intro: "By signing up you agree with "
+  terms_of_service: Terms of Service
+  terms_of_service_and: " and "
+  privacy_policy: Privacy Policy
+  dialog_title: Registration completed successfully!
+  dialog_message: Welcome to MCAT Prep by MedSchoolCoach.
+errors:
+  global_api_error: An error has occurred, please try again
+  no_internet: Please check your internet connection and refresh page
+  no_internet_no_refresh: Please check your internet connection and try again
+  no_data: Nothing to show
+  wrong_credentials: Wrong email or password
+  no_search_result: Sorry, no videos were found matching your search
+  unavailable_email: An account with this email already exists
+more_screen:
+  videos: Videos
+  questions: Question Bank
+  logout: Logout
+  logout_dialog_text: Are you sure you want to logout?
+  youtube: Watch us on YouTube
+  link_mnemonics: MCAT Mnemonics
+  link_flashcards: MCAT Flashcards
+  link_secrets: Pre-Med Secrets
+  facebook: Like us on Facebook
+  instagram: Follow us on Instagram
+  support: Feedback
+  my_account: My Account
+lesson_screen:
+  lesson: Lesson {order}
+  next_lesson: Next Lesson
+  previous_lesson: Previous Lesson
+  premium_features: Premium Features
+  other_options: Other options
+  lecture_notes: Lecture Notes
+  whiteboard_notes: Whiteboard Notes
+  podcast: Podcast
+  tutoring: Get tutoring on this topic
+video_screen:
+  error: Could not retrvie video - tap on the screen to return
+  commercial: Commercial - {name}
+  next: Next video
+  minimize: Minimize
+  speed: Speed
+  quality: Quality
+search:
+  text_too_short: The term must be at least 2 characters
+  search_hint: Search for a lesson
+videos_screen:
+  pick_category: Pick Category
+app_bar:
+  section_subtitle: "{number} lessons"
+  topic_subtitle: "{number}% completed"
+tutoring_modal:
+  button: Request info
+  percentile_title: 99TH PERCENTILE TUTORS
+  percentile_description: Other companies settle for tutors who scored in the 85th percentile or better, we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
+  mcat_title: BUILT FOR THE NEW MCAT
+  mcat_description: Our tutoring program and video course are built 100% for the new MCAT. No recycled material at all.
+  teachers_title: INCREDIBLE TEACHERS
+  teachers_description: Our MCAT tutors not only know the material inside and out, they are incredible teachers who have gone through extensive training and understand how to get the best out of every student.
+  personalized_title: COMPLETELY PERSONALIZED
+  personalized_description: Our MCAT tutoring is completly personalized to you. From day one, we'll work on identifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
+  request_dialog_header: Information is on its way!
+  request_dialog_error_message: There was an error sending your request. Please try again.
+  request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
+  request_dialog_button: Give us a call (888) 381-9509
+password_requirments:
+  length: At least 8 characters
+  requirements: "At least 2 of the following:"
+  lower_case: Lower case letters (a-z)
+  uper_case: Uper case letters (A-Z)
+  number: Numbers (0-9)
+  special: Special characters (ex. !@#)
+flashcard_screen:
+  flashcards: Flashcards
+  flip: Flip
+  next: Next
+  confidence_interval: Confidence Interval
+  example: "Example:"
+  new: NEW
+  seen: SEEN
+  no_flashcards:
+    title: No flashcards found
+    subject: Please try a different subject.
+    confidence: Start with a section below and mark your confidence to access it here later.
+    video: Please try a different video.
+  no_more:
+    title: No more Flashcards
+    subtitle: You have reviewed all Flashcards from this set, please try a different one.
+flashcards_bank:
+  pick_subject: Pick Subject
+  review_by_status: Review by confidence interval
+  emoji_flagged: "Practice flashcards you marked "
+  flashcards_count: "{number} flashcards"
+question_screen:
+  next_question: Next Question
+  view_explanation: View Explanation
+  explanation: Explanation
+  title: Questions
+  pick_subject: Pick Subject
+  new: New questions
+  correct: Correctly answered questions
+  wrong: Incorrectly answered questions
+  flagged: Flagged questions
+  summerize: Summarize
+  review_by_status: Review by status
+  no_questions_subject: No questions available for selected subject
+  no_questions_lesson: No questions available for selected lesson
+  no_new_questions: No new questions available
+  no_answers: No answered questions yet
+  no_flagged_questions: No flagged questions yet
+  questions_count: "{number} questions"
+  question_index: "Question {index}"
+  your_answer: Your answer
+  correct_answer: Correct answer
+  other_users_percentage: "{percentage}% of all users answered this question correctly"
+premium_modal:
+  description: We are hard at work building some awesome new features. Stay tuned!
+  coming_soon: Coming soon
+schedule_screen:
+  pick_schedule: Set your schedule length
+  update_schedule: Change your schedule length
+  pick_schedule_length: Pick your schedule length
+  schedule_days: "{number} days"
+  schedule_completed: You have completed your schedule. Start a new one or take a look at the completed lessons.
+  start_new_schedule: Start new schedule
+  dialog_description: This action will change your current schedule length. Are you sure you want to continue?
+  lessons_completed: All lessons completed
+  day: Day
+  watched: Mark watched
+  unwatched: Mark unwatched
+bookmarks:
+  title: Bookmarked Videos
+  empty_state: No bookmarks yet
+  single_lesson: 1 lesson
+refer_friend_cell:
+  line1: Studying is Better Together
+  line2: Give your friends MCAT Prep
+  line3: and we'll send you
+  line4: Pre-Med Swag
+  button: Invite a Friend
+refer_friend_screen:
+  line1: Studying is Better Together
+  line2: "Invite a friend to download the MCAT Prep app and we'll send you a $5 credit to the MSC Swag Store"
+  link: MSC Pre-Med Swag Store
+  button: Invite a Friend
+  name: Friend's First Name
+  surname: Friend's Last Name
+  email: Friend's Email
+  success: Email invitation to {name} has been sent.
+feedback_screen:
+  support: Feedback
+  hint: Type your message...
+  message_label: Please tell us how we can help!
+  button: Send Message
+  success: Your message has been sent successfully. The support team will contact you ASAP!
+  phone: Phone number (optional)
+  request_type: What happened?
+  bug: I found a bug/error in the app
+  feature: I have a feature request
+  question: I have a question about my account
+  content: I found a content related error
+  tick: Tick at least one checkbox
+  some_fields: Some fields have been no been filled correctly
+go_premium_screen:
+  confirm: Sign up
+  not_now: Not now
+  title: Go Premium
+  text1: → Live Weekly MCAT Office Hours
+  text2: → QBank (1,500+)
+  text3: → Flashcards (800+)
+  text4: → Whiteboard Snapshots (275+)
+  text5: → Downloadable Audio Lectures
+  text6: → Lecture Notes (500+)
+  text7: → Study Scheduler
+  plan1:
+    name: 1 Month
+    prize: $19.90
+  plan2:
+    name: 6 Months
+    prize: $59.90
+    discount: Save 12%
+  plan3:
+    name: 1 Year
+    prize: $99.90
+    discount: Save 30%
+global_progress:
+  name: Your Progress
+  course: Course Progress
+  watched: Total Lessons Watched
+  questions: Total Questions Completed
+  flashcards: Total Flashcards Reviewed
+  locked_flashcards: Go Premium and unlock Flashcards!
+  locked_questions: Go Premium and unlock Questions!
+flashcards_how_to:
+  welcome: Welcome to Flashcards
+  flip: Tap on the card to flip it
+  swipe_right: Swipe right to see the previous card
+  swipe_left: Swipe left to see the next card
+  rotate: Rotate to use in landscape mode
+  got_it: Got it!
+  confidence: Mark your confidence interval to determine which cards you need to review again
+  next: Click to view the next card
+profile_screen:
+  buddies_tab: Buddies
+  stats_tab: My Stats
+  invite_status_sent: Sent
+  invite_status_signed_up: Signed up
+  flashcards_milestones: Flashcards Milestones
+  questions_milestones: Questions Milestones
+  videos_milestones: Videos Milestones
+settings_screen:
+  header: Edit profile
+  update: Update profile
+  dialog_header: Update completed successfully!
+  dialog_text: Your profile details have been updated. Please, log in again to refresh the updated profile data.
+  log_out_info: Please be aware that in order to refresh your user data you will be required to log in again after making an update

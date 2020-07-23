@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "562796168924",
+    "firebase_url": "https://medschoolcoach-e5593.firebaseio.com",
+    "project_id": "medschoolcoach-e5593",
+    "storage_bucket": "medschoolcoach-e5593.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562796168924:android:733de92892685800599619",
+        "android_client_info": {
+          "package_name": "com.htd.medschoolcoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "562796168924-so77a2f5tfosshgjeoahmcpi8fhb37tv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.htd.medschoolcoach",
+            "certificate_hash": "06912e25c1fbbceda0eb33fab09cbe415f553f02"
+          }
+        },
+        {
+          "client_id": "562796168924-u32st51te2ot6nccf7k5inj3qs0ukgf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWiAhnk6wJAR9tJ3h72O7ps1E-FuqyS7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "562796168924-u32st51te2ot6nccf7k5inj3qs0ukgf7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "562796168924-pau1av0m5cokfq7n7i2hti0mc117hd1e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.medschoolcoach"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
