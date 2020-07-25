@@ -154,14 +154,15 @@ class UserRepository implements Repository {
   }
 
   void _logRegisterEvent(String userEmail) {
+
     _mixpanel.track(Config.mixPanelUserRegisterEvent, {
-      "email": userEmail,
+      "\$email": userEmail,
     });
   }
 
   void _logLoginEvent(String userEmail) {
     _mixpanel.track(Config.mixPanelUserLoginEvent, {
-      "email": userEmail,
+      "\$email": userEmail,
     });
   }
 
@@ -229,7 +230,7 @@ class UserRepository implements Repository {
 
   Future _setEmail(SuccessResponse<Auth0UserData> userResponse) async {
     return await _mixpanel.setPeopleProperties(<String, String>{
-      "email": userLoggingEmail,
+      "\$email": userLoggingEmail,
     });
   }
 
