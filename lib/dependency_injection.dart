@@ -11,6 +11,7 @@ import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/network_client.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injector/injector.dart';
 import 'package:native_mixpanel/native_mixpanel.dart';
@@ -37,6 +38,12 @@ void initializeDependencyInjection({
   injector.registerSingleton<Mixpanel>(
         (injector) {
       return mixPanel;
+    },
+  );
+
+  injector.registerSingleton<FirebaseAnalytics>(
+        (injector) {
+      return FirebaseAnalytics();
     },
   );
 
@@ -152,6 +159,7 @@ void initializeDependencyInjection({
       final statisticsRepository =
           injector.getDependency<StatisticsRepository>();
       final mixPanel = injector.getDependency<Mixpanel>();
+      final firebaseAnalytics = injector.getDependency<FirebaseAnalytics>();
 
 
       return UserRepository(
@@ -166,7 +174,8 @@ void initializeDependencyInjection({
         bookmarksRepository,
         questionsRepository,
         statisticsRepository,
-        mixPanel
+        mixPanel,
+        firebaseAnalytics
       );
     },
   );

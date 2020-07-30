@@ -27,7 +27,7 @@ class GlobalProgressWidget extends StatefulWidget {
 class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
   @override
   Widget build(BuildContext context) {
-    SuperStateful.of(context).updateGlobalStatistics(forceApiRequest: true);
+    SuperStateful.of(context).updateGlobalStatistics(forceApiRequest: false);
     final stats = SuperStateful.of(context).globalStatistics;
 
     final iconHeight = whenDevice(
