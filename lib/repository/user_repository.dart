@@ -23,6 +23,7 @@ import 'package:Medschoolcoach/utils/api/models/login_response.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:native_mixpanel/native_mixpanel.dart';
@@ -44,21 +45,23 @@ class UserRepository implements Repository {
   final QuestionsRepository _questionsRepository;
   final StatisticsRepository _statisticsRepository;
   final Mixpanel _mixpanel;
+  final FirebaseAnalytics _firebaseAnalytics;
 
   UserRepository(
-    this._apiServices,
-    this._userManager,
-    this._sectionRepository,
-    this._subjectRepository,
-    this._topicRepository,
-    this._videoRepository,
-    this._flashcardRepository,
-    this._scheduleRepository,
-    this._bookmarksRepository,
-    this._questionsRepository,
-    this._statisticsRepository,
-    this._mixpanel,
-  );
+      this._apiServices,
+      this._userManager,
+      this._sectionRepository,
+      this._subjectRepository,
+      this._topicRepository,
+      this._videoRepository,
+      this._flashcardRepository,
+      this._scheduleRepository,
+      this._bookmarksRepository,
+      this._questionsRepository,
+      this._statisticsRepository,
+      this._mixpanel,
+      this._firebaseAnalytics,
+      );
 
   final Cache<String, Auth0UserData> _userCache = MapCache();
   final Cache<String, ProfileUser> _profileUserCache = MapCache();
@@ -82,7 +85,9 @@ class UserRepository implements Repository {
 
     if (response is SuccessResponse<LoginResponse>) {
       _logLoginEvent(userEmail);
+      _setFirebaseUserEmailProperty(userEmail);
       userLoggingEmail = userEmail;
+
 
       await _updateUser(
         accessToken: response.body.accessToken,
@@ -164,6 +169,10 @@ class UserRepository implements Repository {
     _mixpanel.track(Config.mixPanelUserLoginEvent, {
       "\$email": userEmail,
     });
+  }
+
+  void _setFirebaseUserEmailProperty(String userEmail) {
+    _firebaseAnalytics.setUserProperty(name: "email", value: userEmail);
   }
 
   Future<RepositoryResult<void>> resetPassword({
