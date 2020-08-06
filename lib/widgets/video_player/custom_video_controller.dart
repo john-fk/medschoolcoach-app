@@ -28,6 +28,8 @@ class CustomVideoController {
   final Video video;
   final int topicVideosCount;
   final LessonVideoScreenArguments lessonScreenArguments;
+  bool timerFlag;
+  bool timerFlag1;
 
   bool commercial = false;
   VideoPlayerController videoPlayerController;
@@ -273,8 +275,26 @@ class CustomVideoController {
         videoId: video.id,
         seconds: _position.inSeconds.toString(),
       );
-
-      _logMixPanelEvent();
+      if (timerFlag == null) {
+        timerFlag = false;
+      }
+      if (!timerFlag && (_position.inSeconds - video.seconds).abs() < 10) {
+        _logMixPanelEndEvent();
+        timerFlag = true;
+        Future.delayed(const Duration(milliseconds: 15000), () {
+          timerFlag = false;
+        });
+      }
+      if (timerFlag1 == null) {
+        timerFlag1 = false;
+      }
+      if (!timerFlag1 && _position.inSeconds < 10) {
+        _logMixPanelStartEvent();
+        timerFlag1 = true;
+        Future.delayed(const Duration(milliseconds: 15000), () {
+          timerFlag1 = false;
+        });
+      }
 
       if (result is RepositorySuccessResult<void>) {
         _topicRepository.saveProgressToCache(
@@ -286,11 +306,17 @@ class CustomVideoController {
     }
   }
 
-  void _logMixPanelEvent() {
-    _mixPanel.track(Config.mixPanelVideoEvent, {
+  void _logMixPanelStartEvent() {
+    _mixPanel.track(Config.mixPanelVideoEvent1, {
       "name": video.name,
       "id": video.id,
-      "seconds": _position.inSeconds,
+    });
+  }
+
+  void _logMixPanelEndEvent() {
+    _mixPanel.track(Config.mixPanelVideoEvent2, {
+      "name": video.name,
+      "id": video.id,
     });
   }
 
