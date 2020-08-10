@@ -21,7 +21,10 @@ class StatisticsRepository implements Repository {
   Future<RepositoryResult<Statistics>> fetchGlobalStatistics({
     bool forceApiRequest = false,
   }) async {
-    final shouldFetch = _rateLimiter.shouldFetch(_globalStatsKey);
+    Duration aDuration = const Duration(
+      seconds: 5,
+    );
+    final shouldFetch = _rateLimiter.shouldFetchWithVariableLimit(_globalStatsKey,aDuration);
 
     if (shouldFetch || forceApiRequest) {
       final response = await _apiServices.getGlobalStatistics();
