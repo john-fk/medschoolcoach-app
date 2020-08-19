@@ -45,7 +45,9 @@ abstract class Config {
 
   //Mixpanel
   static const mixPanelToken = "858e8b0fcadb93fa00b51990d9fb2cd3";
-  static const mixPanelVideoEvent = "Video play";
+  static const mixPanelVideoEvent1 = "Video start";
+  static const mixPanelVideoEvent2 = "Video end";
+
   static const mixPanelAppOpenEvent = "App open";
   static const mixPanelQuestionAnsweredEvent = "Question Answered";
   static const mixPanelFlashcardEvent = "Flashcard marked";

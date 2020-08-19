@@ -185,6 +185,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - Mixpanel-swift
   - native_mixpanel (from `.symlinks/plugins/native_mixpanel/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -297,6 +298,6 @@ SPEC CHECKSUMS:
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
 
-PODFILE CHECKSUM: 3aa09b04d51d32821160bf0cdb86b70a1af94df4
+PODFILE CHECKSUM: c4b0a1d311c863d3f8472ea8fc74cf6e2069160a
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.9.3
