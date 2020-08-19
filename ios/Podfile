@@ -91,5 +91,6 @@ end
 
 pod 'Firebase/Analytics'
 pod 'Firebase/Crashlytics'
+pod 'Mixpanel-swift'
 
 
