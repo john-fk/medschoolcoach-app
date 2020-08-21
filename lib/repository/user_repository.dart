@@ -15,6 +15,7 @@ import 'package:Medschoolcoach/repository/section_repository.dart';
 import 'package:Medschoolcoach/repository/statistics_repository.dart';
 import 'package:Medschoolcoach/repository/subject_repository.dart';
 import 'package:Medschoolcoach/repository/topic_repository.dart';
+import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
@@ -37,6 +38,7 @@ class UserRepository implements Repository {
   final UserManager _userManager;
   final SectionRepository _sectionRepository;
   final SubjectRepository _subjectRepository;
+  final LectureNoteRepository _lectureNoteRepository;
   final TopicRepository _topicRepository;
   final VideoRepository _videoRepository;
   final FlashcardRepository _flashcardRepository;
@@ -53,6 +55,7 @@ class UserRepository implements Repository {
       this._sectionRepository,
       this._subjectRepository,
       this._topicRepository,
+      this._lectureNoteRepository,
       this._videoRepository,
       this._flashcardRepository,
       this._scheduleRepository,
@@ -328,6 +331,7 @@ class UserRepository implements Repository {
     _subjectRepository.clearCache();
     _sectionRepository.clearCache();
     _topicRepository.clearCache();
+    _lectureNoteRepository.clearCache();
     _videoRepository.clearCache();
     _flashcardRepository.clearCache();
     _scheduleRepository.clearCache();

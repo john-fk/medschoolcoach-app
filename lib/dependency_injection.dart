@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
+import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
@@ -88,6 +89,15 @@ void initializeDependencyInjection({
     },
   );
 
+  injector.registerSingleton<LectureNoteRepository>(
+        (injector) {
+      final apiServices = injector.getDependency<ApiServices>();
+      return LectureNoteRepository(
+        apiServices,
+      );
+    },
+  );
+
   injector.registerSingleton<FlashcardRepository>(
     (injector) {
       final apiServices = injector.getDependency<ApiServices>();
@@ -151,6 +161,7 @@ void initializeDependencyInjection({
       final sectionRepository = injector.getDependency<SectionRepository>();
       final subjectRepository = injector.getDependency<SubjectRepository>();
       final topicRepository = injector.getDependency<TopicRepository>();
+      final lectureNoteRepository = injector.getDependency<LectureNoteRepository>();
       final videoRepository = injector.getDependency<VideoRepository>();
       final flashcardRepository = injector.getDependency<FlashcardRepository>();
       final scheduleRepository = injector.getDependency<ScheduleRepository>();
@@ -168,6 +179,7 @@ void initializeDependencyInjection({
         sectionRepository,
         subjectRepository,
         topicRepository,
+        lectureNoteRepository,
         videoRepository,
         flashcardRepository,
         scheduleRepository,

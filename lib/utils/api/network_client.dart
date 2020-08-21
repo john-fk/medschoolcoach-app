@@ -1,6 +1,8 @@
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 
 abstract class NetworkClient {
   Future<String> get(
@@ -36,10 +38,45 @@ abstract class NetworkClient {
   });
 }
 
+class _MetricHttpClient extends BaseClient {
+  _MetricHttpClient(this._inner);
+
+  final Client _inner;
+
+  @override
+  Future<StreamedResponse> send(BaseRequest request) async {
+    final HttpMetric metric = FirebasePerformance.instance
+        .newHttpMetric(request.url.toString(), HttpMethod.Get);
+
+    await metric.start();
+
+    StreamedResponse response;
+    try {
+  //    response = await _inner.send(request);
+ //     metric
+  //      ..responsePayloadSize = response.contentLength
+  //      ..responseContentType = response.headers['Content-Type']
+  //      ..requestPayloadSize = request.contentLength
+  //      ..httpResponseCode = response.statusCode;
+    } finally {
+      await metric.stop();
+    }
+    return response;
+  }
+}
+
 class NetworkClientImpl implements NetworkClient {
   @override
   Future<String> get(String url, {Map<String, String> headers}) {
+
+    var request = http.Request("GET", Uri.parse(url))
+      ..headers.addAll(headers)
+      ..body = url;
+
     Crashlytics.instance.log("Request: GET url: ${url} headers: ${headers}");
+    final _MetricHttpClient metricHttpClient = _MetricHttpClient(Client());
+    metricHttpClient.send(request);
+    metricHttpClient.close();
     return http.get(url, headers: headers).then((response) {
       String body = response.body;
       int statusCode = response.statusCode;
@@ -95,7 +132,7 @@ class NetworkClientImpl implements NetworkClient {
             "Error: PUT url: ${url} statusCode: ${statusCode} body: ${body}");
         throw ApiException(statusCode, body);
       }
-
+print("put $url");
       return body;
     }).timeout(Duration(seconds: 30));
   }

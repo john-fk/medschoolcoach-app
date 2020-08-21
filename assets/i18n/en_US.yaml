@@ -229,6 +229,8 @@ refer_friend_screen:
   surname: Friend's Last Name
   email: Friend's Email
   success: Email invitation to {name} has been sent.
+lecture_notes_screen:
+    title: Lecture Notes
 feedback_screen:
   support: Feedback
   hint: Type your message...
