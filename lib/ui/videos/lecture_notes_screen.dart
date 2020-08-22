@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
@@ -55,7 +53,7 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
           children: <Widget>[
             CustomAppBar(
               title:
-                  FlutterI18n.translate(context, "lecture_notes_screen.title"),
+                  FlutterI18n.translate(context, "lesson_screen.lecture_notes"),
             ),
             Expanded(
               child: _buildContent(),
