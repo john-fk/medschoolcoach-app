@@ -4,6 +4,7 @@ import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
 import 'package:Medschoolcoach/repository/statistics_repository.dart';
 import 'package:Medschoolcoach/repository/topic_repository.dart';
+import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -16,6 +17,7 @@ import 'package:Medschoolcoach/utils/api/models/search_result.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
+import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +55,8 @@ class SuperStateful extends StatefulWidget {
 class SuperState extends State<SuperStateful> {
   final TopicRepository _topicRepository =
       Injector.appInstance.getDependency<TopicRepository>();
+  final LectureNoteRepository _lectureNoteRepository =
+      Injector.appInstance.getDependency<LectureNoteRepository>();
   final SectionRepository _sectionRepository =
       Injector.appInstance.getDependency<SectionRepository>();
   final VideoRepository _videoRepository =
@@ -82,6 +86,7 @@ class SuperState extends State<SuperStateful> {
   SearchResult searchResult;
   SearchArguments recentSearchArguments;
   Statistics globalStatistics;
+  LectureNote lectureNote;
   List<Buddy> buddiesList = List();
   Auth0UserData userData;
 
@@ -199,6 +204,19 @@ class SuperState extends State<SuperStateful> {
         (_) => result.data,
         ifAbsent: () => result.data,
       );
+    }
+    setState(() {});
+    return result;
+  }
+
+  Future<RepositoryResult<LectureNote>> updateLectureNote(String videoId, {
+    bool forceApiRequest = false,
+  }) async {
+    final result = await _lectureNoteRepository.fetchLectureNote(videoId,
+      forceApiRequest: forceApiRequest,
+    );
+    if (result is RepositorySuccessResult<LectureNote>) {
+      lectureNote = result.data;
     }
     setState(() {});
     return result;

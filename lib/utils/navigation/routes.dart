@@ -23,6 +23,8 @@ import 'package:Medschoolcoach/ui/settings/settings_screen.dart';
 import 'package:Medschoolcoach/ui/topic/topic_screen.dart';
 
 import 'package:Medschoolcoach/ui/videos/videos_screen.dart';
+import 'package:Medschoolcoach/ui/videos/lecture_notes_screen.dart';
+import 'package:Medschoolcoach/ui/videos/whiteboard_notes_screen.dart';
 import 'package:Medschoolcoach/ui/welcome_screen/welcome_screen.dart';
 import 'package:Medschoolcoach/utils/navigation/fade_route.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -39,6 +41,8 @@ abstract class Routes {
   static const String more = "more";
   static const String search = "search";
   static const String videos = "videos";
+  static const String lectureNotes = "lectureNotes";
+  static const String whiteboardNotes = "whiteboardNotes";
   static const String section = "section";
   static const String lesson = "lesson";
   static const String topic = "topic";
@@ -95,6 +99,14 @@ abstract class Routes {
       case videos:
         return FadeRoute(
           page: VideosScreen(),
+        );
+      case lectureNotes:
+        return FadeRoute(
+          page: LectureNotesScreen(settings.arguments),
+        );
+      case whiteboardNotes:
+        return FadeRoute(
+          page: WhiteboardNotesScreen(settings.arguments),
         );
       case section:
         return FadeRoute(

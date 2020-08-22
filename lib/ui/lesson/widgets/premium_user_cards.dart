@@ -13,6 +13,8 @@ import 'package:Medschoolcoach/widgets/modals/tutoring_modal/tutoring_modal.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Medschoolcoach/ui/videos/lecture_notes_screen.dart';
+import 'package:Medschoolcoach/ui/videos/whiteboard_notes_screen.dart';
 
 class PremiumUserCards extends StatelessWidget {
   final double sidePaddingValue;
@@ -141,7 +143,10 @@ class PremiumUserCards extends StatelessWidget {
             ),
             onTap: () => {
               pausePlayer(),
-              ExternalNavigationUtils.openWebsite(video.lectureNotes),
+              Navigator.of(context).pushNamed(
+                Routes.lectureNotes,
+                arguments: LectureNotesScreenData(videoId: video.id),
+              ),
             },
           ),
         if (video.whiteboardNotes != null)
@@ -155,7 +160,16 @@ class PremiumUserCards extends StatelessWidget {
             ),
             onTap: () => {
               pausePlayer(),
-              ExternalNavigationUtils.openWebsite(video.whiteboardNotes),
+             // ExternalNavigationUtils.openWebsite(video.whiteboardNotes)
+              Navigator.of(context).pushNamed(
+                Routes.whiteboardNotes,
+                arguments: WhiteboardNotesScreenData(url: video.whiteboardNotes),
+              ),
+
+            //  Image.network(
+             //   video.whiteboardNotes,
+               // 'https://picsum.photos/250?image=9',
+           //   )
             },
           ),
         if (video.flashcardsCount != 0)

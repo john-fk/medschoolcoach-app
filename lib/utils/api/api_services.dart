@@ -25,6 +25,7 @@ import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
+import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,6 +70,10 @@ abstract class ApiServices {
 
   Future<NetworkResponse<Topic>> getTopic({
     @required String topicId,
+  });
+
+  Future<NetworkResponse<LectureNote>> getLectureNote({
+    @required String videoId,
   });
 
   Future<NetworkResponse<LoginResponse>> login({
@@ -335,6 +340,28 @@ class ApiServicesImpl implements ApiServices {
       );
     } catch (error) {
       return _handleError<Topic>(error);
+    }
+  }
+
+  @override
+  Future<NetworkResponse<LectureNote>> getLectureNote({
+    @required String videoId,
+  }) async {
+    try {
+      final Map<String, String> headers = await _getHeaders();
+
+      final String response = await _networkClient.get(
+        _getBaseUrl() + "/videos/" + videoId + "/lecture-note",
+        headers: headers,
+      );
+
+      return SuccessResponse<LectureNote>(
+        LectureNote.fromJson(
+          json.decode(response),
+        ),
+      );
+    } catch (error) {
+      return _handleError<LectureNote>(error);
     }
   }
 
