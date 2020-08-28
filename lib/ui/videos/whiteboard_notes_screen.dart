@@ -1,9 +1,9 @@
-import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
-import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class WhiteboardNotesScreenData {
   final String url;
@@ -29,15 +29,11 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
   @override
   void initState() {
     super.initState();
-
+    _url = widget._whiteboardNotesScreenData.url;
   }
-
-  RepositoryErrorResult _error;
 
   @override
   Widget build(BuildContext context) {
-
-    _url = widget._whiteboardNotesScreenData.url;
     return Scaffold(
       bottomNavigationBar: NavigationBar(),
       body: GestureDetector(
@@ -59,11 +55,7 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
 
   Widget _buildContent() {
     double width;
-
-    width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    width = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(20),
       child: SingleChildScrollView(
@@ -71,14 +63,14 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 15),
-            _error != null
-                ? Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: EmptyState(repositoryResult: _error),
+            CachedNetworkImage(
+              filterQuality: FilterQuality.high,
+              imageUrl: _url,
+              placeholder: (context, url) => ProgressBar(),
+              errorWidget: (context, url, dynamic error) =>
+                  const Icon(Icons.error),
             )
-          : Image.network(
-              _url,
-            ),],
+          ],
         ),
       ),
     );

@@ -97,7 +97,7 @@ class _GoPremiumScreenState extends State<GoPremiumScreen> {
           onPressed: _signUp,
           color: Style.of(context).colors.premium,
         ),
-        TextButton(
+        MSCTextButton(
           secondaryButton: true,
           text: FlutterI18n.translate(
             context,

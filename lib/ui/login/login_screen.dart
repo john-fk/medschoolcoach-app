@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Center(
-                        child: TextButton(
+                        child: MSCTextButton(
                           text: FlutterI18n.translate(
                             context,
                             "login_screen.need_an_account",

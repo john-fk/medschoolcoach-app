@@ -41,6 +41,8 @@ dependencies:
   firebase_analytics: ^5.0.2
   firebase_messaging: ^6.0.16
   flushbar: ^1.9.0
+  cached_network_image: ^2.2.0
+
 
 dev_dependencies:
   build_runner: 1.7.3
