@@ -34,18 +34,8 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
-# Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
-install! 'cocoapods', :disable_input_output_paths => true
-
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['ENABLE_BITCODE'] = 'NO'
-      config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' # Added because iPhone8 support was dropped: https://www.jessesquires.com/blog/2020/07/20/xcode-12-drops-support-for-ios-8-fix-for-cocoapods/
-    end
+    flutter_additional_ios_build_settings(target)
   end
 end
-
-pod 'Firebase/Analytics'
-pod 'Firebase/Crashlytics'
-pod 'Mixpanel-swift'
