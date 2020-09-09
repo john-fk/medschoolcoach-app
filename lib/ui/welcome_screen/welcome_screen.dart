@@ -100,7 +100,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 Navigator.pushNamed(context, Routes.register),
                           ),
                           const SizedBox(height: 5),
-                          TextButton(
+                          MSCTextButton(
                             key: const Key("go_login_button"),
                             text: FlutterI18n.translate(
                                 context, "welcome_screen.login"),
@@ -183,7 +183,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 Navigator.pushNamed(context, Routes.register),
                           ),
                           const SizedBox(height: 5),
-                          TextButton(
+                          MSCTextButton(
                             key: const Key("go_login_button"),
                             text: FlutterI18n.translate(
                                 context, "welcome_screen.login"),

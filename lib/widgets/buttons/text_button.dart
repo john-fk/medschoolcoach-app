@@ -2,14 +2,14 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
-class TextButton extends StatelessWidget {
+class MSCTextButton extends StatelessWidget {
   final String text;
   final Function onPressed;
   final Alignment alignment;
   final EdgeInsets margin;
   final bool secondaryButton;
 
-  const TextButton({
+  const MSCTextButton({
     Key key,
     @required this.text,
     @required this.onPressed,

@@ -20,12 +20,14 @@ class PremiumUserCards extends StatelessWidget {
   final double sidePaddingValue;
   final Video video;
   final VoidCallback pausePlayer;
+  final VoidCallback resumePlayer;
 
   const PremiumUserCards({
     Key key,
     @required this.sidePaddingValue,
     @required this.video,
     @required this.pausePlayer,
+    @required this.resumePlayer,
   }) : super(key: key);
 
   @override
@@ -120,6 +122,24 @@ class PremiumUserCards extends StatelessWidget {
     );
   }
 
+  Future<void> _openLectureNotesScreen(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Lecture Notes Screen.
+    await Navigator.of(context).pushNamed(
+             Routes.lectureNotes,
+             arguments: LectureNotesScreenData(videoId: video.id));
+    resumePlayer();
+  }
+
+  Future<void> _openWhiteboardNotesScreen(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Whiteboard Notes Screen.
+    await Navigator.of(context).pushNamed(
+        Routes.whiteboardNotes,
+        arguments: WhiteboardNotesScreenData(url: video.whiteboardNotes));
+    resumePlayer();
+  }
+
   Widget _buildGrid(BuildContext context) {
     final iconSize =
         whenDevice(context, large: 20.0, tablet: 40.0, small: 15.0);
@@ -143,10 +163,7 @@ class PremiumUserCards extends StatelessWidget {
             ),
             onTap: () => {
               pausePlayer(),
-              Navigator.of(context).pushNamed(
-                Routes.lectureNotes,
-                arguments: LectureNotesScreenData(videoId: video.id),
-              ),
+              _openLectureNotesScreen(context)
             },
           ),
         if (video.whiteboardNotes != null)
@@ -160,16 +177,7 @@ class PremiumUserCards extends StatelessWidget {
             ),
             onTap: () => {
               pausePlayer(),
-             // ExternalNavigationUtils.openWebsite(video.whiteboardNotes)
-              Navigator.of(context).pushNamed(
-                Routes.whiteboardNotes,
-                arguments: WhiteboardNotesScreenData(url: video.whiteboardNotes),
-              ),
-
-            //  Image.network(
-             //   video.whiteboardNotes,
-               // 'https://picsum.photos/250?image=9',
-           //   )
+              _openWhiteboardNotesScreen(context)
             },
           ),
         if (video.flashcardsCount != 0)

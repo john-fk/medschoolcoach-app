@@ -165,6 +165,7 @@ class _LessonScreenState extends State<LessonScreenWidget> {
                   sidePaddingValue: sidePaddingValue,
                   video: widget.video,
                   pausePlayer: () => widget.customVideoController?.pause(),
+                  resumePlayer: () => widget.customVideoController?.play(),
                 )
               : RegularUserCards(),
           SizedBox(
