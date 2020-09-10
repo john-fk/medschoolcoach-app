@@ -22,7 +22,7 @@ class StatisticsRepository implements Repository {
     bool forceApiRequest = false,
   }) async {
     Duration aDuration = const Duration(
-      seconds: 5,
+      seconds: 60,
     );
     final shouldFetch = _rateLimiter.shouldFetchWithVariableLimit(_globalStatsKey,aDuration);
 
