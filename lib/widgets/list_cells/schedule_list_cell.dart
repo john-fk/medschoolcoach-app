@@ -155,11 +155,6 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
 
   Future<void> _onTap() async {
     bool initialValue = widget.cellData.bookmarked;
-
-    setState(() {
-      widget.cellData.bookmarked = !initialValue;
-    });
-
     if (widget.onBookmarkTap != null) {
       widget.onBookmarkTap();
     }
@@ -179,12 +174,14 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
         widget.cellData.bookmarked = initialValue;
       });
     } else {
-      if (widget.cellData.updateTopic) {
-        SuperStateful.of(context).updateTopic(
-          widget.cellData.topicId,
-          forceApiRequest: true,
-        );
-      }
+      setState(() {
+        widget.cellData.bookmarked = !initialValue;
+        SuperStateful.of(context).updateTodaySchedule(forceApiRequest: true);
+      });
+      SuperStateful.of(context).updateTopic(
+        widget.cellData.topicId,
+        forceApiRequest: true,
+      );
     }
   }
 
