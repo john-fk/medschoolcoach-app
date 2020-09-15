@@ -36,7 +36,7 @@ class PremiumUserCards extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: sidePaddingValue),
       child: Column(
         children: <Widget>[
-          if (video.lectureNotes != null ||
+          if (video.hasLectureNotes == true ||
               video.whiteboardNotes != null ||
               video.flashcardsCount != 0 ||
               video.questionsCount != 0)
@@ -58,7 +58,7 @@ class PremiumUserCards extends StatelessWidget {
                 ),
               ],
             ),
-          if (video.lectureNotes != null ||
+          if (video.hasLectureNotes == true ||
               video.whiteboardNotes != null ||
               video.flashcardsCount != 0 ||
               video.questionsCount != 0)
@@ -152,7 +152,7 @@ class PremiumUserCards extends StatelessWidget {
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
       children: <Widget>[
-        if (video.lectureNotes != null)
+        if (video.hasLectureNotes == true)
           SquareFeatureButton(
             color: Style.of(context).colors.premium,
             text: FlutterI18n.translate(context, "lesson_screen.lecture_notes"),
