@@ -177,6 +177,10 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
       setState(() {
         widget.cellData.bookmarked = !initialValue;
         SuperStateful.of(context).updateTodaySchedule(forceApiRequest: true);
+        SuperStateful.of(context).updateSchedule(
+          day: null,
+          forceApiRequest: true,
+        );
       });
       SuperStateful.of(context).updateTopic(
         widget.cellData.topicId,
