@@ -21,7 +21,7 @@ class Video {
   String length;
   int seconds;
   String whiteboardNotes;
-  String lectureNotes;
+  bool hasLectureNotes;
   String providerType;
   String providerId;
   String link;
@@ -50,7 +50,7 @@ class Video {
     this.image,
     this.length,
     this.seconds,
-    this.lectureNotes,
+    this.hasLectureNotes,
     this.whiteboardNotes,
     this.providerType,
     this.providerId,
@@ -83,8 +83,8 @@ class Video {
         seconds: json["seconds"] == null ? null : json["seconds"],
         whiteboardNotes:
             json["whiteboard_notes"] == null ? null : json["whiteboard_notes"],
-        lectureNotes:
-            json["lecture_notes"] == null ? null : json["lecture_notes"],
+        hasLectureNotes:
+            json["has_lecture_notes"] == 0 ? false : true,
         providerType:
             json["provider_type"] == null ? null : json["provider_type"],
         providerId: json["provider_id"] == null ? null : json["provider_id"],
@@ -132,7 +132,7 @@ class Video {
         "image": image == null ? null : image,
         "length": length == null ? null : length,
         "seconds": seconds == null ? null : seconds,
-        "lecture_notes": lectureNotes == null ? null : lectureNotes,
+        "has_lecture_notes": hasLectureNotes == 0 ? false : true,
         "whiteboard_notes": whiteboardNotes == null ? null : whiteboardNotes,
         "provider_type": providerType == null ? null : providerType,
         "provider_id": providerId == null ? null : providerId,
