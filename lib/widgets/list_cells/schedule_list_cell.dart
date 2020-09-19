@@ -3,13 +3,13 @@ import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/bookmark/bookmark_widget.dart';
 import 'package:Medschoolcoach/widgets/others/tick_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
+import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 
 class ScheduleListCellData {
   final String imagePath;
@@ -55,12 +55,15 @@ class ScheduleListCell extends StatefulWidget {
 class _ScheduleListCellState extends State<ScheduleListCell> {
   final BookmarksRepository _bookmarksRepository =
       Injector.appInstance.getDependency<BookmarksRepository>();
+  bool isProgressIndicator = false;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       key: Key(widget.cellData.lessonName),
-      onTap: widget.onTap,
+      onTap: () {
+        onItemTap();
+      },
       child: Padding(
         padding: const EdgeInsets.only(
           bottom: 17.0,
@@ -147,18 +150,29 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
                 onTap: _onTap,
               ),
             ),
+            Positioned(
+              right: 20,
+              top: 5,
+              child: (!isProgressIndicator
+                  ? Container()
+                  : SizedBox(child: ProgressBar(), height: 10.0, width: 10.0)),
+            )
           ],
         ),
       ),
     );
   }
 
+  void onItemTap() {
+    if (!isProgressIndicator) {
+      widget.onTap();
+    }
+  }
+
   Future<void> _onTap() async {
     bool initialValue = widget.cellData.bookmarked;
-    if (widget.onBookmarkTap != null) {
-      widget.onBookmarkTap();
-    }
 
+    isProgressIndicator = true;
     RepositoryResult response;
     if (initialValue) {
       response = await _bookmarksRepository.deleteBookmark(
@@ -174,19 +188,10 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
         widget.cellData.bookmarked = initialValue;
       });
     } else {
-      setState(() {
-        widget.cellData.bookmarked = !initialValue;
-        SuperStateful.of(context).updateTodaySchedule(forceApiRequest: true);
-        SuperStateful.of(context).updateSchedule(
-          day: null,
-          forceApiRequest: true,
-        );
-      });
-      SuperStateful.of(context).updateTopic(
-        widget.cellData.topicId,
-        forceApiRequest: true,
-      );
+      widget.onBookmarkTap();
     }
+
+    isProgressIndicator = false;
   }
 
   Positioned _drawImageBadge(BuildContext context) {

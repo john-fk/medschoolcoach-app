@@ -143,6 +143,14 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
     if (widget.arguments.videos == null)
       return topic?.videos
           ?.firstWhere((video) => video.order == widget.arguments.order);
+    else {
+      //adding this hack for now to overcome the not refreshing of the topic after video favorite has been saved in schedule screen
+      bool fav1 = widget.arguments.videos[widget.arguments.order].favourite;
+      Video aVid = topic.videos.firstWhere((video) =>
+      video.id == widget.arguments.videos[widget.arguments.order].id);
+      aVid.favourite = fav1;
+    }
+
     return topic.videos.firstWhere((video) =>
         video.id == widget.arguments.videos[widget.arguments.order].id);
   }

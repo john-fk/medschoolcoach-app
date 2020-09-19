@@ -38,6 +38,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   bool _shouldShowSchedule = false;
   bool _loading = true;
   bool _completed = false;
+  bool _isToggled = true;
   RepositoryResult _setScheduleError;
   RepositoryResult _singleScheduleError;
   RepositoryResult _globalError;
@@ -216,6 +217,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
+  //this is part of the hack to make sure the favorte attribute is updated correctly in the topic for the LessonVideoScreen
+  void _toggleBookmark(int index)  {
+    _isToggled = false;
+    final videos = SuperStateful.of(context).videosScheduleList;
+    videos[index].favourite = !videos[index].favourite;
+    _isToggled = true;
+  }
+
+  void _doNothing() {
+    //do nothing
+  }
+
   RefreshIndicator _buildLessonsList(List<Video> videos) {
     return RefreshIndicator(
       onRefresh: () => _fetchSingleSchedule(
@@ -272,7 +285,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   bookmarked: videos[index].favourite ?? false,
                   topicId: videos[index].topicId,
                 ),
-                onTap: () {
+                onTap: () { _isToggled ?
                   Navigator.of(context).pushNamed(
                     Routes.lesson,
                     arguments: LessonVideoScreenArguments(
@@ -280,7 +293,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       order: index,
                       topicId: videos[index].topicId,
                     ),
-                  );
+                  ) : _doNothing();
+                },
+                onBookmarkTap: () {
+                  _toggleBookmark(index);
                 },
               ),
             );

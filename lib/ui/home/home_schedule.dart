@@ -33,6 +33,23 @@ class HomeSchedule extends StatefulWidget {
 }
 
 class _HomeScheduleState extends State<HomeSchedule> {
+
+  bool _isToggled = true;
+
+  //this is part of the hack to make sure the favorte attribute is updated correctly in the topic for the LessonVideoScreen
+  void _toggleBookmark(int index)  {
+    _isToggled = false;
+    DashboardSchedule dashboardSchedule =
+        SuperStateful.of(context).todaySchedule;
+    List<Video> videos = dashboardSchedule.items;
+    videos[index].favourite = !videos[index].favourite;
+    _isToggled = true;
+  }
+
+  void _doNothing() {
+    //do nothing
+  }
+
   @override
   Widget build(BuildContext context) {
     DashboardSchedule dashboardSchedule =
@@ -126,7 +143,7 @@ class _HomeScheduleState extends State<HomeSchedule> {
                           videosToDisplay[index].video.favourite ?? false,
                       topicId: videosToDisplay[index].video.topicId,
                     ),
-                    onTap: () {
+                    onTap: () { _isToggled ?
                       Navigator.of(context).pushNamed(
                         Routes.lesson,
                         arguments: LessonVideoScreenArguments(
@@ -134,7 +151,10 @@ class _HomeScheduleState extends State<HomeSchedule> {
                           order: videosToDisplay[index].index,
                           topicId: videosToDisplay[index].video.topicId,
                         ),
-                      );
+                      ) : _doNothing();
+                    },
+                    onBookmarkTap: () {
+                      _toggleBookmark(index);
                     },
                   ),
                 );
