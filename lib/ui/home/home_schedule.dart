@@ -35,6 +35,7 @@ class HomeSchedule extends StatefulWidget {
 class _HomeScheduleState extends State<HomeSchedule> {
 
   bool _isToggled = true;
+  List<_HomeScheduleVideo> videosToDisplay;
 
   //this is part of the hack to make sure the favorte attribute is updated correctly in the topic for the LessonVideoScreen
   void _toggleBookmark(int index)  {
@@ -42,7 +43,8 @@ class _HomeScheduleState extends State<HomeSchedule> {
     DashboardSchedule dashboardSchedule =
         SuperStateful.of(context).todaySchedule;
     List<Video> videos = dashboardSchedule.items;
-    videos[index].favourite = !videos[index].favourite;
+    int selectedIndex = videosToDisplay[index].index;
+    videos[selectedIndex].favourite = !videos[selectedIndex].favourite;
     _isToggled = true;
   }
 
@@ -55,7 +57,7 @@ class _HomeScheduleState extends State<HomeSchedule> {
     DashboardSchedule dashboardSchedule =
         SuperStateful.of(context).todaySchedule;
     List<Video> videos = dashboardSchedule.items;
-    List<_HomeScheduleVideo> videosToDisplay = videos
+    videosToDisplay = videos
         .where((element) => element.progress.percentage != 100)
         .take(3)
         .toList()
