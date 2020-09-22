@@ -1,5 +1,5 @@
 abstract class Config {
-  static final prodApiUrl = "https://api-dev.medschoolcoach.com";
+  static final prodApiUrl = "https://api.medschoolcoach.com";
   static final devApiUrl = "https://api-dev.medschoolcoach.com";
   static const appTitle = "MedSchoolCoach";
   static const fontFamily = "Rubik";
