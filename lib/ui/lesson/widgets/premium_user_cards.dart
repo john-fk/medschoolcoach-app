@@ -37,7 +37,7 @@ class PremiumUserCards extends StatelessWidget {
       child: Column(
         children: <Widget>[
           if (video.hasLectureNotes == true ||
-              video.whiteboardNotes != null ||
+              video.whiteboardNotesUrl != null ||
               video.flashcardsCount != 0 ||
               video.questionsCount != 0)
             Row(
@@ -59,7 +59,7 @@ class PremiumUserCards extends StatelessWidget {
               ],
             ),
           if (video.hasLectureNotes == true ||
-              video.whiteboardNotes != null ||
+              video.whiteboardNotesUrl != null ||
               video.flashcardsCount != 0 ||
               video.questionsCount != 0)
             Padding(
@@ -136,7 +136,7 @@ class PremiumUserCards extends StatelessWidget {
     // Navigator.pop on the Whiteboard Notes Screen.
     await Navigator.of(context).pushNamed(
         Routes.whiteboardNotes,
-        arguments: WhiteboardNotesScreenData(url: video.whiteboardNotes));
+        arguments: WhiteboardNotesScreenData(url: video.whiteboardNotesUrl));
     resumePlayer();
   }
 
@@ -166,7 +166,7 @@ class PremiumUserCards extends StatelessWidget {
               _openLectureNotesScreen(context)
             },
           ),
-        if (video.whiteboardNotes != null)
+        if (video.whiteboardNotesUrl != null)
           SquareFeatureButton(
             color: Color(0xFFe344ff),
             text: FlutterI18n.translate(
