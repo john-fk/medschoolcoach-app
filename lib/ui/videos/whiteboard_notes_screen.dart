@@ -23,7 +23,7 @@ class WhiteboardNotesScreen extends StatefulWidget {
 }
 
 class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
-  final _scrollController = ScrollController();
+  final transformationController = TransformationController();
   String _url;
 
   @override
@@ -57,22 +57,26 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
     double width;
     width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 15),
-            CachedNetworkImage(
-              filterQuality: FilterQuality.high,
-              imageUrl: _url,
-              placeholder: (context, url) => ProgressBar(),
-              errorWidget: (context, url, dynamic error) =>
-                  const Icon(Icons.error),
-            )
-          ],
-        ),
-      ),
-    );
+        padding: const EdgeInsets.all(20),
+        child: Column(children: [
+          Expanded(
+              child: InteractiveViewer(
+                  transformationController: transformationController,
+                  // pass the transformation controller
+                  boundaryMargin: EdgeInsets.all(10.0),
+                  minScale: 0.5,
+                  // min scale
+                  maxScale: 2.5,
+                  // max scale
+                  scaleEnabled: true,
+                  panEnabled: true,
+                  child: CachedNetworkImage(
+                    filterQuality: FilterQuality.high,
+                    imageUrl: _url,
+                    placeholder: (context, url) => ProgressBar(),
+                    errorWidget: (context, url, dynamic error) =>
+                        const Icon(Icons.error),
+                  ))),
+        ]));
   }
 }
