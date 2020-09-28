@@ -89,7 +89,7 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
                     child: ProgressBar(),
                   )
                 : Html(
-                    useRichText: false,
+                    useRichText: true,
                     data: _htmlContent ?? "",
                     defaultTextStyle:
                         Style.of(context).font.normal.copyWith(fontSize: 20),
