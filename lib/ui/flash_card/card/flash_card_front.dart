@@ -2,9 +2,10 @@ import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_button.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_status.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:flutter_i18n/flutter_i18n.dart';
 
 class FlashCardFront extends StatelessWidget {
@@ -44,15 +45,14 @@ class FlashCardFront extends StatelessWidget {
               status: flashCard.status,
             ),
             flashCard.frontImage == null || flashCard.frontImage.isEmpty
-                ? Html(
-                    useRichText: false,
-                    data: flashCard.front,
-                    defaultTextStyle: Style.of(context)
-                        .font
-                        .bold
-                        .copyWith(fontSize: width * 0.07),
-                    customTextAlign: (_) => TextAlign.center,
-                  )
+                ? Html(data: flashCard.front, style: {
+                    "html": Style.fromTextStyle(
+                      medstyles.Style.of(context)
+                          .font
+                          .bold
+                          .copyWith(fontSize: width * 0.07),
+                    )
+                  })
                 : ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: height * 0.2),
                     child: Image.network(

@@ -6,8 +6,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:flutter_html/style.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 
 class LectureNotesScreenData {
   final String videoId;
@@ -71,6 +72,8 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
       _loading = false;
       _htmlContent =
           (result as RepositorySuccessResult<LectureNote>).data.content;
+      _htmlContent = _htmlContent.replaceAll("<sup>", "&#8288<sup>");
+      _htmlContent = _htmlContent.replaceAll("<sub>", "&#8288<sub>");
     });
   }
 
@@ -78,26 +81,26 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
     double width;
     width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 15),
-            _loading
-                ? Center(
-                    child: ProgressBar(),
-                  )
-                : Html(
-                    useRichText: false,
-                    data: _htmlContent ?? "",
-                    defaultTextStyle:
-                        Style.of(context).font.normal.copyWith(fontSize: 20),
-                    customTextAlign: (_) => TextAlign.center,
-                  ),
-          ],
-        ),
-      ),
-    );
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(children: <Widget>[
+              const SizedBox(height: 15),
+              _loading
+                  ? Center(
+                      child: ProgressBar(),
+                    )
+                  : Html(
+                      data: _htmlContent ?? "",
+                      style: {
+                        "html": Style.fromTextStyle(
+                          medstyles.Style.of(context)
+                              .font
+                              .normal
+                              .copyWith(fontSize: 20),
+                        )
+                      },
+                    ),
+            ])));
   }
 }

@@ -5,7 +5,8 @@ import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_button.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_status.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:flutter_html/style.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -56,11 +57,25 @@ class _FlashCardBackState extends State<FlashCardBack>
   Animation<double> _neutralAnimation;
   Animation<double> _positiveAnimation;
   final animationDuration = const Duration(milliseconds: 300);
+  String _anHtml = "";
+  String _anHtmlDefinition = "";
+  String _anHtmlExample = "";
 
   @override
   void initState() {
     super.initState();
     _setupAnimation();
+    _anHtmlDefinition = widget.flashCard.definition;
+    _anHtmlDefinition = _anHtmlDefinition.replaceAll("<sup>", "&#8288<sup>");
+    _anHtmlDefinition = _anHtmlDefinition.replaceAll("<sub>", "&#8288<sub>");
+
+    _anHtmlExample = widget.flashCard.example;
+    _anHtmlExample = _anHtmlExample.replaceAll("<sup>", "&#8288<sup>");
+    _anHtmlExample = _anHtmlExample.replaceAll("<sub>", "&#8288<sub>");
+
+    _anHtml = widget.flashCard.front;
+    _anHtml = _anHtml.replaceAll("<sup>", "&#8288<sup>");
+    _anHtml = _anHtml.replaceAll("<sub>", "&#8288<sub>");
   }
 
   void _setupAnimation() {
@@ -128,34 +143,28 @@ class _FlashCardBackState extends State<FlashCardBack>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Html(
-                            useRichText: false,
-                            data: widget.flashCard.front,
-                            customTextAlign: (_) => TextAlign.center,
-                            defaultTextStyle:
-                                Style.of(context).font.bold.copyWith(
-                                      fontSize: whenDevice(
-                                        context,
-                                        small: 18.0,
-                                        large: 20.0,
-                                        tablet: 40.0,
-                                      ),
-                                    ),
+                            data: _anHtml,
+                            style: {"html":  Style.fromTextStyle(medstyles.Style.of(context).font.bold.copyWith(
+                              fontSize: whenDevice(
+                                context,
+                                small: 18.0,
+                                large: 20.0,
+                                tablet: 40.0,
+                              ),
+                            ),)},
                           ),
                           widget.flashCard.definitionImage == null ||
                                   widget.flashCard.definitionImage.isEmpty
                               ? Html(
-                                  useRichText: false,
-                                  data: widget.flashCard.definition,
-                                  customTextAlign: (_) => TextAlign.center,
-                                  defaultTextStyle:
-                                      Style.of(context).font.normal.copyWith(
-                                            fontSize: whenDevice(
-                                              context,
-                                              large: 15,
-                                              small: 12,
-                                              tablet: 25,
-                                            ),
-                                          ),
+                                  data: _anHtmlDefinition,
+                            style: {"html":  Style.fromTextStyle(medstyles.Style.of(context).font.normal.copyWith(
+                              fontSize: whenDevice(
+                                context,
+                                small: 15.0,
+                                large: 12.0,
+                                tablet: 25.0,
+                              ),
+                            ),)},
                                 )
                               : ConstrainedBox(
                                   constraints:
@@ -167,18 +176,15 @@ class _FlashCardBackState extends State<FlashCardBack>
                           widget.flashCard.exampleImage == null ||
                                   widget.flashCard.exampleImage.isEmpty
                               ? Html(
-                                  useRichText: false,
-                                  data: widget.flashCard.example,
-                                  customTextAlign: (_) => TextAlign.center,
-                                  defaultTextStyle:
-                                      Style.of(context).font.normal.copyWith(
-                                            fontSize: whenDevice(
-                                              context,
-                                              large: 15,
-                                              small: 12,
-                                              tablet: 25,
-                                            ),
-                                          ),
+                                  data: _anHtmlExample,
+                            style: {"html":  Style.fromTextStyle(medstyles.Style.of(context).font.normal.copyWith(
+                              fontSize: whenDevice(
+                                context,
+                                small: 15.0,
+                                large: 12.0,
+                                tablet: 25.0,
+                              ),
+                            ),)},
                                 )
                               : ConstrainedBox(
                                   constraints:
@@ -202,7 +208,7 @@ class _FlashCardBackState extends State<FlashCardBack>
                               context,
                               "flashcard_screen.confidence_interval",
                             ),
-                            style: Style.of(context).font.medium.copyWith(
+                            style: medstyles.Style.of(context).font.medium.copyWith(
                                   fontSize: whenDevice(
                                     context,
                                     large: 15,
@@ -273,7 +279,7 @@ class _FlashCardBackState extends State<FlashCardBack>
 
   void _logMixPanelEvent(EmojiType type) {
     _mixPanel.track(Config.mixPanelFlashcardEvent, {
-      "front": widget.flashCard.front,
+      "front": _anHtml,
       "id": widget.flashCard.id,
       "confidence": type.toString().substring(10).toLowerCase(),
     });
@@ -284,15 +290,15 @@ class _FlashCardBackState extends State<FlashCardBack>
     double opacityValue = 0;
     switch (type) {
       case EmojiType.Neutral:
-        asset = Style.of(context).svgAsset.neutral;
+        asset = medstyles.Style.of(context).svgAsset.neutral;
         opacityValue = _neutralAnimation.value;
         break;
       case EmojiType.Positive:
-        asset = Style.of(context).svgAsset.positive;
+        asset = medstyles.Style.of(context).svgAsset.positive;
         opacityValue = _positiveAnimation.value;
         break;
       case EmojiType.Negative:
-        asset = Style.of(context).svgAsset.negative;
+        asset = medstyles.Style.of(context).svgAsset.negative;
         opacityValue = _negativeAnimation.value;
         break;
     }
@@ -309,7 +315,7 @@ class _FlashCardBackState extends State<FlashCardBack>
             large: 40,
             tablet: 70,
           ),
-          color: Style.of(context).colors.content,
+          color: medstyles.Style.of(context).colors.content,
         ),
       ),
     );

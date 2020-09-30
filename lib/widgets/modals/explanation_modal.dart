@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_html/style.dart';
 
 void openExplanationModal({
   @required BuildContext context,
@@ -32,11 +33,11 @@ void openExplanationModal({
                     biggerResponsiveFont(context, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              Html(
-                useRichText: false,
-                data: explanationText,
-                defaultTextStyle: normalResponsiveFont(context),
-              ),
+              Html(data: explanationText, style: {
+                "html": Style.fromTextStyle(
+                  normalResponsiveFont(context),
+                )
+              }),
               const SizedBox(height: 12),
             ],
           ),

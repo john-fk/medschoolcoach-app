@@ -1,7 +1,8 @@
 import 'package:Medschoolcoach/utils/api/models/question.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:flutter_html/style.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:Medschoolcoach/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:Medschoolcoach/widgets/others/error_icon.dart';
 import 'package:Medschoolcoach/widgets/others/tick_icon.dart';
@@ -26,8 +27,8 @@ class AnswerListCell extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         dividerColor: Colors.transparent,
-        accentColor: Style.of(context).colors.content2,
-        unselectedWidgetColor: Style.of(context).colors.content2,
+        accentColor: medstyles.Style.of(context).colors.content2,
+        unselectedWidgetColor: medstyles.Style.of(context).colors.content2,
       ),
       child: CustomExpansionTile(
         title: Padding(
@@ -63,12 +64,14 @@ class AnswerListCell extends StatelessWidget {
             bottom: 10.0,
           ),
           child: Html(
-            useRichText: false,
             data: question.stem,
-            defaultTextStyle: normalResponsiveFont(
-              context,
-              fontColor: FontColor.Content2,
-            ),
+            style: {
+              "html": Style.fromTextStyle(
+                normalResponsiveFont(
+                  context,
+                  fontColor: FontColor.Content2,
+                ),
+              )},
           ),
         ),
         children: <Widget>[
@@ -139,31 +142,26 @@ class AnswerListCell extends StatelessWidget {
                   "question_screen.your_answer",
                 ),
           style: isCorrect
-              ? Style.of(context).font.mediumAccent2.copyWith(
+              ? medstyles.Style.of(context).font.mediumAccent2.copyWith(
                     fontSize: whenDevice(
                       context,
                       large: 15,
                       tablet: 25,
                     ),
                   )
-              : Style.of(context).font.mediumAccent2.copyWith(
+              : medstyles.Style.of(context).font.mediumAccent2.copyWith(
                     fontSize: whenDevice(
                       context,
                       large: 15,
                       tablet: 25,
                     ),
-                    color: Style.of(context).colors.questions,
+                    color: medstyles.Style.of(context).colors.questions,
                   ),
         ),
         Html(
-          useRichText: false,
           data: isCorrect
               ? _getAnswer(index, question.answer)
               : _getAnswer(index, question.yourAnswer),
-          defaultTextStyle: normalResponsiveFont(
-            context,
-            fontColor: FontColor.Content2,
-          ),
         ),
       ],
     );

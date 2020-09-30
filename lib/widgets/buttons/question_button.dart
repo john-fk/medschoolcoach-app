@@ -1,6 +1,7 @@
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/widgets/others/error_icon.dart';
 import 'package:Medschoolcoach/widgets/others/tick_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,10 +58,8 @@ class QuestionButton extends StatelessWidget {
                 ),
                 child: Center(
                   child: Html(
-                    useRichText: false,
                     data: text,
-                    customTextAlign: (_) => TextAlign.center,
-                    defaultTextStyle: _getTextStyle(context),
+                    style: {"html":  Style.fromTextStyle(_getTextStyle(context))},
                   ),
                 ),
               ),
@@ -71,7 +70,7 @@ class QuestionButton extends StatelessWidget {
             _buildProperIcon(context),
           ],
         ),
-        color: Style.of(context).colors.content2,
+        color: medstyles.Style.of(context).colors.content2,
       ),
     );
   }
@@ -93,8 +92,8 @@ class QuestionButton extends StatelessWidget {
         child: RotatedBox(
           quarterTurns: 2,
           child: SvgPicture.asset(
-            Style.of(context).svgAsset.backArrowDark,
-            color: Style.of(context).colors.accent,
+            medstyles.Style.of(context).svgAsset.backArrowDark,
+            color: medstyles.Style.of(context).colors.accent,
           ),
         ),
       );

@@ -6,7 +6,8 @@ import 'package:Medschoolcoach/utils/api/models/question.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
@@ -102,14 +103,14 @@ class _MultipleChoiceQuestionScreenState
     final size = MediaQuery.of(context).size;
     bool shouldAdd = _answers.isEmpty;
     return Scaffold(
-      backgroundColor: Style.of(context).colors.accent,
+      backgroundColor: medstyles.Style.of(context).colors.accent,
       body: Stack(
         children: <Widget>[
           Container(
             width: size.width,
             height: size.height,
             child: SvgPicture.asset(
-              Style.of(context).svgAsset.questionsBackground,
+              medstyles.Style.of(context).svgAsset.questionsBackground,
               fit: BoxFit.cover,
             ),
           ),
@@ -247,15 +248,15 @@ class _MultipleChoiceQuestionScreenState
                             vertical: 16.0,
                           ),
                           child: Html(
-                            useRichText: false,
-                            data: _questionsList[_currentQuestionIndex].stem,
-                            defaultTextStyle: biggerResponsiveFont(
-                              context,
-                              fontColor: FontColor.Content2,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            customTextAlign: (_) => TextAlign.center,
-                          ),
+                              data: _questionsList[_currentQuestionIndex].stem,
+                              style: {
+                                "html":
+                                    Style.fromTextStyle(biggerResponsiveFont(
+                                  context,
+                                  fontColor: FontColor.Content2,
+                                  fontWeight: FontWeight.bold,
+                                ))
+                              }),
                         ),
                         AnimatedList(
                           key: _listKey,
