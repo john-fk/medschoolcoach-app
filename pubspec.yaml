@@ -1,7 +1,7 @@
 name: Medschoolcoach
 description: Medschoolcoach app
 
-version: 1.4.13
+version: 1.4.15
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
