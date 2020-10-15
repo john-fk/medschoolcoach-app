@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:injector/injector.dart';
 import 'package:native_mixpanel/native_mixpanel.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Mixpanel _mixPanel = await Mixpanel(
@@ -24,8 +23,8 @@ Future<void> main() async {
   _mixPanel.track(Config.mixPanelAppOpenEvent);
 
   initializeDependencyInjection(
-    apiUrl: Config.devApiUrl,
-    auth0Url: Config.devBaseAuth0Url,
+    apiUrl: Config.prodApiUrl,
+    auth0Url: Config.prodBaseAuth0Url,
     mixPanel: _mixPanel,
   );
   Config.showSwitch = false;
@@ -37,7 +36,7 @@ Future<void> main() async {
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) {
+        (_) {
       runApp(MyApp(
         initialRoute: initialRoute,
       ));
