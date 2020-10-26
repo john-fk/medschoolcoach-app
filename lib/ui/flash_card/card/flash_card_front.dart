@@ -45,14 +45,16 @@ class FlashCardFront extends StatelessWidget {
               status: flashCard.status,
             ),
             flashCard.frontImage == null || flashCard.frontImage.isEmpty
-                ? Html(data: flashCard.front, style: {
+                ? Container(
+                margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
+                child: Html(data: flashCard.front, style: {
                     "html": Style.fromTextStyle(
                       medstyles.Style.of(context)
                           .font
                           .bold
                           .copyWith(fontSize: width * 0.07),
                     )
-                  })
+                  }))
                 : ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: height * 0.2),
                     child: Image.network(

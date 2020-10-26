@@ -23,6 +23,7 @@ class AnswerListCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     bool _isCorrect = question.yourAnswer == question.answer;
     return Theme(
       data: Theme.of(context).copyWith(
@@ -63,16 +64,19 @@ class AnswerListCell extends StatelessWidget {
           padding: const EdgeInsets.only(
             bottom: 10.0,
           ),
-          child: Html(
-            data: question.stem,
-            style: {
-              "html": Style.fromTextStyle(
-                normalResponsiveFont(
-                  context,
-                  fontColor: FontColor.Content2,
-                ),
-              )},
-          ),
+          child: Container(
+              margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+              child: Html(
+                data: question.stem,
+                style: {
+                  "html": Style.fromTextStyle(
+                    normalResponsiveFont(
+                      context,
+                      fontColor: FontColor.Content2,
+                    ),
+                  )
+                },
+              )),
         ),
         children: <Widget>[
           Padding(
