@@ -226,6 +226,7 @@ class _MultipleChoiceQuestionScreenState
   }
 
   Widget _buildListViewContent(BuildContext context, bool shouldAdd) {
+    final width = MediaQuery.of(context).size.width;
     return _error != null
         ? RefreshingEmptyState(
             repositoryResult: _error,
@@ -247,16 +248,19 @@ class _MultipleChoiceQuestionScreenState
                           padding: const EdgeInsets.symmetric(
                             vertical: 16.0,
                           ),
-                          child: Html(
-                              data: _questionsList[_currentQuestionIndex].stem,
-                              style: {
-                                "html":
-                                    Style.fromTextStyle(biggerResponsiveFont(
-                                  context,
-                                  fontColor: FontColor.Content2,
+                          child: Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                              child: Html(
+                                  data: _questionsList[_currentQuestionIndex]
+                                      .stem,
+                                  style: {
+                                    "html": Style.fromTextStyle(
+                                        biggerResponsiveFont(
+                                      context,
+                                      fontColor: FontColor.Content2,
                                   fontWeight: FontWeight.bold,
                                 ))
-                              }),
+                              })),
                         ),
                         AnimatedList(
                           key: _listKey,

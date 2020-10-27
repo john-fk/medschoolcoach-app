@@ -7,7 +7,9 @@ import 'package:flutter_html/style.dart';
 void openExplanationModal({
   @required BuildContext context,
   @required String explanationText,
+
 }) {
+  final width = MediaQuery.of(context).size.width;
   showModalBottomSheet<void>(
     context: context,
     shape: RoundedRectangleBorder(
@@ -33,11 +35,13 @@ void openExplanationModal({
                     biggerResponsiveFont(context, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              Html(data: explanationText, style: {
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
+            child: Html(data: explanationText, style: {
                 "html": Style.fromTextStyle(
                   normalResponsiveFont(context),
                 )
-              }),
+              })),
               const SizedBox(height: 12),
             ],
           ),

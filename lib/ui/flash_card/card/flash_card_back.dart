@@ -112,7 +112,7 @@ class _FlashCardBackState extends State<FlashCardBack>
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-
+    final width = MediaQuery.of(context).size.width;
     final xOffset = MediaQuery.of(context).size.width *
             FlashCardWidget.flashCardWidthFactor -
         whenDevice(
@@ -142,30 +142,49 @@ class _FlashCardBackState extends State<FlashCardBack>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Html(
-                            data: _anHtml,
-                            style: {"html":  Style.fromTextStyle(medstyles.Style.of(context).font.bold.copyWith(
-                              fontSize: whenDevice(
-                                context,
-                                small: 18.0,
-                                large: 20.0,
-                                tablet: 40.0,
-                              ),
-                            ),)},
-                          ),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                              child: Html(
+                                data: _anHtml,
+                                style: {
+                                  "html": Style.fromTextStyle(
+                                    medstyles.Style.of(context)
+                                        .font
+                                        .bold
+                                        .copyWith(
+                                          fontSize: whenDevice(
+                                            context,
+                                            small: 18.0,
+                                            large: 20.0,
+                                            tablet: 40.0,
+                                          ),
+                                        ),
+                                  )
+                                },
+                              )),
                           widget.flashCard.definitionImage == null ||
                                   widget.flashCard.definitionImage.isEmpty
-                              ? Html(
-                                  data: _anHtmlDefinition,
-                            style: {"html":  Style.fromTextStyle(medstyles.Style.of(context).font.normal.copyWith(
-                              fontSize: whenDevice(
-                                context,
-                                small: 15.0,
-                                large: 12.0,
-                                tablet: 25.0,
-                              ),
-                            ),)},
-                                )
+                              ? Container(
+                                  margin:
+                                      EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                                  child: Html(
+                                    data: _anHtmlDefinition,
+                                    style: {
+                                      "html": Style.fromTextStyle(
+                                        medstyles.Style.of(context)
+                                            .font
+                                            .normal
+                                            .copyWith(
+                                              fontSize: whenDevice(
+                                                context,
+                                                small: 15.0,
+                                                large: 12.0,
+                                                tablet: 25.0,
+                                              ),
+                                            ),
+                                      )
+                                    },
+                                  ))
                               : ConstrainedBox(
                                   constraints:
                                       BoxConstraints(maxHeight: height * 0.15),
@@ -175,17 +194,27 @@ class _FlashCardBackState extends State<FlashCardBack>
                           const SizedBox(height: 15),
                           widget.flashCard.exampleImage == null ||
                                   widget.flashCard.exampleImage.isEmpty
-                              ? Html(
-                                  data: _anHtmlExample,
-                            style: {"html":  Style.fromTextStyle(medstyles.Style.of(context).font.normal.copyWith(
-                              fontSize: whenDevice(
-                                context,
-                                small: 15.0,
-                                large: 12.0,
-                                tablet: 25.0,
-                              ),
-                            ),)},
-                                )
+                              ? Container(
+                                  margin:
+                                      EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                                  child: Html(
+                                    data: _anHtmlExample,
+                                    style: {
+                                      "html": Style.fromTextStyle(
+                                        medstyles.Style.of(context)
+                                            .font
+                                            .normal
+                                            .copyWith(
+                                              fontSize: whenDevice(
+                                                context,
+                                                small: 15.0,
+                                                large: 12.0,
+                                                tablet: 25.0,
+                                              ),
+                                            ),
+                                      )
+                                    },
+                                  ))
                               : ConstrainedBox(
                                   constraints:
                                       BoxConstraints(maxHeight: height * 0.15),
@@ -208,7 +237,10 @@ class _FlashCardBackState extends State<FlashCardBack>
                               context,
                               "flashcard_screen.confidence_interval",
                             ),
-                            style: medstyles.Style.of(context).font.medium.copyWith(
+                            style: medstyles.Style.of(context)
+                                .font
+                                .medium
+                                .copyWith(
                                   fontSize: whenDevice(
                                     context,
                                     large: 15,

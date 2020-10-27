@@ -90,17 +90,19 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
                   ? Center(
                       child: ProgressBar(),
                     )
-                  : Html(
-                      data: _htmlContent ?? "",
-                      style: {
-                        "html": Style.fromTextStyle(
-                          medstyles.Style.of(context)
-                              .font
-                              .normal
-                              .copyWith(fontSize: 20),
-                        )
-                      },
-                    ),
+                  : Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
+                      child: Html(
+                        data: _htmlContent ?? "",
+                        style: {
+                          "html": Style.fromTextStyle(
+                            medstyles.Style.of(context)
+                                .font
+                                .normal
+                                .copyWith(fontSize: 20),
+                          )
+                        },
+                      )),
             ])));
   }
 }
