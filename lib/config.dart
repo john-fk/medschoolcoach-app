@@ -44,18 +44,8 @@ abstract class Config {
   static const swagStore = "https://merch.medschoolcoach.com/";
 
   //Mixpanel
-  static const mixPanelToken = "858e8b0fcadb93fa00b51990d9fb2cd3";
-  static const mixPanelVideoEvent1 = "Video start";
-  static const mixPanelVideoEvent2 = "Video end";
-
-  static const mixPanelAppOpenEvent = "App open";
-  static const mixPanelQuestionAnsweredEvent = "Question Answered";
-  static const mixPanelFlashcardEvent = "Flashcard marked";
-  static const mixPanelUserRegisterEvent = "User Register";
-  static const mixPanelUserLoginEvent = "User Login";
-  static const mixPanelTutoringModalOpenEvent = "Tutoring modal open";
-  static const mixPanelTutoringButtonPushEvent =
-      "Tutoring request info button push";
+  static const devMixPanelToken = "37549a27ddcbbd8e91dbfa65c8cc35c4";
+  static const prodMixPanelToken = "858e8b0fcadb93fa00b51990d9fb2cd3";
 
   static bool showSwitch = false;
   static bool switchValue = false;
