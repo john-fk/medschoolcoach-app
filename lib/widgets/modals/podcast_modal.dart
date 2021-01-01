@@ -1,5 +1,5 @@
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/external_navigation_utils.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -36,25 +36,25 @@ void openPodcastModal(BuildContext context, String source) {
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastApple,
-                  () => _openPodcast(
+              () => _openPodcast(
                   Config.applePodcastUrl, context, "Apple", _analyticsProvider),
             ),
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastGoogle,
-                  () => _openPodcast(Config.googlePodcastUrl, context, "Google",
+              () => _openPodcast(Config.googlePodcastUrl, context, "Google",
                   _analyticsProvider),
             ),
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastSpotify,
-                  () => _openPodcast(Config.spotifyPodcastUrl, context, "Spotify",
+              () => _openPodcast(Config.spotifyPodcastUrl, context, "Spotify",
                   _analyticsProvider),
             ),
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastSticher,
-                  () => _openPodcast(Config.sticherPodcastUrl, context, "Sticher",
+              () => _openPodcast(Config.sticherPodcastUrl, context, "Sticher",
                   _analyticsProvider),
             ),
           ],

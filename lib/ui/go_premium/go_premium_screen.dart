@@ -18,6 +18,10 @@ enum Plan {
 }
 
 class GoPremiumScreen extends StatefulWidget {
+  final String source;
+
+  const GoPremiumScreen(this.source);
+
   @override
   _GoPremiumScreenState createState() => _GoPremiumScreenState();
 }
@@ -30,9 +34,8 @@ class _GoPremiumScreenState extends State<GoPremiumScreen> {
 
   @override
   void initState() {
-    //TODO:Need to find the source screen.
     _analyticsProvider.logScreenView(AnalyticsConstants.screenGoPremium,
-        AnalyticsConstants.screenHome);
+        widget.source);
     super.initState();
   }
 

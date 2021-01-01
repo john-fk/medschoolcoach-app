@@ -13,11 +13,13 @@ enum LockedFeature {
 class GlobalProgressWidgetLockedCell extends StatelessWidget {
   final LockedFeature lockedFeature;
   final double iconHeight;
+  final String source;
 
   const GlobalProgressWidgetLockedCell({
     Key key,
     @required this.lockedFeature,
     @required this.iconHeight,
+    @required this.source,
   }) : super(key: key);
 
   @override
@@ -31,7 +33,8 @@ class GlobalProgressWidgetLockedCell extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     return InkWellObject(
       borderRadius: BorderRadius.circular(10),
-      onTap: () => Navigator.of(context).pushNamed(Routes.goPremium),
+      onTap: () =>
+          Navigator.of(context).pushNamed(Routes.goPremium, arguments: source),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: width * 0.05,

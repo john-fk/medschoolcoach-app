@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 
-  class FullscreenVideo extends StatelessWidget {
+class FullscreenVideo extends StatelessWidget {
   final bool loading;
   final CustomVideoController customVideoController;
   final VoidCallback closeFullscreenVideo;

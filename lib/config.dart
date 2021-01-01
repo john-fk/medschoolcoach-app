@@ -44,7 +44,7 @@ abstract class Config {
   static const swagStore = "https://merch.medschoolcoach.com/";
 
   //Mixpanel
-  static const devMixPanelToken = "37549a27ddcbbd8e91dbfa65c8cc35c4";
+  static const devMixPanelToken = "ffc4cf07f263d73c70676fb24b32f917";
   static const prodMixPanelToken = "858e8b0fcadb93fa00b51990d9fb2cd3";
 
   static bool showSwitch = false;

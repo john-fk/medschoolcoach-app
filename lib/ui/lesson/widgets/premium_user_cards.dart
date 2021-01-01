@@ -54,7 +54,7 @@ class PremiumUserCards extends StatelessWidget {
                 SizedBox(width: 5),
                 Icon(
                   Icons.star,
-                   color: Style.of(context).colors.premium,
+                  color: Style.of(context).colors.premium,
                   size: 15,
                 ),
               ],

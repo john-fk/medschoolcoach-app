@@ -135,6 +135,7 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
         : GlobalProgressWidgetLockedCell(
             iconHeight: iconHeight,
             lockedFeature: LockedFeature.Questions,
+            source: widget.source,
           );
   }
 
@@ -166,6 +167,7 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
         : GlobalProgressWidgetLockedCell(
             iconHeight: iconHeight,
             lockedFeature: LockedFeature.Flashcards,
+            source: widget.source
           );
   }
 

@@ -162,7 +162,7 @@ abstract class Routes {
         );
       case goPremium:
         return FadeRoute(
-          page: GoPremiumScreen(),
+          page: GoPremiumScreen(settings.arguments),
         );
       case profile:
         return FadeRoute(
