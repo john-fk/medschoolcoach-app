@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/models/answers_summary.dart';
 import 'package:Medschoolcoach/utils/api/models/question.dart';
@@ -46,12 +48,23 @@ class QuestionSummaryScreen extends StatefulWidget {
 
 class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
   final _apiServices = Injector.appInstance.getDependency<ApiServices>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   bool _loading = true;
   List<Question> _questions;
 
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenQuestionSummary,
+        AnalyticsConstants.screenMultipleChoiceQuestion,
+        params: {
+          AnalyticsConstants.keyCorrectAnswers:
+              widget.arguments.correctAnswers.toString(),
+          AnalyticsConstants.keyWrongAnswers:
+              widget.arguments.wrongAnswers.toString()
+        });
     fetchData();
   }
 

@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/ui/home/home_section.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
@@ -117,6 +118,7 @@ class GetStarted extends StatelessWidget {
   void _goToSchedule(BuildContext context) {
     Navigator.of(context).pushNamed(
       Routes.schedule,
+      arguments: AnalyticsConstants.screenHome
     );
   }
 }

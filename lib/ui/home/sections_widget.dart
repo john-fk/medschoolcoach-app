@@ -12,11 +12,13 @@ import 'home_section.dart';
 class SectionsWidget extends StatelessWidget {
   final RepositoryResult sectionsResult;
   final String sectionTitle;
+  final String source;
 
   const SectionsWidget({
     Key key,
     this.sectionsResult,
     this.sectionTitle,
+    this.source,
   }) : super(key: key);
 
   @override
@@ -49,6 +51,7 @@ class SectionsWidget extends StatelessWidget {
                 height: _calculateHeight(context),
                 child: CategoryCell(
                   section: sectionsList.first,
+                  source: source
                 ),
               )
             ],
@@ -65,7 +68,7 @@ class SectionsWidget extends StatelessWidget {
             children: sectionsList
                 .skip(1)
                 .map(
-                  (section) => CategoryCell(section: section),
+                  (section) => CategoryCell(section: section, source: source),
                 )
                 .toList(),
           ),

@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/ui/slidable_cell/slidable_cell.dart';
 import 'package:Medschoolcoach/utils/api/models/dashboard_schedule.dart';
@@ -24,8 +26,11 @@ class _HomeScheduleVideo {
 }
 
 class HomeSchedule extends StatefulWidget {
-  const HomeSchedule({
+  final AnalyticsProvider analyticsProvider;
+
+  HomeSchedule({
     Key key,
+    this.analyticsProvider
   }) : super(key: key);
 
   @override
@@ -145,15 +150,10 @@ class _HomeScheduleState extends State<HomeSchedule> {
                           videosToDisplay[index].video.favourite ?? false,
                       topicId: videosToDisplay[index].video.topicId,
                     ),
-                    onTap: () { _isToggled ?
-                      Navigator.of(context).pushNamed(
-                        Routes.lesson,
-                        arguments: LessonVideoScreenArguments(
-                          videos: videos,
-                          order: videosToDisplay[index].index,
-                          topicId: videosToDisplay[index].video.topicId,
-                        ),
-                      ) : _doNothing();
+                    onTap: () {
+                      _isToggled
+                          ? _navigateToLessonVideoScreen(videos, index)
+                          : _doNothing();
                     },
                     onBookmarkTap: () {
                       _toggleBookmark(index);
@@ -168,6 +168,27 @@ class _HomeScheduleState extends State<HomeSchedule> {
     );
   }
 
+  void _navigateToLessonVideoScreen(List<Video> videos, int index) {
+    if (videos!=null) {
+      widget.analyticsProvider.logEvent(AnalyticsConstants.tapLesson,
+          params: widget.analyticsProvider.getVideoParam(
+              videosToDisplay[index].video.id,
+              videosToDisplay[index].video.name,
+              additionalParams: {
+                AnalyticsConstants.keySource: AnalyticsConstants.screenHome
+              }));
+    }
+    Navigator.of(context).pushNamed(
+      Routes.lesson,
+      arguments: LessonVideoScreenArguments(
+          videos: videos,
+          order: videosToDisplay[index].index,
+          topicId: videosToDisplay[index].video.topicId,
+          source: AnalyticsConstants.screenHome
+      ),
+    );
+  }
+
   Padding _goToScheduleButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -177,9 +198,14 @@ class _HomeScheduleState extends State<HomeSchedule> {
           "home_screen.see_full_schedule_button",
         ),
         onPressed: () {
+          widget.analyticsProvider.logEvent(
+              AnalyticsConstants.tapSeeFullSchedule, params: {
+            AnalyticsConstants.keySource: AnalyticsConstants.screenHome
+          });
           Navigator.pushNamed(
             context,
             Routes.schedule,
+            arguments: AnalyticsConstants.screenHome
           );
         },
       ),

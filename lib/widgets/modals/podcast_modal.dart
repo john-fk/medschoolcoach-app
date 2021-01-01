@@ -1,11 +1,20 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/external_navigation_utils.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/inkwell_image/inkwell_image.dart';
 import 'package:flutter/material.dart';
+import 'package:injector/injector.dart';
 
-void openPodcastModal(BuildContext context) {
+void openPodcastModal(BuildContext context, String source) {
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
+  _analyticsProvider.logEvent(AnalyticsConstants.screenPodcastModal,
+      params: {AnalyticsConstants.keySource: source});
+
   showModalBottomSheet<void>(
     isScrollControlled: true,
     backgroundColor: Style.of(context).colors.background,
@@ -27,22 +36,26 @@ void openPodcastModal(BuildContext context) {
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastApple,
-              () => _openPodcast(Config.applePodcastUrl, context),
+                  () => _openPodcast(
+                  Config.applePodcastUrl, context, "Apple", _analyticsProvider),
             ),
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastGoogle,
-              () => _openPodcast(Config.googlePodcastUrl, context),
+                  () => _openPodcast(Config.googlePodcastUrl, context, "Google",
+                  _analyticsProvider),
             ),
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastSpotify,
-              () => _openPodcast(Config.spotifyPodcastUrl, context),
+                  () => _openPodcast(Config.spotifyPodcastUrl, context, "Spotify",
+                  _analyticsProvider),
             ),
             _buildElement(
               context,
               Style.of(context).pngAsset.podcastSticher,
-              () => _openPodcast(Config.sticherPodcastUrl, context),
+                  () => _openPodcast(Config.sticherPodcastUrl, context, "Sticher",
+                  _analyticsProvider),
             ),
           ],
         ),
@@ -51,7 +64,10 @@ void openPodcastModal(BuildContext context) {
   );
 }
 
-void _openPodcast(String url, BuildContext context) {
+void _openPodcast(String url, BuildContext context, String podCast,
+    AnalyticsProvider analyticsProvider) {
+  analyticsProvider.logEvent(AnalyticsConstants.tapPodcast,
+      params: {"podcast": podCast, "url": url});
   Navigator.of(context).pop();
   ExternalNavigationUtils.openWebsite(url);
 }

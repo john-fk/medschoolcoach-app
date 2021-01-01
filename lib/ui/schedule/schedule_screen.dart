@@ -1,6 +1,7 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
-
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/ui/schedule/widgets/schedule_picker.dart';
 import 'package:Medschoolcoach/ui/slidable_cell/slidable_cell.dart';
@@ -26,6 +27,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 
 class ScheduleScreen extends StatefulWidget {
+  final String source;
+
+  const ScheduleScreen(this.source);
   @override
   _ScheduleScreenState createState() => _ScheduleScreenState();
 }
@@ -33,6 +37,8 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final ScheduleRepository _scheduleRepository =
       Injector.appInstance.getDependency<ScheduleRepository>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   ScrollController _scrollController = ScrollController();
   bool _shouldShowSchedule = false;
@@ -48,6 +54,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenSchedule,
+        widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => setScheduleInfo(),
     );
@@ -148,6 +156,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 pickingSchedule: !_shouldShowSchedule || _completed,
                 startSchedule: _startSchedule,
                 currentScheduleLength: _days?.length,
+                analyticsProvider: _analyticsProvider
               ),
             ),
           ],
@@ -218,7 +227,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   //this is part of the hack to make sure the favorte attribute is updated correctly in the topic for the LessonVideoScreen
-  void _toggleBookmark(int index)  {
+  void _toggleBookmark(int index) {
     _isToggled = false;
     final videos = SuperStateful.of(context).videosScheduleList;
     videos[index].favourite = !videos[index].favourite;
@@ -250,13 +259,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 pickingSchedule: !_shouldShowSchedule || _completed,
                 startSchedule: _startSchedule,
                 currentScheduleLength: _days?.length,
+                analyticsProvider: _analyticsProvider
               ),
             );
           } else {
             return SlidableCell(
               successCallback: ({bool watched}) async {
                 setState(() {
-                  if(watched) {
+                  if (watched) {
                     videos[index].progress.percentage = 100;
                   } else {
                     videos[index].progress.percentage = 0;
@@ -285,15 +295,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   bookmarked: videos[index].favourite ?? false,
                   topicId: videos[index].topicId,
                 ),
-                onTap: () { _isToggled ?
-                  Navigator.of(context).pushNamed(
-                    Routes.lesson,
-                    arguments: LessonVideoScreenArguments(
-                      videos: videos,
-                      order: index,
-                      topicId: videos[index].topicId,
-                    ),
-                  ) : _doNothing();
+                onTap: () {
+                  _isToggled
+                      ? _navigateToLessonVideoScreen(videos, index)
+                      : _doNothing();
                 },
                 onBookmarkTap: () {
                   _toggleBookmark(index);
@@ -304,6 +309,27 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         },
       ),
     );
+  }
+
+  void _logAnalytics(String event, Video video) {
+    _analyticsProvider.logEvent(event,
+        params: _analyticsProvider.getVideoParam(video.id, video.name,
+            additionalParams: {
+              AnalyticsConstants.keySource: AnalyticsConstants.screenSchedule
+            }));
+  }
+
+  void _navigateToLessonVideoScreen(List<Video> videos, int index) {
+    Navigator.of(context).pushNamed(
+      Routes.lesson,
+      arguments: LessonVideoScreenArguments(
+          videos: videos,
+          order: index,
+          topicId: videos[index].topicId,
+          source: AnalyticsConstants.screenSchedule),
+    );
+
+    _logAnalytics(AnalyticsConstants.tapLesson, videos[index]);
   }
 
   Padding _buildDatesList() {
@@ -333,6 +359,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               _fetchSingleSchedule(
                 day: _days[index].day,
               );
+              _analyticsProvider.logEvent(AnalyticsConstants.tapScheduleDay,
+                  params: {AnalyticsConstants.keySelectedDay: index + 1});
             },
           ),
           itemCount: _days.length,
@@ -457,9 +485,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     if (_shouldShowSchedule) {
       _showConfirmationDialog(days);
     } else {
-      Navigator.pop(context);
-      await _sendStartScheduleRequest(days);
+      await _startScheduleRequest(days);
     }
+  }
+
+  Future<void> _startScheduleRequest(int days) async {
+    _analyticsProvider
+        .logEvent(AnalyticsConstants.tapChangeSchedule, params: {"days": days});
+    Navigator.pop(context);
+    await _sendStartScheduleRequest(days);
   }
 
   Future _sendStartScheduleRequest(int days) async {
@@ -539,7 +573,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }) async {
     setState(() {
       _singleScheduleError = null;
-      if(showProgressBar) {
+      if (showProgressBar) {
         _loading = true;
       }
     });
@@ -580,8 +614,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 context,
                 "general.cancel",
               ),
-              onTap: () => {
-                Navigator.pop(context),
+              onTap: () {
+                _analyticsProvider.logEvent(
+                    AnalyticsConstants.modalShouldChangeSchedule,
+                    params: {"action": "cancel"});
+                Navigator.pop(context);
               },
             ),
             DialogActionData(
@@ -590,9 +627,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 "general.continue",
               ),
               onTap: () async {
+                _analyticsProvider.logEvent(
+                    AnalyticsConstants.modalShouldChangeSchedule,
+                    params: {"action": "continue"});
                 Navigator.pop(context);
-                Navigator.pop(context);
-                await _sendStartScheduleRequest(days);
+                await _startScheduleRequest(days);
               },
             ),
           ],

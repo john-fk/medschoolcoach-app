@@ -1,3 +1,6 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/repository_utils.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -18,9 +21,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../config.dart';
 
 class ReferFriendScreen extends StatefulWidget {
+  final String source;
+
+  const ReferFriendScreen(this.source);
+
   @override
   _ReferFriendScreenState createState() => _ReferFriendScreenState();
 }
@@ -30,10 +36,19 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
   final _surnameController = TextEditingController();
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   RepositoryErrorResult _error;
   bool _loading = false;
   bool _autovalidate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenReferFriend,
+        widget.source);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -220,6 +235,12 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
         _error = RepositoryUtils.handleRepositoryError<void>(result);
       });
     }
+
+    _analyticsProvider
+        .logEvent(AnalyticsConstants.tapSubmitInviteFriend, params: {
+      AnalyticsConstants.keyIsSuccess: _error == null,
+      AnalyticsConstants.keyError: _error?.error?.toString()
+    });
   }
 
   Future _showSuccessDialog() {

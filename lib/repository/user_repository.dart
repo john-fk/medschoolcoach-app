@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/cache/cache.dart';
 import 'package:Medschoolcoach/repository/cache/map_chache.dart';
@@ -27,7 +28,6 @@ import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
 
 const _rateLimiterKey = "userKey";
 const _profileUserLimiterKey = "profileUserKey";
@@ -46,7 +46,7 @@ class UserRepository implements Repository {
   final BookmarksRepository _bookmarksRepository;
   final QuestionsRepository _questionsRepository;
   final StatisticsRepository _statisticsRepository;
-  final Mixpanel _mixpanel;
+  final AnalyticsProvider _analyticsProvider;
   final FirebaseAnalytics _firebaseAnalytics;
 
   UserRepository(
@@ -62,7 +62,7 @@ class UserRepository implements Repository {
       this._bookmarksRepository,
       this._questionsRepository,
       this._statisticsRepository,
-      this._mixpanel,
+      this._analyticsProvider,
       this._firebaseAnalytics,
       );
 
@@ -87,7 +87,6 @@ class UserRepository implements Repository {
     );
 
     if (response is SuccessResponse<LoginResponse>) {
-      _logLoginEvent(userEmail);
       _setFirebaseUserEmailProperty(userEmail);
       userLoggingEmail = userEmail;
 
@@ -141,7 +140,6 @@ class UserRepository implements Repository {
       testDate: testDate,*/
     );
     if (registerResponse is SuccessResponse<void>) {
-      _logRegisterEvent(userEmail);
       final loginResponse = await login(
         userEmail: userEmail,
         password: password,
@@ -159,19 +157,6 @@ class UserRepository implements Repository {
         );
       }
     }
-  }
-
-  void _logRegisterEvent(String userEmail) {
-
-    _mixpanel.track(Config.mixPanelUserRegisterEvent, {
-      "\$email": userEmail,
-    });
-  }
-
-  void _logLoginEvent(String userEmail) {
-    _mixpanel.track(Config.mixPanelUserLoginEvent, {
-      "\$email": userEmail,
-    });
   }
 
   void _setFirebaseUserEmailProperty(String userEmail) {
@@ -233,15 +218,15 @@ class UserRepository implements Repository {
   }
 
   Future _identifyUser(SuccessResponse<Auth0UserData> userResponse) async {
-    await _mixpanel.identify(userResponse.body.sub);
-    await _mixpanel.identifyPeople(userResponse.body.sub);
+    await _analyticsProvider.identify(userResponse.body.sub);
+    await _analyticsProvider.identifyPeople(userResponse.body.sub);
     await _setEmail(userResponse);
     // result = _mixpanel.identy...
     // print(result + result1 + result2);
   }
 
   Future _setEmail(SuccessResponse<Auth0UserData> userResponse) async {
-    return await _mixpanel.setPeopleProperties(<String, String>{
+    return await _analyticsProvider.setPeopleProperties(<String, String>{
       "\$email": userLoggingEmail,
     });
   }
@@ -326,7 +311,10 @@ class UserRepository implements Repository {
     }
   }
 
-  void logout() {
+  void logout() async  {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapSignOut, params: {
+      AnalyticsConstants.keyEmail: userLoggingEmail
+    });
     _apiServices.logout();
     _subjectRepository.clearCache();
     _sectionRepository.clearCache();

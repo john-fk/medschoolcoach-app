@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/another_lesson_widget.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/lesson_widget.dart';
@@ -28,6 +30,7 @@ class LessonScreenWidget extends StatefulWidget {
   final CustomVideoController customVideoController;
   final bool videoPlayerVisible;
   final VoidCallback makeVideoPlayerVisible;
+  final AnalyticsProvider analyticsProvider;
 
   const LessonScreenWidget({
     @required this.loading,
@@ -40,6 +43,7 @@ class LessonScreenWidget extends StatefulWidget {
     @required this.openFullscrenVideo,
     @required this.makeVideoPlayerVisible,
     @required this.videoPlayerVisible,
+    @required this.analyticsProvider,
   });
 
   @override
@@ -165,7 +169,7 @@ class _LessonScreenState extends State<LessonScreenWidget> {
                   sidePaddingValue: sidePaddingValue,
                   video: widget.video,
                   pausePlayer: () => widget.customVideoController?.pause(),
-                  resumePlayer: () => widget.customVideoController?.play(),
+                  resumePlayer: () => widget.customVideoController?.play()
                 )
               : RegularUserCards(),
           SizedBox(
@@ -242,9 +246,11 @@ class _LessonScreenState extends State<LessonScreenWidget> {
   }
 
   void _goToLessonScreen({@required bool forward}) {
+
     final order =
         forward ? widget.arguments.order + 1 : widget.arguments.order + -1;
     widget.updateProgress();
+    _logAnalytics(order, forward);
     if (widget.arguments.videos != null) {}
     Navigator.pushReplacementNamed(
       context,
@@ -257,7 +263,24 @@ class _LessonScreenState extends State<LessonScreenWidget> {
             ? widget.arguments.topicId
             : widget.arguments.videos[order].topicId,
         topicName: widget.arguments.topicName,
+        source: AnalyticsConstants.screenLessonVideo
       ),
     );
+  }
+
+  void _logAnalytics(int order, bool forward) {
+    var args = {
+      AnalyticsConstants.keySource: widget.arguments.source
+    };
+    if (widget.arguments.videos != null &&
+        widget.arguments.videos[order] != null) {
+      args[AnalyticsConstants.keyVideoId] = widget.arguments.videos[order].id;
+      args[AnalyticsConstants.keyVideoName] = widget.arguments.videos[order].name;
+    }
+    widget.analyticsProvider.logEvent(
+        forward
+            ? AnalyticsConstants.tapNextVideo
+            : AnalyticsConstants.tapPreviousVideo,
+        params: args);
   }
 }

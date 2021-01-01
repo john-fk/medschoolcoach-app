@@ -1,9 +1,12 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:injector/injector.dart';
 
 class WhiteboardNotesScreenData {
   final String url;
@@ -24,10 +27,15 @@ class WhiteboardNotesScreen extends StatefulWidget {
 
 class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
   final transformationController = TransformationController();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   String _url;
 
   @override
   void initState() {
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenWhiteBoardNotes,
+        AnalyticsConstants.screenLessonVideo);
     super.initState();
     _url = widget._whiteboardNotesScreenData.url;
   }

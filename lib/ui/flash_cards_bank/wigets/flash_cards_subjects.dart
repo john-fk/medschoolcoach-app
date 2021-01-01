@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/utils/api/models/setting.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
@@ -20,9 +22,10 @@ class SubjectAndSetting {
 }
 
 class FlashCardsSubjects extends StatelessWidget {
-  FlashCardsSubjects({
-    Key key,
-  }) : super(key: key);
+
+  final AnalyticsProvider _analyticsProvider;
+
+  const FlashCardsSubjects(this._analyticsProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +77,15 @@ class FlashCardsSubjects extends StatelessWidget {
                     Routes.flashCard,
                     arguments: FlashcardsStackArguments(
                       subjectId: subjectWithSetting.subject.id,
+                      subjectName: subjectWithSetting.subject.name,
+                      source: AnalyticsConstants.screenFlashcardsBank
                     ),
                   );
+                  _analyticsProvider.logEvent(
+                      AnalyticsConstants.tapFlashcardsSubject, params: {
+                    "subject_id": subjectWithSetting.subject.id,
+                    "subject_name": subjectWithSetting.subject.name
+                  });
                 }
               },
             ),

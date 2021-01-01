@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/lesson/fullscren_video.dart';
-
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/video_player/custom_video_controller.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:injector/injector.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'lesson_screen_widget.dart';
@@ -20,11 +21,13 @@ class LessonVideoScreenArguments {
   final String topicName;
   final List<Video> videos;
   final int order;
+  final String source;
   bool fullScreenVideo;
 
   LessonVideoScreenArguments({
     @required this.order,
     @required this.topicId,
+    @required this.source,
     this.fullScreenVideo = false,
     this.topicName,
     this.videos,
@@ -49,6 +52,9 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
   Video _video;
   Topic _topic;
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -71,6 +77,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
                 openFullscrenVideo: _openFullscreenVideo,
                 makeVideoPlayerVisible: _makeVideoPlayerVisible,
                 videoPlayerVisible: _videoPlayerVisible,
+                analyticsProvider: _analyticsProvider
               ),
         bottomNavigationBar: widget.arguments.fullScreenVideo
             ? null
@@ -119,7 +126,11 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
       _topic = (result as RepositorySuccessResult<Topic>).data;
       _video = _getVideoFromTopic(_topic);
     }
-
+    _analyticsProvider.logEvent(AnalyticsConstants.screenLessonVideo,
+        params: _analyticsProvider.getVideoParam(_video.id, _video.name,
+            additionalParams: {
+              AnalyticsConstants.keySource: widget.arguments.source
+            }));
     if (widget.arguments.fullScreenVideo) _initializeVideo();
 
     setState(() {
@@ -159,6 +170,14 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
     setState(() {});
   }
 
+  void _logAnalyticsFullScreenVideo(bool isFullScreen) {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapVideoFullScreen,
+        params: _analyticsProvider.getVideoParam(_video.id, _video.name,
+            additionalParams: {
+              AnalyticsConstants.keyIsOn: isFullScreen.toString()
+            }));
+  }
+
   void _openFullscreenVideo() {
     if (widget.arguments.fullScreenVideo) return;
     setState(() {
@@ -169,6 +188,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+    _logAnalyticsFullScreenVideo(true);
   }
 
   void _closeFullscreenVideo() {
@@ -180,6 +200,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    _logAnalyticsFullScreenVideo(false);
   }
 
   Future<bool> _onWillPop() async {

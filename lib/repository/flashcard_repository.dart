@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/cache/cache.dart';
 import 'package:Medschoolcoach/repository/cache/map_chache.dart';
 import 'package:Medschoolcoach/repository/rate_limiter/rate_limiter.dart';
@@ -15,13 +16,17 @@ class FlashcardsStackArguments {
   final String videoId;
   final String topicId;
   final String subjectId;
+  final String subjectName;
   final FlashcardStatus status;
+  final String source;
 
   FlashcardsStackArguments({
     this.videoId,
     this.topicId,
     this.subjectId,
+    this.subjectName,
     this.status,
+    this.source
   });
 }
 

@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/models/milestones.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
@@ -21,13 +23,18 @@ class StatsView extends StatefulWidget {
 class _StatsViewState extends State<StatsView> {
   final ApiServices _apiServices =
       Injector.appInstance.getDependency<ApiServices>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   bool _loading = true;
   Badges _badges;
 
+
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenProfileMyStats,
+        AnalyticsConstants.screenProfile);
     _fetchData();
   }
 
@@ -39,6 +46,8 @@ class _StatsViewState extends State<StatsView> {
         children: <Widget>[
           GlobalProgressWidget(
             showHeader: false,
+            source: AnalyticsConstants.screenProfileMyStats,
+            analyticsProvider: _analyticsProvider
           ),
           SizedBox(
             height: 16,

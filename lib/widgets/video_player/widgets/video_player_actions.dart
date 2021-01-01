@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
@@ -272,6 +273,7 @@ class VideoPlayerActions extends StatelessWidget {
             : customController.lessonScreenArguments.videos[order].topicId,
         topicName: customController.lessonScreenArguments.topicName,
         fullScreenVideo: customController.lessonScreenArguments.fullScreenVideo,
+        source: AnalyticsConstants.screenVideoPlayer
       ),
     );
   }

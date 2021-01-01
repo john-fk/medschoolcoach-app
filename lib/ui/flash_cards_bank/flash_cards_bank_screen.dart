@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/flash_cards_bank/wigets/flash_cards_subjects.dart';
 import 'package:Medschoolcoach/ui/flash_cards_bank/wigets/review_by_status_widget.dart';
@@ -9,13 +11,21 @@ import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class FlashCardsBankScreen extends StatefulWidget {
+  final String source;
+
+  const FlashCardsBankScreen(this.source);
+
   @override
   _FlashCardsBankScreenState createState() => _FlashCardsBankScreenState();
 }
 
 class _FlashCardsBankScreenState extends State<FlashCardsBankScreen> {
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   RepositoryResult _result;
   bool _loading = false;
 
@@ -25,6 +35,8 @@ class _FlashCardsBankScreenState extends State<FlashCardsBankScreen> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchFlashcardsSections(),
     );
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenFlashcardsBank, widget.source);
   }
 
   Future<void> _fetchFlashcardsSections({bool forceApiRequest = false}) async {
@@ -97,7 +109,7 @@ class _FlashCardsBankScreenState extends State<FlashCardsBankScreen> {
           context,
           "flashcards_bank.pick_subject",
         ),
-        sectionWidget: FlashCardsSubjects(),
+        sectionWidget: FlashCardsSubjects(_analyticsProvider),
       ),
     );
   }
@@ -114,7 +126,7 @@ class _FlashCardsBankScreenState extends State<FlashCardsBankScreen> {
           context,
           "flashcards_bank.review_by_status",
         ),
-        sectionWidget: ReviewByStatusWidget(),
+        sectionWidget: ReviewByStatusWidget(_analyticsProvider),
       ),
     );
   }

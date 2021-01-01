@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -75,7 +76,7 @@ class NavigationBar extends StatelessWidget {
                   height: iconSize,
                   width: iconSize,
                 ),
-                onPressed: () => openTutoringModal(context),
+                onPressed: () => openTutoringModal(context, AnalyticsConstants.screenHome),
               ),
               Text(
                 FlutterI18n.translate(context, "navigation_bar.tutoring"),
@@ -187,7 +188,7 @@ class NavigationBar extends StatelessWidget {
   void _openScheduleScreen(BuildContext context) {
     if (page == NavigationPage.Schedule) return;
     runOnTap?.call();
-    Navigator.of(context).pushNamed(Routes.schedule);
+    Navigator.of(context).pushNamed(Routes.schedule, arguments: AnalyticsConstants.screenHome);
   }
 
   void _openMoreScreenOrClose(BuildContext context) {

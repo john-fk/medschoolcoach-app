@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
@@ -14,6 +16,7 @@ class QuestionAppBar extends StatefulWidget {
   final int currentQuestion;
   final int questionsSize;
   final String questionId;
+  final String stem;
   bool isBookmarked;
   VoidCallback onBookmarkTap;
 
@@ -22,6 +25,7 @@ class QuestionAppBar extends StatefulWidget {
     Key key,
     this.subTitle,
     this.currentQuestion,
+    this.stem,
     this.questionsSize,
     this.questionId,
     this.isBookmarked,
@@ -35,6 +39,8 @@ class QuestionAppBar extends StatefulWidget {
 class _QuestionAppBarState extends State<QuestionAppBar> {
   final QuestionsRepository _questionsRepository =
       Injector.appInstance.getDependency<QuestionsRepository>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -187,5 +193,12 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
     } else {
       widget.onBookmarkTap();
     }
+    _analyticsProvider.logEvent(initialValue
+        ? AnalyticsConstants.tapQuestionBookmarkRemove
+        : AnalyticsConstants.tapQuestionBookmarkAdd,
+        params: {
+          AnalyticsConstants.keyQuestionId: widget.questionId,
+          AnalyticsConstants.keyStem: widget.stem
+        });
   }
 }

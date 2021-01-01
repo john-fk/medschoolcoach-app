@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
-
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/models/search_result.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class SearchScreen extends StatefulWidget {
   final String searchPhrase;
@@ -31,14 +33,18 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _searchController = TextEditingController();
   final _searchInputFocusNode = FocusNode();
-  RepositoryResult<SearchResult> _repositoryResult;
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
+  RepositoryResult<SearchResult> _repositoryResult;
   bool _loading = false;
   bool _tooShortTextError = false;
 
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenSearch,
+        AnalyticsConstants.screenHome);
     if (widget.searchPhrase != null) {
       _searchController.text = widget.searchPhrase;
       WidgetsBinding.instance.addPostFrameCallback((_) => _search());
@@ -168,8 +174,15 @@ class _SearchScreenState extends State<SearchScreen> {
               arguments: LessonVideoScreenArguments(
                 order: videos[index].order,
                 topicId: videos[index].topicId,
+                source: AnalyticsConstants.screenSearch
               ),
             );
+
+            _analyticsProvider.logEvent(AnalyticsConstants.tapLesson,
+                params: _analyticsProvider.getVideoParam(
+                    videos[index].id, videos[index].name, additionalParams: {
+                  AnalyticsConstants.keySource: AnalyticsConstants.screenSearch
+                }));
           },
         ),
       );
@@ -198,6 +211,16 @@ class _SearchScreenState extends State<SearchScreen> {
           _repositoryResult = result;
         });
         _searchInputFocusNode.unfocus();
+        if (_repositoryResult is RepositorySuccessResult<SearchResult>) {
+          _analyticsProvider.logEvent(AnalyticsConstants.tapSearch, params: {
+            AnalyticsConstants.keySearchingTerm: _searchController.text,
+            AnalyticsConstants.keySearchResponseCount:
+                (_repositoryResult as RepositorySuccessResult<SearchResult>)
+                    .data
+                    .videos
+                    ?.length
+          });
+        }
       }
     }
   }

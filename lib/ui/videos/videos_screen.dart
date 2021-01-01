@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/home/sections_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
@@ -7,19 +9,29 @@ import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/search_screen_template/search_screen_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class VideosScreen extends StatefulWidget {
+  final String source;
+
+  const VideosScreen(this.source);
+
   @override
   _VideosScreenState createState() => _VideosScreenState();
 }
 
 class _VideosScreenState extends State<VideosScreen> {
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   RepositoryResult<List<Section>> _sectionsResult;
   bool _loading = false;
 
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenVideo,
+        widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchCategories(forceApiRequest: false),
     );
@@ -68,6 +80,7 @@ class _VideosScreenState extends State<VideosScreen> {
                 context,
                 "videos_screen.pick_category",
               ),
+              source: AnalyticsConstants.screenVideo,
             ),
     );
   }
