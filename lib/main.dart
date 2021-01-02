@@ -19,7 +19,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AnalyticsProvider _analyticsProvider = await AnalyticsProvider();
 
-  await _analyticsProvider.initialize(Config.devMixPanelToken);
+  await _analyticsProvider.initialize(Config.prodMixPanelToken);
   _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen);
 
   initializeDependencyInjection(

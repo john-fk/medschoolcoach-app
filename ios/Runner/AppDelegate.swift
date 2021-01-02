@@ -40,7 +40,7 @@ import UserNotifications
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-        Mixpanel.initialize(token: "ffc4cf07f263d73c70676fb24b32f917")
+        Mixpanel.initialize(token: "858e8b0fcadb93fa00b51990d9fb2cd3")
         let token = tokenParts.joined()
         let mixpanel = Mixpanel.mainInstance()
         mixpanel.people.addPushDeviceToken(deviceToken)
