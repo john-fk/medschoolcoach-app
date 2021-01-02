@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/ui/profile/buddies_view.dart';
@@ -11,6 +13,10 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final String source;
+
+  const ProfileScreen(this.source);
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -21,9 +27,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenProfile,
+        widget.source);
     _fetchAuth0UserData();
   }
 

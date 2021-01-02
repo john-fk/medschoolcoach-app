@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/topic_repository.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injector/injector.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
 import 'package:video_player/video_player.dart';
 
 enum VideoQuality { P360, P540, P720 }
@@ -42,7 +43,8 @@ class CustomVideoController {
       Injector.appInstance.getDependency<VideoRepository>();
   final TopicRepository _topicRepository =
       Injector.appInstance.getDependency<TopicRepository>();
-  final Mixpanel _mixPanel = Injector.appInstance.getDependency<Mixpanel>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
   final _storage = FlutterSecureStorage();
 
   bool _connectingToVideoResource = false;
@@ -62,6 +64,7 @@ class CustomVideoController {
     @required this.lessonScreenArguments,
     @required this.topicVideosCount,
   }) {
+    _logAnalyticsEvent(AnalyticsConstants.tapPlayVideo);
     if (video.commercial != null) commercial = true;
     _position = Duration(seconds: commercial ? 0 : video.progress.seconds ?? 0);
     _previousPosition = _position;
@@ -98,6 +101,8 @@ class CustomVideoController {
   void switchSubtitles() {
     subtitles = !subtitles;
     setState();
+    _logAnalyticsEvent(AnalyticsConstants.tapVideoCaptions,
+        additionalArgs: {AnalyticsConstants.keyIsOn: subtitles.toString()});
   }
 
   void switchVideoResource(VideoQuality newQuality) {
@@ -106,6 +111,10 @@ class CustomVideoController {
     videoPlaybackSpeed = VideoPlaybackSpeed.x1;
     setState();
     _connectToVideoResource();
+    _logAnalyticsEvent(AnalyticsConstants.tapVideoChangeQuality,
+        additionalArgs: {
+          AnalyticsConstants.keyQuality: describeEnum(videoQuality).toLowerCase()
+        });
   }
 
   void switchSpeed(VideoPlaybackSpeed newPlaybackSpeed) async {
@@ -113,6 +122,10 @@ class CustomVideoController {
     videoPlaybackSpeed = newPlaybackSpeed;
     setState();
     videoPlayerController.setSpeed(_getVideoSpeed(videoPlaybackSpeed));
+    _logAnalyticsEvent(AnalyticsConstants.tapVideoChangeSpeed,
+        additionalArgs: {
+      AnalyticsConstants.keySpeed: describeEnum(videoPlaybackSpeed).toLowerCase()
+    });
   }
 
   void _connectionTimeout() {
@@ -222,11 +235,17 @@ class CustomVideoController {
   }
 
   void play() {
-    if (!isVideoPlaying()) videoPlayerController.play();
+    if (!isVideoPlaying()) {
+      videoPlayerController.play();
+      _logAnalyticsEvent(AnalyticsConstants.tapPlayVideo);
+    }
   }
 
   void pause() {
-    if (isVideoPlaying()) videoPlayerController.pause();
+    if (isVideoPlaying()) {
+      videoPlayerController.pause();
+      _logAnalyticsEvent(AnalyticsConstants.tapPauseVideo);
+    }
   }
 
   Future<void> seekVideo({@required bool forward}) async {
@@ -244,6 +263,9 @@ class CustomVideoController {
     _isVideoSeeking = false;
     await videoPlayerController.play();
     setState();
+    _logAnalyticsEvent(forward
+        ? AnalyticsConstants.tapVideoSkip
+        : AnalyticsConstants.tapVideoRewind);
   }
 
   Future<void> seekTo({@required Duration position}) async {
@@ -279,7 +301,7 @@ class CustomVideoController {
         timerFlag = false;
       }
       if (!timerFlag && (_position.inSeconds - video.seconds).abs() < 10) {
-        _logMixPanelEndEvent();
+        _logAnalyticsEvent(AnalyticsConstants.eventVideoStop);
         timerFlag = true;
         Future.delayed(const Duration(milliseconds: 15000), () {
           timerFlag = false;
@@ -289,7 +311,7 @@ class CustomVideoController {
         timerFlag1 = false;
       }
       if (!timerFlag1 && _position.inSeconds < 10) {
-        _logMixPanelStartEvent();
+        _logAnalyticsEvent(AnalyticsConstants.eventVideoStart);
         timerFlag1 = true;
         Future.delayed(const Duration(milliseconds: 15000), () {
           timerFlag1 = false;
@@ -306,18 +328,13 @@ class CustomVideoController {
     }
   }
 
-  void _logMixPanelStartEvent() {
-    _mixPanel.track(Config.mixPanelVideoEvent1, {
-      "name": video.name,
-      "id": video.id,
-    });
-  }
+  void _logAnalyticsEvent(String event, {dynamic additionalArgs}) {
+    var args = _analyticsProvider.getVideoParam(video.id, video.name);
+    if (additionalArgs != null) {
+      args.addAll(additionalArgs);
+    }
 
-  void _logMixPanelEndEvent() {
-    _mixPanel.track(Config.mixPanelVideoEvent2, {
-      "name": video.name,
-      "id": video.id,
-    });
+    _analyticsProvider.logEvent(event, params: args);
   }
 
   void _bufferingTimeout() {

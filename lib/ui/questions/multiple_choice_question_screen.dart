@@ -1,4 +1,5 @@
-import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
@@ -7,7 +8,6 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
-import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
@@ -17,10 +17,10 @@ import 'package:Medschoolcoach/widgets/progrss_bar/button_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
 
 enum QuestionStatusType {
   newQuestions,
@@ -34,12 +34,14 @@ class MultipleChoiceQuestionScreenArguments {
   final String subjectId;
   final String videoId;
   final QuestionStatusType status;
+  final String source;
 
   MultipleChoiceQuestionScreenArguments({
     this.screenName,
     this.subjectId,
     this.videoId,
     this.status,
+    this.source,
   });
 }
 
@@ -72,7 +74,8 @@ class _MultipleChoiceQuestionScreenState
     extends State<MultipleChoiceQuestionScreen> {
   final _questionsRepository =
       Injector.appInstance.getDependency<QuestionsRepository>();
-  final Mixpanel _mixPanel = Injector.appInstance.getDependency<Mixpanel>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   final _listKey = GlobalKey<AnimatedListState>();
   final _animationDuration = Duration(
@@ -93,9 +96,26 @@ class _MultipleChoiceQuestionScreenState
   @override
   void initState() {
     super.initState();
+    _logScreenViewAnalytics();
     _fetchQuestions(
       forceApiRequest: true,
     );
+  }
+
+  void _logScreenViewAnalytics() {
+    Map<String, String> param;
+    if (widget.arguments.subjectId == null) {
+      param = {AnalyticsConstants.keyType: widget.arguments.screenName};
+    } else {
+      param = {
+        AnalyticsConstants.keySubjectId: widget.arguments.subjectId,
+        AnalyticsConstants.keySubjectName: widget.arguments.screenName
+      };
+    }
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenMultipleChoiceQuestion,
+        widget.arguments.source,
+        params: param);
   }
 
   @override
@@ -127,9 +147,13 @@ class _MultipleChoiceQuestionScreenState
                 questionId: _questionsList.isNotEmpty
                     ? _questionsList[_currentQuestionIndex].id
                     : "",
+                stem: _questionsList.isNotEmpty
+                    ? _questionsList[_currentQuestionIndex].stem
+                    : "",
                 isBookmarked: _favourite != null ? _favourite : _getFavourite(),
                 onBookmarkTap: () {
                   _favourite = !_favourite;
+
                 },
               ),
               Expanded(
@@ -189,6 +213,8 @@ class _MultipleChoiceQuestionScreenState
                             "question_screen.view_explanation",
                           ),
                           onPressed: () {
+                            _logQuestionEvent(
+                                AnalyticsConstants.tapViewExplanation);
                             openExplanationModal(
                               context: context,
                               explanationText:
@@ -207,6 +233,16 @@ class _MultipleChoiceQuestionScreenState
         ],
       ),
     );
+  }
+
+  void _logQuestionEvent(String event) {
+    if (_questionsList != null &&
+        _questionsList[_currentQuestionIndex] != null) {
+      _analyticsProvider.logEvent(event, params: {
+        "question_id": _questionsList[_currentQuestionIndex].id,
+        "stem": _questionsList[_currentQuestionIndex].stem
+      });
+    }
   }
 
   bool _getFavourite() {
@@ -258,9 +294,9 @@ class _MultipleChoiceQuestionScreenState
                                         biggerResponsiveFont(
                                       context,
                                       fontColor: FontColor.Content2,
-                                  fontWeight: FontWeight.bold,
-                                ))
-                              })),
+                                      fontWeight: FontWeight.bold,
+                                    ))
+                                  })),
                         ),
                         AnimatedList(
                           key: _listKey,
@@ -385,7 +421,7 @@ class _MultipleChoiceQuestionScreenState
       answer: _getAnswer(index),
     );
 
-    _logMixPanelEvent(index);
+    _logShowAnswersEvent(index);
 
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
     int answersLength = _answers.length - 1;
@@ -412,8 +448,8 @@ class _MultipleChoiceQuestionScreenState
     }
   }
 
-  void _logMixPanelEvent(int index) {
-    _mixPanel.track(Config.mixPanelQuestionAnsweredEvent, {
+  void _logShowAnswersEvent(int index) {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapQuestionAnswer, params: {
       "stem": _questionsList[_currentQuestionIndex].stem,
       "id": _questionsList[_currentQuestionIndex].id,
       "user_answer": _getAnswer(index),
@@ -437,6 +473,7 @@ class _MultipleChoiceQuestionScreenState
       _answers = [];
       _favourite = null;
     });
+    _logQuestionEvent(AnalyticsConstants.tapNextQuestion);
   }
 
   void _addListItem(int index) {
@@ -459,6 +496,7 @@ class _MultipleChoiceQuestionScreenState
         wrongAnswers: wrongAnswers,
       ),
     );
+    _logQuestionEvent(AnalyticsConstants.tapSummarize);
   }
 
   Future<void> _fetchQuestions({

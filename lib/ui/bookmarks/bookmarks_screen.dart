@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/api/models/bookmark.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
@@ -8,6 +10,7 @@ import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class BookmarksScreen extends StatefulWidget {
   @override
@@ -15,6 +18,9 @@ class BookmarksScreen extends StatefulWidget {
 }
 
 class _BookmarksScreenState extends State<BookmarksScreen> {
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   bool _loading = true;
   RepositoryErrorResult _error;
   List<Bookmark> _bookmarks;
@@ -22,6 +28,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenBookMarkedVideos,
+        AnalyticsConstants.screenMore);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchData(
         forceApiRequest: true,

@@ -1,13 +1,24 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/buttons/secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:injector/injector.dart';
 
 class ReferFriendCell extends StatelessWidget {
+  final String source;
+
+  const ReferFriendCell(this.source);
+
   @override
   Widget build(BuildContext context) {
+
+    final AnalyticsProvider analyticsProvider =
+        Injector.appInstance.getDependency<AnalyticsProvider>();
+
     final width = MediaQuery.of(context).size.width - 24;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -69,10 +80,17 @@ class ReferFriendCell extends StatelessWidget {
                     right: width * 0.05,
                     top: width * 0.05,
                   ),
-                  onPressed: () => Navigator.pushNamed(
+                  onPressed: () {
+                    Navigator.pushNamed(
                     context,
                     Routes.referFriend,
-                  ),
+                    arguments: source);
+                    analyticsProvider
+                        .logEvent(AnalyticsConstants.tapInviteFriend, params: {
+                      AnalyticsConstants.keySource:
+                          source
+                    });
+                  },
                   text: FlutterI18n.translate(
                     context,
                     "refer_friend_cell.button",

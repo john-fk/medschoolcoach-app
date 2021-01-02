@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -5,11 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 
 class NoMoreFlashcardsWidget extends StatelessWidget {
+
+  final AnalyticsProvider analyticsProvider;
+  final bool isVisible;
+
+  const NoMoreFlashcardsWidget({this.analyticsProvider, this.isVisible});
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
+    if (isVisible) {
+      analyticsProvider.logScreenView(AnalyticsConstants.screenNoMoreFlashcard,
+          AnalyticsConstants.screenFlashcards);
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

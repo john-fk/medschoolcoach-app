@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/go_premium/widgets/plan_box.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -7,6 +9,7 @@ import 'package:Medschoolcoach/widgets/cancel/cancel_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:injector/injector.dart';
 
 enum Plan {
   Month1,
@@ -15,12 +18,26 @@ enum Plan {
 }
 
 class GoPremiumScreen extends StatefulWidget {
+  final String source;
+
+  const GoPremiumScreen(this.source);
+
   @override
   _GoPremiumScreenState createState() => _GoPremiumScreenState();
 }
 
 class _GoPremiumScreenState extends State<GoPremiumScreen> {
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   Plan _plan = Plan.Month1;
+
+  @override
+  void initState() {
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenGoPremium,
+        widget.source);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

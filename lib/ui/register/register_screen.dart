@@ -1,4 +1,6 @@
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/ui/register/password_requirements.dart';
@@ -21,6 +23,10 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 
 class RegisterScreen extends StatefulWidget {
+  final String source;
+
+  const RegisterScreen(this.source);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -63,8 +69,13 @@ class _LoginScreenState extends State<RegisterScreen> {
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   void initState() {
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenRegister,
+        widget.source);
     _firstNameInputFocusNode = FocusNode();
     _lastNameInputFocusNode = FocusNode();
     _emailInputFocusNode = FocusNode();
@@ -449,7 +460,7 @@ class _LoginScreenState extends State<RegisterScreen> {
 */
 
   Widget _buildErrorMessage(BuildContext context) {
-    return _errorMessage.isNotEmpty && _errorMessage != null
+    return _errorMessage != null && _errorMessage.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.only(top: 16.0, bottom: 8),
             child: Center(
@@ -507,9 +518,15 @@ class _LoginScreenState extends State<RegisterScreen> {
             "register_screen.terms_of_service",
           ),
           recognizer: TapGestureRecognizer()
-            ..onTap = () => ExternalNavigationUtils.openWebsite(
-                  Config.termsOfUseUrl,
-                ),
+            ..onTap = () {
+              _analyticsProvider
+                  .logEvent(AnalyticsConstants.tapTermsAndConditions, params: {
+                AnalyticsConstants.keySource: AnalyticsConstants.screenRegister
+              });
+              ExternalNavigationUtils.openWebsite(
+                Config.termsOfUseUrl,
+              );
+            },
           style: _checkboxError
               ? normalResponsiveFont(context, fontColor: FontColor.Error)
                   .copyWith(decoration: TextDecoration.underline)
@@ -591,15 +608,21 @@ class _LoginScreenState extends State<RegisterScreen> {
         testDate: _testDateController.text);*/
 
     if (response is RepositorySuccessResult) {
+      _analyticsProvider.logAccountManagementEvent(AnalyticsConstants.tapSignUp,
+          _emailController.text, true, null);
       _setProgressBarVisibility(
         visible: false,
         errorMessage: "",
       );
       _showSuccessDialog();
     } else {
+      //TODO: errorData is null in response - (Tried to signup with existing user's emailId)
+      final errorMessage = _getErrorMessage(response);
+      _analyticsProvider.logAccountManagementEvent(AnalyticsConstants.tapSignUp,
+          _emailController.text, false, errorMessage);
       _setProgressBarVisibility(
         visible: false,
-        errorMessage: _getErrorMessage(response),
+        errorMessage: errorMessage,
       );
     }
   }
@@ -644,6 +667,7 @@ class _LoginScreenState extends State<RegisterScreen> {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   Routes.home,
                   (_) => false,
+                  arguments: AnalyticsConstants.screenRegister
                 )
               },
             ),

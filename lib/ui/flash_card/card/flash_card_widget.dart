@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/ui/flash_card/screen/flash_card_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -22,6 +24,7 @@ class FlashCardWidget extends StatefulWidget {
   final String progress;
   final SetFront setFront;
   final bool front;
+  final AnalyticsProvider analyticsProvider;
 
   static const flashCardWidthFactor = 0.75;
   static const flashCardHeightFactor = 0.75;
@@ -35,6 +38,7 @@ class FlashCardWidget extends StatefulWidget {
     @required this.progress,
     @required this.front,
     @required this.setFront,
+    @required this.analyticsProvider
   }) : super(key: key);
 
   @override
@@ -186,13 +190,18 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       _swipeDissmis = true;
     });
 
-    _nextFlashcard(increase: direction == DismissDirection.endToStart);
+    _nextFlashcard(
+        increase: direction == DismissDirection.endToStart);
   }
 
   void _nextFlashcard({bool increase = true}) async {
     if (_changeAnimationController.isAnimating) return;
 
     _updateFlashcardStatus();
+
+    _logEvents(_swipeDissmis
+        ? AnalyticsConstants.swipeFlashcard
+        : AnalyticsConstants.tapNextFlashcard);
 
     if (_swipeDissmis) {
       widget.changeCardIndex(increase: increase);
@@ -222,12 +231,21 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       });
     _flipAnimationController.forward();
     _changeSideContent();
+    _logEvents(AnalyticsConstants.tapFlashcardFlipBackward);
   }
 
   void _switchSidesReverse() {
     if (_flipAnimationController.isAnimating) return;
     _flipAnimationController.reverse();
     _changeSideContent();
+    _logEvents(AnalyticsConstants.tapFlashcardFlipForward);
+  }
+
+  void _logEvents(String event) {
+    widget.analyticsProvider.logEvent(event, params: {
+      "id": widget.flashCard.id,
+      "front": widget.flashCard.front
+    });
   }
 
   void _changeSideContent() async {

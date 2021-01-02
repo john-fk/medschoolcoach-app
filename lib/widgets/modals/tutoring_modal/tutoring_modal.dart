@@ -1,4 +1,5 @@
-import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
@@ -11,7 +12,6 @@ import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TutoringModal extends StatefulWidget {
@@ -24,7 +24,8 @@ class TutoringModal extends StatefulWidget {
 }
 
 class _TutoringModalState extends State<TutoringModal> {
-  final Mixpanel _mixPanel = Injector.appInstance.getDependency<Mixpanel>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   bool _loading = false;
   static const _anotherTimeSuccessCode = "412";
@@ -126,7 +127,10 @@ class _TutoringModalState extends State<TutoringModal> {
         ),
         color: Style.of(context).colors.premium,
         onPressed: () async {
-          _mixPanel.track(Config.mixPanelTutoringButtonPushEvent);
+          _analyticsProvider.logEvent(AnalyticsConstants.tapRequestInfo,
+              params: {
+                AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
+              });
           _sendRequestInfo();
         },
         child: Text(
@@ -197,6 +201,8 @@ class _TutoringModalState extends State<TutoringModal> {
 
   void _openPhoneNumber() {
     launch("tel://$_supportPhoneNumber");
+    _analyticsProvider.logEvent(AnalyticsConstants.tapRequestInfoCallUs,
+        params: {AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring});
   }
 
   Future _showErrorDialog() {
@@ -218,9 +224,10 @@ class _TutoringModalState extends State<TutoringModal> {
   }
 }
 
-void openTutoringModal(BuildContext context) {
-  final Mixpanel _mixPanel = Injector.appInstance.getDependency<Mixpanel>();
-  _mixPanel.track(Config.mixPanelTutoringModalOpenEvent);
+void openTutoringModal(BuildContext context, String source) {
+  final AnalyticsProvider analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+  analyticsProvider.logScreenView(AnalyticsConstants.screenTutoring, source);
 
   showModalBottomSheet<void>(
     isScrollControlled: true,

@@ -1,14 +1,17 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
+import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:Medschoolcoach/utils/super_state/super_state.dart';
-import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class LectureNotesScreenData {
   final String videoId;
@@ -32,9 +35,14 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
   String _htmlContent = "";
   bool _loading = true;
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenLectureNotes,
+        AnalyticsConstants.screenLessonVideo);
     WidgetsBinding.instance.addPostFrameCallback(
           (_) => _fetchLectureNote(
         forceApiRequest: true,

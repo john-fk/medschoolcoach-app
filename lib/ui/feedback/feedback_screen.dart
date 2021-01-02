@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/repository_utils.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -28,6 +30,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
   final _formKey = GlobalKey<FormState>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   bool _autoValidate = false;
   bool _loading = false;
@@ -37,6 +41,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   bool _featureCheckbox = false;
   bool _questionCheckbox = false;
   bool _contentCheckbox = false;
+
+  @override
+  void initState() {
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenFeedback, AnalyticsConstants.screenSettings);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -259,6 +270,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         });
         await _showSuccessDialog();
         Navigator.of(context).pop();
+       _logFeedbackAnalytics();
       } else {
         setState(() {
           _loading = false;
@@ -275,6 +287,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         _autoValidate = true;
       });
     }
+  }
+
+  void _logFeedbackAnalytics() {
+    if (_getCheckboxStrings() == null) return;
+    String errorMessages = _getCheckboxStrings().join(",");
+    _analyticsProvider.logEvent(AnalyticsConstants.tapSendFeedback, params: {
+      AnalyticsConstants.keyType: errorMessages,
+      AnalyticsConstants.keyError: _messageController.text
+    });
   }
 
   Future _showSuccessDialog() {

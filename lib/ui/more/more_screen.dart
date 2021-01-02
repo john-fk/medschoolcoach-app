@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/utils/external_navigation_utils.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
@@ -22,6 +24,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 
 class MoreScreen extends StatefulWidget {
+
   @override
   _MoreScreenState createState() => _MoreScreenState();
 }
@@ -30,9 +33,19 @@ class _MoreScreenState extends State<MoreScreen> {
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   Future<bool> onWillPop() async {
     if (Platform.isAndroid) SystemNavigator.pop();
     return false;
+  }
+
+  @override
+  void initState() {
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenMore,
+        AnalyticsConstants.screenHome);
+    super.initState();
   }
 
   @override
@@ -57,6 +70,7 @@ class _MoreScreenState extends State<MoreScreen> {
                     onTap: () {
                       Navigator.of(context).pushNamed(
                         Routes.videos,
+                        arguments: AnalyticsConstants.screenMore
                       );
                     },
                   ),
@@ -69,6 +83,7 @@ class _MoreScreenState extends State<MoreScreen> {
                     onTap: () {
                       Navigator.of(context).pushNamed(
                         Routes.flashCardsMenu,
+                        arguments: AnalyticsConstants.screenMore
                       );
                     },
                   ),
@@ -78,7 +93,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       context,
                       "common.tutoring",
                     ),
-                    onTap: () => openTutoringModal(context),
+                    onTap: () => openTutoringModal(context, AnalyticsConstants.screenMore),
                   ),
                   MorePageListCell(
                     iconAssetName: Style.of(context).svgAsset.questions,
@@ -89,6 +104,7 @@ class _MoreScreenState extends State<MoreScreen> {
                     onTap: () {
                       Navigator.of(context).pushNamed(
                         Routes.questionBank,
+                        arguments: AnalyticsConstants.screenMore
                       );
                     },
                   ),
@@ -147,7 +163,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).pushNamed(Routes.profile);
+                      Navigator.of(context).pushNamed(Routes.profile,
+                          arguments: AnalyticsConstants.screenMore);
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -228,7 +245,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       "more_screen.facebook",
                     ),
                     onTap: () =>
-                        ExternalNavigationUtils.openWebsite(Config.facebook),
+                        _openSocialMediaWebsite(Config.facebook),
                     svgAsset: false,
                   ),
                   MorePageListCell(
@@ -238,10 +255,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       "more_screen.instagram",
                     ),
                     onTap: () =>
-                        ExternalNavigationUtils.openWebsite(Config.instagram),
+                    _openSocialMediaWebsite(Config.instagram),
                     svgAsset: false,
                   ),
-                  ReferFriendCell(),
+                  ReferFriendCell(AnalyticsConstants.screenMore),
                 ],
               ),
             ),
@@ -249,6 +266,12 @@ class _MoreScreenState extends State<MoreScreen> {
         ),
       ),
     );
+  }
+
+  void _openSocialMediaWebsite(String url) {
+    ExternalNavigationUtils.openWebsite(url);
+    _analyticsProvider.logEvent(AnalyticsConstants.tapSocialMedia,
+        params: {AnalyticsConstants.keyUrl: url});
   }
 
   List<Widget> _buildYoutubeLinks() {
@@ -260,7 +283,7 @@ class _MoreScreenState extends State<MoreScreen> {
           context,
           "more_screen.link_mnemonics",
         ),
-        onTap: () => ExternalNavigationUtils.openWebsite(
+        onTap: () => _openSocialMediaWebsite(
           Config.mnemonicsUrl,
         ),
       ),
@@ -271,7 +294,7 @@ class _MoreScreenState extends State<MoreScreen> {
           context,
           "more_screen.link_flashcards",
         ),
-        onTap: () => ExternalNavigationUtils.openWebsite(
+        onTap: () => _openSocialMediaWebsite(
           Config.flashcardsUrl,
         ),
       ),
@@ -282,7 +305,7 @@ class _MoreScreenState extends State<MoreScreen> {
           context,
           "more_screen.link_secrets",
         ),
-        onTap: () => ExternalNavigationUtils.openWebsite(
+        onTap: () => _openSocialMediaWebsite(
           Config.secretsUrl,
         ),
       ),

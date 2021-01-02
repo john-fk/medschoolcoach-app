@@ -72,7 +72,7 @@ abstract class Routes {
         );
       case register:
         return MaterialPageRoute<void>(
-          builder: (_) => RegisterScreen(),
+          builder: (_) => RegisterScreen(settings.arguments),
         );
       case forgotPassword:
         return MaterialPageRoute<void>(
@@ -80,11 +80,11 @@ abstract class Routes {
         );
       case home:
         return FadeRoute(
-          page: HomeScreen(),
+          page: HomeScreen(source: settings.arguments),
         );
       case schedule:
         return FadeRoute(
-          page: ScheduleScreen(),
+          page: ScheduleScreen(settings.arguments),
         );
       case more:
         return FadeRoute(
@@ -98,7 +98,7 @@ abstract class Routes {
         );
       case videos:
         return FadeRoute(
-          page: VideosScreen(),
+          page: VideosScreen(settings.arguments),
         );
       case lectureNotes:
         return FadeRoute(
@@ -126,7 +126,7 @@ abstract class Routes {
         );
       case questionBank:
         return FadeRoute(
-          page: QuestionBankScreen(),
+          page: QuestionBankScreen(settings.arguments),
         );
       case flashCard:
         return FadeRoute(
@@ -146,7 +146,7 @@ abstract class Routes {
         );
       case flashCardsMenu:
         return FadeRoute(
-          page: FlashCardsBankScreen(),
+          page: FlashCardsBankScreen(settings.arguments),
         );
       case bookmarks:
         return FadeRoute(
@@ -154,7 +154,7 @@ abstract class Routes {
         );
       case referFriend:
         return FadeRoute(
-          page: ReferFriendScreen(),
+          page: ReferFriendScreen(settings.arguments),
         );
       case contactSupport:
         return FadeRoute(
@@ -162,11 +162,11 @@ abstract class Routes {
         );
       case goPremium:
         return FadeRoute(
-          page: GoPremiumScreen(),
+          page: GoPremiumScreen(settings.arguments),
         );
       case profile:
         return FadeRoute(
-          page: ProfileScreen(),
+          page: ProfileScreen(settings.arguments),
         );
       case userSettings:
         return FadeRoute(

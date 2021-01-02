@@ -1,8 +1,11 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/list_cells/buddy_list_cell.dart';
 import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/refer_friend_cell/refer_friend_cell.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:injector/injector.dart';
 
 class BuddiesView extends StatefulWidget {
   @override
@@ -11,11 +14,14 @@ class BuddiesView extends StatefulWidget {
 
 class _BuddiesViewState extends State<BuddiesView> {
   bool _loading = true;
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   @override
   void initState() {
     super.initState();
-
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenBuddies, AnalyticsConstants.screenProfile);
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchData());
   }
 
@@ -28,7 +34,7 @@ class _BuddiesViewState extends State<BuddiesView> {
             padding: const EdgeInsets.symmetric(
               vertical: 16.0,
             ),
-            child: ReferFriendCell(),
+            child: ReferFriendCell(AnalyticsConstants.screenProfileMyStats),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(

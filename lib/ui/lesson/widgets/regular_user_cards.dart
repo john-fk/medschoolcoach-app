@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/wide_feature_button.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 
 class RegularUserCards extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -54,7 +56,8 @@ class RegularUserCards extends StatelessWidget {
               ),
             ),
           ),
-          onTap: () => openTutoringModal(context),
+          onTap: () => openTutoringModal(
+              context, AnalyticsConstants.screenLessonVideo),
         ),
         SizedBox(
           height: 10,
@@ -75,7 +78,8 @@ class RegularUserCards extends StatelessWidget {
               tablet: 50,
             ),
           ),
-          onTap: () => openPodcastModal(context),
+          onTap: () => openPodcastModal(
+              context, AnalyticsConstants.screenPremiumCard),
         ),
       ],
     );

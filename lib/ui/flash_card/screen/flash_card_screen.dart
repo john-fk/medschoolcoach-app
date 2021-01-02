@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/flash_card/how_to/flashcards_how_to.dart';
@@ -35,6 +37,9 @@ class _FlashCardScreenState extends State<FlashCardScreen>
 
   final _flashcardsRepository =
       Injector.appInstance.getDependency<FlashcardRepository>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
   int _cardIndex = 0;
@@ -61,6 +66,9 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       ..addListener(() {
         setState(() {});
       });
+
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenFlashcards, widget.arguments.source);
   }
 
   Future<void> _fetchFlashcards({bool forceApiRequest = false}) async {
@@ -167,14 +175,18 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     if (_result is RepositorySuccessResult<FlashcardsStackModel>) {
       final flashcardsStack =
           (_result as RepositorySuccessResult<FlashcardsStackModel>).data;
-      if (flashcardsStack.items.length == 0)
+      if (flashcardsStack.items.length == 0) {
+        _analyticsProvider.logScreenView(AnalyticsConstants.screenNoFlashcard,
+            AnalyticsConstants.screenFlashcards);
         return NoFlashcardsWidget(widget.arguments);
+      }
       return FlashCardsStack(
         changeCardIndex: _changeCardIndex,
         cardIndex: _cardIndex,
         front: _front,
         flashcardsStackModel: flashcardsStack,
         setFront: setFront,
+        analyticsProvider: _analyticsProvider,
       );
     }
 

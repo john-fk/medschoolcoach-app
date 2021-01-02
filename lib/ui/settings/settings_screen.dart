@@ -1,4 +1,5 @@
-// import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 // import 'package:Medschoolcoach/ui/register/number_input_fromatter.dart';
@@ -31,10 +32,13 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
   // final TextEditingController _phonePrefixController
   // = TextEditingController();
   // final TextEditingController _phoneNumberController
@@ -52,6 +56,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenSettings,
+        AnalyticsConstants.screenHome);
     _getProfileUser();
     // _phonePrefixController.text = "+1";
   }
@@ -334,7 +340,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     _emailController.text = _emailController.text.trim();
-
+    _logAnalytics();
     if (!_formKey.currentState.validate()) {
       setState(() {
         _buttonLoading = false;
@@ -387,6 +393,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
           context,
           "errors.global_api_error",
         );
+    }
+  }
+
+  void _logAnalytics() async {
+    Map<String, String> getDict(
+        String propertyName, String previousValue, String updatedValue) {
+      return {
+        "updated_property": previousValue,
+        "previous_value": previousValue,
+        "updated_value": updatedValue
+      };
+    }
+
+    var userResponse = await _userRepository.getProfileUser();
+    if (userResponse is RepositorySuccessResult<ProfileUser>) {
+      var args = List<Map<String, String>>();
+      ProfileUser user = userResponse.data;
+      if (_firstNameController.text?.trim() != user.firstName?.trim()) {
+        args.add(
+            getDict("user_name", user.firstName, _firstNameController.text));
+      }
+      if (_lastNameController.text?.trim() != user.lastName?.trim()) {
+        args.add(
+            getDict("last_name", user.lastName, _lastNameController.text));
+      }
+      if (_emailController.text?.trim() != user.email?.trim()) {
+        args.add(
+            getDict("email_id", user.email, _emailController.text));
+      }
+      _analyticsProvider.logEvent(AnalyticsConstants.tapUpdateProfile,
+          params: {"updated": args.toString()});
     }
   }
 
