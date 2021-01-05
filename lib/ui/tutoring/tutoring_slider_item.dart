@@ -19,7 +19,7 @@ class TutoringSliderItem extends StatelessWidget {
           children: <Widget>[
             Container(
                 width: size.width / 1.2,
-                height: size.height / 2.4,
+                height: size.height / 2.47,
                 child: SvgPicture.asset(
                   sliderModel.image,
                 )),

@@ -53,7 +53,7 @@ TextStyle mediumResponsiveFont(
   return TextStyle(
     color: _getFontColor(context, fontColor),
     fontWeight: fontWeight,
-    fontSize: whenDevice(context, small: 12, large: 1, tablet: 20),
+    fontSize: whenDevice(context, small: 11, large: 15.5, tablet: 20),
   );
 }
 
