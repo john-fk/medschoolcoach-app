@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/section/subject_title_widget.dart';
 import 'package:Medschoolcoach/ui/topic/topic_screen.dart';
@@ -9,16 +11,19 @@ import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/search_screen_template/search_screen_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class SectionScreenData {
   final String sectionId;
   final String sectionName;
   final int numberOfCourses;
+  final String source;
 
   SectionScreenData({
     @required this.sectionId,
     @required this.sectionName,
     @required this.numberOfCourses,
+    @required this.source,
   });
 }
 
@@ -34,10 +39,18 @@ class SectionScreen extends StatefulWidget {
 class _SectionScreenState extends State<SectionScreen> {
   bool _loading = true;
   bool _fetchError = false;
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenLessonCategoriesSections,
+        widget.sectionScreenData.source,
+        params: {
+          AnalyticsConstants.keySection: widget.sectionScreenData.sectionName
+        });
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchData(
         forceApiRequest: true,

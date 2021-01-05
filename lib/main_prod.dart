@@ -1,31 +1,31 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:Medschoolcoach/app.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/dependency_injection.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:injector/injector.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
+
+import 'providers/analytics_constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Mixpanel _mixPanel = await Mixpanel(
-    shouldLogEvents: true,
-    isOptedOut: false,
-  );
+  AnalyticsProvider _analyticsProvider = await AnalyticsProvider();
 
-  await _mixPanel.initialize(Config.mixPanelToken);
-  _mixPanel.track(Config.mixPanelAppOpenEvent);
+  await _analyticsProvider.initialize(Config.prodMixPanelToken);
+  _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen);
 
   initializeDependencyInjection(
     apiUrl: Config.prodApiUrl,
     auth0Url: Config.prodBaseAuth0Url,
-    mixPanel: _mixPanel,
+    analyticsProvider: _analyticsProvider,
   );
   Config.showSwitch = false;
   final String initialRoute = await _getInitialRoute();
@@ -36,7 +36,7 @@ Future<void> main() async {
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) {
+        (_) {
       runApp(MyApp(
         initialRoute: initialRoute,
       ));

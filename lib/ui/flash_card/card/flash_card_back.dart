@@ -1,18 +1,19 @@
 import 'dart:math';
 
-import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_button.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_status.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
 
 import 'flash_card_widget.dart';
 
@@ -48,7 +49,9 @@ class FlashCardBack extends StatefulWidget {
 
 class _FlashCardBackState extends State<FlashCardBack>
     with TickerProviderStateMixin {
-  final Mixpanel _mixPanel = Injector.appInstance.getDependency<Mixpanel>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
 
   AnimationController _negativeAnimationController;
   AnimationController _neutralAnimationController;
@@ -288,7 +291,7 @@ class _FlashCardBackState extends State<FlashCardBack>
       type.toString().substring(10).toLowerCase(),
     ));
 
-    _logMixPanelEvent(type);
+    _logAnalyticsEvent(type);
 
     switch (type) {
       case EmojiType.Neutral:
@@ -309,11 +312,12 @@ class _FlashCardBackState extends State<FlashCardBack>
     }
   }
 
-  void _logMixPanelEvent(EmojiType type) {
-    _mixPanel.track(Config.mixPanelFlashcardEvent, {
-      "front": _anHtml,
+  void _logAnalyticsEvent(EmojiType type) {
+    _analyticsProvider
+        .logEvent(AnalyticsConstants.tapFlashcardConfidence, params: {
       "id": widget.flashCard.id,
-      "confidence": type.toString().substring(10).toLowerCase(),
+      "front": _anHtml,
+      "confidence": describeEnum(type).toLowerCase()
     });
   }
 

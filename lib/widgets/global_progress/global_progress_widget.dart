@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/home/home_section.dart';
 import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
@@ -14,10 +16,14 @@ import 'widgets/global_progress_widget_locked_cell.dart';
 class GlobalProgressWidget extends StatefulWidget {
   final bool premium = true;
   final bool showHeader;
+  final String source;
+  final AnalyticsProvider analyticsProvider;
 
   const GlobalProgressWidget({
     Key key,
     this.showHeader = true,
+    this.source,
+    this.analyticsProvider
   }) : super(key: key);
 
   @override
@@ -67,7 +73,10 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
             ),
             name: FlutterI18n.translate(context, "global_progress.course"),
             progress: "${stats.courseProgress}%",
-            onTap: () => Navigator.pushNamed(context, Routes.schedule),
+            onTap: () {
+              _logAnalytics("schedule", "${stats.courseProgress}%");
+              Navigator.pushNamed(context, Routes.schedule,
+                arguments: widget.source);},
           ),
           GlobalProgressWidgetCell(
             color: Style.of(context).colors.premium,
@@ -80,13 +89,24 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
             progress: stats.lessonsWatched.toString() +
                 "/" +
                 stats.totalLessons.toString(),
-            onTap: () => Navigator.pushNamed(context, Routes.videos),
+            onTap: () {
+              _logAnalytics("videos", stats.lessonsWatched.toString() + "/" + stats.totalLessons.toString());
+              Navigator.pushNamed(context, Routes.videos,
+                arguments: widget.source); }
           ),
           _buildQuestionsWidget(iconHeight, stats),
           _buildFlashcardsWidget(iconHeight, stats),
         ],
       ),
     );
+  }
+
+  void _logAnalytics(String section, String progress) {
+    widget.analyticsProvider
+        .logEvent(AnalyticsConstants.tapProgress, params: {
+      AnalyticsConstants.keySection: section,
+      AnalyticsConstants.keyCurrentCompletion: progress
+    });
   }
 
   Widget _buildQuestionsWidget(double iconHeight, Statistics stats) {
@@ -102,11 +122,20 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
             progress: stats.questionsAnswered.toString() +
                 "/" +
                 stats.totalQuestions.toString(),
-            onTap: () => Navigator.pushNamed(context, Routes.questionBank),
+            onTap: () {
+              _logAnalytics(
+                  "questions",
+                  stats.questionsAnswered.toString() +
+                      "/" +
+                      stats.totalQuestions.toString());
+              Navigator.pushNamed(context, Routes.questionBank,
+                  arguments: widget.source);
+            },
           )
         : GlobalProgressWidgetLockedCell(
             iconHeight: iconHeight,
             lockedFeature: LockedFeature.Questions,
+            source: widget.source,
           );
   }
 
@@ -126,11 +155,19 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
             progress: stats.totalFlashcardsMastered.toString() +
                 "/" +
                 stats.totalFlashcards.toString(),
-            onTap: () => Navigator.pushNamed(context, Routes.flashCardsMenu),
+            onTap: () {
+              _logAnalytics(
+                  "flashcards",
+                  stats.totalFlashcardsMastered.toString() +
+                      "/" +
+                      stats.totalFlashcards.toString());
+              Navigator.pushNamed(context, Routes.flashCardsMenu,
+                      arguments: widget.source); },
           )
         : GlobalProgressWidgetLockedCell(
             iconHeight: iconHeight,
             lockedFeature: LockedFeature.Flashcards,
+            source: widget.source
           );
   }
 

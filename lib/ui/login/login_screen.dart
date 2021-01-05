@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
@@ -34,8 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   void initState() {
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenLogin, AnalyticsConstants.screenWelcome);
     _usernameInputFocusNode = FocusNode();
     _passwordInputFocusNode = FocusNode();
     super.initState();
@@ -161,7 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             "login_screen.need_an_account",
                           ),
                           onPressed: () {
-                            Navigator.of(context).pushNamed(Routes.register);
+                            Navigator.of(context).pushNamed(Routes.register,
+                                arguments: AnalyticsConstants.screenLogin);
                           },
                         ),
                       )
@@ -211,11 +219,17 @@ class _LoginScreenState extends State<LoginScreen> {
         visible: false,
         errorMessage: "",
       );
+      _analyticsProvider.logAccountManagementEvent(AnalyticsConstants.tapSignIn,
+          _usernameController.text, true, null);
       Navigator.of(context).pushNamedAndRemoveUntil(
         Routes.home,
         (_) => false,
+        arguments: AnalyticsConstants.screenLogin
       );
     } else {
+      final errorMessage = _getErrorMessage(loginResponse);
+      _analyticsProvider.logAccountManagementEvent(AnalyticsConstants.tapSignIn,
+          _usernameController.text, false, errorMessage);
       _setProgressBarVisibility(
         visible: false,
         errorMessage: _getErrorMessage(loginResponse),

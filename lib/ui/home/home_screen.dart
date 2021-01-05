@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/home/get_started.dart';
 import 'package:Medschoolcoach/ui/home/home_schedule.dart';
@@ -18,8 +20,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class HomeScreen extends StatefulWidget {
+  final String source;
+
+  const HomeScreen({Key key, this.source}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -29,6 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   RepositoryResult<DashboardSchedule> _scheduleResult;
   RepositoryResult<LastWatchedResponse> _lastWatchedResult;
   RepositoryResult<Statistics> _globalProgressResult;
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   bool _sectionsLoading = true;
   bool _scheduleLoading = true;
@@ -38,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenHome,
+        widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => {
         _fetchLastWatched(),
@@ -117,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               "home_screen.categories",
             ),
+            source: AnalyticsConstants.screenHome,
           ),
           const SizedBox(
             height: 20,
@@ -147,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print("Global progress data fetch error");
       return Container();
     }
-    return GlobalProgressWidget();
+    return GlobalProgressWidget(source: AnalyticsConstants.screenHome, analyticsProvider: _analyticsProvider);
   }
 
   Widget _buildRecentlyWatchedSection() {
@@ -158,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return RecentlyWatched(
       recentlyWatched: recentlyWatchedVideo,
+      analyticsProvider: _analyticsProvider,
     );
   }
 
@@ -168,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
             .items
             .isNotEmpty &&
         !_scheduleLoading) {
-      return HomeSchedule();
+      return HomeSchedule(analyticsProvider: _analyticsProvider);
     } else {
       return Container();
     }

@@ -1,4 +1,6 @@
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
@@ -28,10 +30,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   String _errorMessage = "";
   bool _autoValidate = false;
+
+  @override
+  void initState() {
+    //TODO: Can we pull the email ID from login screen if they entered anything?
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenForgotPassword,
+        AnalyticsConstants.screenForgotPassword);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +170,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         TextSpan(
           text: FlutterI18n.translate(context, Config.supportEmail),
           recognizer: TapGestureRecognizer()
-            ..onTap =
-                () => ExternalNavigationUtils.sendEmail(Config.supportEmail),
+            ..onTap = () {
+              ExternalNavigationUtils.sendEmail(Config.supportEmail);
+            },
           style: Style.of(context).font.underlineNormal.copyWith(
                 fontSize: whenDevice(
                   context,
@@ -197,13 +211,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
 
     if (response is RepositorySuccessResult == true) {
+      _analyticsProvider.logAccountManagementEvent(
+          AnalyticsConstants.tapForgotPassword,
+          _emailController.text,
+          true,
+          null);
       _showSuccessDialog();
     } else {
       setState(() {
         _autoValidate = false;
       });
-      _setProgressBarVisibility(
-          visible: false, errorMessage: _getErrorMessage(response));
+      final errorMessage = _getErrorMessage(response);
+      _setProgressBarVisibility(visible: false, errorMessage: errorMessage);
+      _analyticsProvider.logAccountManagementEvent(
+          AnalyticsConstants.tapForgotPassword,
+          _emailController.text,
+          false,
+          errorMessage);
     }
   }
 

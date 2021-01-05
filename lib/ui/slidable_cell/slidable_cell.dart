@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
@@ -13,8 +15,10 @@ class SlidableCell extends StatelessWidget {
   final Widget child;
   final Video video;
   final SuccessCallback successCallback;
+  final AnalyticsProvider _analyticsProvider =
+    Injector.appInstance.getDependency<AnalyticsProvider>();
 
-  const SlidableCell({
+  SlidableCell({
     @required this.child,
     @required this.video,
     @required this.successCallback,
@@ -64,8 +68,12 @@ class SlidableCell extends StatelessWidget {
       videoId: video.id,
       seconds: watch ? "${video.seconds + 5}" : "0",
     );
-
     if (result is RepositorySuccessResult) {
+      _analyticsProvider.logEvent(
+          watch
+              ? AnalyticsConstants.tapVideoMarkWatched
+              : AnalyticsConstants.tapVideoMarkUnwatched,
+          params: _analyticsProvider.getVideoParam(video.id, video.name));
       successCallback(watched: watch);
     }
   }

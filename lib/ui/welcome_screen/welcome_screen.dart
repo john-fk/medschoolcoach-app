@@ -1,4 +1,6 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/buttons/secondary_button.dart';
@@ -6,6 +8,7 @@ import 'package:Medschoolcoach/widgets/buttons/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:injector/injector.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -13,6 +16,17 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
+  @override
+  void initState() {
+    super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenWelcome,
+        AnalyticsConstants.screenWelcome);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -96,8 +110,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 horizontal: screenWidth * 0.07),
                             text: FlutterI18n.translate(
                                 context, "welcome_screen.register"),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, Routes.register),
+                            onPressed: _navigateToRegister
                           ),
                           const SizedBox(height: 5),
                           MSCTextButton(
@@ -179,8 +192,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 horizontal: screenWidth * 0.07),
                             text: FlutterI18n.translate(
                                 context, "welcome_screen.register"),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, Routes.register),
+                            onPressed: _navigateToRegister
                           ),
                           const SizedBox(height: 5),
                           MSCTextButton(
@@ -200,4 +212,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           );
   }
+
+  void _navigateToRegister() {
+    Navigator.pushNamed(context, Routes.register,
+        arguments: AnalyticsConstants.screenWelcome);
+  }
+
 }

@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/ui/slidable_cell/slidable_cell.dart';
@@ -14,6 +16,7 @@ import 'package:Medschoolcoach/widgets/search_screen_template/search_screen_temp
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class TopicScreenData {
   final String topicId;
@@ -35,12 +38,16 @@ class TopicScreen extends StatefulWidget {
 }
 
 class _TopicScreenState extends State<TopicScreen> {
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   RepositoryResult<Topic> _topicResult;
   bool _loading = false;
 
   @override
   void initState() {
     super.initState();
+    _loginScreenViewAnalytics();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchTopic(
         forceApiRequest: true,
@@ -91,6 +98,15 @@ class _TopicScreenState extends State<TopicScreen> {
         "number": topic.percentage.toString(),
       },
     );
+  }
+
+  void _loginScreenViewAnalytics() {
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenTopics, AnalyticsConstants.screenSection,
+        params: {
+          AnalyticsConstants.keyTopicId: widget._topicScreenData.topicId,
+          AnalyticsConstants.keyTopicName: widget._topicScreenData.topicName
+        });
   }
 
   Padding _buildListView() {
@@ -149,13 +165,21 @@ class _TopicScreenState extends State<TopicScreen> {
               topicId: videos[index].topicId,
             ),
             onTap: () => _goToLessonScreen(index),
-          ),
+              onBookmarkTap: () {
+                //TODO: Do we need to update the screen here? ScheduleListCell invoke this when bookmark changed.
+              }),
         ),
       ),
     );
   }
 
   void _goToLessonScreen(int index) {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapLesson, params: {
+      AnalyticsConstants.keySource:
+          AnalyticsConstants.screenTopics,
+      AnalyticsConstants.keyTopicId: widget._topicScreenData.topicId,
+      AnalyticsConstants.keyTopicName: widget._topicScreenData.topicName
+    });
     Navigator.pushNamed(
       context,
       Routes.lesson,
@@ -163,6 +187,7 @@ class _TopicScreenState extends State<TopicScreen> {
         order: index,
         topicId: widget._topicScreenData.topicId,
         topicName: widget._topicScreenData.topicName,
+        source: AnalyticsConstants.screenTopics
       ),
     );
   }

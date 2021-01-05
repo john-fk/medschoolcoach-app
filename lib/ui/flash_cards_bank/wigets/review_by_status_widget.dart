@@ -1,12 +1,19 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ReviewByStatusWidget extends StatelessWidget {
+  final AnalyticsProvider _analyticsProvider;
+
+  const ReviewByStatusWidget(this._analyticsProvider);
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -35,8 +42,13 @@ class ReviewByStatusWidget extends StatelessWidget {
   }
 
   void onPress(FlashcardStatus status, BuildContext context) {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapFlashcardsReviewBy,
+        params: {
+          AnalyticsConstants.keyReviewBy: describeEnum(status).toLowerCase()
+        });
     Navigator.pushNamed(context, Routes.flashCard,
-        arguments: FlashcardsStackArguments(status: status));
+        arguments: FlashcardsStackArguments(
+            status: status, source: AnalyticsConstants.screenFlashcardsBank));
   }
 
   Widget _emojiButton({

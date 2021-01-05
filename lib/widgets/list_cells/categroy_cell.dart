@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/section/section_screen.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/extensions/color/hex_color.dart';
@@ -9,12 +11,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:injector/injector.dart';
 
 class CategoryCell extends StatelessWidget {
   final Section section;
+  final String source;
+  final AnalyticsProvider analyticsProvider =
+    Injector.appInstance.getDependency<AnalyticsProvider>();
 
   CategoryCell({
     @required this.section,
+    @required this.source,
   }) : super(key: Key(section.name));
 
   @override
@@ -26,6 +33,7 @@ class CategoryCell extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
+          _logAnalytics(section);
           Navigator.pushNamed(
             context,
             Routes.section,
@@ -33,6 +41,7 @@ class CategoryCell extends StatelessWidget {
               sectionId: section.id,
               sectionName: section.name,
               numberOfCourses: section.amountOfVideos,
+              source: source
             ),
           );
         },
@@ -117,6 +126,13 @@ class CategoryCell extends StatelessWidget {
     );
   }
 
+  void _logAnalytics(Section section) {
+    analyticsProvider.logEvent(AnalyticsConstants.tapVideoCategory, params: {
+      AnalyticsConstants.keyCategoryId: section.id,
+      AnalyticsConstants.keyCategoryName: section.name,
+      AnalyticsConstants.keyCurrentCompletion: section.percentage
+    });
+  }
   String _getCellSubtitle(BuildContext context) {
     if (section.amountOfVideos == null) return "";
     return FlutterI18n.translate(

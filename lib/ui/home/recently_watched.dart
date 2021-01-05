@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/home/home_section.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/utils/api/models/last_watched_response.dart';
@@ -12,10 +14,12 @@ import 'package:flutter_svg/svg.dart';
 
 class RecentlyWatched extends StatelessWidget {
   final LastWatchedResponse recentlyWatched;
+  final AnalyticsProvider analyticsProvider;
 
   const RecentlyWatched({
     Key key,
     this.recentlyWatched,
+    this.analyticsProvider,
   }) : super(key: key);
 
   @override
@@ -226,11 +230,17 @@ class RecentlyWatched extends StatelessWidget {
   }
 
   void _goToLesson(BuildContext context) {
+    analyticsProvider.logEvent(AnalyticsConstants.tapRecentlyWatched,
+        params: analyticsProvider.getVideoParam(
+            recentlyWatched.id, recentlyWatched.subject.name, additionalParams: {
+          AnalyticsConstants.keySource: AnalyticsConstants.screenRecentlyWatched
+        }));
     Navigator.of(context).pushNamed(
       Routes.lesson,
       arguments: LessonVideoScreenArguments(
         order: recentlyWatched.order,
         topicId: recentlyWatched.topicId,
+        source: AnalyticsConstants.screenRecentlyWatched
       ),
     );
   }

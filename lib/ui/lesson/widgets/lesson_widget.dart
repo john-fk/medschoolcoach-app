@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
@@ -42,6 +43,8 @@ class LessonWidget extends StatefulWidget {
 class _LessonWidgetState extends State<LessonWidget> {
   final BookmarksRepository _bookmarksRepository =
       Injector.appInstance.getDependency<BookmarksRepository>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   final radius = BorderRadius.circular(10);
 
@@ -265,5 +268,7 @@ class _LessonWidgetState extends State<LessonWidget> {
         forceApiRequest: true,
       );
     }
+    _analyticsProvider.logVideoBookMarkEvent(
+        initialValue, widget.video.id, widget.video.name);
   }
 }

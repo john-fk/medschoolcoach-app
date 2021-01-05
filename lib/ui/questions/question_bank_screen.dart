@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/flash_cards_bank/wigets/flash_cards_subjects.dart';
 import 'package:Medschoolcoach/ui/home/home_section.dart';
@@ -13,8 +15,13 @@ import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class QuestionBankScreen extends StatefulWidget {
+  final String source;
+
+  const QuestionBankScreen(this.source);
+
   @override
   _QuestionBankScreenState createState() => _QuestionBankScreenState();
 }
@@ -23,9 +30,14 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
   RepositoryResult _result;
   bool _loading = false;
 
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   void initState() {
     super.initState();
+    _analyticsProvider.logScreenView(AnalyticsConstants.screenQuestionBank,
+        widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchData(),
     );
@@ -160,14 +172,30 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
       String subjectId,
       String screenName,
       QuestionStatusType status}) {
+    _logAnalytics(subjectId, screenName);
     return Navigator.of(context).pushNamed(
       Routes.multipleChoiceQuestion,
       arguments: MultipleChoiceQuestionScreenArguments(
         screenName: screenName,
         subjectId: subjectId,
         status: status,
+        source: AnalyticsConstants.screenQuestionBank
       ),
     );
+  }
+
+  void _logAnalytics(String subjectId, String screenName) {
+    if (subjectId == null) {
+      _analyticsProvider.logEvent(
+          AnalyticsConstants.tapQuestionBankReviewByStatus,
+          params: {AnalyticsConstants.keyType: screenName});
+    } else {
+      _analyticsProvider
+          .logEvent(AnalyticsConstants.tapQuestionBankSubject, params: {
+        AnalyticsConstants.keySubjectId: subjectId,
+        AnalyticsConstants.keySubjectName: screenName
+      });
+    }
   }
 
   Padding _buildReviewByStatus(BuildContext context) {

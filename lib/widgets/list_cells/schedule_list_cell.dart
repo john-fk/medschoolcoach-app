@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
@@ -5,11 +7,11 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/bookmark/bookmark_widget.dart';
 import 'package:Medschoolcoach/widgets/others/tick_icon.dart';
+import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
 
 class ScheduleListCellData {
   final String imagePath;
@@ -55,6 +57,9 @@ class ScheduleListCell extends StatefulWidget {
 class _ScheduleListCellState extends State<ScheduleListCell> {
   final BookmarksRepository _bookmarksRepository =
       Injector.appInstance.getDependency<BookmarksRepository>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
+
   bool isProgressIndicator = false;
 
   @override
@@ -190,7 +195,8 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
     } else {
       widget.onBookmarkTap();
     }
-
+    _analyticsProvider.logVideoBookMarkEvent(
+        initialValue, widget.cellData.videoId, widget.cellData.lessonName);
     isProgressIndicator = false;
   }
 

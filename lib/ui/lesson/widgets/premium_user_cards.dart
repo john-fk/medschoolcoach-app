@@ -1,9 +1,11 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/square_feature_button.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/wide_feature_button.dart';
 import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
+import 'package:Medschoolcoach/ui/videos/lecture_notes_screen.dart';
+import 'package:Medschoolcoach/ui/videos/whiteboard_notes_screen.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
-import 'package:Medschoolcoach/utils/external_navigation_utils.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -13,8 +15,6 @@ import 'package:Medschoolcoach/widgets/modals/tutoring_modal/tutoring_modal.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:Medschoolcoach/ui/videos/lecture_notes_screen.dart';
-import 'package:Medschoolcoach/ui/videos/whiteboard_notes_screen.dart';
 
 class PremiumUserCards extends StatelessWidget {
   final double sidePaddingValue;
@@ -27,11 +27,12 @@ class PremiumUserCards extends StatelessWidget {
     @required this.sidePaddingValue,
     @required this.video,
     @required this.pausePlayer,
-    @required this.resumePlayer,
+    @required this.resumePlayer
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: sidePaddingValue),
       child: Column(
@@ -95,7 +96,8 @@ class PremiumUserCards extends StatelessWidget {
                 ),
               ),
             ),
-            onTap: () => openTutoringModal(context),
+            onTap: () => openTutoringModal(
+                context, AnalyticsConstants.screenLessonVideo),
           ),
           const SizedBox(
             height: 10,
@@ -115,7 +117,8 @@ class PremiumUserCards extends StatelessWidget {
                 tablet: 50,
               ),
             ),
-            onTap: () => openPodcastModal(context),
+            onTap: () => openPodcastModal(
+                context, AnalyticsConstants.screenPremiumCard),
           ),
         ],
       ),
@@ -193,7 +196,9 @@ class PremiumUserCards extends StatelessWidget {
               pausePlayer(),
               Navigator.of(context).pushNamed(
                 Routes.flashCard,
-                arguments: FlashcardsStackArguments(videoId: video.id),
+                arguments: FlashcardsStackArguments(
+                    videoId: video.id,
+                    source: AnalyticsConstants.screenLessonVideo),
               ),
             },
           ),
@@ -213,6 +218,7 @@ class PremiumUserCards extends StatelessWidget {
                 arguments: MultipleChoiceQuestionScreenArguments(
                   screenName: video.name,
                   videoId: video.id,
+                  source: AnalyticsConstants.screenLessonVideo
                 ),
               ),
             },

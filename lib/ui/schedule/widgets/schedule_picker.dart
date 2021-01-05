@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
@@ -11,10 +13,12 @@ class SchedulePickerWidget extends StatelessWidget {
   final bool pickingSchedule;
   final StartSchedule startSchedule;
   final int currentScheduleLength;
+  final AnalyticsProvider analyticsProvider;
 
   const SchedulePickerWidget({
     @required this.pickingSchedule,
     @required this.startSchedule,
+    @required this.analyticsProvider,
     this.currentScheduleLength,
   });
 
@@ -43,6 +47,10 @@ class SchedulePickerWidget extends StatelessWidget {
         ),
         PrimaryButton(
           onPressed: () {
+            analyticsProvider.logEvent(AnalyticsConstants.tapPickScheduleLength,
+                params: {
+                  AnalyticsConstants.keySource: AnalyticsConstants.screenSchedule
+                });
             showDialog<dynamic>(
               context: context,
               builder: (context) {

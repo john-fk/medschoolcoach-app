@@ -1,3 +1,5 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
@@ -7,6 +9,7 @@ import 'package:Medschoolcoach/widgets/custom_expansion_tile/custom_expansion_ti
 import 'package:Medschoolcoach/widgets/list_cells/schedule_list_cell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:injector/injector.dart';
 
 class BookmarkListCell extends StatefulWidget {
   final String subjectName;
@@ -28,6 +31,8 @@ class BookmarkListCell extends StatefulWidget {
 class _BookmarkListCellState extends State<BookmarkListCell>
     with TickerProviderStateMixin {
   final _listKey = GlobalKey<AnimatedListState>();
+  final AnalyticsProvider _analyticsProvider =
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   AnimationController _animationController;
   Animation<double> _animation;
@@ -163,6 +168,8 @@ class _BookmarkListCellState extends State<BookmarkListCell>
             context,
             widget.videos[index].order,
             widget.videos[index].topicId,
+            video.id,
+            video.name
           );
         },
         onBookmarkTap: () {
@@ -190,13 +197,18 @@ class _BookmarkListCellState extends State<BookmarkListCell>
     );
   }
 
-  void _goToLessonScreen(BuildContext context, int index, String topicId) {
+  void _goToLessonScreen(BuildContext context, int index, String topicId,
+      String videoId, String videoName) {
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.tapLesson, AnalyticsConstants.screenBookMarkedVideos,
+        params: _analyticsProvider.getVideoParam(videoId, videoName));
     Navigator.pushNamed(
       context,
       Routes.lesson,
       arguments: LessonVideoScreenArguments(
         order: index,
         topicId: topicId,
+        source: AnalyticsConstants.screenBookMarkedVideos
       ),
     );
   }

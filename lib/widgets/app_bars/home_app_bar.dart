@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -57,6 +58,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
           InkWell(
             onTap: () => Navigator.of(context).pushNamed(
               Routes.profile,
+              arguments: AnalyticsConstants.screenHome
             ),
             child: CircleAvatar(
               backgroundImage: userData != null && userData.picture.isNotEmpty
