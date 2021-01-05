@@ -224,21 +224,21 @@ class _TutoringModalState extends State<TutoringModal> {
   }
 }
 
-void openTutoringModal(BuildContext context, String source) {
-  final AnalyticsProvider analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
-  analyticsProvider.logScreenView(AnalyticsConstants.screenTutoring, source);
-
-  showModalBottomSheet<void>(
-    isScrollControlled: true,
-    context: context,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(25.0),
-      ),
-    ),
-    builder: (context) {
-      return TutoringModal();
-    },
-  );
-}
+// void openTutoringModal(BuildContext context, String source) {
+//   final AnalyticsProvider analyticsProvider =
+//       Injector.appInstance.getDependency<AnalyticsProvider>();
+//   analyticsProvider.logScreenView(AnalyticsConstants.screenTutoring, source);
+//
+//   showModalBottomSheet<void>(
+//     isScrollControlled: true,
+//     context: context,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(
+//         top: Radius.circular(25.0),
+//       ),
+//     ),
+//     builder: (context) {
+//       return TutoringModal();
+//     },
+//   );
+// }

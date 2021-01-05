@@ -8,6 +8,7 @@ import 'package:Medschoolcoach/repository/section_repository.dart';
 import 'package:Medschoolcoach/repository/statistics_repository.dart';
 import 'package:Medschoolcoach/repository/subject_repository.dart';
 import 'package:Medschoolcoach/repository/topic_repository.dart';
+import 'package:Medschoolcoach/repository/tutoring_repository.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -151,6 +152,12 @@ void initializeDependencyInjection({
       return StatisticsRepository(
         apiServices,
       );
+    },
+  );
+
+  injector.registerSingleton<TutoringRepository>(
+        (injector) {
+      return TutoringRepository();
     },
   );
 

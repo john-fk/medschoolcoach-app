@@ -93,7 +93,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       context,
                       "common.tutoring",
                     ),
-                    onTap: () => openTutoringModal(context, AnalyticsConstants.screenMore),
+                    onTap: () => Routes.navigateToTutoringScreen(
+                        context, AnalyticsConstants.screenMore),
                   ),
                   MorePageListCell(
                     iconAssetName: Style.of(context).svgAsset.questions,

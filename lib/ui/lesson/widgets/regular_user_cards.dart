@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/wide_feature_button.dart';
+import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/modals/podcast_modal.dart';
@@ -56,7 +57,7 @@ class RegularUserCards extends StatelessWidget {
               ),
             ),
           ),
-          onTap: () => openTutoringModal(
+          onTap: () => Routes.navigateToTutoringScreen(
               context, AnalyticsConstants.screenLessonVideo),
         ),
         SizedBox(

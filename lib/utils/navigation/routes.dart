@@ -6,7 +6,6 @@ import 'package:Medschoolcoach/ui/flash_cards_bank/flash_cards_bank_screen.dart'
 import 'package:Medschoolcoach/ui/forgot/forgot_password_screen.dart';
 import 'package:Medschoolcoach/ui/go_premium/go_premium_screen.dart';
 import 'package:Medschoolcoach/ui/home/home_screen.dart';
-
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/ui/login/login_screen.dart';
 import 'package:Medschoolcoach/ui/more/more_screen.dart';
@@ -21,9 +20,9 @@ import 'package:Medschoolcoach/ui/search/search_screen.dart';
 import 'package:Medschoolcoach/ui/section/section_screen.dart';
 import 'package:Medschoolcoach/ui/settings/settings_screen.dart';
 import 'package:Medschoolcoach/ui/topic/topic_screen.dart';
-
-import 'package:Medschoolcoach/ui/videos/videos_screen.dart';
+import 'package:Medschoolcoach/ui/tutoring/tutoring_screen.dart';
 import 'package:Medschoolcoach/ui/videos/lecture_notes_screen.dart';
+import 'package:Medschoolcoach/ui/videos/videos_screen.dart';
 import 'package:Medschoolcoach/ui/videos/whiteboard_notes_screen.dart';
 import 'package:Medschoolcoach/ui/welcome_screen/welcome_screen.dart';
 import 'package:Medschoolcoach/utils/navigation/fade_route.dart';
@@ -58,6 +57,7 @@ abstract class Routes {
   static const String goPremium = "goPremium";
   static const String profile = "profile";
   static const String userSettings = "settings";
+  static const String tutoring = "tutoring";
 
   static Route<void> generateRoute(RouteSettings settings) {
     Crashlytics.instance.log("Open ${settings.name}");
@@ -172,9 +172,18 @@ abstract class Routes {
         return FadeRoute(
           page: SettingsScreen(),
         );
-
+      case tutoring:
+        return FadeRoute(
+          page: TutoringScreen(settings.arguments),
+        );
       default:
         throw Exception("No route defined for \"${settings.name}\"");
     }
+  }
+
+  static void navigateToTutoringScreen(BuildContext context, String source,
+      {bool isNavBar = false}) {
+    Navigator.of(context).pushNamed(Routes.tutoring,
+        arguments: TutoringScreenData(source: source, isNavBar: isNavBar));
   }
 }

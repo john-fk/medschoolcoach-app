@@ -45,6 +45,19 @@ TextStyle normalResponsiveFont(
   );
 }
 
+TextStyle mediumResponsiveFont(
+    BuildContext context, {
+      FontWeight fontWeight = FontWeight.normal,
+      FontColor fontColor = FontColor.Content,
+    }) {
+  return TextStyle(
+    color: _getFontColor(context, fontColor),
+    fontWeight: fontWeight,
+    fontSize: whenDevice(context, small: 12, large: 1, tablet: 20),
+  );
+}
+
+
 TextStyle smallerResponsiveFont(
   BuildContext context, {
   FontWeight fontWeight = FontWeight.normal,
