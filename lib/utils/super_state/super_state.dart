@@ -298,7 +298,6 @@ class SuperState extends State<SuperStateful> {
     return result;
   }
 
-
   Future<RepositoryResult<Map<String, dynamic>>>
       updateScheduleProgress() async {
     final result = await _scheduleRepository.fetchScheduleProgress();

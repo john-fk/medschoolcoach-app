@@ -15,24 +15,29 @@ class TutoringSliderItem extends StatelessWidget {
     return Center(
       child: Container(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Container(
                 width: size.width / 1.2,
-                height: size.height / 2.47,
+                height: size.height / 2.57,
                 child: SvgPicture.asset(
                   sliderModel.image,
                 )),
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 15, bottom: 5, left: 10, right: 10),
-              child: _getHeader(sliderModel.header, context),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 8, bottom: 8, left: 23, right: 23),
-              child: _getDescription(sliderModel.description, context),
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 15, bottom: 5, left: 10, right: 10),
+                  child: _getHeader(sliderModel.header, context),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8, bottom: 8, left: 23, right: 23),
+                  child: _getDescription(sliderModel.description, context),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -43,7 +48,7 @@ class TutoringSliderItem extends StatelessWidget {
     return Text(
       _getText(text, context),
       style: bigResponsiveFont(context,
-          fontWeight: FontWeight.bold, fontColor: FontColor.Accent),
+          fontWeight: FontWeight.bold, fontColor: FontColor.Accent3),
     );
   }
 

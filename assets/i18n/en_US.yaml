@@ -305,5 +305,9 @@ tutoring_sliders:
   slider_three_description: Our tutoring program and video course are built 100% for the new MCAT. No recycled material at all.
   slider_four_header: Completely Personalized
   slider_four_description: Our MCAT tutoring is completly personalized to you. From day one, we’ll work on indentifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
-
-
+tutoring_request_info_dialog:
+  dialog_header: Get In Touch
+  schedule_a_meeting: Schedule a Meeting
+  call_us_now: Call Us Now
+  request_more_info: Request More Info
+  chat_with_us_live: Chat with Us Live

@@ -5,7 +5,6 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/modals/podcast_modal.dart';
 import 'package:Medschoolcoach/widgets/modals/premium_modal.dart';
-import 'package:Medschoolcoach/widgets/modals/tutoring_modal/tutoring_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';

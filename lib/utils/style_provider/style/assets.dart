@@ -47,7 +47,7 @@ class _AppSvgAssets {
   final schedule = "assets/svg/schedule.svg";
   final scheduleActive = "assets/svg/schedule_active.svg";
   final more = "assets/svg/more.svg";
-  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon.svg";
+  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon.svg"; //TODO: Need to get the proper icon
   final tutoringNavigationIcon = "assets/svg/tutoring_navigation_icon.svg";
 
   //Video player icons
@@ -96,8 +96,8 @@ class _AppSvgAssets {
   final videoMilestone = "assets/svg/video_milestone.svg";
 
   //Tutoring sliders
-  final slider99percentileTutors = "assets/svg/slider_1.svg";
-  final sliderIncredibleTeachers = "assets/svg/slider_2.svg";
-  final sliderNewMCAT = "assets/svg/slider_3.svg";
-  final sliderCompletelyPersonalized = "assets/svg/slider_4.svg";
+  final tutoringSliderOne = "assets/svg/slider_1.svg";
+  final tutoringSliderTwo = "assets/svg/slider_2.svg";
+  final tutoringSliderThree = "assets/svg/slider_3.svg";
+  final tutoringSliderFour = "assets/svg/slider_4.svg";
 }

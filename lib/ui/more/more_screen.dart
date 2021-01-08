@@ -13,7 +13,6 @@ import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/list_cells/more_page_list_cell.dart';
-import 'package:Medschoolcoach/widgets/modals/tutoring_modal/tutoring_modal.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/refer_friend_cell/refer_friend_cell.dart';
 import 'package:flutter/cupertino.dart';
