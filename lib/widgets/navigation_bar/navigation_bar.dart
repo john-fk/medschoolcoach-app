@@ -82,9 +82,9 @@ class NavigationBar extends StatelessWidget {
               ),
               Text(
                 FlutterI18n.translate(context, "navigation_bar.tutoring"),
-                style: normalResponsiveFont(
+                style: _getTextStyle(
                   context,
-                  fontWeight: FontWeight.w500,
+                  NavigationPage.Tutoring,
                 ),
               ),
             ],

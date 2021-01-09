@@ -95,10 +95,8 @@ abstract class AnalyticsConstants {
   static const tapChangeSchedule = "tap_change_schedule";
   static const tapRequestInfo = "tap_request_info";
   static const tapTutoringCallUs = "tap_tutoring_call_us";
-  static const tapTutoringScheduleAMeeting =
-      "tap_tutoring_schedule_a_meeting";
-  static const tapTutoringRequestMoreInfo =
-      "tap_tutoring_request_more_info";
+  static const tapTutoringScheduleAMeeting = "tap_tutoring_schedule_a_meeting";
+  static const tapTutoringRequestMoreInfo = "tap_tutoring_request_more_info";
   static const tapSocialMedia = "tap_social_media";
   static const tapPlayVideo = "tap_play_video";
   static const tapPauseVideo = "tap_pause_video";

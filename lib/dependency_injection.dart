@@ -156,7 +156,7 @@ void initializeDependencyInjection({
   );
 
   injector.registerSingleton<TutoringRepository>(
-        (injector) {
+    (injector) {
       return TutoringRepository();
     },
   );

@@ -47,7 +47,7 @@ class _AppSvgAssets {
   final schedule = "assets/svg/schedule.svg";
   final scheduleActive = "assets/svg/schedule_active.svg";
   final more = "assets/svg/more.svg";
-  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon.svg"; //TODO: Need to get the proper icon
+  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon_active.svg";
   final tutoringNavigationIcon = "assets/svg/tutoring_navigation_icon.svg";
 
   //Video player icons
