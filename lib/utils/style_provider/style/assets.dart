@@ -47,6 +47,7 @@ class _AppSvgAssets {
   final schedule = "assets/svg/schedule.svg";
   final scheduleActive = "assets/svg/schedule_active.svg";
   final more = "assets/svg/more.svg";
+  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon_active.svg";
   final tutoringNavigationIcon = "assets/svg/tutoring_navigation_icon.svg";
 
   //Video player icons
@@ -93,4 +94,10 @@ class _AppSvgAssets {
   final flashcardMilestone = "assets/svg/flashcard_milestone.svg";
   final questionMilestone = "assets/svg/question_milestone.svg";
   final videoMilestone = "assets/svg/video_milestone.svg";
+
+  //Tutoring sliders
+  final tutoringSliderOne = "assets/svg/slider_1.svg";
+  final tutoringSliderTwo = "assets/svg/slider_2.svg";
+  final tutoringSliderThree = "assets/svg/slider_3.svg";
+  final tutoringSliderFour = "assets/svg/slider_4.svg";
 }

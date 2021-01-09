@@ -1,10 +1,11 @@
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
+import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
 import 'package:Medschoolcoach/repository/statistics_repository.dart';
 import 'package:Medschoolcoach/repository/topic_repository.dart';
-import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
+import 'package:Medschoolcoach/repository/tutoring_repository.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -13,11 +14,12 @@ import 'package:Medschoolcoach/utils/api/models/bookmark.dart';
 import 'package:Medschoolcoach/utils/api/models/buddy.dart';
 import 'package:Medschoolcoach/utils/api/models/dashboard_schedule.dart';
 import 'package:Medschoolcoach/utils/api/models/last_watched_response.dart';
+import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:Medschoolcoach/utils/api/models/search_result.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
-import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
+import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +71,8 @@ class SuperState extends State<SuperStateful> {
       Injector.appInstance.getDependency<StatisticsRepository>();
   final UserRepository _userRepository =
       Injector.appInstance.getDependency<UserRepository>();
+  final TutoringRepository _tutoringRepository =
+      Injector.appInstance.getDependency<TutoringRepository>();
 
   final _apiServices = Injector.appInstance.getDependency<ApiServices>();
 
@@ -89,6 +93,7 @@ class SuperState extends State<SuperStateful> {
   LectureNote lectureNote;
   List<Buddy> buddiesList = List();
   Auth0UserData userData;
+  List<TutoringSlider> tutoringSliders = List();
 
   Future<RepositoryResult<List<Section>>> updateSectionsList({
     bool forceApiRequest = false,
@@ -285,6 +290,14 @@ class SuperState extends State<SuperStateful> {
     return result;
   }
 
+  Future<List<TutoringSlider>> updateTutoringSlider(
+      BuildContext context) async {
+    final result = await _tutoringRepository.fetchSliders(context);
+    tutoringSliders = result;
+    setState(() {});
+    return result;
+  }
+
   Future<RepositoryResult<Map<String, dynamic>>>
       updateScheduleProgress() async {
     final result = await _scheduleRepository.fetchScheduleProgress();
@@ -329,6 +342,7 @@ class SuperState extends State<SuperStateful> {
     searchResult = null;
     recentSearchArguments = null;
     globalStatistics = null;
+    tutoringSliders = null;
   }
 
   @override

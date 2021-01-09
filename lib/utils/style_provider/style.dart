@@ -14,6 +14,7 @@ part './style/shadows.dart';
 class AppColors {
   const AppColors({
     @required this.accent2,
+    @required this.accent3,
     @required this.content2,
     @required this.inputBackground,
     @required this.shadow2,
@@ -27,10 +28,12 @@ class AppColors {
     @required this.premium,
     @required this.separator,
     @required this.questions,
+    @required this.divider,
   });
 
   final Color accent;
   final Color accent2;
+  final Color accent3;
 
   final Color content;
   final Color content2;
@@ -48,11 +51,14 @@ class AppColors {
   final Color separator;
   final Color questions;
 
+  final Color divider;
+
   /// Creates a copy of this [AppColors] but with the given
   /// fields replaced with the new values.
   AppColors copyWith(
           Color accent,
           Color accent2,
+          Color accent3,
           Color content,
           Color content2,
           Color content3,
@@ -63,10 +69,12 @@ class AppColors {
           Color brightShadow,
           Color error,
           Color premium,
-          Color separator) =>
+          Color separator,
+          Color divider) =>
       AppColors(
         accent: accent ?? this.accent,
         accent2: accent2 ?? this.accent2,
+        accent3: accent3 ?? this.accent3,
         content: content ?? this.content,
         content2: content2 ?? this.content2,
         content3: content3 ?? this.content3,
@@ -78,6 +86,7 @@ class AppColors {
         error: error ?? this.error,
         premium: premium ?? this.premium,
         separator: separator ?? this.separator,
+        divider: divider ?? this.divider,
         questions: questions ?? this.questions,
       );
 }
