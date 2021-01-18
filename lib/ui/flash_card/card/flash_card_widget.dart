@@ -199,9 +199,15 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
     _updateFlashcardStatus();
 
-    _logEvents(_swipeDissmis
-        ? AnalyticsConstants.swipeFlashcard
-        : AnalyticsConstants.tapNextFlashcard);
+    _logEvents(
+        _swipeDissmis
+            ? AnalyticsConstants.swipeFlashcard
+            : AnalyticsConstants.tapNextFlashcard,
+        additionalParams: {
+          AnalyticsConstants.keyDirection: increase
+              ? AnalyticsConstants.keyLeftSwipe
+              : AnalyticsConstants.keyRightSwipe
+        });
 
     if (_swipeDissmis) {
       widget.changeCardIndex(increase: increase);
@@ -241,11 +247,16 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     _logEvents(AnalyticsConstants.tapFlashcardFlipForward);
   }
 
-  void _logEvents(String event) {
-    widget.analyticsProvider.logEvent(event, params: {
+  Map<String, String> _logEvents(String event,
+      {dynamic additionalParams}) {
+    var args = {
       "id": widget.flashCard.id,
       "front": widget.flashCard.front
-    });
+    };
+    if (additionalParams != null) {
+      args.addAll(additionalParams);
+    }
+    widget.analyticsProvider.logEvent(event, params: args);
   }
 
   void _changeSideContent() async {

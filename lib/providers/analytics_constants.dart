@@ -28,6 +28,9 @@ abstract class AnalyticsConstants {
   static const keyCategoryName = "category_name";
   static const keyCurrentCompletion = "current_completion";
   static const keyPageIndex = "page_index";
+  static const keyDirection = "direction";
+  static const keyLeftSwipe = "left";
+  static const keyRightSwipe = "right";
 
   //Screens
   static const screenWelcome = "screen_welcome";
