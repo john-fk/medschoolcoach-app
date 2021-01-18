@@ -96,8 +96,8 @@ class _AppSvgAssets {
   final videoMilestone = "assets/svg/video_milestone.svg";
 
   //Tutoring sliders
-  final tutoringSliderOne = "assets/svg/slider_1.svg";
-  final tutoringSliderTwo = "assets/svg/slider_2.svg";
-  final tutoringSliderThree = "assets/svg/slider_3.svg";
-  final tutoringSliderFour = "assets/svg/slider_4.svg";
+  final tutoringSliderOne = "assets/svg/slider_3.svg";
+  final tutoringSliderTwo = "assets/svg/slider_4.svg";
+  final tutoringSliderThree = "assets/svg/slider_1.svg";
+
 }

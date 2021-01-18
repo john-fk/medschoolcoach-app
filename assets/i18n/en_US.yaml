@@ -297,17 +297,15 @@ settings_screen:
   dialog_text: Your profile details have been updated. Please, log in again to refresh the updated profile data.
   log_out_info: Please be aware that in order to refresh your user data you will be required to log in again after making an update
 tutoring_sliders:
-  slider_one_header: 99th percentile tutors
-  slider_one_description: Other companies settle for tutors who scored in the 85th percentile or better , we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
-  slider_two_header: Incredible teachers
-  slider_two_description: Our MCAT tutors not only know the material inside and out, they are cnredible teachers who have gone through extensive training and understand how to get the best out of every student.
-  slider_three_header: Built for the new MCAT
-  slider_three_description: Our tutoring program and video course are built 100% for the new MCAT. No recycled material at all.
-  slider_four_header: Completely Personalized
-  slider_four_description: Our MCAT tutoring is completly personalized to you. From day one, we’ll work on indentifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
+  slider_one_header: 12 Point Score Improvement
+  slider_one_description: On average, the student part of our tutoring program score 12 points higher than their previous exam scores.
+  slider_two_header: Completely Personalized
+  slider_two_description: Our MCAT tutoring is completly personalized to you. From day one, we’ll work on indentifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
+  slider_three_header: 99th Percentile tutors
+  slider_three_description: Other companies settle for tutors who scored in the 85th percentile or better, we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
 tutoring_request_info_dialog:
   dialog_header: Get In Touch
-  schedule_a_meeting: Schedule a Meeting
-  call_us_now: Call Us Now
-  request_more_info: Request More Info
+  schedule_a_meeting: Schedule a Free Consultation
+  speak_to_us_now: Speak to Us Now
+  get_more_info: Get More Info
   chat_with_us_live: Chat with Us Live

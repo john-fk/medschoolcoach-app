@@ -124,6 +124,7 @@ abstract class AnalyticsConstants {
   static const tapSendFeedback = "tap_send_feedback";
   static const tapVideoCategory = "tap_video_category";
   static const tapProgress = "tap_progress";
+  static const tapTutoringInfoModalDismiss= "tap_tutoring_info_modal_dismiss";
 
   //Swipes
   static const swipeFlashcard = "swipe_flashcard";

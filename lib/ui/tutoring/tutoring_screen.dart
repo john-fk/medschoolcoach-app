@@ -309,15 +309,15 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                     ),
                     _getDivider(),
                     _getRequestInfoDialogButton(
+                        "tutoring_request_info_dialog.speak_to_us_now",
+                        _openPhoneNumber),
+                    _getDivider(),
+                    _getRequestInfoDialogButton(
                         "tutoring_request_info_dialog.schedule_a_meeting",
                         _navigateToScheduleAMeeting),
                     _getDivider(),
                     _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.call_us_now",
-                        _openPhoneNumber),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.request_more_info", () {
+                        "tutoring_request_info_dialog.get_more_info", () {
                       Navigator.of(context).pop();
                       _requestMoreInfo();
                     }),
@@ -331,7 +331,12 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
           ),
         );
       },
-    );
+    ).then((dynamic result) {
+      _analyticsProvider
+          .logEvent(AnalyticsConstants.tapTutoringInfoModalDismiss, params: {
+            AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
+          });
+    });
   }
 
   void _navigateToScheduleAMeeting() {
