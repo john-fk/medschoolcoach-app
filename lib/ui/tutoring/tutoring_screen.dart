@@ -332,10 +332,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         );
       },
     ).then((dynamic result) {
-      _analyticsProvider
-          .logEvent(AnalyticsConstants.tapTutoringInfoModalDismiss, params: {
-            AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-          });
+      _flagForTutoringUpsell();
     });
   }
 
@@ -358,6 +355,29 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     final NetworkResponse result = await Injector.appInstance
         .getDependency<ApiServices>()
         .requestTutoringInfo();
+    if (result is SuccessResponse<String>) {
+      await _showSuccessDialog();
+      Navigator.of(_scaffoldKey.currentContext).pop();
+    } else {
+      if (result is ErrorResponse &&
+          result.error is ApiException &&
+          (result.error as ApiException).code == 412) {
+        await _showSuccessDialog();
+      } else {
+        await _showErrorDialog();
+      }
+    }
+  }
+
+  Future _flagForTutoringUpsell() async {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringInfoModalDismiss,
+        params: {
+          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
+        });
+    final NetworkResponse result = await Injector.appInstance
+        .getDependency<ApiServices>()
+        .requestForTutoringUpsell();
+    // TODO: Need to figure out how to handle/suppress SUCCESS/ERROR reponse bc user should not know about this ideally.
     if (result is SuccessResponse<String>) {
       await _showSuccessDialog();
       Navigator.of(_scaffoldKey.currentContext).pop();
