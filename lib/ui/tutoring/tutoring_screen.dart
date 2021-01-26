@@ -8,7 +8,7 @@ import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
-import 'package:Medschoolcoach/utils/external_navigation_utils.dart';
+import 'package:Medschoolcoach/ui/webview/webview_screen.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -330,14 +330,20 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     });
   }
 
-  void _navigateToScheduleAMeeting() {
+  Future _navigateToScheduleAMeeting() async {
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
     Navigator.of(_scaffoldKey.currentContext).pop();
-    ExternalNavigationUtils.openWebsite(
-      Config.scheduleMeetingUrl,
+    Navigator.push<dynamic>(
+      context,
+      MaterialPageRoute<dynamic>(
+          builder: (BuildContext context) => WebviewScreen(
+                key: const Key("schedule meeting webview"),
+                initialUrl: Config.scheduleMeetingUrl,
+                title: "Schedule a Meeting",
+              )),
     );
   }
 
