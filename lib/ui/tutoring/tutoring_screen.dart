@@ -232,7 +232,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
 
   Widget _buildButton(BuildContext context) {
     return Container(
-      key: const Key("request info"),
+      key: const Key("explore tutoring options"),
       width: double.infinity,
       height: whenDevice(context, small: 35, large: 40, tablet: 60),
       child: RaisedButton(
@@ -309,18 +309,12 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                     ),
                     _getDivider(),
                     _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.speak_to_us_now",
+                        "tutoring_request_info_dialog.call_us_now",
                         _openPhoneNumber),
                     _getDivider(),
                     _getRequestInfoDialogButton(
                         "tutoring_request_info_dialog.schedule_a_meeting",
                         _navigateToScheduleAMeeting),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.get_more_info", () {
-                      Navigator.of(context).pop();
-                      _requestMoreInfo();
-                    }),
                   ],
                 ),
               )
@@ -345,28 +339,6 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     ExternalNavigationUtils.openWebsite(
       Config.scheduleMeetingUrl,
     );
-  }
-
-  Future _requestMoreInfo() async {
-    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringRequestMoreInfo,
-        params: {
-          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-        });
-    final NetworkResponse result = await Injector.appInstance
-        .getDependency<ApiServices>()
-        .requestTutoringInfo();
-    if (result is SuccessResponse<String>) {
-      await _showSuccessDialog();
-      Navigator.of(_scaffoldKey.currentContext).pop();
-    } else {
-      if (result is ErrorResponse &&
-          result.error is ApiException &&
-          (result.error as ApiException).code == 412) {
-        await _showSuccessDialog();
-      } else {
-        await _showErrorDialog();
-      }
-    }
   }
 
   Future _flagForTutoringUpsell() async {

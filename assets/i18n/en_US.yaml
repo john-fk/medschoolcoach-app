@@ -131,20 +131,6 @@ videos_screen:
 app_bar:
   section_subtitle: "{number} lessons"
   topic_subtitle: "{number}% completed"
-tutoring_modal:
-  button: Request info
-  percentile_title: 99TH PERCENTILE TUTORS
-  percentile_description: Other companies settle for tutors who scored in the 85th percentile or better, we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
-  mcat_title: BUILT FOR THE NEW MCAT
-  mcat_description: Our tutoring program and video course are built 100% for the new MCAT. No recycled material at all.
-  teachers_title: INCREDIBLE TEACHERS
-  teachers_description: Our MCAT tutors not only know the material inside and out, they are incredible teachers who have gone through extensive training and understand how to get the best out of every student.
-  personalized_title: COMPLETELY PERSONALIZED
-  personalized_description: Our MCAT tutoring is completly personalized to you. From day one, we'll work on identifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
-  request_dialog_header: Information is on its way!
-  request_dialog_error_message: There was an error sending your request. Please try again.
-  request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
-  request_dialog_button: Give us a call (888) 381-9509
 password_requirments:
   length: At least 8 characters
   requirements: "At least 2 of the following:"
@@ -296,16 +282,26 @@ settings_screen:
   dialog_header: Update completed successfully!
   dialog_text: Your profile details have been updated. Please, log in again to refresh the updated profile data.
   log_out_info: Please be aware that in order to refresh your user data you will be required to log in again after making an update
+tutoring_modal:
+  button: Explore Tutoring Options
+  request_dialog_header: Information is on its way!
+  request_dialog_error_message: There was an error sending your request. Please try again.
+  request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
+  request_dialog_button: Give us a call (617) 299-2601
 tutoring_sliders:
-  slider_one_header: 12 Point Score Improvement
-  slider_one_description: On average, the student part of our tutoring program score 12 points higher than their previous exam scores.
-  slider_two_header: Completely Personalized
-  slider_two_description: Our MCAT tutoring is completly personalized to you. From day one, we’ll work on indentifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
-  slider_three_header: 99th Percentile tutors
-  slider_three_description: Other companies settle for tutors who scored in the 85th percentile or better, we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
+  slider_one_header: Boost Your Score by 12 Points
+  slider_one_description: Our one-on-one tutoring students increase their MCAT score by an average of 12 points.
+  slider_two_header: Receive a Personalized Program
+  slider_two_description: Our MCAT tutoring packages are tailored to you based on your personal goals, strengths, and weaknesses.
+  slider_three_header: Access Elite Tutors
+  slider_three_description: Get coached by 99th percentile tutors who have been through rigorous training.
+  slider_four_header: Guaranteed Score Increase
+  slider_four_description: We incluede a promise of an improved MCAT score or we'll work with you again for free!
+  slider_five_header: Study Smarter, Not Harder
+  slider_five_description: We focus on the highest yield topics and strategies to improve MCAT scores.
+  slider_six_header: Invest in Your Future
+  slider_six_description: You've come this far. Let our experts help you get into the medical school of your dreams.
 tutoring_request_info_dialog:
+  call_us_now: Call Us Now
   dialog_header: Get In Touch
   schedule_a_meeting: Schedule a Free Consultation
-  speak_to_us_now: Speak to Us Now
-  get_more_info: Get More Info
-  chat_with_us_live: Chat with Us Live
