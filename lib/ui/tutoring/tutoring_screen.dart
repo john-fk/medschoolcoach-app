@@ -176,7 +176,37 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                             padding: const EdgeInsets.only(bottom: 5),
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.8,
-                              child: _buildButton(context),
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    child: Container(
+                                      child: Text(
+                                        FlutterI18n.translate(context,
+                                            "tutoring_sliders.qualifier"),
+                                        style: smallerResponsiveFont(
+                                          context,
+                                          fontColor: FontColor.QualifyingText,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      margin:
+                                          EdgeInsets.fromLTRB(2.5, 2, 2.5, 10),
+                                    ),
+                                    onTap: () async {
+                                      _analyticsProvider.logEvent(
+                                          AnalyticsConstants.tapExploreOptions,
+                                          params: {
+                                            AnalyticsConstants.keySource:
+                                                AnalyticsConstants
+                                                    .screenTutoring,
+                                            AnalyticsConstants.keyType: "text",
+                                          });
+                                      _sendRequestInfo();
+                                    },
+                                  ),
+                                  _buildButton(context),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -247,10 +277,11 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         ),
         color: Style.of(context).colors.premium,
         onPressed: () async {
-          _analyticsProvider.logEvent(AnalyticsConstants.tapRequestInfo,
-              params: {
-                AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-              });
+          _analyticsProvider
+              .logEvent(AnalyticsConstants.tapExploreOptions, params: {
+            AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
+            AnalyticsConstants.keyType: "button",
+          });
           _sendRequestInfo();
         },
         child: Text(
@@ -326,7 +357,9 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         );
       },
     ).then((dynamic result) {
-      _flagForTutoringUpsell();
+      if (result != "success") {
+        _flagForTutoringUpsell();
+      }
     });
   }
 
@@ -335,9 +368,8 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
-    Navigator.of(_scaffoldKey.currentContext).pop();
-    Navigator.push<dynamic>(
-      context,
+    Navigator.of(_scaffoldKey.currentContext).pop("success");
+    Navigator.of(_scaffoldKey.currentContext).push<dynamic>(
       MaterialPageRoute<dynamic>(
           builder: (BuildContext context) => WebviewScreen(
                 key: const Key("schedule meeting webview"),
@@ -348,67 +380,34 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   }
 
   Future _flagForTutoringUpsell() async {
-    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringInfoModalDismiss,
-        params: {
-          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-        });
     final NetworkResponse result = await Injector.appInstance
         .getDependency<ApiServices>()
         .requestForTutoringUpsell();
     // TODO: Need to figure out how to handle/suppress SUCCESS/ERROR reponse bc user should not know about this ideally.
     if (result is SuccessResponse<String>) {
-      await _showSuccessDialog();
+      _sendTutoringUpsellAnalytics(isSuccess: true);
       Navigator.of(_scaffoldKey.currentContext).pop();
     } else {
       if (result is ErrorResponse &&
           result.error is ApiException &&
           (result.error as ApiException).code == 412) {
-        await _showSuccessDialog();
+        _sendTutoringUpsellAnalytics(isSuccess: true);
       } else {
-        await _showErrorDialog();
+        _sendTutoringUpsellAnalytics();
       }
     }
   }
 
-  Future _showSuccessDialog() {
-    return _showDialog("tutoring_modal.request_dialog_header",
-        "tutoring_modal.request_dialog_message");
-  }
-
-  Future _showErrorDialog() {
-    return _showDialog(
-        "general.error", "tutoring_modal.request_dialog_error_message");
-  }
-
-  Future _showDialog(String header, String body) {
-    return showDialog<dynamic>(
-      context: _scaffoldKey.currentContext,
-      builder: (context) {
-        return CustomDialog(
-          title: FlutterI18n.translate(
-            context,
-            header,
-          ),
-          content: FlutterI18n.translate(
-            context,
-            body,
-          ),
-          actions: <DialogActionData>[
-            DialogActionData(
-              text: FlutterI18n.translate(
-                context,
-                "tutoring_modal.request_dialog_button",
-              ),
-              onTap: _openPhoneNumber,
-            ),
-          ],
-        );
-      },
-    );
+  void _sendTutoringUpsellAnalytics({bool isSuccess = false}) {
+    _analyticsProvider
+        .logEvent(AnalyticsConstants.tapTutoringInfoModalDismiss, params: {
+      AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
+      AnalyticsConstants.keyIsSuccess: isSuccess
+    });
   }
 
   void _openPhoneNumber() {
-    Navigator.of(_scaffoldKey.currentContext).pop();
+    Navigator.of(_scaffoldKey.currentContext).pop("success");
     launch("tel://${Config.supportPhoneNumber}");
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringCallUs, params: {
       AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring

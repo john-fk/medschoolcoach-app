@@ -12,6 +12,7 @@ enum FontColor {
   Accent2,
   Accent3,
   Questions,
+  QualifyingText,
 }
 
 Color _getFontColor(BuildContext context, FontColor fontColor) {
@@ -32,6 +33,8 @@ Color _getFontColor(BuildContext context, FontColor fontColor) {
       return Style.of(context).colors.separator;
     case FontColor.Accent3:
       return Style.of(context).colors.accent3;
+    case FontColor.QualifyingText:
+      return Style.of(context).colors.qualifyingText;
     case FontColor.Content:
     default:
       return Style.of(context).colors.content;
@@ -51,10 +54,10 @@ TextStyle normalResponsiveFont(
 }
 
 TextStyle mediumResponsiveFont(
-    BuildContext context, {
-      FontWeight fontWeight = FontWeight.normal,
-      FontColor fontColor = FontColor.Content,
-    }) {
+  BuildContext context, {
+  FontWeight fontWeight = FontWeight.normal,
+  FontColor fontColor = FontColor.Content,
+}) {
   return TextStyle(
     color: _getFontColor(context, fontColor),
     fontWeight: fontWeight,

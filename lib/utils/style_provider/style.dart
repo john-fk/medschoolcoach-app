@@ -29,6 +29,7 @@ class AppColors {
     @required this.separator,
     @required this.questions,
     @required this.divider,
+    @required this.qualifyingText,
   });
 
   final Color accent;
@@ -53,6 +54,8 @@ class AppColors {
 
   final Color divider;
 
+  final Color qualifyingText;
+
   /// Creates a copy of this [AppColors] but with the given
   /// fields replaced with the new values.
   AppColors copyWith(
@@ -70,7 +73,8 @@ class AppColors {
           Color error,
           Color premium,
           Color separator,
-          Color divider) =>
+          Color divider,
+          Color qualifyingText) =>
       AppColors(
         accent: accent ?? this.accent,
         accent2: accent2 ?? this.accent2,
@@ -88,6 +92,7 @@ class AppColors {
         separator: separator ?? this.separator,
         divider: divider ?? this.divider,
         questions: questions ?? this.questions,
+        qualifyingText: qualifyingText ?? this.qualifyingText,
       );
 }
 

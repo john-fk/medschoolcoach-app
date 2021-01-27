@@ -36,6 +36,7 @@ class SecondaryButton extends StatelessWidget {
         separator: Style.of(context).colors.separator,
         divider: Style.of(context).colors.divider,
         questions: Style.of(context).colors.questions,
+        qualifyingText: Style.of(context).colors.qualifyingText,
       ),
       child: PrimaryButton(
         onPressed: onPressed,

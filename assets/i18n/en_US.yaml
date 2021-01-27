@@ -289,6 +289,7 @@ tutoring_modal:
   request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
   request_dialog_button: Give us a call (617) 299-2601
 tutoring_sliders:
+  qualifier: I'm Taking the MCAT Within a Year
   slider_one_header: Boost Your Score by 12 Points
   slider_one_description: Our one-on-one tutoring students increase their MCAT score by an average of 12 points.
   slider_two_header: Receive a Personalized Program

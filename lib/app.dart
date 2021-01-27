@@ -27,6 +27,8 @@ const _appColors = const AppColors(
   separator: Color(0xFFEBEEEF),
   divider: Color(0x0D000000),
   questions: Color(0xFFFF7B5D),
+  qualifyingText: Color.fromRGBO(252, 132, 81, 1),
+  // qualifyingText: Color.fromRGBO(78, 101, 142, 1),
 );
 
 final Map<int, Color> _primarySwatch = {
