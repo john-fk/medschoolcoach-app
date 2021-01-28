@@ -85,7 +85,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex: 8,
+                      flex: 7,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
