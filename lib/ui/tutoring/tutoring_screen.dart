@@ -4,11 +4,11 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/tutoring/tutoring_slider_item.dart';
+import 'package:Medschoolcoach/ui/webview/webview_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
-import 'package:Medschoolcoach/ui/webview/webview_screen.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -78,14 +78,14 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         children: [
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(3.0),
               child: Container(
                 color: Colors.white,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: 7,
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.60,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -101,7 +101,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                     autoPlay: true,
                                     viewportFraction: 1.0,
                                     height: MediaQuery.of(context).size.height /
-                                        1.54,
+                                        1.94,
                                     onPageChanged: (index, reason) {
                                       try {
                                         if (ModalRoute.of(context).isCurrent) {
@@ -127,88 +127,98 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _sliders.map((url) {
-                          int index = _sliders.indexOf(url);
-                          final enabledDotSize = whenDevice(
-                            context,
-                            small: 10.0,
-                            large: 13.0,
-                            tablet: 14.0,
-                          );
-                          final disabledDotSize = whenDevice(
-                            context,
-                            small: 8.0,
-                            large: 10.0,
-                            tablet: 11.0,
-                          );
-                          return Container(
-                            width: _current == index
-                                ? enabledDotSize
-                                : disabledDotSize,
-                            height: _current == index
-                                ? enabledDotSize
-                                : disabledDotSize,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _current == index
-                                  ? Style.of(context).colors.accent3
-                                  : Style.of(context)
-                                      .colors
-                                      .accent3
-                                      .withAlpha(25),
-                            ),
-                          );
-                        }).toList(),
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _sliders.map((url) {
+                            int index = _sliders.indexOf(url);
+                            final enabledDotSize = whenDevice(
+                              context,
+                              small: 10.0,
+                              large: 13.0,
+                              tablet: 14.0,
+                            );
+                            final disabledDotSize = whenDevice(
+                              context,
+                              small: 8.0,
+                              large: 10.0,
+                              tablet: 11.0,
+                            );
+                            return Container(
+                              width: _current == index
+                                  ? enabledDotSize
+                                  : disabledDotSize,
+                              height: _current == index
+                                  ? enabledDotSize
+                                  : disabledDotSize,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _current == index
+                                    ? Style.of(context).colors.accent3
+                                    : Style.of(context)
+                                        .colors
+                                        .accent3
+                                        .withAlpha(25),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Column(
-                                children: [
-                                  InkWell(
-                                    child: Container(
-                                      child: Text(
-                                        FlutterI18n.translate(context,
-                                            "tutoring_sliders.qualifier"),
-                                        style: smallerResponsiveFont(
-                                          context,
-                                          fontColor: FontColor.QualifyingText,
-                                          fontWeight: FontWeight.w500,
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                      child: Container(
+                                        child: Text(
+                                          FlutterI18n.translate(context,
+                                              "tutoring_sliders.qualifier"),
+                                          style: mediumResponsiveFont(
+                                            context,
+                                            fontColor: FontColor.QualifyingText,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
+                                        margin:
+                                        EdgeInsets.fromLTRB(
+                                            2.5, 2, 2.5, 15),
                                       ),
-                                      margin:
-                                          EdgeInsets.fromLTRB(2.5, 2, 2.5, 10),
+                                      onTap: () async {
+                                        _analyticsProvider.logEvent(
+                                            AnalyticsConstants
+                                                .tapExploreOptions,
+                                            params: {
+                                              AnalyticsConstants.keySource:
+                                                  AnalyticsConstants
+                                                      .screenTutoring,
+                                              AnalyticsConstants.keyType:
+                                                  "text",
+                                            });
+                                        _sendRequestInfo();
+                                      },
                                     ),
-                                    onTap: () async {
-                                      _analyticsProvider.logEvent(
-                                          AnalyticsConstants.tapExploreOptions,
-                                          params: {
-                                            AnalyticsConstants.keySource:
-                                                AnalyticsConstants
-                                                    .screenTutoring,
-                                            AnalyticsConstants.keyType: "text",
-                                          });
-                                      _sendRequestInfo();
-                                    },
-                                  ),
                                   _buildButton(context),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   ],
