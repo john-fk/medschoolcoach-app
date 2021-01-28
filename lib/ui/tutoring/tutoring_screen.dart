@@ -323,28 +323,46 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 19),
-                      child: Text(
-                          FlutterI18n.translate(context,
-                              "tutoring_request_info_dialog.dialog_header"),
-                          textAlign: TextAlign.center,
-                          style: biggerResponsiveFont(
-                            context,
-                            fontWeight: FontWeight.bold,
-                          )),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 19),
+                          child: Text(
+                              FlutterI18n.translate(context,
+                                  "tutoring_request_info_dialog.dialog_header"),
+                              textAlign: TextAlign.center,
+                              style: biggerResponsiveFont(
+                                context,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        _getDivider(),
+                        _getRequestInfoDialogButton(
+                            "tutoring_request_info_dialog.call_us_now",
+                            _openPhoneNumber),
+                        _getDivider(),
+                        _getRequestInfoDialogButton(
+                            "tutoring_request_info_dialog.schedule_a_meeting",
+                            _navigateToScheduleAMeeting),
+                      ],
                     ),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.call_us_now",
-                        _openPhoneNumber),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.schedule_a_meeting",
-                        _navigateToScheduleAMeeting),
+                    Positioned(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: CloseButton(
+                          color: Colors.black,
+                          key: Key("dialog close"),
+                          onPressed: () {
+                            Navigator.of(_scaffoldKey.currentContext).pop();
+                          },
+                        ),
+                      ),
+                      right: 0.0,
+                      top: -15.0,
+                    ),
                   ],
                 ),
               )
