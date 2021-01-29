@@ -17,11 +17,7 @@ class TutoringRepository implements Repository {
       TutoringSlider(
           image: Style.of(context).svgAsset.tutoringSliderThree,
           header: 'tutoring_sliders.slider_three_header',
-          description: 'tutoring_sliders.slider_three_description'),
-      TutoringSlider(
-          image: Style.of(context).svgAsset.tutoringSliderFour,
-          header: 'tutoring_sliders.slider_four_header',
-          description: 'tutoring_sliders.slider_four_description'),
+          description: 'tutoring_sliders.slider_three_description')
     ];
     return sliders;
   }

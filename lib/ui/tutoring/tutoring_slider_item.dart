@@ -15,28 +15,31 @@ class TutoringSliderItem extends StatelessWidget {
     return Center(
       child: Container(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
                 width: size.width / 1.2,
-                height: size.height / 2.57,
+                height: size.height * 0.32,
                 child: SvgPicture.asset(
                   sliderModel.image,
                 )),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 15, bottom: 5, left: 10, right: 10),
-                  child: _getHeader(sliderModel.header, context),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 8, bottom: 8, left: 23, right: 23),
-                  child: _getDescription(sliderModel.description, context),
-                ),
-              ],
+            Container(
+              height: size.height * 0.17,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 2, left: 10, right: 10),
+                    child: _getHeader(sliderModel.header, context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 5, bottom: 5, left: 23, right: 23),
+                    child: _getDescription(sliderModel.description, context),
+                  ),
+                ],
+              ),
             )
           ],
         ),

@@ -197,7 +197,7 @@ class NavigationBar extends StatelessWidget {
   void _openTutoringScreen(BuildContext context) {
     if (page == NavigationPage.Tutoring) return;
     runOnTap?.call();
-    Routes.navigateToTutoringScreen(context, AnalyticsConstants.screenHome,
+    Routes.navigateToTutoringScreen(context, AnalyticsConstants.screenTutoring,
         isNavBar: true);
   }
 

@@ -36,7 +36,7 @@ Future<void> main() async {
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-        (_) {
+    (_) {
       runApp(MyApp(
         initialRoute: initialRoute,
       ));

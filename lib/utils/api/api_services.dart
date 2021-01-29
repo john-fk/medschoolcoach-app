@@ -118,6 +118,8 @@ abstract class ApiServices {
 
   Future<NetworkResponse<void>> requestTutoringInfo();
 
+  Future<NetworkResponse<void>> requestForTutoringUpsell();
+
   Future<NetworkResponse<void>> startSchedule({
     @required int days,
   });
@@ -696,6 +698,21 @@ class ApiServicesImpl implements ApiServices {
     try {
       final Map<String, String> headers = await _getHeaders();
       String url = _getBaseUrl() + "/user/workflow/request-info";
+      final String response = await _networkClient.post(
+        url,
+        headers: headers,
+      );
+      return SuccessResponse<String>(response);
+    } catch (error) {
+      return _handleError<void>(error);
+    }
+  }
+
+  @override
+  Future<NetworkResponse<void>> requestForTutoringUpsell() async {
+    try {
+      final Map<String, String> headers = await _getHeaders();
+      String url = _getBaseUrl() + "/user/workflow/tutoring-upsell";
       final String response = await _networkClient.post(
         url,
         headers: headers,

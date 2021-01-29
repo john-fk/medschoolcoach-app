@@ -99,5 +99,5 @@ class _AppSvgAssets {
   final tutoringSliderOne = "assets/svg/slider_1.svg";
   final tutoringSliderTwo = "assets/svg/slider_2.svg";
   final tutoringSliderThree = "assets/svg/slider_3.svg";
-  final tutoringSliderFour = "assets/svg/slider_4.svg";
+
 }

@@ -4,17 +4,16 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/tutoring/tutoring_slider_item.dart';
+import 'package:Medschoolcoach/ui/webview/webview_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
-import 'package:Medschoolcoach/utils/external_navigation_utils.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
-import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -79,14 +78,14 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         children: [
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(3.0),
               child: Container(
                 color: Colors.white,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: 8,
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.60,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -102,7 +101,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                     autoPlay: true,
                                     viewportFraction: 1.0,
                                     height: MediaQuery.of(context).size.height /
-                                        1.54,
+                                        1.94,
                                     onPageChanged: (index, reason) {
                                       try {
                                         if (ModalRoute.of(context).isCurrent) {
@@ -128,58 +127,98 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _sliders.map((url) {
-                          int index = _sliders.indexOf(url);
-                          final enabledDotSize = whenDevice(
-                            context,
-                            small: 10.0,
-                            large: 13.0,
-                            tablet: 14.0,
-                          );
-                          final disabledDotSize = whenDevice(
-                            context,
-                            small: 8.0,
-                            large: 10.0,
-                            tablet: 11.0,
-                          );
-                          return Container(
-                            width: _current == index
-                                ? enabledDotSize
-                                : disabledDotSize,
-                            height: _current == index
-                                ? enabledDotSize
-                                : disabledDotSize,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _current == index
-                                  ? Style.of(context).colors.accent3
-                                  : Style.of(context)
-                                      .colors
-                                      .accent3
-                                      .withAlpha(25),
-                            ),
-                          );
-                        }).toList(),
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _sliders.map((url) {
+                            int index = _sliders.indexOf(url);
+                            final enabledDotSize = whenDevice(
+                              context,
+                              small: 10.0,
+                              large: 13.0,
+                              tablet: 14.0,
+                            );
+                            final disabledDotSize = whenDevice(
+                              context,
+                              small: 8.0,
+                              large: 10.0,
+                              tablet: 11.0,
+                            );
+                            return Container(
+                              width: _current == index
+                                  ? enabledDotSize
+                                  : disabledDotSize,
+                              height: _current == index
+                                  ? enabledDotSize
+                                  : disabledDotSize,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _current == index
+                                    ? Style.of(context).colors.accent3
+                                    : Style.of(context)
+                                        .colors
+                                        .accent3
+                                        .withAlpha(25),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: _buildButton(context),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                      child: Container(
+                                        child: Text(
+                                          FlutterI18n.translate(context,
+                                              "tutoring_sliders.qualifier"),
+                                          style: mediumResponsiveFont(
+                                            context,
+                                            fontColor: FontColor.QualifyingText,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        margin:
+                                        EdgeInsets.fromLTRB(
+                                            2.5, 2, 2.5, 15),
+                                      ),
+                                      onTap: () async {
+                                        _analyticsProvider.logEvent(
+                                            AnalyticsConstants
+                                                .tapExploreOptions,
+                                            params: {
+                                              AnalyticsConstants.keySource:
+                                                  AnalyticsConstants
+                                                      .screenTutoring,
+                                              AnalyticsConstants.keyType:
+                                                  "text",
+                                            });
+                                        _sendRequestInfo();
+                                      },
+                                    ),
+                                  _buildButton(context),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -232,7 +271,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
 
   Widget _buildButton(BuildContext context) {
     return Container(
-      key: const Key("request info"),
+      key: const Key("explore tutoring options"),
       width: double.infinity,
       height: whenDevice(context, small: 35, large: 40, tablet: 60),
       child: RaisedButton(
@@ -247,10 +286,11 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         ),
         color: Style.of(context).colors.premium,
         onPressed: () async {
-          _analyticsProvider.logEvent(AnalyticsConstants.tapRequestInfo,
-              params: {
-                AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-              });
+          _analyticsProvider
+              .logEvent(AnalyticsConstants.tapExploreOptions, params: {
+            AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
+            AnalyticsConstants.keyType: "button",
+          });
           _sendRequestInfo();
         },
         child: Text(
@@ -293,34 +333,46 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 19),
-                      child: Text(
-                          FlutterI18n.translate(context,
-                              "tutoring_request_info_dialog.dialog_header"),
-                          textAlign: TextAlign.center,
-                          style: biggerResponsiveFont(
-                            context,
-                            fontWeight: FontWeight.bold,
-                          )),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 19),
+                          child: Text(
+                              FlutterI18n.translate(context,
+                                  "tutoring_request_info_dialog.dialog_header"),
+                              textAlign: TextAlign.center,
+                              style: biggerResponsiveFont(
+                                context,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        _getDivider(),
+                        _getRequestInfoDialogButton(
+                            "tutoring_request_info_dialog.call_us_now",
+                            _openPhoneNumber),
+                        _getDivider(),
+                        _getRequestInfoDialogButton(
+                            "tutoring_request_info_dialog.schedule_a_meeting",
+                            _navigateToScheduleAMeeting),
+                      ],
                     ),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.schedule_a_meeting",
-                        _navigateToScheduleAMeeting),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.call_us_now",
-                        _openPhoneNumber),
-                    _getDivider(),
-                    _getRequestInfoDialogButton(
-                        "tutoring_request_info_dialog.request_more_info", () {
-                      Navigator.of(context).pop();
-                      _requestMoreInfo();
-                    }),
+                    Positioned(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: CloseButton(
+                          color: Colors.black,
+                          key: Key("dialog close"),
+                          onPressed: () {
+                            Navigator.of(_scaffoldKey.currentContext).pop();
+                          },
+                        ),
+                      ),
+                      right: 0.0,
+                      top: -15.0,
+                    ),
                   ],
                 ),
               )
@@ -331,81 +383,58 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
           ),
         );
       },
-    );
+    ).then((dynamic result) {
+      if (result != "success") {
+        _flagForTutoringUpsell();
+      }
+    });
   }
 
-  void _navigateToScheduleAMeeting() {
+  Future _navigateToScheduleAMeeting() async {
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
-    Navigator.of(_scaffoldKey.currentContext).pop();
-    ExternalNavigationUtils.openWebsite(
-      Config.scheduleMeetingUrl,
+    Navigator.of(_scaffoldKey.currentContext).pop("success");
+    Navigator.of(_scaffoldKey.currentContext).push<dynamic>(
+      MaterialPageRoute<dynamic>(
+          builder: (BuildContext context) => WebviewScreen(
+                key: const Key("schedule meeting webview"),
+                initialUrl: Config.scheduleMeetingUrl,
+                title: "Schedule a Meeting",
+              )),
     );
   }
 
-  Future _requestMoreInfo() async {
-    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringRequestMoreInfo,
-        params: {
-          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-        });
+  Future _flagForTutoringUpsell() async {
     final NetworkResponse result = await Injector.appInstance
         .getDependency<ApiServices>()
-        .requestTutoringInfo();
+        .requestForTutoringUpsell();
+    // TODO: Need to figure out how to handle/suppress SUCCESS/ERROR reponse bc user should not know about this ideally.
     if (result is SuccessResponse<String>) {
-      await _showSuccessDialog();
+      _sendTutoringUpsellAnalytics(isSuccess: true);
       Navigator.of(_scaffoldKey.currentContext).pop();
     } else {
       if (result is ErrorResponse &&
           result.error is ApiException &&
           (result.error as ApiException).code == 412) {
-        await _showSuccessDialog();
+        _sendTutoringUpsellAnalytics(isSuccess: true);
       } else {
-        await _showErrorDialog();
+        _sendTutoringUpsellAnalytics();
       }
     }
   }
 
-  Future _showSuccessDialog() {
-    return _showDialog("tutoring_modal.request_dialog_header",
-        "tutoring_modal.request_dialog_message");
-  }
-
-  Future _showErrorDialog() {
-    return _showDialog(
-        "general.error", "tutoring_modal.request_dialog_error_message");
-  }
-
-  Future _showDialog(String header, String body) {
-    return showDialog<dynamic>(
-      context: _scaffoldKey.currentContext,
-      builder: (context) {
-        return CustomDialog(
-          title: FlutterI18n.translate(
-            context,
-            header,
-          ),
-          content: FlutterI18n.translate(
-            context,
-            body,
-          ),
-          actions: <DialogActionData>[
-            DialogActionData(
-              text: FlutterI18n.translate(
-                context,
-                "tutoring_modal.request_dialog_button",
-              ),
-              onTap: _openPhoneNumber,
-            ),
-          ],
-        );
-      },
-    );
+  void _sendTutoringUpsellAnalytics({bool isSuccess = false}) {
+    _analyticsProvider
+        .logEvent(AnalyticsConstants.tapTutoringInfoModalDismiss, params: {
+      AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
+      AnalyticsConstants.keyIsSuccess: isSuccess
+    });
   }
 
   void _openPhoneNumber() {
-    Navigator.of(_scaffoldKey.currentContext).pop();
+    Navigator.of(_scaffoldKey.currentContext).pop("success");
     launch("tel://${Config.supportPhoneNumber}");
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringCallUs, params: {
       AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring

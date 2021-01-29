@@ -28,6 +28,9 @@ abstract class AnalyticsConstants {
   static const keyCategoryName = "category_name";
   static const keyCurrentCompletion = "current_completion";
   static const keyPageIndex = "page_index";
+  static const keyDirection = "direction";
+  static const keyLeftSwipe = "left";
+  static const keyRightSwipe = "right";
 
   //Screens
   static const screenWelcome = "screen_welcome";
@@ -93,7 +96,7 @@ abstract class AnalyticsConstants {
   static const tapRecentlyWatched = "tap_recently_watched";
   static const tapPickScheduleLength = "tap_pick_schedule_length";
   static const tapChangeSchedule = "tap_change_schedule";
-  static const tapRequestInfo = "tap_request_info";
+  static const tapExploreOptions = "tap_explore_options";
   static const tapTutoringCallUs = "tap_tutoring_call_us";
   static const tapTutoringScheduleAMeeting = "tap_tutoring_schedule_a_meeting";
   static const tapTutoringRequestMoreInfo = "tap_tutoring_request_more_info";
@@ -124,6 +127,7 @@ abstract class AnalyticsConstants {
   static const tapSendFeedback = "tap_send_feedback";
   static const tapVideoCategory = "tap_video_category";
   static const tapProgress = "tap_progress";
+  static const tapTutoringInfoModalDismiss = "tap_tutoring_info_modal_dismiss";
 
   //Swipes
   static const swipeFlashcard = "swipe_flashcard";
