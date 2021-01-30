@@ -3,7 +3,6 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/widgets/modals/tutoring_modal/tutoring_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +11,7 @@ enum NavigationPage {
   Home,
   More,
   Search,
+  Tutoring,
   None,
   Schedule,
 }
@@ -72,17 +72,19 @@ class NavigationBar extends StatelessWidget {
                 context,
                 key: const Key("tutoring"),
                 icon: SvgPicture.asset(
-                  Style.of(context).svgAsset.tutoringNavigationIcon,
+                  page == NavigationPage.Tutoring
+                      ? Style.of(context).svgAsset.tutoringNavigationIconActive
+                      : Style.of(context).svgAsset.tutoringNavigationIcon,
                   height: iconSize,
                   width: iconSize,
                 ),
-                onPressed: () => openTutoringModal(context, AnalyticsConstants.screenHome),
+                onPressed: () => _openTutoringScreen(context),
               ),
               Text(
                 FlutterI18n.translate(context, "navigation_bar.tutoring"),
-                style: normalResponsiveFont(
+                style: _getTextStyle(
                   context,
-                  fontWeight: FontWeight.w500,
+                  NavigationPage.Tutoring,
                 ),
               ),
             ],
@@ -188,7 +190,15 @@ class NavigationBar extends StatelessWidget {
   void _openScheduleScreen(BuildContext context) {
     if (page == NavigationPage.Schedule) return;
     runOnTap?.call();
-    Navigator.of(context).pushNamed(Routes.schedule, arguments: AnalyticsConstants.screenHome);
+    Navigator.of(context)
+        .pushNamed(Routes.schedule, arguments: AnalyticsConstants.screenHome);
+  }
+
+  void _openTutoringScreen(BuildContext context) {
+    if (page == NavigationPage.Tutoring) return;
+    runOnTap?.call();
+    Routes.navigateToTutoringScreen(context, AnalyticsConstants.screenTutoring,
+        isNavBar: true);
   }
 
   void _openMoreScreenOrClose(BuildContext context) {

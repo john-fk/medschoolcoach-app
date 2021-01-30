@@ -13,12 +13,15 @@ abstract class Config {
   static const privacyPolicyUrl =
       'https://www.medschoolcoach.com/privacy-policy/';
   static const tutoringUrl = 'https://www.medschoolcoach.com/mcat-tutoring/';
+  static const scheduleMeetingUrl =
+      'https://app.hubspot.com/meetings/msc/mcat-tutoring';
   static const defaultDateFormat = 'dd MMM yyyy';
   static const defaultLocale = 'en';
   static const requiredPasswordLength = 8;
   static const supportEmail = "techhelp@medschoolcoach.com";
   static const tokenValidityTime = 36000;
   static const oneSignalAppId = "73aeb779-a915-4bd9-9e1c-1eedc6f73a5e";
+  static const supportPhoneNumber = "6172992601";
 
   //Podcast urls
   static const applePodcastUrl =

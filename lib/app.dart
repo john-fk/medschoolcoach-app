@@ -13,6 +13,7 @@ import 'package:uni_links/uni_links.dart';
 const _appColors = const AppColors(
   accent: Color(0xFF145FD8),
   accent2: Color(0xFF0E9732),
+  accent3: Color(0xFF145ED7),
   content: Color(0xFF102B44),
   content2: Colors.white,
   content3: Color(0xFF485E82),
@@ -24,7 +25,9 @@ const _appColors = const AppColors(
   error: Color(0xFFD32F2F),
   premium: Color(0xFFFFB849),
   separator: Color(0xFFEBEEEF),
+  divider: Color(0x0D000000),
   questions: Color(0xFFFF7B5D),
+  qualifyingText: Color.fromRGBO(252, 132, 81, 1),
 );
 
 final Map<int, Color> _primarySwatch = {

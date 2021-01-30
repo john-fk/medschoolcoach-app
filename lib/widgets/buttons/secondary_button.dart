@@ -22,6 +22,7 @@ class SecondaryButton extends StatelessWidget {
       colors: AppColors(
         accent: Style.of(context).colors.content2,
         accent2: Style.of(context).colors.accent2,
+        accent3: Style.of(context).colors.accent3,
         background: Style.of(context).colors.background,
         content: Style.of(context).colors.content,
         content2: Style.of(context).colors.accent,
@@ -33,7 +34,9 @@ class SecondaryButton extends StatelessWidget {
         error: Style.of(context).colors.error,
         premium: Style.of(context).colors.premium,
         separator: Style.of(context).colors.separator,
+        divider: Style.of(context).colors.divider,
         questions: Style.of(context).colors.questions,
+        qualifyingText: Style.of(context).colors.qualifyingText,
       ),
       child: PrimaryButton(
         onPressed: onPressed,
