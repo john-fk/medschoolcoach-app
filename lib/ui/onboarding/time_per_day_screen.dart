@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/models/estimate_schedule.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
@@ -6,6 +7,7 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/utils/toasts.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
@@ -35,6 +37,8 @@ class _TimePerDayState extends State<TimePerDay> {
   bool _initialLoad = false;
   ApiServices apiServices;
   Future<EstimateSchedule> getEstimateCompletion;
+  final ScheduleRepository _scheduleRepository =
+      Injector.appInstance.getDependency<ScheduleRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
@@ -149,16 +153,14 @@ class _TimePerDayState extends State<TimePerDay> {
     } else {
       _analyticsProvider.logEvent("tap_confirm_study_time",
           params: {"hours_per_day": timePerDay.toString()});
-      await apiServices.setOnboarded();
       userManager.updateStudyTimePerDay(timePerDay);
+      await _scheduleRepository.clearCache();
       if (widget.source != Routes.onboarding)
         Navigator.of(context).pop();
       else {
+        await apiServices.setOnboarded();
         await Navigator.pushNamed(context, Routes.scheduleQuestionOfTheDay,
             arguments: Routes.onboarding);
-        setState(() {
-          loading = false;
-        });
       }
     }
   }

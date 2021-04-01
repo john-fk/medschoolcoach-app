@@ -281,7 +281,7 @@ class ApiServicesImpl implements ApiServices {
     try {
       final Map<String, String> headers = await _getHeaders();
       final String response = await _networkClient
-          .get(_getBaseUrl() + "/stats/schedule", headers: headers);
+          .get(_getBaseUrl() + "/stats/schedule?isHour=true", headers: headers);
       var data = ScheduleStats.fromJson(jsonDecode(response));
       return SuccessResponse<ScheduleStats>(data);
     } catch (error) {
@@ -875,7 +875,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/dashboard",
+        "${_getBaseUrl()}/schedule/dashboard?isHour=true",
         headers: headers,
       );
 
@@ -894,7 +894,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/$day",
+        "${_getBaseUrl()}/schedule/$day?isHour=true",
         headers: headers,
       );
 
@@ -912,7 +912,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/users/settings/schedule",
+        "${_getBaseUrl()}/users/settings/schedule?isHour=true",
         headers: headers,
       );
       return SuccessResponse<ScheduleDateResponse>(
@@ -929,7 +929,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/progress",
+        "${_getBaseUrl()}/schedule/progress?isHour=true",
         headers: headers,
       );
 
@@ -1329,7 +1329,7 @@ class ApiServicesImpl implements ApiServices {
     try {
       final Map<String, String> headers = await _getHeaders();
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/estimate-completion",
+        "${_getBaseUrl()}/schedule/estimate-completion?isHour=true",
         headers: headers,
       );
       return EstimateSchedule.fromJSON(json.decode(response));

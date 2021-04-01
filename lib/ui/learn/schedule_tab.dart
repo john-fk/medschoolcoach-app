@@ -283,7 +283,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
     final videos = SuperStateful.of(context).videosScheduleList;
     videos[index].favourite = !videos[index].favourite;
     _isToggled = true;
-    setState(() {});
   }
 
   void _doNothing() {

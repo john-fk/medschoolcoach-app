@@ -146,20 +146,21 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
                 )
               ],
             ),
-            !isProgressIndicator ?
-            Positioned(
-              right: -7,
-              top: -7,
-              child: BookmarkWidget(
-                active: widget.cellData.bookmarked,
-                onTap: _onTap,
-              ),
-            ) :
-            Positioned(
-              right: 10,
-              top: 10,
-              child: SizedBox(child: ProgressBar(), height: 10.0, width: 10.0),
-            )
+            !isProgressIndicator
+                ? Positioned(
+                    right: -7,
+                    top: -7,
+                    child: BookmarkWidget(
+                      active: widget.cellData.bookmarked,
+                      onTap: _onTap,
+                    ),
+                  )
+                : Positioned(
+                    right: 10,
+                    top: 10,
+                    child: SizedBox(
+                        child: ProgressBar(), height: 10.0, width: 10.0),
+                  )
           ],
         ),
       ),
@@ -193,11 +194,14 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
         widget.cellData.bookmarked = initialValue;
       });
     } else {
+      setState(() {
+        widget.cellData.bookmarked = !initialValue;
+      });
       widget.onBookmarkTap();
     }
     _analyticsProvider.logVideoBookMarkEvent(
         initialValue, widget.cellData.videoId, widget.cellData.lessonName);
-    setState(() {      
+    setState(() {
       isProgressIndicator = false;
     });
   }
