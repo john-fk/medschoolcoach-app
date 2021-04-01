@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
@@ -13,7 +15,7 @@ import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -153,7 +155,6 @@ class _MultipleChoiceQuestionScreenState
                 isBookmarked: _favourite != null ? _favourite : _getFavourite(),
                 onBookmarkTap: () {
                   _favourite = !_favourite;
-
                 },
               ),
               Expanded(
@@ -544,6 +545,20 @@ class _MultipleChoiceQuestionScreenState
           ..sort(
             (a, b) => a.order.compareTo(b.order),
           );
+        //Code to remove questions with no or empty options
+
+        for (var question in _questionsList) {
+          if (question.choiceA == "" &&
+              question.choiceB == "" &&
+              question.choiceC == "" &&
+              question.choiceD == "") log(question.id);
+        }
+
+        _questionsList.removeWhere((question) =>
+            question.choiceA == "" &&
+            question.choiceB == "" &&
+            question.choiceC == "" &&
+            question.choiceD == "");
 
         if (widget.arguments.status != null) {
           _filterQuestionsByStatus();

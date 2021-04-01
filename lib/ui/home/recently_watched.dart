@@ -213,8 +213,7 @@ class RecentlyWatched extends StatelessWidget {
               Positioned(
                 top: -10,
                 right: -10,
-                child: SvgPicture.asset(
-                  Style.of(context).svgAsset.scienceLady,
+                child: SvgPicture.asset(Style.of(context).svgAsset.scienceLady,
                   height: whenDevice(
                     context,
                     large: 185.0,
@@ -232,16 +231,17 @@ class RecentlyWatched extends StatelessWidget {
   void _goToLesson(BuildContext context) {
     analyticsProvider.logEvent(AnalyticsConstants.tapRecentlyWatched,
         params: analyticsProvider.getVideoParam(
-            recentlyWatched.id, recentlyWatched.subject.name, additionalParams: {
-          AnalyticsConstants.keySource: AnalyticsConstants.screenRecentlyWatched
-        }));
+            recentlyWatched.id, recentlyWatched.subject.name,
+            additionalParams: {
+              AnalyticsConstants.keySource:
+                  AnalyticsConstants.screenRecentlyWatched
+            }));
     Navigator.of(context).pushNamed(
       Routes.lesson,
       arguments: LessonVideoScreenArguments(
-        order: recentlyWatched.order,
-        topicId: recentlyWatched.topicId,
-        source: AnalyticsConstants.screenRecentlyWatched
-      ),
+          order: recentlyWatched.order,
+          topicId: recentlyWatched.topicId,
+          source: AnalyticsConstants.screenRecentlyWatched),
     );
   }
 }

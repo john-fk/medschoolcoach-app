@@ -42,7 +42,7 @@ abstract class AnalyticsConstants {
   static const screenBuddies = "screen_buddies";
   static const screenProfileMyStats = "screen_my_stats";
   static const screenMore = "screen_more";
-  static const screenSchedule = "screen_schedule";
+  static const screenLearn = "screen_learn";
   static const screenSearch = "screen_search";
   static const screenTutoring = "screen_tutoring";
   static const screenLessonVideo = "screen_lesson_video";
@@ -72,6 +72,9 @@ abstract class AnalyticsConstants {
   static const screenNoMoreFlashcard = "screen_no_more_flashcards";
   static const screenQuestionSummary = "screen_question_summary";
   static const modalShouldChangeSchedule = "modal_should_change_schedule";
+  static const practiceScreen = "screen_practice";
+  static const lessonScreen = "screen_lesson";
+
 
   //Taps
   static const tapSignUp = "tap_sign_up";

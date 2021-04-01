@@ -7,15 +7,15 @@ class TutoringRepository implements Repository {
   List<TutoringSlider> fetchSliders(BuildContext context) {
     final List<TutoringSlider> sliders = [
       TutoringSlider(
-          image: Style.of(context).svgAsset.tutoringSliderOne,
+          image: Style.of(context).pngAsset.tutoringSliderOne,
           header: 'tutoring_sliders.slider_one_header',
           description: 'tutoring_sliders.slider_one_description'),
       TutoringSlider(
-          image: Style.of(context).svgAsset.tutoringSliderTwo,
+          image: Style.of(context).pngAsset.tutoringSliderTwo,
           header: 'tutoring_sliders.slider_two_header',
           description: 'tutoring_sliders.slider_two_description'),
       TutoringSlider(
-          image: Style.of(context).svgAsset.tutoringSliderThree,
+          image: Style.of(context).pngAsset.tutoringSliderThree,
           header: 'tutoring_sliders.slider_three_header',
           description: 'tutoring_sliders.slider_three_description')
     ];

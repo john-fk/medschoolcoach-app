@@ -1,7 +1,7 @@
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -10,12 +10,14 @@ class PrimaryButton extends StatelessWidget {
   final bool isLoading;
   final EdgeInsets margin;
   final Color color;
+  final bool isSmall;
 
   PrimaryButton({
     @required this.text,
     @required this.onPressed,
     this.isLoading = false,
     this.margin,
+    this.isSmall = false,
     this.color,
     Key key,
   }) : super(key: key);
@@ -27,8 +29,8 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       height: whenDevice(
         context,
-        large: 50,
-        tablet: 80,
+        large: isSmall?35:50,
+        tablet: isSmall?65:80,
       ),
       child: ButtonTheme(
         child: RaisedButton(

@@ -6,9 +6,10 @@ import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:Medschoolcoach/widgets/global_progress/global_progress_widget.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -44,7 +45,7 @@ class _StatsViewState extends State<StatsView> {
       key: const Key("stats_scroll"),
       child: Column(
         children: <Widget>[
-          GlobalProgressWidget(
+          _loading ? Container() : GlobalProgressWidget(
             showHeader: false,
             source: AnalyticsConstants.screenProfileMyStats,
             analyticsProvider: _analyticsProvider
@@ -184,6 +185,9 @@ class _StatsViewState extends State<StatsView> {
     if (result is SuccessResponse<Milestones>) {
       _badges = result.body.badges;
     }
+
+    await SuperStateful.of(context)
+        .updateGlobalStatistics(forceApiRequest: false);
 
     setState(() {
       _loading = false;

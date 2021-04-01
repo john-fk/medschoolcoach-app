@@ -15,16 +15,20 @@ String questionToJson(List<Question> data) =>
 
 class QuestionList {
   List<Question> items;
+  int limit;
+  int offset;
+  int total;
 
-  QuestionList({
-    this.items,
-  });
+  QuestionList({this.items, this.limit, this.offset, this.total});
 
   factory QuestionList.fromJson(Map<String, dynamic> json) => QuestionList(
         items: json["items"] == null
             ? null
             : List<Question>.from(
                 json["items"].map((dynamic x) => Question.fromJson(x))),
+        limit: json['limit'],
+        offset: json['offset'],
+        total: json['total'],
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -99,13 +103,22 @@ class Question {
         videoId: json["video_id"] == null ? null : json["video_id"],
         number: json["number"] == null ? null : json["number"],
         stem: json["html_stem"] == null ? null : json["html_stem"],
-        choiceA: json["html_choice_a"] == null ? null : json["html_choice_a"],
-        choiceB: json["html_choice_b"] == null ? null : json["html_choice_b"],
-        choiceC: json["html_choice_c"] == null ? null : json["html_choice_c"],
-        choiceD: json["html_choice_d"] == null ? null : json["html_choice_d"],
+        choiceA: json["html_choice_a"].toString().isEmpty
+            ? json["choice_a"]
+            : json["html_choice_a"],
+        choiceB: json["html_choice_b"].toString().isEmpty
+            ? json["choice_b"]
+            : json["html_choice_b"],
+        choiceC: json["html_choice_c"].toString().isEmpty
+            ? json["choice_c"]
+            : json["html_choice_c"],
+        choiceD: json["html_choice_d"].toString().isEmpty
+            ? json["choice_d"]
+            : json["html_choice_d"],
         answer: json["answer"] == null ? null : json["answer"],
-        explanation:
-            json["html_explanation"] == null ? null : json["html_explanation"],
+        explanation: json["html_explanation"].toString().isEmpty
+            ? json["explanation"]
+            : json["html_explanation"],
         editor: json["editor"] == null ? null : json["editor"],
         formating: json["formating"] == null ? null : json["formating"],
         comments: json["comments"] == null ? null : json["comments"],

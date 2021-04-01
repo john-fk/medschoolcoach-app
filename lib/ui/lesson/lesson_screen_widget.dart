@@ -13,7 +13,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/video_player/custom_video_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -169,9 +169,10 @@ class _LessonScreenState extends State<LessonScreenWidget> {
                   sidePaddingValue: sidePaddingValue,
                   video: widget.video,
                   pausePlayer: () => widget.customVideoController?.pause(),
-                  resumePlayer: () => widget.customVideoController?.play()
-                )
-              : RegularUserCards(),
+                  resumePlayer: () => widget.customVideoController?.play())
+              : RegularUserCards(
+                  pausePlayer:() => widget.customVideoController?.pause(),
+                ),
           SizedBox(
             height: MediaQuery.of(context).viewPadding.bottom + paddingValue,
           )
@@ -246,7 +247,6 @@ class _LessonScreenState extends State<LessonScreenWidget> {
   }
 
   void _goToLessonScreen({@required bool forward}) {
-
     final order =
         forward ? widget.arguments.order + 1 : widget.arguments.order + -1;
     widget.updateProgress();
@@ -256,26 +256,24 @@ class _LessonScreenState extends State<LessonScreenWidget> {
       context,
       Routes.lesson,
       arguments: LessonVideoScreenArguments(
-        order: order,
-        fullScreenVideo: widget.arguments.fullScreenVideo,
-        videos: widget.arguments.videos,
-        topicId: widget.arguments.videos == null
-            ? widget.arguments.topicId
-            : widget.arguments.videos[order].topicId,
-        topicName: widget.arguments.topicName,
-        source: AnalyticsConstants.screenLessonVideo
-      ),
+          order: order,
+          fullScreenVideo: widget.arguments.fullScreenVideo,
+          videos: widget.arguments.videos,
+          topicId: widget.arguments.videos == null
+              ? widget.arguments.topicId
+              : widget.arguments.videos[order].topicId,
+          topicName: widget.arguments.topicName,
+          source: AnalyticsConstants.screenLessonVideo),
     );
   }
 
   void _logAnalytics(int order, bool forward) {
-    var args = {
-      AnalyticsConstants.keySource: widget.arguments.source
-    };
+    var args = {AnalyticsConstants.keySource: widget.arguments.source};
     if (widget.arguments.videos != null &&
         widget.arguments.videos[order] != null) {
       args[AnalyticsConstants.keyVideoId] = widget.arguments.videos[order].id;
-      args[AnalyticsConstants.keyVideoName] = widget.arguments.videos[order].name;
+      args[AnalyticsConstants.keyVideoName] =
+          widget.arguments.videos[order].name;
     }
     widget.analyticsProvider.logEvent(
         forward

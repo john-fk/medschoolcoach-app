@@ -8,7 +8,7 @@ import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

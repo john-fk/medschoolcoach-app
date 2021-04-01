@@ -10,6 +10,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 
 class RegularUserCards extends StatelessWidget {
+  final VoidCallback pausePlayer;
+
+  RegularUserCards({this.pausePlayer});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class RegularUserCards extends StatelessWidget {
               tablet: 50,
             ),
           ),
-          onTap: () => openPremiumModal(context),
+          onTap: () => {pausePlayer(), openPremiumModal(context)},
         ),
         SizedBox(
           height: 10,
@@ -56,8 +59,11 @@ class RegularUserCards extends StatelessWidget {
               ),
             ),
           ),
-          onTap: () => Routes.navigateToTutoringScreen(
-              context, AnalyticsConstants.screenLessonVideo),
+          onTap: () {
+            pausePlayer();
+            Routes.navigateToTutoringScreen(
+                context, AnalyticsConstants.screenLessonVideo);
+          },
         ),
         SizedBox(
           height: 10,
@@ -78,8 +84,8 @@ class RegularUserCards extends StatelessWidget {
               tablet: 50,
             ),
           ),
-          onTap: () => openPodcastModal(
-              context, AnalyticsConstants.screenPremiumCard),
+          onTap: () =>
+              openPodcastModal(context, AnalyticsConstants.screenPremiumCard),
         ),
       ],
     );

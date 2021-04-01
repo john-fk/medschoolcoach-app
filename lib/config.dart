@@ -1,11 +1,14 @@
+
 abstract class Config {
   static final prodApiUrl = "https://api.medschoolcoach.com";
-  static final devApiUrl = "https://api.medschoolcoach.com";
+  static final devApiUrl =  "https://mcat-prep-staging.medschoolcoach.com";
+  // static final devApiUrl =  "http://localhost:8000";
   static const appTitle = "MedSchoolCoach";
   static const fontFamily = "Rubik";
   static const devBaseAuth0Url = 'https://auth.medschoolcoach.com';
   static const prodBaseAuth0Url = 'https://auth.medschoolcoach.com';
   static const prodAuth0ClientId = 'NJjVmGlaa3WGc1Rr1CujFctPsXAuVFQO';
+  // static const prodAuth0ClientId = 'LvuKFKn50tb2ddO6C3LIUo6YuA2gpLaF';
   static const testAuth0ClientId = 'LvuKFKn50tb2ddO6C3LIUo6YuA2gpLaF';
   static String auth0ClientId = prodAuth0ClientId;
   static const termsOfUseUrl =
@@ -52,4 +55,15 @@ abstract class Config {
 
   static bool showSwitch = false;
   static bool switchValue = false;
+
+  //Auth0
+  static const AUTH0_DOMAIN = 'auth.medschoolcoach.com';
+  static const AUTH0_CLIENT_ID = 'NJjVmGlaa3WGc1Rr1CujFctPsXAuVFQO';
+  // static const AUTH0_CLIENT_ID = 'LvuKFKn50tb2ddO6C3LIUo6YuA2gpLaF';
+  static const AUTH0_REDIRECT_URI = 'com.htd.medschoolcoach://login-callback';
+  static const AUTH0_ISSUER = 'https://$AUTH0_DOMAIN';
+  static const AUTH_EXPIRY_DURATION = 86400;
+
+  static const REGULAR_AUTH_PREFIX = "auth0";
+  static const SOCIAL_LOGIN_ID_PREFIX = ["facebook", "google-oauth2", "apple"];
 }

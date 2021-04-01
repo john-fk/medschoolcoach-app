@@ -1,14 +1,25 @@
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/ui/onboarding/onboarding_state.dart';
+import 'package:Medschoolcoach/utils/api/api_services.dart';
+import 'package:Medschoolcoach/utils/api/auth_service.dart';
+import 'package:Medschoolcoach/utils/api/models/schedule_date_response.dart';
+import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/buttons/secondary_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/text_button.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
+import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
+
+import 'package:Medschoolcoach/repository/repository_result.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -16,15 +27,19 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
+
+  final AuthServices _authService =
+      Injector.appInstance.getDependency<AuthServices>();
+
+  bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    _analyticsProvider.logScreenView(AnalyticsConstants.screenWelcome,
-        AnalyticsConstants.screenWelcome);
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenWelcome, AnalyticsConstants.screenWelcome);
   }
 
   @override
@@ -110,15 +125,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 horizontal: screenWidth * 0.07),
                             text: FlutterI18n.translate(
                                 context, "welcome_screen.register"),
-                            onPressed: _navigateToRegister
+                            onPressed: () => _navigateToAuth(false),
                           ),
                           const SizedBox(height: 5),
                           MSCTextButton(
                             key: const Key("go_login_button"),
                             text: FlutterI18n.translate(
                                 context, "welcome_screen.login"),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, Routes.login),
+                            onPressed: () => _navigateToAuth(true),
                             secondaryButton: true,
                           )
                         ],
@@ -129,93 +143,160 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ],
             ),
           )
-        : Scaffold(
-            body: Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                Container(
-                  width: screenWidth,
-                  height: screenHeight,
-                  child: SvgPicture.asset(
-                    Style.of(context).svgAsset.welcomeScreenBackground,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  top: -3.65 * screenWidth,
-                  left: -1.5 * screenWidth,
-                  child: Container(
-                    width: 4 * screenWidth,
-                    height: 4 * screenWidth,
-                    decoration: BoxDecoration(
-                      color: Style.of(context).colors.background,
-                      shape: BoxShape.circle,
+        : loading
+            ? Material(
+                child: Center(
+                child: ProgressBar(),
+              ))
+            : Scaffold(
+                body: Stack(
+                  overflow: Overflow.visible,
+                  children: <Widget>[
+                    Container(
+                      width: screenWidth,
+                      height: screenHeight,
+                      child: SvgPicture.asset(
+                        Style.of(context).svgAsset.welcomeScreenBackground,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                ),
-                Container(
-                  width: screenWidth,
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
-                  margin: EdgeInsets.only(top: screenWidth * 0.1),
-                  child: Image.asset(
-                    Style.of(context).pngAsset.logo,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: screenWidth * 0.34),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.07),
-                        child: Text(
-                          FlutterI18n.translate(
-                              context, "welcome_screen.header"),
-                          textAlign: TextAlign.center,
-                          style: Style.of(context)
-                              .font
-                              .normal2
-                              .copyWith(fontSize: screenWidth * 0.07),
+                    Positioned(
+                      top: -3.65 * screenWidth,
+                      left: -1.5 * screenWidth,
+                      child: Container(
+                        width: 4 * screenWidth,
+                        height: 4 * screenWidth,
+                        decoration: BoxDecoration(
+                          color: Style.of(context).colors.background,
+                          shape: BoxShape.circle,
                         ),
                       ),
-                      SvgPicture.asset(
-                        Style.of(context).svgAsset.manOnBooks,
-                        height: screenHeight * 0.3,
+                    ),
+                    Container(
+                      width: screenWidth,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
+                      margin: EdgeInsets.only(top: screenWidth * 0.1),
+                      child: Image.asset(
+                        Style.of(context).pngAsset.logo,
                       ),
-                      Column(
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: screenWidth * 0.34),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          SecondaryButton(
-                            key: const Key("go_register_button"),
+                          Container(
                             margin: EdgeInsets.symmetric(
                                 horizontal: screenWidth * 0.07),
-                            text: FlutterI18n.translate(
-                                context, "welcome_screen.register"),
-                            onPressed: _navigateToRegister
+                            child: Text(
+                              FlutterI18n.translate(
+                                  context, "welcome_screen.header"),
+                              textAlign: TextAlign.center,
+                              style: Style.of(context)
+                                  .font
+                                  .normal2
+                                  .copyWith(fontSize: screenWidth * 0.07),
+                            ),
                           ),
-                          const SizedBox(height: 5),
-                          MSCTextButton(
-                            key: const Key("go_login_button"),
-                            text: FlutterI18n.translate(
-                                context, "welcome_screen.login"),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, Routes.login),
-                            secondaryButton: true,
-                          )
+                          SvgPicture.asset(
+                            Style.of(context).svgAsset.manOnBooks,
+                            height: screenHeight * 0.3,
+                          ),
+                          Column(
+                            children: <Widget>[
+                              SecondaryButton(
+                                key: const Key("go_register_button"),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.07),
+                                text: FlutterI18n.translate(
+                                    context, "welcome_screen.register"),
+                                onPressed: () {
+                                  _navigateToAuth(false);
+                                },
+                              ),
+                              const SizedBox(height: 5),
+                              MSCTextButton(
+                                key: const Key("go_login_button"),
+                                text: FlutterI18n.translate(
+                                    context, "welcome_screen.login"),
+                                onPressed: () {
+                                  _navigateToAuth(true);
+                                },
+                                secondaryButton: true,
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
+                    )
+                  ],
+                ),
+              );
   }
 
-  void _navigateToRegister() {
-    Navigator.pushNamed(context, Routes.register,
-        arguments: AnalyticsConstants.screenWelcome);
+  void _navigateToAuth(bool isLogin) async {
+    bool isSuccess = await _authService.loginAuth0(isLogin);
+    if (!isSuccess) return;
+
+    setState(() {
+      loading = true;
+    });
+
+    UserManager userManager = Injector.appInstance.getDependency<UserManager>();
+    Future.wait([
+      this.fetchAndStoreMcatTestDate(),
+      this.fetchAndStoreNumberOfHoursPerDay()
+    ]);
+    if (await shouldShowOnboarding()) {
+      if (isLogin) {
+        userManager.markOnboardingState(OnboardingState.showForExistingUser);
+        Navigator.pushNamed(context, Routes.oldUserOnboarding);
+      } else {
+        userManager.markOnboardingState(OnboardingState.showForNewUser);
+        Navigator.pushNamed(context, Routes.newUserOnboardingScreen);
+      }
+    } else {
+      userManager.markOnboardingComplete();
+
+      if (await userManager.getQuestionOfTheDayTime() == null) {
+        Navigator.pushNamed(context,
+            Routes.scheduleQuestionOfTheDay, arguments: Routes.welcome);
+      } else {
+        Navigator.pushNamed(context, Routes.home, arguments: Routes.welcome);
+      }
+    }
   }
 
+  Future<bool> shouldShowOnboarding() async {
+    ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
+    var data = await apiServices.getAccountData();
+    final hasOnboarded = data?.onboarded ?? false;
+    return !hasOnboarded;
+  }
+
+  Future<void> fetchAndStoreMcatTestDate() async {
+    var response = await Injector.appInstance
+        .getDependency<UserRepository>()
+        .getProfileUser();
+    if (response is RepositorySuccessResult<ProfileUser>) {
+      var user = response.data;
+      var testDate = user.mcatTestDate;
+      if (testDate != null) {
+        Injector.appInstance
+            .getDependency<UserManager>()
+            .updateTestDate(testDate);
+      }
+    }
+  }
+
+  Future<void> fetchAndStoreNumberOfHoursPerDay() async {
+    var apiServices = Injector.appInstance.getDependency<ApiServices>();
+    final response = await apiServices.getScheduleDate();
+    var userManager = Injector.appInstance.getDependency<UserManager>();
+    if (response is SuccessResponse<ScheduleDateResponse>) {
+      userManager.updateStudyTimePerDay(int.parse(response.body.hours));
+    }
+  }
 }

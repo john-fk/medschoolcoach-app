@@ -5,7 +5,7 @@ import 'package:Medschoolcoach/ui/home/sections_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/search_screen_template/search_screen_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';

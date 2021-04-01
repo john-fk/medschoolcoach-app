@@ -50,6 +50,7 @@ class AnalyticsProvider {
     return args;
   }
 
+  // ignore: avoid_positional_boolean_parameters
   void logVideoBookMarkEvent(bool isRemove, String videoId, String videoName) {
     logEvent(
         isRemove
@@ -59,6 +60,7 @@ class AnalyticsProvider {
   }
 
   void logAccountManagementEvent(
+      // ignore: avoid_positional_boolean_parameters
       String event, String email, bool isSuccess, String errorMessage) {
     logEvent(event, params: {
       AnalyticsConstants.keyEmail: email,

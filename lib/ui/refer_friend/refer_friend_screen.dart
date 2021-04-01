@@ -84,7 +84,9 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Form(
-                  autovalidate: _autovalidate,
+                  autovalidateMode: _autovalidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

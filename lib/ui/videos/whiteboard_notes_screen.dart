@@ -4,7 +4,7 @@ import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:injector/injector.dart';
 
@@ -62,8 +62,6 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
   }
 
   Widget _buildContent() {
-    double width;
-    width = MediaQuery.of(context).size.width;
     return Padding(
         padding: const EdgeInsets.all(20),
         child: Column(children: [

@@ -42,7 +42,8 @@ class _HomeScheduleState extends State<HomeSchedule> {
   bool _isToggled = true;
   List<_HomeScheduleVideo> videosToDisplay;
 
-  //this is part of the hack to make sure the favorte attribute is updated correctly in the topic for the LessonVideoScreen
+  //this is part of the hack to make sure the favorte attribute is
+  // updated correctly in the topic for the LessonVideoScreen
   void _toggleBookmark(int index)  {
     _isToggled = false;
     DashboardSchedule dashboardSchedule =
@@ -184,7 +185,7 @@ class _HomeScheduleState extends State<HomeSchedule> {
           videos: videos,
           order: videosToDisplay[index].index,
           topicId: videosToDisplay[index].video.topicId,
-          source: AnalyticsConstants.screenHome
+          source: "home_practice_section"
       ),
     );
   }

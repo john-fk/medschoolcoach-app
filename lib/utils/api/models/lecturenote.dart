@@ -15,7 +15,9 @@ class LectureNote {
     this.updatedAt,
   });
 
-  factory LectureNote.fromRawJson(String str) => LectureNote.fromJson(json.decode(str));
+
+  factory LectureNote.fromRawJson(String str)
+                                      => LectureNote.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 

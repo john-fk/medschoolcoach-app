@@ -81,10 +81,10 @@ class Video {
         image: json["image"] == null ? null : json["image"],
         length: json["length"] == null ? null : json["length"],
         seconds: json["seconds"] == null ? null : json["seconds"],
-        whiteboardNotesUrl:
-            json["whiteboard_notes_url"] == null ? null : json["whiteboard_notes_url"],
-        hasLectureNotes:
-            json["has_lecture_notes"] == 0 ? false : true,
+        whiteboardNotesUrl: json["whiteboard_notes_url"] == null
+            ? null
+            : json["whiteboard_notes_url"],
+        hasLectureNotes: json["has_lecture_notes"] == 0 ? false : true,
         providerType:
             json["provider_type"] == null ? null : json["provider_type"],
         providerId: json["provider_id"] == null ? null : json["provider_id"],
@@ -133,7 +133,8 @@ class Video {
         "length": length == null ? null : length,
         "seconds": seconds == null ? null : seconds,
         "has_lecture_notes": hasLectureNotes == 0 ? false : true,
-        "whiteboard_notes_url": whiteboardNotesUrl == null ? null : whiteboardNotesUrl,
+        "whiteboard_notes_url":
+            whiteboardNotesUrl == null ? null : whiteboardNotesUrl,
         "provider_type": providerType == null ? null : providerType,
         "provider_id": providerId == null ? null : providerId,
         "link": link == null ? null : link,

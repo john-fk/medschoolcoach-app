@@ -6,23 +6,29 @@ ProfileUser profileUserFromJson(String str) =>
 String profileUserToJson(ProfileUser data) => json.encode(data.toJson());
 
 class ProfileUser {
-  ProfileUser({
-    this.id,
-    this.email,
-    this.firstName,
-    this.lastName,
-  });
+  ProfileUser(
+      {this.id,
+      this.email,
+      this.firstName,
+      this.lastName,
+      this.onboarded,
+      this.mcatTestDate});
 
   String id;
   String email;
   String firstName;
   String lastName;
+  bool onboarded;
+  DateTime mcatTestDate;
 
   factory ProfileUser.fromJson(Map<String, dynamic> json) => ProfileUser(
         id: json["id"] == null ? null : json["id"],
         email: json["email"] == null ? null : json["email"],
         firstName: json["first_name"] == null ? null : json["first_name"],
         lastName: json["last_name"] == null ? null : json["last_name"],
+        onboarded: json["onboarded"] == null ? null : json["onboarded"],
+        mcatTestDate: json["mcat_test_date"] == null
+            ? null : DateTime.parse(json["mcat_test_date"]),
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -30,5 +36,7 @@ class ProfileUser {
         "email": email == null ? null : email,
         "first_name": firstName == null ? null : firstName,
         "last_name": lastName == null ? null : lastName,
+        "onboarded": onboarded,
+        "mcat_test_date": mcatTestDate
       };
 }

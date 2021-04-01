@@ -1,4 +1,3 @@
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
@@ -7,7 +6,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/bookmark/bookmark_widget.dart';
 import 'package:Medschoolcoach/widgets/others/tick_icon.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -30,7 +29,7 @@ class ScheduleListCellData {
     this.lessonName,
     this.percentages,
     this.totalLength,
-    this.bookmarked = false,
+    this.bookmarked,
     this.topicId,
     this.updateTopic = false,
     this.swipeFunction,
@@ -147,6 +146,7 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
                 )
               ],
             ),
+            !isProgressIndicator ?
             Positioned(
               right: -7,
               top: -7,
@@ -154,13 +154,11 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
                 active: widget.cellData.bookmarked,
                 onTap: _onTap,
               ),
-            ),
+            ) :
             Positioned(
-              right: 20,
-              top: 5,
-              child: (!isProgressIndicator
-                  ? Container()
-                  : SizedBox(child: ProgressBar(), height: 10.0, width: 10.0)),
+              right: 10,
+              top: 10,
+              child: SizedBox(child: ProgressBar(), height: 10.0, width: 10.0),
             )
           ],
         ),
@@ -177,7 +175,9 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
   Future<void> _onTap() async {
     bool initialValue = widget.cellData.bookmarked;
 
-    isProgressIndicator = true;
+    setState(() {
+      isProgressIndicator = true;
+    });
     RepositoryResult response;
     if (initialValue) {
       response = await _bookmarksRepository.deleteBookmark(
@@ -197,7 +197,9 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
     }
     _analyticsProvider.logVideoBookMarkEvent(
         initialValue, widget.cellData.videoId, widget.cellData.lessonName);
-    isProgressIndicator = false;
+    setState(() {      
+      isProgressIndicator = false;
+    });
   }
 
   Positioned _drawImageBadge(BuildContext context) {

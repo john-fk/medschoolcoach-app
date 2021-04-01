@@ -95,8 +95,11 @@ class PremiumUserCards extends StatelessWidget {
                 ),
               ),
             ),
-            onTap: () => Routes.navigateToTutoringScreen(
-                context, AnalyticsConstants.screenLessonVideo),
+            onTap: () =>
+            {pausePlayer(),
+              Routes.navigateToTutoringScreen(
+                  context, AnalyticsConstants.screenLessonVideo)
+            },
           ),
           const SizedBox(
             height: 10,

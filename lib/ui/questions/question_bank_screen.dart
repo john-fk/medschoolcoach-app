@@ -10,8 +10,7 @@ import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/list_cells/subject_cell.dart';
-import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -36,8 +35,8 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
   @override
   void initState() {
     super.initState();
-    _analyticsProvider.logScreenView(AnalyticsConstants.screenQuestionBank,
-        widget.source);
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenQuestionBank, widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchData(),
     );
@@ -46,7 +45,7 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(),
+      // bottomNavigationBar: NavigationBar(),
       body: Column(
         children: <Widget>[
           CustomAppBar(
@@ -137,6 +136,7 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
           "question_screen.pick_subject",
         ),
         sectionWidget: GridView.count(
+          padding: EdgeInsets.only(bottom: 20),
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           crossAxisCount: 2,
@@ -176,11 +176,10 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
     return Navigator.of(context).pushNamed(
       Routes.multipleChoiceQuestion,
       arguments: MultipleChoiceQuestionScreenArguments(
-        screenName: screenName,
-        subjectId: subjectId,
-        status: status,
-        source: AnalyticsConstants.screenQuestionBank
-      ),
+          screenName: screenName,
+          subjectId: subjectId,
+          status: status,
+          source: AnalyticsConstants.screenQuestionBank),
     );
   }
 

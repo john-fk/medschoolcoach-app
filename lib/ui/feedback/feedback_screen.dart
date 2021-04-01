@@ -78,7 +78,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           children: <Widget>[
             Form(
               key: _formKey,
-              autovalidate: _autoValidate,
+              autovalidateMode: _autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

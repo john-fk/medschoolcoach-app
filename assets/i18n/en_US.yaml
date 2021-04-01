@@ -5,12 +5,19 @@ general:
   error: Error
   congratulations: Congratulations!
   warning: Warning
+  confirm: Confirm
+  updating: Updating...
+  save: Save
+  next: Next
+  remove: Remove
 common:
   tutoring: Tutoring
   premium: Premium
   flash_cards: Flashcards
   questions: Questions
 home_screen:
+  lessons: Lessons
+  practice: Practice
   user_header: Hello {user}!
   premium_account: PREMIUM ACCOUNT
   recently_watched: Recently Watched
@@ -25,6 +32,10 @@ home_screen:
   pick_schedule: Let’s rock your MCAT
   video_watched_toast: Video marked as watched
   video_unwatched_toast: Video marked as unwatched
+  video: Video
+  question_of_the_day: Question Of The Day
+  flashcards: Flashcards
+  question_bank: Question Bank
 bloc_example_screen:
   title: Provider BLoC example
   click_to_delete: Click to delete
@@ -76,6 +87,10 @@ navigation_bar:
   close: Close
   tutoring: Tutoring
   schedule: Schedule
+  progress: Progress
+  learn: Learn
+  profile: Profile
+  practice: Practice
 register_screen:
   register_header: Register
   register_button_text: Sign Up
@@ -106,6 +121,9 @@ more_screen:
   instagram: Follow us on Instagram
   support: Feedback
   my_account: My Account
+  question_of_the_day: Question of the Day
+  test_date: Test Date
+  study_time_per_day: Study Time Per Day
 lesson_screen:
   lesson: Lesson {order}
   next_lesson: Next Lesson
@@ -196,6 +214,12 @@ schedule_screen:
   day: Day
   watched: Mark watched
   unwatched: Mark unwatched
+  days_left: days left before your test
+  day_left: day left before your test
+  days_left_schedule: days left to finish your schedule
+  day_left_schedule: day left to finish your schedule
+  speed_up_schedule: I want to speed up my schedule
+  change_schedule: Change My Schedule
 bookmarks:
   title: Bookmarked Videos
   empty_state: No bookmarks yet
@@ -283,19 +307,19 @@ settings_screen:
   dialog_text: Your profile details have been updated. Please, log in again to refresh the updated profile data.
   log_out_info: Please be aware that in order to refresh your user data you will be required to log in again after making an update
 tutoring_modal:
-  button: Explore Tutoring Options
+  button: Request Info
   request_dialog_header: Information is on its way!
   request_dialog_error_message: There was an error sending your request. Please try again.
   request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
   request_dialog_button: Give us a call (617) 299-2601
 tutoring_sliders:
   qualifier: I'm Taking the MCAT Within a Year
-  slider_one_header: Boost Your Score by 12 Points
-  slider_one_description: Our one-on-one tutoring students increase their MCAT score by an average of 12 points.
-  slider_two_header: Receive a Personalized Program
-  slider_two_description: Our MCAT tutoring packages are tailored to you based on your personal goals, strengths, and weaknesses.
-  slider_three_header: Access Elite Tutors
-  slider_three_description: Get coached by 99th percentile tutors who have been through rigorous training.
+  slider_one_header: 12 Point Score Improvement
+  slider_one_description: On average, the student part of our tutoring program score 12 points higher than their previous exam scores.
+  slider_two_header: COMPLETELY PERSONALIZED
+  slider_two_description: Our MCAT tutoring is completly personalized to you. From day one, we’ll work on indentifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
+  slider_three_header: 99TH PERCENTILE TUTORS
+  slider_three_description: Other companies settle for tutors who scored in the 85th percentile or better , we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
   slider_four_header: Guaranteed Score Increase
   slider_four_description: We incluede a promise of an improved MCAT score or we'll work with you again for free!
   slider_five_header: Study Smarter, Not Harder
@@ -306,3 +330,63 @@ tutoring_request_info_dialog:
   call_us_now: Call Us Now
   dialog_header: Get In Touch
   schedule_a_meeting: Schedule a Free Consultation
+question_of_the_day:
+  skip: Skip
+  heading: Practice makes perfect
+  subheading: What time do you normally study? We can send you daily questions to help you prepare more effectively.
+  morning: Morning
+  noon: Noon
+  evening: Evening
+  message: You can change this in your settings at any time
+  i_dont_want_daily_notifications: I DON'T WANT DAILY NOTIFICATIONS
+
+onboarding_scheduling:
+  heading: When are you taking the test?
+  subheading: By setting a test date, we are able to give you helpful suggestions and reminders about your upcoming test.
+  heading2: How much time do you want to spend studying?
+  subheading2: By setting how much time you want to spend per day studying, we are able to pace your learning schedule to help you be more successful.
+  select_test_date: Select Test Date
+  i_dont_have_test_date: I DON'T HAVE A TEST DATE YET
+  hr_per_day: hrs per day
+  edit_test_date: Edit Test Date
+  remove_test_date: Remove Test Date
+  expected_completion_date: Your expected completion date is
+  are_you_sure: Are you Sure?
+  remove_date_dialog_content: Are you sure you want to remove your test date.
+
+new_user_onboarding:
+  heading: MCAT Prep - No.1 Practice App for Prospective Doctors
+  get_access_to: Get Access To
+  extensive_lessons_from_top_medical_experts: Entensive Lessons From Top Medical Experts
+  practice_with: Practice With
+  flashcards_and_question: Flashcards And Questions
+  pace_your_own_schedule: Pace your own schedule
+  adjust_anytime: " - Adjust anytime"
+  track_and_speed_progress: Track and speed up your progress with us
+  we_are_just_a_call_away: " - We are just a call away"
+  explore_our_features: EXPLORE OUR FEATURES
+
+progress_screen:
+  course_progress: Course Progress
+  practice: Practice
+  view_schedule: View your schedule
+  question_bank: Question Bank
+  subject: Subject
+  flashcards: Flashcards
+  goto_question_bank: Goto Question Bank
+  goto_flashcards: Goto Flashcards
+  no_progress: You haven't made any progress yet
+  get_started: GET STARTED
+
+upsell_banner:
+  banner_text: Want to know how we can help you get the results you’re looking for faster?
+  button_text: LEARN MORE
+
+calendar:
+  error_msg: "Your test is approaching quickly. The fastest schedule we provide from start to finish is 15 days."
+
+old_user_onboarding:
+  share_your_schedule: "Share your schedule preference to help us "
+  tailor: "tailor "
+  your: "your "
+  learning: "learning"

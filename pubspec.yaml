@@ -1,7 +1,7 @@
 name: Medschoolcoach
 description: Medschoolcoach app
 
-version: 1.4.22+12
+version: 1.4.23+15
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -39,6 +39,15 @@ dependencies:
   cached_network_image: ^2.3.1
   carousel_slider: ^2.3.1
   chewie: 0.9.10
+  flutter_appauth: ^0.9.2+6
+  auto_size_text: ^2.1.0
+  syncfusion_flutter_datepicker:
+  vector_math: ^2.0.8
+  percent_indicator: "^2.1.7+2"
+  visibility_detector: ^0.1.5
+  flutter_local_notifications:
+  rxdart: ^0.23.1
+  device_preview:
 
 dependency_overrides:
   video_player:

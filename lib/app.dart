@@ -4,31 +4,38 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uni_links/uni_links.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 const _appColors = const AppColors(
-  accent: Color(0xFF145FD8),
-  accent2: Color(0xFF0E9732),
-  accent3: Color(0xFF145ED7),
-  content: Color(0xFF102B44),
-  content2: Colors.white,
-  content3: Color(0xFF485E82),
-  background: Colors.white,
-  inputBackground: Color(0xFFECF4FA),
-  shadow: Color.fromRGBO(0, 0, 0, 0.1),
-  shadow2: Color.fromRGBO(0, 0, 0, 0.05),
-  brightShadow: Color.fromRGBO(255, 255, 255, 0.2),
-  error: Color(0xFFD32F2F),
-  premium: Color(0xFFFFB849),
-  separator: Color(0xFFEBEEEF),
-  divider: Color(0x0D000000),
-  questions: Color(0xFFFF7B5D),
-  qualifyingText: Color.fromRGBO(252, 132, 81, 1),
-);
+    accent: Color(0xFF145FD8),
+    accent2: Color(0xFF0E9732),
+    accent3: Color(0xFF145ED7),
+    accent4: Color(0xff009D7A),
+    content: Color(0xFF102B44),
+    content2: Colors.white,
+    content3: Color(0xFF485E82),
+    content4: Color(0xFF7E8A9D),
+    background: Colors.white,
+    background2: Color(0xffF7F8FC),
+    background3: Color(0xffEFF2F6),
+    inputBackground: Color(0xFFECF4FA),
+    shadow: Color.fromRGBO(0, 0, 0, 0.1),
+    shadow2: Color.fromRGBO(0, 0, 0, 0.05),
+    brightShadow: Color.fromRGBO(255, 255, 255, 0.2),
+    error: Color(0xFFD32F2F),
+    premium: Color(0xFFFFB849),
+    separator: Color(0xFFEBEEEF),
+    divider: Color(0x0D000000),
+    questions: Color(0xFFFF7B5D),
+    qualifyingText: Color.fromRGBO(252, 132, 81, 1),
+    border: Colors.lightBlueAccent);
 
 final Map<int, Color> _primarySwatch = {
   50: _appColors.accent,
@@ -64,7 +71,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    //initPlatformStateForStringUniLinks();
     print(_latestLink);
     print(_latestUri);
   }
@@ -80,6 +86,8 @@ class _MyAppState extends State<MyApp> {
     return SuperStateful(
       child: Style(
         child: MaterialApp(
+          builder: DevicePreview.appBuilder,
+          navigatorKey: navigatorKey,
           title: Config.appTitle,
           localizationsDelegates: <LocalizationsDelegate<dynamic>>[
             FlutterI18nDelegate(

@@ -46,7 +46,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                   "user": userData != null ? userData.name : "",
                 },
               ),
-              style: greatResponsiveFont(context, fontWeight: FontWeight.bold),
+              style: biggerResponsiveFont(context, fontWeight: FontWeight.bold),
               maxLines: 1,
               overflow: TextOverflow.fade,
               softWrap: false,
@@ -77,20 +77,3 @@ class _HomeAppBarState extends State<HomeAppBar> {
     );
   }
 }
-
-/*Row( POST MVP
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.star,
-                    color: Style.of(context).colors.premium,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    FlutterI18n.translate(
-                        context, "home_screen.premium_account"),
-                    style: Style.of(context).font.premium,
-                  ),
-                ],
-              )*/

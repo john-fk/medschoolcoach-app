@@ -126,7 +126,9 @@ class _LoginScreenState extends State<RegisterScreen> {
                     children: <Widget>[
                       Form(
                         key: _formKey,
-                        autovalidate: _autoValidate,
+                        autovalidateMode: _autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
@@ -616,7 +618,8 @@ class _LoginScreenState extends State<RegisterScreen> {
       );
       _showSuccessDialog();
     } else {
-      //TODO: errorData is null in response - (Tried to signup with existing user's emailId)
+      //TODO: errorData is null in response -
+      // (Tried to sign up with existing user's emailId)
       final errorMessage = _getErrorMessage(response);
       _analyticsProvider.logAccountManagementEvent(AnalyticsConstants.tapSignUp,
           _emailController.text, false, errorMessage);

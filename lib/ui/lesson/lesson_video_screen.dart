@@ -7,7 +7,6 @@ import 'package:Medschoolcoach/ui/lesson/fullscren_video.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
-import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/video_player/custom_video_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,11 +78,11 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
                 videoPlayerVisible: _videoPlayerVisible,
                 analyticsProvider: _analyticsProvider
               ),
-        bottomNavigationBar: widget.arguments.fullScreenVideo
-            ? null
-            : NavigationBar(
-                runOnTap: () => _customVideoController?.pause(),
-              ),
+        // bottomNavigationBar: widget.arguments.fullScreenVideo
+        //     ? null
+        //     : NavigationBar(
+        //         runOnTap: () => _customVideoController?.pause(),
+        //       ),
       ),
     );
   }
@@ -155,7 +154,8 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
       return topic?.videos
           ?.firstWhere((video) => video.order == widget.arguments.order);
     else {
-      //adding this hack for now to overcome the not refreshing of the topic after video favorite has been saved in schedule screen
+      //adding this hack for now to overcome the not refreshing of the
+      // topic after video favorite has been saved in schedule screen
       bool fav1 = widget.arguments.videos[widget.arguments.order].favourite;
       Video aVid = topic.videos.firstWhere((video) =>
       video.id == widget.arguments.videos[widget.arguments.order].id);

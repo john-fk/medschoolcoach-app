@@ -91,7 +91,7 @@ class UserRepository implements Repository {
       userLoggingEmail = userEmail;
 
 
-      await _updateUser(
+      await updateUser(
         accessToken: response.body.accessToken,
         idToken: response.body.idToken,
         refreshToken: response.body.refreshToken,
@@ -261,7 +261,7 @@ class UserRepository implements Repository {
     }
   }
 
-  Future _updateUser({
+  Future updateUser({
     @required String accessToken,
     @required String idToken,
     @required String refreshToken,
@@ -315,7 +315,6 @@ class UserRepository implements Repository {
     _analyticsProvider.logEvent(AnalyticsConstants.tapSignOut, params: {
       AnalyticsConstants.keyEmail: userLoggingEmail
     });
-    _apiServices.logout();
     _subjectRepository.clearCache();
     _sectionRepository.clearCache();
     _topicRepository.clearCache();

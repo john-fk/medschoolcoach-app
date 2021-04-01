@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
+import 'package:Medschoolcoach/repository/progress_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
@@ -13,8 +14,11 @@ import 'package:Medschoolcoach/utils/api/models/auth0_user_data.dart';
 import 'package:Medschoolcoach/utils/api/models/bookmark.dart';
 import 'package:Medschoolcoach/utils/api/models/buddy.dart';
 import 'package:Medschoolcoach/utils/api/models/dashboard_schedule.dart';
+import 'package:Medschoolcoach/utils/api/models/flashcards_progress.dart';
 import 'package:Medschoolcoach/utils/api/models/last_watched_response.dart';
 import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
+import 'package:Medschoolcoach/utils/api/models/question_bank_progress.dart';
+import 'package:Medschoolcoach/utils/api/models/schedule_stats.dart';
 import 'package:Medschoolcoach/utils/api/models/search_result.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/api/models/statistics.dart';
@@ -73,6 +77,8 @@ class SuperState extends State<SuperStateful> {
       Injector.appInstance.getDependency<UserRepository>();
   final TutoringRepository _tutoringRepository =
       Injector.appInstance.getDependency<TutoringRepository>();
+  final ProgressRepository _progressRepository =
+      Injector.appInstance.getDependency<ProgressRepository>();
 
   final _apiServices = Injector.appInstance.getDependency<ApiServices>();
 
@@ -83,9 +89,13 @@ class SuperState extends State<SuperStateful> {
   List<Section> sectionsList = List();
   List<Video> videosScheduleList = List();
   DashboardSchedule todaySchedule;
+  ScheduleStats courseProgress;
+  FlashcardsProgress flashcardProgress;
+  QuestionBankProgress questionBankProgress;
   List<Bookmark> bookmarksList = List();
   Map<String, int> scheduleProgress = Map();
   int currentScheduleDay;
+
   LastWatchedResponse recentlyWatched;
   SearchResult searchResult;
   SearchArguments recentSearchArguments;
@@ -214,10 +224,12 @@ class SuperState extends State<SuperStateful> {
     return result;
   }
 
-  Future<RepositoryResult<LectureNote>> updateLectureNote(String videoId, {
+  Future<RepositoryResult<LectureNote>> updateLectureNote(
+    String videoId, {
     bool forceApiRequest = false,
   }) async {
-    final result = await _lectureNoteRepository.fetchLectureNote(videoId,
+    final result = await _lectureNoteRepository.fetchLectureNote(
+      videoId,
       forceApiRequest: forceApiRequest,
     );
     if (result is RepositorySuccessResult<LectureNote>) {
@@ -326,6 +338,46 @@ class SuperState extends State<SuperStateful> {
     return result;
   }
 
+  // Progress Screen
+  Future<RepositoryResult<ScheduleStats>> updateCourseProgress({
+    bool forceApiRequest = false,
+  }) async {
+    final result = await _progressRepository.fetchCourseProgress(
+      forceApiRequest: forceApiRequest,
+    );
+    if (result is RepositorySuccessResult<ScheduleStats>) {
+      courseProgress = result.data;
+    }
+    setState(() {});
+    return result;
+  }
+
+  Future<RepositoryResult<FlashcardsProgress>> updateFlashcardProgress({
+    bool forceApiRequest = false,
+  }) async {
+    final result = await _progressRepository.fetchFlashcardProgress(
+      forceApiRequest: forceApiRequest,
+    );
+    if (result is RepositorySuccessResult<FlashcardsProgress>) {
+      flashcardProgress = result.data;
+    }
+    setState(() {});
+    return result;
+  }
+
+  Future<RepositoryResult<QuestionBankProgress>> updateQuestionBankProgress({
+    bool forceApiRequest = false,
+  }) async {
+    final result = await _progressRepository.fetchQuestionBankProgress(
+      forceApiRequest: forceApiRequest,
+    );
+    if (result is RepositorySuccessResult<QuestionBankProgress>) {
+      questionBankProgress = result.data;
+    }
+    setState(() {});
+    return result;
+  }
+
   void clearData() {
     topics = Map();
     sections = Map();
@@ -334,6 +386,7 @@ class SuperState extends State<SuperStateful> {
     sectionsList = List();
     videosScheduleList = List();
     todaySchedule = null;
+    courseProgress = null;
     bookmarksList = List();
     scheduleProgress = Map();
     buddiesList = List();

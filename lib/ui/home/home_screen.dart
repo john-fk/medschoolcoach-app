@@ -2,24 +2,24 @@ import 'dart:io';
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/home/get_started.dart';
 import 'package:Medschoolcoach/ui/home/home_schedule.dart';
+import 'package:Medschoolcoach/ui/home/home_section.dart';
 import 'package:Medschoolcoach/ui/home/recently_watched.dart';
-import 'package:Medschoolcoach/ui/home/sections_widget.dart';
-import 'package:Medschoolcoach/utils/api/models/dashboard_schedule.dart';
-import 'package:Medschoolcoach/utils/api/models/last_watched_response.dart';
-import 'package:Medschoolcoach/utils/api/models/section.dart';
-import 'package:Medschoolcoach/utils/api/models/statistics.dart';
+import 'package:Medschoolcoach/utils/navigation/routes.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/app_bars/home_app_bar.dart';
-import 'package:Medschoolcoach/widgets/global_progress/global_progress_widget.dart';
+import 'package:Medschoolcoach/widgets/cards/practice_section_card.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/search_bar/search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injector/injector.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,31 +32,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  RepositoryResult<List<Section>> _sectionsResult;
-  RepositoryResult<DashboardSchedule> _scheduleResult;
-  RepositoryResult<LastWatchedResponse> _lastWatchedResult;
-  RepositoryResult<Statistics> _globalProgressResult;
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
-  bool _sectionsLoading = true;
   bool _scheduleLoading = true;
   bool _lastWatchedLoading = true;
-  bool _globalProgressLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _analyticsProvider.logScreenView(AnalyticsConstants.screenHome,
-        widget.source);
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenHome, widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => {
-        _fetchLastWatched(),
-        _fetchSchedule(forceApiRequest: false),
-        _fetchCategories(forceApiRequest: false),
-        _fetchStatistics(
-          forceApiRequest: true,
-        ),
+      (_) async {
+        _fetchLastWatched();
+        _fetchSchedule(forceApiRequest: true);
+        final FlutterLocalNotificationsPlugin notifsPlugin =
+            FlutterLocalNotificationsPlugin();
+        final NotificationAppLaunchDetails notificationAppLaunchDetails =
+            await notifsPlugin.getNotificationAppLaunchDetails();
+
+        if (notificationAppLaunchDetails.didNotificationLaunchApp)
+          Navigator.pushNamed(context,
+              Routes.questionOfTheDayScreen, arguments: "notification");
       },
     );
   }
@@ -75,13 +73,17 @@ class _HomeScreenState extends State<HomeScreen> {
           page: NavigationPage.Home,
         ),
         body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              HomeAppBar(),
-              Expanded(
-                child: _buildContent(),
-              )
-            ],
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: whenDevice(context, large: 8, medium: 4, small: 4)),
+            child: Column(
+              children: <Widget>[
+                HomeAppBar(),
+                Expanded(
+                  child: _buildContent(),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -89,10 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent() {
-    if (_sectionsLoading ||
-        _scheduleLoading ||
-        _lastWatchedLoading ||
-        _globalProgressLoading) return _buildLoading();
+    if (_lastWatchedLoading && _scheduleLoading) {
+      return _buildLoading();
+    }
     return _buildFetchedItems();
   }
 
@@ -112,24 +113,33 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(
             height: 8,
           ),
-          if (_isInitialState()) GetStarted(),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(Routes.search);
+                },
+                child: Hero(
+                    tag: "search_bar",
+                    child: SearchBar(
+                      isEnabled: false,
+                    ))),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          _buildPracticeSection(),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildOnboardingView(),
           _buildRecentlyWatchedSection(),
           const SizedBox(
             height: 20,
           ),
           _buildTodaySchedule(),
-          _buildGlobalProgress(),
-          const SizedBox(
-            height: 20,
-          ),
-          SectionsWidget(
-            sectionsResult: _sectionsResult,
-            sectionTitle: FlutterI18n.translate(
-              context,
-              "home_screen.categories",
-            ),
-            source: AnalyticsConstants.screenHome,
-          ),
+          // _buildGlobalProgress(),
           const SizedBox(
             height: 20,
           ),
@@ -138,119 +148,108 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool _isInitialState() {
-    bool response = true;
-    final recentlyWatchedVideo = SuperStateful.of(context).recentlyWatched;
-    if (recentlyWatchedVideo != null) response = false;
-    if (_scheduleResult is RepositorySuccessResult<DashboardSchedule> &&
-        (_scheduleResult as RepositorySuccessResult<DashboardSchedule>)
-            .data
-            .items
-            .isNotEmpty &&
-        !_scheduleLoading) response = false;
-    if (_sectionsResult is RepositoryErrorResult) return false;
-    return response;
-  }
-
-  Widget _buildGlobalProgress() {
-    final stats = SuperStateful.of(context).globalStatistics;
-    if (_globalProgressLoading || _isInitialState()) return Container();
-    if (_globalProgressResult is RepositoryErrorResult || stats == null) {
-      print("Global progress data fetch error");
+  Widget _buildOnboardingView() {
+    final _recentlyWatched = SuperStateful.of(context).recentlyWatched;
+    if (_recentlyWatched == null) {
+      return GetStarted();
+    } else {
       return Container();
     }
-    return GlobalProgressWidget(source: AnalyticsConstants.screenHome, analyticsProvider: _analyticsProvider);
   }
 
   Widget _buildRecentlyWatchedSection() {
-    final recentlyWatchedVideo = SuperStateful.of(context).recentlyWatched;
-    if (_lastWatchedResult is RepositoryErrorResult ||
-        recentlyWatchedVideo == null) {
+    final _recentlyWatched = SuperStateful.of(context).recentlyWatched;
+    if (_recentlyWatched == null) {
       return Container();
     }
+
     return RecentlyWatched(
-      recentlyWatched: recentlyWatchedVideo,
+      recentlyWatched: _recentlyWatched,
       analyticsProvider: _analyticsProvider,
     );
   }
 
   Widget _buildTodaySchedule() {
-    if (_scheduleResult is RepositorySuccessResult<DashboardSchedule> &&
-        (_scheduleResult as RepositorySuccessResult<DashboardSchedule>)
-            .data
-            .items
-            .isNotEmpty &&
-        !_scheduleLoading) {
+    final _todaySchedule = SuperStateful.of(context).todaySchedule;
+    if (!_scheduleLoading && (_todaySchedule?.items?.isNotEmpty ?? false)) {
       return HomeSchedule(analyticsProvider: _analyticsProvider);
     } else {
       return Container();
     }
   }
 
-  Future<void> _fetchStatistics({
-    bool forceApiRequest = false,
-  }) async {
-    setState(() {
-      _globalProgressLoading = true;
-    });
-    final result = await SuperStateful.of(context).updateGlobalStatistics(
-      forceApiRequest: forceApiRequest,
-    );
-
-    setState(() {
-      _globalProgressLoading = false;
-      _globalProgressResult = result;
-    });
-  }
-
   Future<void> _fetchLastWatched() async {
+    var recentlyWatched = SuperStateful.of(context).recentlyWatched;
     setState(() {
-      _lastWatchedLoading = true;
+      _lastWatchedLoading = recentlyWatched == null ? true : false;
     });
 
-    final result = await SuperStateful.of(context).updateRecentlyWatchedVideo();
+    await SuperStateful.of(context).updateRecentlyWatchedVideo();
     setState(() {
       _lastWatchedLoading = false;
-      _lastWatchedResult = result;
-    });
-  }
-
-  Future<void> _fetchCategories({
-    bool forceApiRequest,
-  }) async {
-    setState(() {
-      _sectionsLoading = true;
-    });
-    final result = await SuperStateful.of(context).updateSectionsList(
-      forceApiRequest: forceApiRequest,
-    );
-    setState(() {
-      _sectionsLoading = false;
-      _sectionsResult = result;
     });
   }
 
   Future<void> _fetchSchedule({
     bool forceApiRequest,
   }) async {
+    var todaySchedule = SuperStateful.of(context).todaySchedule;
     setState(() {
-      _scheduleLoading = true;
+      _scheduleLoading = todaySchedule == null ? true : false;
     });
 
-    var scheduleResult = await SuperStateful.of(context).updateTodaySchedule(
+    await SuperStateful.of(context).updateTodaySchedule(
       forceApiRequest: true,
     );
 
     setState(() {
       _scheduleLoading = false;
-      _scheduleResult = scheduleResult;
     });
   }
 
   Future<void> _refresh() async {
     _fetchLastWatched();
-    _fetchCategories(forceApiRequest: true);
     _fetchSchedule(forceApiRequest: true);
     return null;
+  }
+
+  Widget _buildPracticeSection() {
+    return Container(
+        child: HomeSection(
+      sectionTitle: FlutterI18n.translate(context, "home_screen.practice"),
+      sectionWidget: GridView.count(
+        primary: false,
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(0),
+        crossAxisSpacing: 4,
+        childAspectRatio: 1.8 / 1,
+        mainAxisSpacing: 4,
+        crossAxisCount: 2,
+        children: <Widget>[
+          PracticeCard(
+              bgColor: Style.of(context).colors.premium,
+              text: FlutterI18n.translate(context, "home_screen.lessons"),
+              iconData: Icons.play_circle_outline,
+              route: Routes.videos),
+          PracticeCard(
+            bgColor: Style.of(context).colors.accent4,
+            text: FlutterI18n.translate(
+                context, "home_screen.question_of_the_day"),
+            iconData: Icons.forum_outlined,
+            route: Routes.questionOfTheDayScreen,
+          ),
+          PracticeCard(
+              bgColor: Style.of(context).colors.accent,
+              text: FlutterI18n.translate(context, "home_screen.flashcards"),
+              iconData: Icons.bolt,
+              route: Routes.flashCardsMenu),
+          PracticeCard(
+              bgColor: Style.of(context).colors.questions,
+              text: FlutterI18n.translate(context, "home_screen.question_bank"),
+              iconData: Icons.help_outline_rounded,
+              route: Routes.questionBank),
+        ],
+      ),
+    ));
   }
 }

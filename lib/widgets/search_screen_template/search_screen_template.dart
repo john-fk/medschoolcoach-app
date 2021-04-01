@@ -1,8 +1,7 @@
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
-import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/search_bar/search_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -57,7 +56,7 @@ class _SearchScreenTemplateState extends State<SearchScreenTemplate> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        bottomNavigationBar: NavigationBar(),
+        // bottomNavigationBar: NavigationBar(),
         body: Stack(
           children: <Widget>[
             Column(
