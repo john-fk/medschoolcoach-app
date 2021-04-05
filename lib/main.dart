@@ -44,7 +44,7 @@ Future<void> main() async {
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
-  var enableDevicePreview = false;
+  var enableDevicePreview = true;
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(

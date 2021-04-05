@@ -215,7 +215,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
           data: SliderThemeData(
             thumbColor:  Color(0xff009D7A),
             overlayColor: Color(0xff009D7A).withOpacity(0.1),
-            activeTrackColor: Style.of(context).colors.accent,
+            activeTrackColor: Style.of(context).colors.divider,
             inactiveTrackColor: Style.of(context).colors.divider,
           ),
           child: Slider(
