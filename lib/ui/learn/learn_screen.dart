@@ -96,7 +96,7 @@ class _LearnScreenState extends State<LearnScreen>
                   Padding(
                       padding: EdgeInsets.only(bottom: 10.0,left: 5,
                           right: isTablet(context) ? 2 : 0),
-                      child: Text("Lesson")),
+                      child: Text("All Lessons")),
                 ],
               )
           ),

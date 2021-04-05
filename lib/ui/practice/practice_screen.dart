@@ -49,6 +49,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
       _loading = hasData ? false : true;
     });
 
+    if (hasData) {
+      _createSection();
+    }
+
     await SuperStateful.of(context).updateFlashcardsSectionsList(
       forceApiRequest: forceApiRequest,
     );
@@ -60,6 +64,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
     setState(() {
       _loading = false;
     });
+
+    _createSection();
+  }
+
+  void _createSection() {
     var flashcardsSection = SuperStateful.of(context).flashcardsSections;
     var questionsSection = SuperStateful.of(context).questionsSections;
     flashcardsSection
@@ -116,8 +125,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
           _buildCardButton(
               color: Style.of(context).colors.accent,
               label:
-                  "${allSubjects.isNotEmpty ?
-                  allSubjects[selectedIndex]?.amountOfFlashcards ?? 0 : 0}"
+                  "${allSubjects.isNotEmpty ? 
+                    allSubjects[selectedIndex]?.amountOfFlashcards ?? 0 : 0}"
                   " Flashcards",
               onPressed: () {
                 _analyticsProvider.logEvent("tap_practice_flashcards",
@@ -134,8 +143,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
           _buildCardButton(
               color: Style.of(context).colors.questions,
               label:
-                  "${allSubjects.isNotEmpty ?
-                  allSubjects[selectedIndex]?.amountOfQuestions ?? 0 : 0}"
+                  "${allSubjects.isNotEmpty ? 
+                    allSubjects[selectedIndex]?.amountOfQuestions ?? 0 : 0}"
                   " Questions",
               onPressed: () {
                 _analyticsProvider.logEvent("tap_practice_questions",

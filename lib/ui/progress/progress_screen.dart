@@ -53,10 +53,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
     _fetchCourseProgress();
     _fetchFlashcardProgress();
     _fetchQuestionBankProgress();
-    setState(() {
-      selectedQuestionBankSubject = 'All';
-      selectedFlashcardSubject = 'All';
-    });
   }
 
   Future<void> _fetchSubjects({bool forceApiRequest = false}) async {

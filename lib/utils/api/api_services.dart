@@ -933,6 +933,7 @@ class ApiServicesImpl implements ApiServices {
         headers: headers,
       );
 
+      print(response);
       return SuccessResponse<Map<String, dynamic>>(
         scheduleProgressObjectFromJson(response).list,
       );

@@ -64,24 +64,17 @@ class _ScheduleTabState extends State<ScheduleTab> {
   List<DayItemData> _days;
   Map<String, int> scheduleProgress;
   DaysLeft daysLeft;
-  Future<DaysLeft> getDaysLeft;
 
   @override
   void initState() {
     super.initState();
-    getDaysLeft = fetchDaysLeft();
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setScheduleInfo();
-      _fetchCourseProgress();
+      fetchDaysLeft();
     });
   }
 
-  Future<void> _fetchCourseProgress() async {
-    await SuperStateful.of(context).updateCourseProgress(forceApiRequest: true);
-  }
-
-  Future<DaysLeft> fetchDaysLeft() async {
+  Future<void> fetchDaysLeft() async {
     Map<String, dynamic> json = Map<String, dynamic>();
     var testDate = await _userManager.getTestDate();
     if (testDate != null) {
@@ -89,9 +82,9 @@ class _ScheduleTabState extends State<ScheduleTab> {
       json['days'] = days;
       json['isSchedule'] = false;
       if (json['days'] > 0) {
-        return DaysLeft.fromJson(json);
-      } else {
-        return null;
+        setState(() {
+          daysLeft = DaysLeft.fromJson(json);
+        });
       }
     }
     var progress = SuperStateful.of(context).courseProgress;
@@ -104,9 +97,9 @@ class _ScheduleTabState extends State<ScheduleTab> {
     if (progress != null && progress.daysLeft > 0) {
       json['days'] = progress.daysLeft;
       json['isSchedule'] = true;
-      return DaysLeft.fromJson(json);
-    } else {
-      return null;
+      setState(() {
+        return DaysLeft.fromJson(json);
+      });
     }
   }
 
@@ -211,21 +204,13 @@ class _ScheduleTabState extends State<ScheduleTab> {
   }
 
   Widget _buildScheduleHeader() {
-    return FutureBuilder(
-        future: getDaysLeft,
-        builder: (context, snapshot) {
-          if (snapshot.hasError || !snapshot.hasData) {
-            return Container();
-          }
-          DaysLeft daysLeft = snapshot.data;
-          return Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 15),
-            child: TimeBanner(
-              daysLeft: daysLeft?.days ?? -1,
-              isSchedule: daysLeft?.isSchedule,
-            ),
-          );
-        });
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0, bottom: 15),
+      child: TimeBanner(
+        daysLeft: daysLeft?.days ?? -1,
+        isSchedule: daysLeft?.isSchedule,
+      ),
+    );
   }
 
   RenderObjectWidget _buildProgressBar() {
@@ -587,16 +572,18 @@ class _ScheduleTabState extends State<ScheduleTab> {
     bool forceApiRequest = false,
   }) async {
     var videosScheduleList = await _scheduleRepository.getCacheVideos(day: day);
+    var hasVideos = videosScheduleList != null && videosScheduleList.length > 0;
+
     setState(() {
       _singleScheduleError = null;
       if (showProgressBar) {
-        _loading = videosScheduleList == null ||
-        videosScheduleList.length == 0 ? true : false;
+        _loading = hasVideos ? false : true;
       }
-      if (videosScheduleList != null && videosScheduleList.length > 0) {
-        setState(() {
-          SuperStateful.of(context).videosScheduleList = videosScheduleList;
-        });
+      if (hasVideos) {
+        SuperStateful.of(context).videosScheduleList = videosScheduleList;
+      }
+      if (hasVideos) {
+        _shouldShowSchedule = true;
       }
     });
     var response = await SuperStateful.of(context).updateSchedule(
