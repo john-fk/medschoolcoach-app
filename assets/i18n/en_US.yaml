@@ -373,8 +373,8 @@ progress_screen:
   question_bank: Question Bank
   subject: Subject
   flashcards: Flashcards
-  goto_question_bank: Goto Question Bank
-  goto_flashcards: Goto Flashcards
+  goto_question_bank: Go to Question Bank
+  goto_flashcards: Go to Flashcards
   no_progress: You haven't made any progress yet
   get_started: GET STARTED
 
