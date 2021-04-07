@@ -332,8 +332,8 @@ tutoring_request_info_dialog:
   schedule_a_meeting: Schedule a Free Consultation
 question_of_the_day:
   skip: Skip
-  heading: Practice makes perfect
-  subheading: What time do you normally study? We can send you daily questions to help you prepare more effectively.
+  heading: What time do you normally start studying?
+  subheading: Practice makes perfect. We can send you daily questions to help you prepare more effectively.
   morning: Morning
   noon: Noon
   evening: Evening
