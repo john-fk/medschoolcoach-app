@@ -26,7 +26,7 @@ Future<void> main() async {
 
   await initNotifications(notifsPlugin, navigatorKey);
   //TODO: Revert before release
-  await _analyticsProvider.initialize(Config.devMixPanelToken);
+  await _analyticsProvider.initialize(Config.prodMixPanelToken);
   _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen);
 
   //TODO: Revert before release
