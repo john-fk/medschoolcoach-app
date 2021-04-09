@@ -1,6 +1,7 @@
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
 import 'package:Medschoolcoach/repository/progress_repository.dart';
+import 'package:Medschoolcoach/repository/questions_day_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
@@ -17,6 +18,7 @@ import 'package:Medschoolcoach/utils/api/models/dashboard_schedule.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_progress.dart';
 import 'package:Medschoolcoach/utils/api/models/last_watched_response.dart';
 import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
+import 'package:Medschoolcoach/utils/api/models/question.dart';
 import 'package:Medschoolcoach/utils/api/models/question_bank_progress.dart';
 import 'package:Medschoolcoach/utils/api/models/schedule_stats.dart';
 import 'package:Medschoolcoach/utils/api/models/search_result.dart';
@@ -79,6 +81,8 @@ class SuperState extends State<SuperStateful> {
       Injector.appInstance.getDependency<TutoringRepository>();
   final ProgressRepository _progressRepository =
       Injector.appInstance.getDependency<ProgressRepository>();
+  final QuestionsDayRepository _questionsDayRepository =
+      Injector.appInstance.getDependency<QuestionsDayRepository>();
 
   final _apiServices = Injector.appInstance.getDependency<ApiServices>();
 
@@ -104,6 +108,8 @@ class SuperState extends State<SuperStateful> {
   List<Buddy> buddiesList = List();
   Auth0UserData userData;
   List<TutoringSlider> tutoringSliders = List();
+  int currentQOTDIndex = 0;
+  List<Question> questionsOfTheDay = List();
 
   Future<RepositoryResult<List<Section>>> updateSectionsList({
     bool forceApiRequest = false,
@@ -378,6 +384,19 @@ class SuperState extends State<SuperStateful> {
     return result;
   }
 
+  Future<RepositoryResult<List<Question>>> updateQuestionsOfTheDay({
+    bool forceApiRequest = false,
+  }) async {
+    final result = await _questionsDayRepository.fetchQuestionOfTheDay(
+      forceApiRequest: forceApiRequest,
+    );
+    if (result is RepositorySuccessResult<List<Question>>) {
+      questionsOfTheDay = result.data;
+    }
+    setState(() {});
+    return result;
+  }
+
   void clearData() {
     topics = Map();
     sections = Map();
@@ -396,6 +415,7 @@ class SuperState extends State<SuperStateful> {
     recentSearchArguments = null;
     globalStatistics = null;
     tutoringSliders = null;
+    questionsOfTheDay = List();
   }
 
   @override

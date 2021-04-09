@@ -3,6 +3,7 @@ import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
 import 'package:Medschoolcoach/repository/progress_repository.dart';
+import 'package:Medschoolcoach/repository/questions_day_repository.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
@@ -145,6 +146,15 @@ void initializeDependencyInjection({
     (injector) {
       final apiServices = injector.getDependency<ApiServices>();
       return QuestionsRepository(
+        apiServices,
+      );
+    },
+  );
+  
+  injector.registerSingleton<QuestionsDayRepository>(
+    (injector) {
+      final apiServices = injector.getDependency<ApiServices>();
+      return QuestionsDayRepository(
         apiServices,
       );
     },
