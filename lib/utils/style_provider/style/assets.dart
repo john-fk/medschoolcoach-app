@@ -52,6 +52,8 @@ class _AppPngAssets {
   final upSellBannerGraphic  = "assets/png/upsell_banner_graphic.png";
 
   final globalDoctors  = "assets/png/global_doctors.png";
+
+  final emptyState = "assets/png/empty_state.png";
 }
 
 class _AppSvgAssets {

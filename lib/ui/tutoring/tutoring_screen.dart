@@ -4,7 +4,6 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/tutoring/tutoring_slider_item.dart';
-import 'package:Medschoolcoach/ui/webview/webview_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
@@ -368,10 +367,11 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                         _getRequestInfoDialogButton(
                             "tutoring_request_info_dialog.call_us_now",
                             _openPhoneNumber),
-                        _getDivider(),
-                        _getRequestInfoDialogButton(
-                            "tutoring_request_info_dialog.schedule_a_meeting",
-                            _navigateToScheduleAMeeting),
+//TODO: Bring back in v1.4.24
+//                        _getDivider(),
+//                        _getRequestInfoDialogButton(
+//                            "tutoring_request_info_dialog.schedule_a_meeting",
+//                            _navigateToScheduleAMeeting),
                       ],
                     ),
                     Positioned(
@@ -405,21 +405,23 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     });
   }
 
-  Future _navigateToScheduleAMeeting() async {
-    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
-        params: {
-          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-        });
-    Navigator.of(_scaffoldKey.currentContext).pop("success");
-    Navigator.of(_scaffoldKey.currentContext).push<dynamic>(
-      MaterialPageRoute<dynamic>(
-          builder: (BuildContext context) => WebviewScreen(
-                key: const Key("schedule meeting webview"),
-                initialUrl: Config.scheduleMeetingUrl,
-                title: "Schedule a Meeting",
-              )),
-    );
-  }
+  //TODO: Bring back in v1.4.24
+//  Future _navigateToScheduleAMeeting() async {
+//    _analyticsProvider.logEvent(
+//    AnalyticsConstants.tapTutoringScheduleAMeeting,
+//        params: {
+//          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
+//        });
+//    Navigator.of(_scaffoldKey.currentContext).pop("success");
+//    Navigator.of(_scaffoldKey.currentContext).push<dynamic>(
+//      MaterialPageRoute<dynamic>(
+//          builder: (BuildContext context) => WebviewScreen(
+//                key: const Key("schedule meeting webview"),
+//                initialUrl: Config.scheduleMeetingUrl,
+//                title: "Schedule a Meeting",
+//              )),
+//    );
+//  }
 
   Future _flagForTutoringUpsell() async {
     final NetworkResponse result = await Injector.appInstance
