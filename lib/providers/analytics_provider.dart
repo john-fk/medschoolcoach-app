@@ -25,7 +25,8 @@ class AnalyticsProvider {
   }
 
   void logEvent(String eventName, {dynamic params}) {
-    _mixpanel.track(eventName, params);
+    final emptyList = <String, String>{};
+    _mixpanel.track(eventName, params == null ? emptyList : params);
   }
 
   void logScreenView(String screenName, String sourceName, {dynamic params}) {
