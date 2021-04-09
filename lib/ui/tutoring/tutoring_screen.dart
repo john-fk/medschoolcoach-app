@@ -298,7 +298,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
             ),
           ),
         ),
-        color: Style.of(context).colors.premium,
+        color: Color(0xFF009D7A),
         onPressed: () async {
           _analyticsProvider
               .logEvent(AnalyticsConstants.tapExploreOptions, params: {

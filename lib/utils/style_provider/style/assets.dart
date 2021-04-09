@@ -44,9 +44,9 @@ class _AppPngAssets {
   final profile = "assets/png/profile_unselected.png";
 
   //Tutoring sliders
-  final tutoringSliderOne = "assets/png/slider_1.png";
-  final tutoringSliderTwo = "assets/png/slider_2.png";
-  final tutoringSliderThree = "assets/png/slider_3.png";
+  final tutoringSliderOne = "assets/png/tutoring_slider_1.png";
+  final tutoringSliderTwo = "assets/png/tutoring_slider_2.png";
+  final tutoringSliderThree = "assets/png/tutoring_slider_3.png";
 
   //Progress Screen
   final upSellBannerGraphic  = "assets/png/upsell_banner_graphic.png";
