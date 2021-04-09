@@ -78,9 +78,6 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
-            SizedBox(
-              height: 40,
-            ),
             _heading(),
             SizedBox(
               height: 20,
@@ -152,7 +149,9 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
     return Text(
       FlutterI18n.translate(context, "question_of_the_day.heading"),
       style: biggerResponsiveFont(context,
-          fontWeight: FontWeight.w500, fontColor: FontColor.Accent3),
+          fontWeight: FontWeight.w500,
+          fontColor: FontColor.Accent3),
+      textAlign: TextAlign.center,
     );
   }
 
