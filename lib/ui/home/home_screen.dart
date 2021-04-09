@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/ui/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/ui/home/get_started.dart';
 import 'package:Medschoolcoach/ui/home/home_schedule.dart';
 import 'package:Medschoolcoach/ui/home/home_section.dart';
@@ -91,8 +92,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent() {
+    var recentlyWatched = SuperStateful.of(context).recentlyWatched;
+    var todaySchedule = SuperStateful.of(context).todaySchedule;
+
     if (_lastWatchedLoading && _scheduleLoading) {
       return _buildLoading();
+    } else if (!_lastWatchedLoading
+        && !_scheduleLoading
+        && recentlyWatched == null
+        && todaySchedule == null) {
+      return EmptyStateView(
+          title: FlutterI18n.translate(
+              context,
+              "empty_state.title"),
+          message: FlutterI18n.translate(
+              context,
+              "empty_state.message"),
+          ctaText: FlutterI18n.translate(
+              context,
+              "empty_state.button"),
+          image: Image.asset(Style.of(context).pngAsset.emptyState),
+          onTap: () {
+            _lastWatchedLoading = true;
+            _scheduleLoading = true;
+            _refresh();
+      });
     }
     return _buildFetchedItems();
   }

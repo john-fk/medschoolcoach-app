@@ -390,3 +390,8 @@ old_user_onboarding:
   tailor: "tailor "
   your: "your "
   learning: "learning"
+
+empty_state:
+  title: "Oops!"
+  message: "We were unable to load your updates.\n\n Please try again when you have a valid internet connection."
+  button: "Try Again"

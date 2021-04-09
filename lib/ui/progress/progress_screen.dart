@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/ui/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/ui/flash_cards_bank/flash_cards_bank_screen.dart';
 import 'package:Medschoolcoach/ui/questions/question_bank_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
@@ -139,7 +140,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child: _buildBody()),
-      backgroundColor: Style.of(context).colors.background2,
+      backgroundColor: Style.of(context).colors.background,
       bottomNavigationBar: NavigationBar(
         page: NavigationPage.Progress,
       ),
@@ -159,6 +160,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   Widget _buildBody() {
+    if (hasFailedLoading()) {
+      return _emptyStateView();
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: whenDevice(context, large: 8, medium: 4, small: 4)),
@@ -215,6 +220,38 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ),
       ),
     );
+  }
+
+  bool hasFailedLoading() {
+    ScheduleStats courseProgress = SuperStateful.of(context).courseProgress;
+    FlashcardsProgress flashcardsProgress =
+        SuperStateful.of(context).flashcardProgress;
+    QuestionBankProgress questionBankProgress =
+        SuperStateful.of(context).questionBankProgress;
+
+    return (!_courseProgressLoading && courseProgress == null)
+        && (!_flashcardProgressLoading && flashcardsProgress == null)
+        && (!_questionBankProgressLoading && questionBankProgress == null);
+  }
+
+  Widget _emptyStateView() {
+    return EmptyStateView(
+        title: FlutterI18n.translate(
+            context,
+            "empty_state.title"),
+        message: FlutterI18n.translate(
+            context,
+            "empty_state.message"),
+        ctaText: FlutterI18n.translate(
+            context,
+            "empty_state.button"),
+        image: Image.asset(Style.of(context).pngAsset.emptyState),
+        onTap: () {
+          _courseProgressLoading = true;
+          _flashcardProgressLoading = true;
+          _questionBankProgressLoading = true;
+          _reload();
+        });
   }
 
   Widget _buildCourseProgressCard() {

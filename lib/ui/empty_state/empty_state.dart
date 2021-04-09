@@ -2,8 +2,11 @@ import 'dart:ui';
 
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class EmptyStateView extends StatelessWidget {
 
@@ -25,55 +28,46 @@ class EmptyStateView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: isTablet(context) ? 40 : 20),
+            Image.asset(
+              Style.of(context).pngAsset.emptyState,
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width * 0.6,
+            ),
+            SizedBox(height: isTablet(context) ? 40 : 20),
+            Column(
               children: [
-                Image.asset(
-                  Style.of(context).pngAsset.emptyState,
-                  width: 250,
-                  height: 250,
-                ),
+                SizedBox(height: isTablet(context) ? 40 : 20),
                 Text(title,
-                  style: bigResponsiveFont(context,fontWeight: FontWeight.bold),
+                  style: greatResponsiveFont(context,
+                      fontWeight: FontWeight.bold,
+                      fontColor: FontColor.Content),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: isTablet(context) ? 40 : 20),
                 Text(message,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: Config.fontFamily,
-                  ),
+                  style: mediumResponsiveFont(context,
+                      fontWeight: FontWeight.normal,
+                      fontColor: FontColor.Content3),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
-                InkWell(
-                  onTap: onTap,
-                  child: Container(
-                    height: 50,
-                    alignment: Alignment.center,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Theme.of(context).primaryColor),
-                    child: Text(ctaText,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13),
-                      textAlign: TextAlign.center,
+            SizedBox(height: isTablet(context) ? 40 : 20),
+                PrimaryButton(
+                    text: FlutterI18n.translate(
+                      context,
+                      "empty_state.button",
                     ),
-                  ),
-                ),
+                    onPressed: onTap),
+                SizedBox(height: isTablet(context) ? 40 : 20),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
+import 'package:Medschoolcoach/ui/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
@@ -13,6 +14,7 @@ import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:injector/injector.dart';
 
@@ -41,6 +43,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
     );
   }
 
+  bool didFailLoading() {
+    var hasData = SuperStateful.of(context).questionsSections.length > 0 &&
+        SuperStateful.of(context).flashcardsSections.length > 0;
+
+    return !_loading && !hasData;
+  }
+
   Future<void> _fetchFlashcardsAndQuestionsSections(
       {bool forceApiRequest = false}) async {
     var hasData = SuperStateful.of(context).questionsSections.length > 0 &&
@@ -48,10 +57,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
     setState(() {
       _loading = hasData ? false : true;
     });
-
-    if (hasData) {
-      _createSection();
-    }
 
     await SuperStateful.of(context).updateFlashcardsSectionsList(
       forceApiRequest: forceApiRequest,
@@ -105,15 +110,25 @@ class _PracticeScreenState extends State<PracticeScreen> {
       return Center(
         child: ProgressBar(),
       );
-    if (flashcardSections.isEmpty)
-      return RefreshingEmptyState(
-        refreshFunction: () =>
-            _fetchFlashcardsAndQuestionsSections(forceApiRequest: true),
-      );
-    if (questionSection.isEmpty)
-      return RefreshingEmptyState(
-          refreshFunction: () =>
-              _fetchFlashcardsAndQuestionsSections(forceApiRequest: true));
+
+    if (didFailLoading()) {
+    return EmptyStateView(
+        title: FlutterI18n.translate(
+            context,
+            "empty_state.title"),
+        message: FlutterI18n.translate(
+            context,
+            "empty_state.message"),
+        ctaText: FlutterI18n.translate(
+            context,
+            "empty_state.button"),
+        image: Image.asset(Style.of(context).pngAsset.emptyState),
+        onTap: () {
+          _loading = true;
+          _fetchFlashcardsAndQuestionsSections(forceApiRequest: true);
+    });
+    }
+
     return RefreshIndicator(
       onRefresh: () =>
           _fetchFlashcardsAndQuestionsSections(forceApiRequest: true),
