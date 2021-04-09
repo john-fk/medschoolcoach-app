@@ -83,6 +83,6 @@ class QuestionOfTheDayNotification {
 
   static Future<void> cancelNotifications() async {
     print("Cancelling all notifications");
-    await notifsPlugin.cancelAll();
+    return notifsPlugin.cancelAll();
   }
 }

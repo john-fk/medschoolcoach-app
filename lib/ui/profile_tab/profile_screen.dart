@@ -341,10 +341,10 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                 context,
                 "more_screen.logout",
               ),
-              onTap: () => {
+              onTap: () async => {
                 _userRepository.logout(),
                 _userManager.logout(),
-                QuestionOfTheDayNotification.cancelNotifications(),
+                await QuestionOfTheDayNotification.cancelNotifications(),
                 SuperStateful.of(context).clearData(),
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   Routes.welcome,

@@ -28,7 +28,7 @@ Future<void> main() async {
 
   //TODO: Revert before release
   await _analyticsProvider.initialize(Config.devMixPanelToken);
-  _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen);
+  _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen, params: null);
 
   //TODO: Revert before release
   initializeDependencyInjection(

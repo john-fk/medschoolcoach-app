@@ -150,7 +150,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
             onDateConfirm: () {
               _updateTestDate();
               _analyticsProvider.logEvent( isEditingTestDate ?
-              "tap_test_date_update" : "tap_test_date_confirm");
+              "tap_test_date_update" : "tap_test_date_confirm",
+                  params: null);
               if (widget.source != Routes.profile_screen)
                 Navigator.pushNamed(context, Routes.timePerDay,
                     arguments: Routes.onboarding);
@@ -256,7 +257,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 "general.remove",
               ),
               onTap: () async {
-                _analyticsProvider.logEvent("tap_test_date_remove");
+                _analyticsProvider.logEvent("tap_test_date_remove",
+                    params: null);
                 Navigator.pop(context);
                 setState(() {
                   scheduleDate = null;

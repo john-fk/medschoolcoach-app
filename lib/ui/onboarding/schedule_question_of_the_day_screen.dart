@@ -60,7 +60,8 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
   Widget _skipButton(BuildContext context) {
     return FlatButton(
         onPressed: () {
-          _analyticsProvider.logEvent("tap_question_of_the_day_skip");
+          _analyticsProvider.logEvent("tap_question_of_the_day_skip",
+              params: null);
           Navigator.pushNamed(context, Routes.home);
         },
         child: Text(
@@ -103,7 +104,8 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
                   // ignore: lines_longer_than_80_chars
                   QuestionOfTheDayNotification.scheduleNotifications(initialSchedulingDate());
                 }
-                _analyticsProvider.logEvent("tap_question_of_the_day_confirm");
+                _analyticsProvider.logEvent("tap_question_of_the_day_confirm",
+                    params: null);
                 userManager.markOnboardingComplete();
                 if (widget.source == Routes.profile_screen)
                   Navigator.of(context).pop();
@@ -128,11 +130,12 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
 
   Widget _disableNotificationButton() {
     return TextButton(
-        onPressed: () {
+        onPressed: () async {
           userManager.markOnboardingComplete();
           userManager.removeDailyNotification();
-          QuestionOfTheDayNotification.cancelNotifications();
-          _analyticsProvider.logEvent("tap_question_of_the_day_skip");
+          await QuestionOfTheDayNotification.cancelNotifications();
+          _analyticsProvider.logEvent("tap_question_of_the_day_skip",
+              params: null);
           Navigator.pop(context);
         },
         child: Text(
