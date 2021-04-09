@@ -194,9 +194,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   Widget _buildSubjectsList() {
     final int count = allSubjects?.length ?? 0;
-    final capsuleListHeight = isTablet(context) ? 265.0 : 225.0;
-    final double capsuleHeight = isTablet(context) ? 252 : 180;
-    final double capsuleWidth = isTablet(context) ? 130 : 90;
+    final capsuleListHeight = isTablet(context) ? 320.0 : 225.0;
+    final double capsuleHeight = isTablet(context) ? 300 : 180;
+    final double capsuleWidth = isTablet(context) ? 155 : 90;
     final double innerCircleHeight =
         isTablet(context) ? capsuleHeight / 2.25 : capsuleHeight / 2.35;
 
@@ -241,11 +241,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
               color: index == selectedIndex ? Color(0xff009D7A) : Colors.white,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(capsuleWidth),
+              border: Border.all(color: index == selectedIndex
+                  ? Color(0xff009D7A) : Colors.black.withOpacity(0.08)),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 50,
-                    offset: Offset(0, 4))
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 2,
+                    offset: Offset(0, 1))
               ]),
           child: Column(
             children: [
