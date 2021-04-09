@@ -367,11 +367,10 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                         _getRequestInfoDialogButton(
                             "tutoring_request_info_dialog.call_us_now",
                             _openPhoneNumber),
-//TODO: Bring back in v1.4.24
-//                        _getDivider(),
-//                        _getRequestInfoDialogButton(
-//                            "tutoring_request_info_dialog.schedule_a_meeting",
-//                            _navigateToScheduleAMeeting),
+                        _getDivider(),
+                        _getRequestInfoDialogButton(
+                            "tutoring_request_info_dialog.schedule_a_meeting",
+                            _navigateToScheduleAMeeting),
                       ],
                     ),
                     Positioned(
@@ -405,23 +404,22 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     });
   }
 
-  //TODO: Bring back in v1.4.24
-//  Future _navigateToScheduleAMeeting() async {
-//    _analyticsProvider.logEvent(
-//    AnalyticsConstants.tapTutoringScheduleAMeeting,
-//        params: {
-//          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
-//        });
-//    Navigator.of(_scaffoldKey.currentContext).pop("success");
-//    Navigator.of(_scaffoldKey.currentContext).push<dynamic>(
-//      MaterialPageRoute<dynamic>(
-//          builder: (BuildContext context) => WebviewScreen(
-//                key: const Key("schedule meeting webview"),
-//                initialUrl: Config.scheduleMeetingUrl,
-//                title: "Schedule a Meeting",
-//              )),
-//    );
-//  }
+  void launchURL(String url) async {
+      if (await canLaunch(url)) {
+        await launch(url, forceWebView: true);
+      } else {
+        print('Could not launch $url');
+      }
+  }
+  Future _navigateToScheduleAMeeting() async {
+    _analyticsProvider.logEvent(
+    AnalyticsConstants.tapTutoringScheduleAMeeting,
+        params: {
+          AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
+        });
+    Navigator.of(_scaffoldKey.currentContext).pop("success");
+    await launchURL(Config.scheduleMeetingUrl);
+  }
 
   Future _flagForTutoringUpsell() async {
     final NetworkResponse result = await Injector.appInstance
