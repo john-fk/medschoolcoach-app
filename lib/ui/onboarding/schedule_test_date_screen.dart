@@ -152,9 +152,12 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
               _analyticsProvider.logEvent( isEditingTestDate ?
               "tap_test_date_update" : "tap_test_date_confirm",
                   params: null);
-              if (widget.source != Routes.profile_screen)
+              if (widget.source != Routes.profile_screen) {
                 Navigator.pushNamed(context, Routes.timePerDay,
                     arguments: Routes.onboarding);
+              } else {
+                Navigator.pop(context);
+            }
             },
           ),
         ));
