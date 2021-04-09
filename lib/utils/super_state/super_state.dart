@@ -148,6 +148,7 @@ class SuperState extends State<SuperStateful> {
     );
     if (result is RepositorySuccessResult<List<Section>>) {
       flashcardsSections = result.data;
+      flashcardsSections.sort((a,b) => a.name.compareTo(b.name));
     }
     setState(() {});
     return result;

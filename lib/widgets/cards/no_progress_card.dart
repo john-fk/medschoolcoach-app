@@ -20,41 +20,45 @@ class NoProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 90,
-              color: Style.of(context).colors.background3,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              FlutterI18n.translate(context, text),
-              style: normalResponsiveFont(context, fontWeight: FontWeight.w400),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: RoundedButton(
-                text: FlutterI18n.translate(context, buttonText),
-                color: Style.of(context).colors.accent,
-                onPressed: onTapButton,
+    return InkWell(
+      onTap: this.onTapButton,
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 90,
+                color: Style.of(context).colors.background3,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                FlutterI18n.translate(context, text),
+                style: normalResponsiveFont(
+                    context, fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: RoundedButton(
+                  text: FlutterI18n.translate(context, buttonText),
+                  color: Style.of(context).colors.accent,
+                  onPressed: onTapButton,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -114,7 +114,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
                             Text(
                               formatDate(DateTime.now()
                                   .add(Duration(
-                                      days: widget.scheduleProgress.daysLeft)), 'dd/MM/yyyy'),
+                                      days: widget.scheduleProgress.daysLeft)), 'MM/dd/yyyy'),
                               style: smallResponsiveFont(context,
                                   fontWeight: FontWeight.w500),
                             ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
+import 'package:Medschoolcoach/utils/notification_helper.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:device_preview/device_preview.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uni_links/uni_links.dart';
+
+import 'main.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -67,6 +70,13 @@ class _MyAppState extends State<MyApp> {
   String _latestLink = 'Unknown';
   Uri _latestUri;
   StreamSubscription _sub;
+
+  @override
+  Future<void> didChangeDependencies() async {
+
+    super.didChangeDependencies();
+    await initNotifications(notifsPlugin, navigatorKey);
+  }
 
   @override
   void initState() {

@@ -71,6 +71,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   void _createSection() {
     var flashcardsSection = SuperStateful.of(context).flashcardsSections;
     var questionsSection = SuperStateful.of(context).questionsSections;
+    allSubjects.clear();
     flashcardsSection
         .where((section) => section.amountOfFlashcards != 0)
         .forEach(
