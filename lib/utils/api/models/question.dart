@@ -7,6 +7,9 @@ QuestionList questionListFromJson(String str) =>
 
 String questionListToJson(QuestionList data) => json.encode(data.toJson());
 
+List<Question> questionOfDayFromJson(String str) => List<Question>.from(
+    json.decode(str)['items'].map((dynamic x) => Question.fromJson(x)));
+
 List<Question> questionFromJson(String str) => List<Question>.from(
     json.decode(str).map((dynamic x) => Question.fromJson(x)));
 

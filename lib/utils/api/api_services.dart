@@ -294,11 +294,12 @@ class ApiServicesImpl implements ApiServices {
     try {
       final Map<String, String> headers = await _getHeaders();
       final String response = await _networkClient
-          .get(_getBaseUrl() + "/questions/day", headers: headers);
-      var data = questionFromJson(response);
+          .get(_getBaseUrl() + "/questions/day?limit=5&offset=0", headers: headers);
+      print("getQuestionOfTheDayQuestions:\n" + response);
+      var data = questionOfDayFromJson(response);
       return SuccessResponse<List<Question>>(data);
     } catch (error) {
-      log("getCourseProgress getQuestionOfTheDayQuestions:- $error");
+      log("getQuestionOfTheDayQuestions:- $error");
       return null;
     }
   }
