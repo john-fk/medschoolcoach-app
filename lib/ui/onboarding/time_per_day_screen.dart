@@ -202,7 +202,10 @@ class _TimePerDayState extends State<TimePerDay> {
                   diameterRatio: 1,
                   useMagnifier: false,
                   onSelectedItemChanged: (val) {
-                    print(val);
+                    if (loading) {
+                      return;
+                    }
+                    
                     setState(() {
                       timePerDay = (val + 1) * 2;
                     });
