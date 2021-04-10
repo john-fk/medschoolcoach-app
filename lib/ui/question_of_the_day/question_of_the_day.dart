@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/repository/questions_day_repository.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
@@ -9,6 +10,7 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
@@ -29,14 +31,14 @@ class QuestionOfTheDay extends StatefulWidget {
   const QuestionOfTheDay({Key key, this.source}) : super(key: key);
 
   @override
-  _QuestionOfTheDayState createState() =>
-      _QuestionOfTheDayState();
+  _QuestionOfTheDayState createState() => _QuestionOfTheDayState();
 }
 
-class _QuestionOfTheDayState
-    extends State<QuestionOfTheDay> {
+class _QuestionOfTheDayState extends State<QuestionOfTheDay> {
   final _questionsRepository =
       Injector.appInstance.getDependency<QuestionsRepository>();
+  final _questionsDayRepository =
+      Injector.appInstance.getDependency<QuestionsDayRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
@@ -58,15 +60,20 @@ class _QuestionOfTheDayState
   @override
   void initState() {
     super.initState();
-    _loading = true;
-    apiServices = Injector.appInstance.getDependency<ApiServices>();
-    apiServices
-        .getQuestionOfTheDayQuestions(limit: 5, offset: 0)
-        .then((value){
-              _questionsList = value.items;
-              setState(() {
-              _loading =false;
-              });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchQuestions();
+    });
+  }
+
+  void _fetchQuestions() async {
+    setState(() {
+      _loading = true;
+    });
+    await SuperStateful.of(context).updateQuestionsOfTheDay();
+    setState(() {
+      _questionsList = SuperStateful.of(context).questionsOfTheDay;
+      _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;
+      _loading = false;
     });
   }
 
@@ -86,102 +93,106 @@ class _QuestionOfTheDayState
               fit: BoxFit.cover,
             ),
           ),
-          if(_questionsList.isNotEmpty)
-          Column(
-            children: <Widget>[
-              QuestionAppBar(
-                title: FlutterI18n.translate(
-                  context,
-                  "question_screen.title",
-                ),
-                subTitle: _questionsList[_currentQuestionIndex].section.name,
-                currentQuestion: _currentQuestionIndex + 1,
-                questionsSize: _questionsList.length,
-                questionId: _questionsList.isNotEmpty
-                    ? _questionsList[_currentQuestionIndex].id
-                    : "",
-                stem: _questionsList.isNotEmpty
-                    ? _questionsList[_currentQuestionIndex].stem
-                    : "",
-                isBookmarked: false,
-                showBookmark: false,
-              ),
-              Expanded(
-                child: _loading
-                    ? Center(
-                        child: ButtonProgressBar(),
-                      )
-                    : _buildListViewContent(context, shouldAdd),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: AnimatedContainer(
-                  duration: const Duration(
-                    milliseconds: 300,
+          if (_questionsList.isNotEmpty)
+            Column(
+              children: <Widget>[
+                QuestionAppBar(
+                  title: FlutterI18n.translate(
+                    context,
+                    "question_screen.title",
                   ),
-                  height: _selectedIndex != null
-                      ? whenDevice(
-                          context,
-                          large: 168,
-                          tablet: 230,
+                  subTitle: _questionsList[_currentQuestionIndex].section.name,
+                  currentQuestion: _currentQuestionIndex + 1,
+                  questionsSize: _questionsList.length,
+                  questionId: _questionsList.isNotEmpty
+                      ? _questionsList[_currentQuestionIndex].id
+                      : "",
+                  stem: _questionsList.isNotEmpty
+                      ? _questionsList[_currentQuestionIndex].stem
+                      : "",
+                  isBookmarked: false,
+                  showBookmark: false,
+                ),
+                Expanded(
+                  child: _loading
+                      ? Center(
+                          child: ButtonProgressBar(),
                         )
-                      : 0,
-                  child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 1,
-                          color: Colors.white.withOpacity(0.2),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        QuestionButton(
-                          text:
-                              _currentQuestionIndex != _questionsList.length - 1
-                                  ? FlutterI18n.translate(
-                                      context,
-                                      "question_screen.next_question",
-                                    )
-                                  : FlutterI18n.translate(
-                                      context,
-                                      "question_screen.summerize",
-                                    ),
-                          onPressed:
-                              _currentQuestionIndex != _questionsList.length - 1
-                                  ? _goToNextQuestion
-                                  : _goToSummarize,
-                          nextQuestion: true,
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        WhiteBorderButton(
-                          text: FlutterI18n.translate(
+                      : _buildListViewContent(context, shouldAdd),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: AnimatedContainer(
+                    duration: const Duration(
+                      milliseconds: 300,
+                    ),
+                    height: _selectedIndex != null
+                        ? whenDevice(
                             context,
-                            "question_screen.view_explanation",
+                            large: 168,
+                            tablet: 230,
+                          )
+                        : 0,
+                    child: SingleChildScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: 1,
+                            color: Colors.white.withOpacity(0.2),
                           ),
-                          onPressed: () {
-                            _logQuestionEvent(
-                                AnalyticsConstants.tapViewExplanation);
-                            openExplanationModal(
-                              context: context,
-                              explanationText:
-                                  _questionsList[_currentQuestionIndex]
-                                      .explanation,
-                            );
-                          },
-                        )
-                      ],
+                          SizedBox(
+                            height: 16,
+                          ),
+                          QuestionButton(
+                            text: _currentQuestionIndex !=
+                                    _questionsList.length - 1
+                                ? FlutterI18n.translate(
+                                    context,
+                                    "question_screen.next_question",
+                                  )
+                                : FlutterI18n.translate(
+                                    context,
+                                    "question_screen.summerize",
+                                  ),
+                            onPressed: _currentQuestionIndex !=
+                                    _questionsList.length - 1
+                                ? _goToNextQuestion
+                                : _goToSummarize,
+                            nextQuestion: true,
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          WhiteBorderButton(
+                            text: FlutterI18n.translate(
+                              context,
+                              "question_screen.view_explanation",
+                            ),
+                            onPressed: () {
+                              _logQuestionEvent(
+                                  AnalyticsConstants.tapViewExplanation);
+                              openExplanationModal(
+                                context: context,
+                                explanationText:
+                                    _questionsList[_currentQuestionIndex]
+                                        .explanation,
+                              );
+                            },
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
-          )
+                )
+              ],
+            )
           else
-            Center(child: ProgressBar(isDark: true,),)
+            Center(
+              child: ProgressBar(
+                isDark: true,
+              ),
+            )
         ],
       ),
     );
@@ -197,68 +208,64 @@ class _QuestionOfTheDayState
     }
   }
 
-
   Widget _buildListViewContent(BuildContext context, bool shouldAdd) {
     final width = MediaQuery.of(context).size.width;
-    return  ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16.0,
-                          ),
-                          child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
-                              child: Html(
-                                  data: _questionsList[_currentQuestionIndex]
-                                      .stem,
-                                  style: {
-                                    "html": Style.fromTextStyle(
-                                        biggerResponsiveFont(
-                                      context,
-                                      fontColor: FontColor.Content2,
-                                      fontWeight: FontWeight.bold,
-                                    ))
-                                  })),
-                        ),
-                        AnimatedList(
-                          key: _listKey,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (
+    return ListView(
+      shrinkWrap: true,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+          ),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                ),
+                child: Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                    child: Html(
+                        data: _questionsList[_currentQuestionIndex].stem,
+                        style: {
+                          "html": Style.fromTextStyle(biggerResponsiveFont(
                             context,
-                            index,
-                            animation,
-                          ) {
-                            Answer answer = Answer(
-                              optionLetter: _getOptionLetter(index),
-                              text: _getQuestionText(index),
-                              isCorrect: _isCorrect(index),
-                            );
-                            if (shouldAdd) {
-                              _answers.add(answer);
-                            }
-                            return _buildListItem(
-                              _answers[index],
-                              animation,
-                              index,
-                            );
-                          },
-                          initialItemCount: 4,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              );
+                            fontColor: FontColor.Content2,
+                            fontWeight: FontWeight.bold,
+                          ))
+                        })),
+              ),
+              AnimatedList(
+                key: _listKey,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (
+                  context,
+                  index,
+                  animation,
+                ) {
+                  Answer answer = Answer(
+                    optionLetter: _getOptionLetter(index),
+                    text: _getQuestionText(index),
+                    isCorrect: _isCorrect(index),
+                  );
+                  if (shouldAdd) {
+                    _answers.add(answer);
+                  }
+                  return _buildListItem(
+                    _answers[index],
+                    animation,
+                    index,
+                  );
+                },
+                initialItemCount: 4,
+              )
+            ],
+          ),
+        ),
+      ],
+    );
   }
-
 
   Widget _buildListItem(
     Answer answer,
@@ -328,6 +335,17 @@ class _QuestionOfTheDayState
           duration: _animationDuration,
         );
       }
+    }
+
+    if (_currentQuestionIndex == 4) {
+      setState(() {
+        _questionsDayRepository.clearCache();
+        SuperStateful.of(context).currentQOTDIndex = 0;
+      });
+    } else {
+      setState(() {        
+        SuperStateful.of(context).currentQOTDIndex = _currentQuestionIndex + 1;
+      });
     }
   }
 
@@ -433,4 +451,3 @@ class _QuestionOfTheDayState
     }
   }
 }
-

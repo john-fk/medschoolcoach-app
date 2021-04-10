@@ -201,7 +201,7 @@ abstract class ApiServices {
 
   Future<ProfileUser> getAccountData();
 
-  Future<QuestionList> getQuestionOfTheDayQuestions({int limit, int offset});
+  Future<NetworkResponse<List<Question>>> getQuestionOfTheDayQuestions();
 
   Future<NetworkResponse<QuestionBankProgress>> getQuestionBankProgress();
 
@@ -290,16 +290,16 @@ class ApiServicesImpl implements ApiServices {
     }
   }
 
-  Future<QuestionList> getQuestionOfTheDayQuestions(
-      {int limit, int offset}) async {
+  Future<NetworkResponse<List<Question>>> getQuestionOfTheDayQuestions() async {
     try {
       final Map<String, String> headers = await _getHeaders();
-      final String response = await _networkClient.get(
-          _getBaseUrl() + "/questions/day?limit=5&offset=0",
-          headers: headers);
-      return QuestionList.fromJson(jsonDecode(response));
+      final String response = await _networkClient
+          .get(_getBaseUrl() + "/questions/day?limit=5&offset=0", headers: headers);
+      print("getQuestionOfTheDayQuestions:\n" + response);
+      var data = questionOfDayFromJson(response);
+      return SuccessResponse<List<Question>>(data);
     } catch (error) {
-      log("getCourseProgress getQuestionOfTheDayQuestions:- $error");
+      log("getQuestionOfTheDayQuestions:- $error");
       return null;
     }
   }
