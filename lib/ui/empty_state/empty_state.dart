@@ -1,6 +1,4 @@
 import 'dart:ui';
-
-import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';

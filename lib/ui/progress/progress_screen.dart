@@ -140,7 +140,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child: _buildBody()),
-      backgroundColor: Style.of(context).colors.background,
+      backgroundColor: Style.of(context).colors.background2,
       bottomNavigationBar: NavigationBar(
         page: NavigationPage.Progress,
       ),

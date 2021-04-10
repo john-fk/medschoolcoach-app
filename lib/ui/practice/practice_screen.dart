@@ -9,7 +9,6 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
-import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/foundation.dart';
@@ -58,6 +57,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
       _loading = hasData ? false : true;
     });
 
+    if (hasData) {
+      _createSection();
+    }
+
     await SuperStateful.of(context).updateFlashcardsSectionsList(
       forceApiRequest: forceApiRequest,
     );
@@ -104,8 +107,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   Widget _buildContent() {
-    final flashcardSections = SuperStateful.of(context).flashcardsSections;
-    final questionSection = SuperStateful.of(context).questionsSections;
     if (_loading)
       return Center(
         child: ProgressBar(),
