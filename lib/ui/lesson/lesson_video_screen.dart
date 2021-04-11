@@ -78,11 +78,6 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
                 videoPlayerVisible: _videoPlayerVisible,
                 analyticsProvider: _analyticsProvider
               ),
-        // bottomNavigationBar: widget.arguments.fullScreenVideo
-        //     ? null
-        //     : NavigationBar(
-        //         runOnTap: () => _customVideoController?.pause(),
-        //       ),
       ),
     );
   }

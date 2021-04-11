@@ -205,7 +205,7 @@ class _TimePerDayState extends State<TimePerDay> {
                     if (loading) {
                       return;
                     }
-                    
+
                     setState(() {
                       timePerDay = (val + 1) * 2;
                     });

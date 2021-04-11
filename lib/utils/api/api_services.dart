@@ -931,8 +931,7 @@ class ApiServicesImpl implements ApiServices {
         "${_getBaseUrl()}/schedule/progress?isHour=true",
         headers: headers,
       );
-
-      print(response);
+      
       return SuccessResponse<Map<String, dynamic>>(
         scheduleProgressObjectFromJson(response).list,
       );
@@ -1061,7 +1060,6 @@ class ApiServicesImpl implements ApiServices {
           },
         ),
       );
-      log("invite friend response:- " + response);
       return SuccessResponse<void>(response);
     } catch (error) {
       return _handleError<void>(error, null);
@@ -1278,10 +1276,8 @@ class ApiServicesImpl implements ApiServices {
         url,
         headers: headers,
       );
-      log("response for account data" + response);
       return profileUserFromJson(response);
     } catch (error) {
-      log("response for account data" + error.toString());
       return null;
     }
   }

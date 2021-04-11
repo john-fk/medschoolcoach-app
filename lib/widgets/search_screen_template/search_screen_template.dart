@@ -56,7 +56,6 @@ class _SearchScreenTemplateState extends State<SearchScreenTemplate> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        // bottomNavigationBar: NavigationBar(),
         body: Stack(
           children: <Widget>[
             Column(

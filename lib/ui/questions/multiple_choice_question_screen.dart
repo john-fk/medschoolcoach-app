@@ -545,20 +545,6 @@ class _MultipleChoiceQuestionScreenState
           ..sort(
             (a, b) => a.order.compareTo(b.order),
           );
-        //Code to remove questions with no or empty options
-
-        for (var question in _questionsList) {
-          if (question.choiceA == "" &&
-              question.choiceB == "" &&
-              question.choiceC == "" &&
-              question.choiceD == "") log(question.id);
-        }
-
-        _questionsList.removeWhere((question) =>
-            question.choiceA == "" &&
-            question.choiceB == "" &&
-            question.choiceC == "" &&
-            question.choiceD == "");
 
         if (widget.arguments.status != null) {
           _filterQuestionsByStatus();

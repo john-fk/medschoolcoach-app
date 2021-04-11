@@ -45,7 +45,6 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // bottomNavigationBar: NavigationBar(),
       body: Column(
         children: <Widget>[
           CustomAppBar(

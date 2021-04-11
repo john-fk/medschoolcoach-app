@@ -351,7 +351,7 @@ onboarding_scheduling:
   edit_test_date: Edit Test Date
   remove_test_date: Remove Test Date
   expected_completion_date: Your expected completion date is
-  are_you_sure: Are you Sure?
+  are_you_sure: Are You Sure?
   remove_date_dialog_content: Are you sure you want to remove your test date.
 
 new_user_onboarding:
@@ -376,11 +376,11 @@ progress_screen:
   goto_question_bank: Go to Question Bank
   goto_flashcards: Go to Flashcards
   no_progress: You haven't made any progress yet
-  get_started: GET STARTED
+  get_started: Get Started
 
 upsell_banner:
   banner_text: Want to know how we can help you get the results you’re looking for faster?
-  button_text: LEARN MORE
+  button_text: Learn More
 
 calendar:
   error_msg: "Your test is approaching quickly. The fastest schedule we provide from start to finish is 15 days."

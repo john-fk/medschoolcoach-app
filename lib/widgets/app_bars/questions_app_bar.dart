@@ -134,7 +134,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                             const SizedBox(
                               height: 10,
                             ),
-                            if(widget.showBookmark)
+                            if (widget.showBookmark)
                             _drawBookmark()
                           ],
                         ),

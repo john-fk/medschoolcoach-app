@@ -340,16 +340,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  // void _testRegularLogin() {
-  //   print("TEST ${_isRegularLogin(null)}");
-  //   print("TEST ${_isRegularLogin("auth0|TutoringPortal|20616")}");
-  //   print("TEST ${_isRegularLogin("facebook|TutoringPortal|20616")}");
-  //   print("TEST ${_isRegularLogin("google|TutoringPortal|2061")}");
-  //   print("TEST ${_isRegularLogin("appple|TutoringPortal|20616")}");
-  //   print("TEST ${_isRegularLogin("appsdf616**")}");
-  //   print("TEST ${_isRegularLogin("")}");
-  // }
-
   bool _isRegularLogin(String id) {
     bool isRegularLogin = false;
     if (id != null && id.isNotEmpty) {

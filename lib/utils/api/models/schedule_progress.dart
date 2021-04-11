@@ -1,10 +1,5 @@
 import 'dart:convert';
 
-// Map<String, dynamic> scheduleProgressFromJson(String str) =>
-//     Map<String, dynamic>.from(json.decode(str)).map<String, dynamic>(
-//       (String k, dynamic v) => MapEntry<String, dynamic>(k, v),
-//     );
-
 ScheduleProgress scheduleProgressObjectFromJson(String str) =>
     ScheduleProgress.fromJson(json.decode(str));
 

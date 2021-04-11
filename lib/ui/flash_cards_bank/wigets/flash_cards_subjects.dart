@@ -32,8 +32,6 @@ class FlashCardsSubjects extends StatelessWidget {
     final sections = SuperStateful
         .of(context)
         .flashcardsSections;
-    sections.map((e) => e.subjects.map((e) => log(e.name)));
-
 
     sections.where((section) => section.amountOfFlashcards != 0).forEach(
           (section) =>

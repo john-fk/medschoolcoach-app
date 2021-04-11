@@ -38,7 +38,6 @@ Future<void> main() async {
   );
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
-  log("initialRoute:- $initialRoute");
 
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 

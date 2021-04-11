@@ -56,7 +56,6 @@ class _FlashCardsBankScreenState extends State<FlashCardsBankScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // bottomNavigationBar: NavigationBar(),
       body: Column(
         children: <Widget>[
           CustomAppBar(

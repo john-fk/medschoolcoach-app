@@ -29,8 +29,8 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       height: whenDevice(
         context,
-        large: isSmall?35:50,
-        tablet: isSmall?65:80,
+        large: isSmall ? 35 : 50,
+        tablet: isSmall ? 65 : 80,
       ),
       child: ButtonTheme(
         child: RaisedButton(

@@ -75,7 +75,6 @@ abstract class AnalyticsConstants {
   static const practiceScreen = "screen_practice";
   static const lessonScreen = "screen_lesson";
 
-
   //Taps
   static const tapSignUp = "tap_sign_up";
   static const tapSignIn = "tap_sign_in";
