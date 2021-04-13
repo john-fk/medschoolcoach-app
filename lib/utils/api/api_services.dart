@@ -931,7 +931,7 @@ class ApiServicesImpl implements ApiServices {
         "${_getBaseUrl()}/schedule/progress?isHour=true",
         headers: headers,
       );
-      
+
       return SuccessResponse<Map<String, dynamic>>(
         scheduleProgressObjectFromJson(response).list,
       );

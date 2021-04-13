@@ -3,6 +3,7 @@ import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
+import 'package:Medschoolcoach/ui/onboarding/time_per_day_screen.dart';
 import 'package:Medschoolcoach/ui/slidable_cell/slidable_cell.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
@@ -619,8 +620,11 @@ class _ScheduleTabState extends State<ScheduleTab> {
         TextButton(
             onPressed: () {
               _analyticsProvider.logEvent("tap_change_my_schedule");
-              Navigator.pushNamed(context, Routes.timePerDay,
-                  arguments: AnalyticsConstants.screenLearn);
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                        builder: (_) =>
+                            TimePerDay()),
+                  ).then((_) => setScheduleInfo(forceApiRequest: true));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
