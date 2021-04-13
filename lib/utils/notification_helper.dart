@@ -1,9 +1,12 @@
+import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as notifs;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injector/injector.dart';
 import 'package:rxdart/subjects.dart' as _rxsub;
 import 'dart:io' show Platform;
@@ -54,7 +57,21 @@ Future<void> initNotifications(
       );
     }
   });
-  print("Notifications initialised successfully");
+
+  print("Notifications initialized successfully");
+}
+
+Future<void> markLaunchedFromNotificationIfApplicable(
+    notifs.FlutterLocalNotificationsPlugin notifsPlugin,
+    BuildContext context) async {
+  final NotificationAppLaunchDetails notificationAppLaunchDetails =
+      await notifsPlugin.getNotificationAppLaunchDetails();
+
+  if (notificationAppLaunchDetails.didNotificationLaunchApp) {
+    Config.enteredAppFromQOTDNotification = true;
+  } else {
+    Config.enteredAppFromQOTDNotification = false;
+  }
 }
 
 Future<bool> requestPermissions(

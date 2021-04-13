@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/empty_state/empty_state.dart';
@@ -38,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _scheduleLoading = true;
   bool _lastWatchedLoading = true;
+  static final FlutterLocalNotificationsPlugin notifsPlugin =
+  FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -48,14 +51,17 @@ class _HomeScreenState extends State<HomeScreen> {
       (_) async {
         _fetchLastWatched();
         _fetchSchedule(forceApiRequest: true);
-        final FlutterLocalNotificationsPlugin notifsPlugin =
-            FlutterLocalNotificationsPlugin();
+
         final NotificationAppLaunchDetails notificationAppLaunchDetails =
             await notifsPlugin.getNotificationAppLaunchDetails();
 
-        if (notificationAppLaunchDetails.didNotificationLaunchApp)
+        if (notificationAppLaunchDetails.didNotificationLaunchApp == true
+            && Config.enteredAppFromQOTDNotification == true) {
+          print("handling notif from home and marking false");
+          Config.enteredAppFromQOTDNotification = false;
           Navigator.pushNamed(context,
               Routes.questionOfTheDayScreen, arguments: "notification");
+        }
       },
     );
   }

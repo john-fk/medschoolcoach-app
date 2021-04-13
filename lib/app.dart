@@ -81,8 +81,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    print(_latestLink);
-    print(_latestUri);
+    markLaunchedFromNotificationIfApplicable(notifsPlugin, context);
   }
 
   @override

@@ -66,4 +66,7 @@ abstract class Config {
 
   static const REGULAR_AUTH_PREFIX = "auth0";
   static const SOCIAL_LOGIN_ID_PREFIX = ["facebook", "google-oauth2", "apple"];
+
+  //TODO: Not the right place for this
+  static bool enteredAppFromQOTDNotification = false;
 }
