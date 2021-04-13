@@ -211,10 +211,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Widget _buildSubjectsList() {
     final int count = allSubjects?.length ?? 0;
     final capsuleListHeight = isTablet(context) ? 320.0 : 225.0;
-    final double capsuleHeight = isTablet(context) ? 300 : 180;
-    final double capsuleWidth = isTablet(context) ? 155 : 90;
+    final double capsuleHeight = isTablet(context) ? 300 : 200;
+    final double capsuleWidth = isTablet(context) ? 155 : 100;
     final double innerCircleHeight =
-        isTablet(context) ? capsuleHeight / 2.25 : capsuleHeight / 2.35;
+        isTablet(context) ? capsuleHeight / 2.25 : capsuleHeight / 2.5;
 
     return Padding(
       padding: isTablet(context)
@@ -227,7 +227,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
             : ListView.separated(
                 padding: isTablet(context)
                     ? EdgeInsets.only(top: 20, bottom: 10, left: 12, right: 12)
-                    : EdgeInsets.only(top: 20, bottom: 35, left: 12, right: 12),
+                    : EdgeInsets.only(top: 20, bottom: 20, left: 12, right: 12),
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (ctx, index) => _buildCapsule(
