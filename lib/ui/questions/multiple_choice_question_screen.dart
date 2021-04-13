@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';

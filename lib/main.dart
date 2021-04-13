@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:Medschoolcoach/app.dart';
 import 'package:Medschoolcoach/app_router.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
@@ -43,7 +41,7 @@ Future<void> main() async {
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
-  var enableDevicePreview = true;
+  var enableDevicePreview = false;
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(

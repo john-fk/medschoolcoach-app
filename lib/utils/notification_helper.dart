@@ -1,8 +1,10 @@
 import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
+import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as notifs;
+import 'package:injector/injector.dart';
 import 'package:rxdart/subjects.dart' as _rxsub;
 import 'dart:io' show Platform;
 
@@ -42,12 +44,15 @@ Future<void> initNotifications(
   await notifsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
     selectNotificationSubject.add(payload);
-    await Navigator.push(
-      navigatorKey.currentState.context,
-      MaterialPageRoute<void>(builder: (context) =>
-          QuestionOfTheDay(source: "notification")),
-    );
-
+    final userManager = Injector.appInstance.getDependency<UserManager>();
+    final isLoggedIn = await userManager.isUserLoggedIn();
+    if (isLoggedIn) {
+      await Navigator.push(
+        navigatorKey.currentState.context,
+        MaterialPageRoute<void>(builder: (context) =>
+            QuestionOfTheDay(source: "notification")),
+      );
+    }
   });
   print("Notifications initialised successfully");
 }
