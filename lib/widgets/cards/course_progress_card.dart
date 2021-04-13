@@ -22,8 +22,6 @@ class _CourseProgressCardState extends State<CourseProgressCard>
     with SingleTickerProviderStateMixin {
   double _programProgress = 0.0;
   double _scheduleProgress = 0.0;
-  Animation<double> animation;
-  AnimationController controller;
   bool isOnTrack;
   Color scheduleProgressColor;
   int currentDay;
@@ -35,8 +33,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this);
+
     currentDay = widget.scheduleProgress.currentDay;
     totalDays = currentDay + widget.scheduleProgress.daysLeft;
     scheduleProgressPercent = currentDay / totalDays;
@@ -45,32 +42,15 @@ class _CourseProgressCardState extends State<CourseProgressCard>
         scheduleProgressPercent > 0;
 
     failedToCompleteSchedule = widget.scheduleProgress.daysLeft == 0
-        && widget.scheduleProgress.courseProgress != 1;
+        && widget.scheduleProgress.courseProgress != 100;
 
     var actualCompletionDate =
     DateTime.parse(widget.scheduleProgress.actualCompletionDate);
     var currentCompletionDate = DateTime.now()
         .add(Duration(days: widget.scheduleProgress.daysLeft));
     isOnTrack = currentCompletionDate.isBefore(actualCompletionDate);
-
-    Future.delayed(Duration(milliseconds: 350), () {
-      animation = Tween(begin: 0.0, end: 1.0).animate(
-          CurvedAnimation(curve: Curves.easeInOutQuart, parent: controller))
-        ..addListener(() {
-          setState(() {
-            _programProgress =
-                animation.value * widget.scheduleProgress.courseProgress / 100;
-            _scheduleProgress = animation.value * scheduleProgressPercent;
-          });
-        });
-      controller.forward();
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+    _programProgress = widget.scheduleProgress.courseProgress / 100;
+    _scheduleProgress = scheduleProgressPercent;
   }
 
   @override
