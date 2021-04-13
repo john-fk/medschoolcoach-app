@@ -237,7 +237,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
               flex: 4,
               child: RichText(
                 text: TextSpan(
-                  text: 'Congratulations!'.toUpperCase(),
+                  text: 'Congratulations!\n'.toUpperCase(),
                   style:
                       bigResponsiveFont(context, fontWeight: FontWeight.w900),
                   children: <TextSpan>[
