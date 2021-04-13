@@ -206,8 +206,6 @@ abstract class Routes {
         return FadeRoute(
             page: TimePerDay(
           source: (settings.arguments is String) ? settings.arguments : null,
-          scheduleDate:
-              (settings.arguments is DateTime) ? settings.arguments : null,
         ));
       case progressScreen:
         return FadeRoute(page: ProgressScreen());

@@ -20,9 +20,8 @@ import 'package:Medschoolcoach/utils/format_date.dart';
 
 class TimePerDay extends StatefulWidget {
   final String source;
-  final DateTime scheduleDate;
 
-  TimePerDay({this.source = "", this.scheduleDate});
+  TimePerDay({this.source = ""});
 
   @override
   _TimePerDayState createState() => _TimePerDayState();
