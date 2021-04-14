@@ -326,9 +326,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
             buttonText: "Try Flashcards",
             onTapButton: () async {
               routeToFlashcards();
-              setState(() {
-                selectedFlashcardSubject = 'All';
-              });
             },
           ));
     }
