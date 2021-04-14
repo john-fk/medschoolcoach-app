@@ -31,7 +31,6 @@ class ProgressCardWrapper extends StatefulWidget {
 
 class _ProgressCardWrapper extends State<ProgressCardWrapper>
     with SingleTickerProviderStateMixin {
-  bool playAnimation = false;
   String selectedSubject = "All";
 
   final List<String> subjectsList = [
@@ -49,58 +48,48 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
 
   @override
   Widget build(BuildContext context) {
-    return VisibilityDetector(
-      key: UniqueKey(),
-      onVisibilityChanged: (info) {
-        if (info.visibleFraction > 0.45 && !playAnimation) {
-          setState(() {
-            playAnimation = true;
-          });
-        }
-      },
-      child: Card(
-        elevation: 5,
-        shadowColor: Colors.black.withOpacity(0.1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(
-                    FlutterI18n.translate(context, widget.title),
-                    style: normalResponsiveFont(context,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  Spacer(),
-                  Text(
-                    "${selectedSubject}",
-                    textAlign: TextAlign.right,
-                    style: smallResponsiveFont(context,
-                        fontWeight: FontWeight.w400, opacity: 0.5),
-                  ),
-                  SizedBox(
-                    width: 6,
-                  ),
-                  _filterDropDown(
-                      onChanged: (val) {
-                        setState(() {
-                          selectedSubject = val;
-                        });
-                      },
-                      selectedSubject: this.selectedSubject)
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              widget.child,
-              SizedBox(
-                height: 10,
-              ),
-              _footerButton(),
-            ],
-          ),
+    return Card(
+      elevation: 5,
+      shadowColor: Colors.black.withOpacity(0.1),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  FlutterI18n.translate(context, widget.title),
+                  style: normalResponsiveFont(context,
+                      fontWeight: FontWeight.w700),
+                ),
+                Spacer(),
+                Text(
+                  "${selectedSubject}",
+                  textAlign: TextAlign.right,
+                  style: smallResponsiveFont(context,
+                      fontWeight: FontWeight.w400, opacity: 0.5),
+                ),
+                SizedBox(
+                  width: 6,
+                ),
+                _filterDropDown(
+                    onChanged: (val) {
+                      setState(() {
+                        selectedSubject = val;
+                      });
+                    },
+                    selectedSubject: this.selectedSubject)
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            widget.child,
+            SizedBox(
+              height: 10,
+            ),
+            _footerButton(),
+          ],
         ),
       ),
     );
@@ -115,6 +104,7 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
       alignment: Alignment.centerLeft,
       child: FlatButton(
           onPressed: () {
+            print("tap button");
             widget.onTapFooter();
           },
           child: Row(
