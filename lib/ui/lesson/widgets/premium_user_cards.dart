@@ -173,7 +173,7 @@ class PremiumUserCards extends StatelessWidget {
           ),
         if (video.whiteboardNotesUrl != null)
           SquareFeatureButton(
-            color: Color(0xFFe344ff),
+            color: Color(0xFF42B8EB),
             text: FlutterI18n.translate(
                 context, "lesson_screen.whiteboard_notes"),
             icon: SvgPicture.asset(
