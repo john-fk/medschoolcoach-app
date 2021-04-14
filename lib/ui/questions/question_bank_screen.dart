@@ -99,10 +99,12 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
       forceApiRequest: forceApiRequest,
     );
 
-    setState(() {
-      _loading = false;
-      _result = result;
-    });
+    if (this.mounted) {
+      setState(() {
+        _loading = false;
+        _result = result;
+      });
+    }
   }
 
   Widget _buildSubjects(BuildContext context) {

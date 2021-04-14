@@ -411,8 +411,14 @@ class _MultipleChoiceQuestionScreenState
     );
   }
 
+  void _updateState(Function updateFunction) {
+    if (this.mounted) {
+      updateFunction();
+    }
+  }
+
   void _showAnswers(int index) {
-    setState(() {
+    _updateState(() {
       _selectedIndex = index;
     });
     _questionsRepository.sendQuestionAnswer(
@@ -466,7 +472,7 @@ class _MultipleChoiceQuestionScreenState
         _addListItem(i);
       }
     }
-    setState(() {
+    _updateState(() {
       _currentQuestionIndex = _currentQuestionIndex + 1;
       _selectedIndex = null;
       _answers = [];
@@ -501,7 +507,7 @@ class _MultipleChoiceQuestionScreenState
   Future<void> _fetchQuestions({
     bool forceApiRequest = false,
   }) async {
-    setState(() {
+    _updateState(() {
       _loading = true;
     });
     if (widget.arguments.status != null &&
@@ -516,7 +522,7 @@ class _MultipleChoiceQuestionScreenState
     final result = await _questionsRepository.fetchFavouriteQuestions();
 
     if (result is RepositorySuccessResult<QuestionList>) {
-      setState(() {
+      _updateState(() {
         _questionsList = result.data.items
           ..sort(
             (a, b) => a.order.compareTo(b.order),
@@ -538,7 +544,7 @@ class _MultipleChoiceQuestionScreenState
     );
 
     if (result is RepositorySuccessResult<QuestionList>) {
-      setState(() {
+      _updateState(() {
         _questionsList = result.data.items
           ..sort(
             (a, b) => a.order.compareTo(b.order),
