@@ -277,10 +277,11 @@ class _ScheduleTabState extends State<ScheduleTab> {
 
   RefreshIndicator _buildLessonsList(List<Video> videos) {
     return RefreshIndicator(
-      onRefresh: () => _fetchSingleSchedule(
+      onRefresh: () {
+        return _fetchSingleSchedule(
         day: _days.firstWhere((element) => element.selected).day,
-        forceApiRequest: true,
-      ),
+        forceApiRequest: true);
+      },
       child: ListView.separated(
         key: Key("schedule_scroll"),
         itemCount: videos.length + 1,
@@ -367,7 +368,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
   Padding _buildDatesList() {
     scheduleProgress = SuperStateful.of(context).scheduleProgress;
     _days.forEach((date) => date.completed = _getProgress(date.day) == 100);
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -488,13 +488,11 @@ class _ScheduleTabState extends State<ScheduleTab> {
     DayItemData selectedDayListItem = daysList.firstWhere(
       (dayItemData) => dayItemData.completed == false,
       orElse: () {
-        return null;
+        return daysList.first;
       },
     );
 
-    if (selectedDayListItem != null) {
-      selectedDayListItem.selected = true;
-    }
+    selectedDayListItem.selected = true;
 
     _scrollController = ScrollController(
       initialScrollOffset:
@@ -543,10 +541,8 @@ class _ScheduleTabState extends State<ScheduleTab> {
         ),
       );
 
-      if (_days.any((day) => !day.completed)) {
-        await _fetchSingleSchedule(
-            day: _days.firstWhere((dayItemData) => dayItemData.selected).day);
-      }
+      await _fetchSingleSchedule(
+          day: _days.firstWhere((dayItemData) => dayItemData.selected).day);
 
       setState(() {
         _completed = !_days.any((day) => !day.completed);
@@ -608,6 +604,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
   Widget _updateScheduleSection() {
     return Column(
       children: [
+        _completed ? Container() :
         PrimaryButton(
             text: FlutterI18n.translate(
                 context, "schedule_screen.speed_up_schedule"),
