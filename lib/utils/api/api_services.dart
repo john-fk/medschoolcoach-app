@@ -250,7 +250,7 @@ class ApiServicesImpl implements ApiServices {
   Future<NetworkResponse<FlashcardsProgress>> getFlashcardsProgress() async {
     try {
       Map<String, String> headers = await _getHeaders(contentType: true);
-      final String response = await _networkClient.post(
+      final String response = await _networkClient.get(
         _getBaseUrl() + "/flashcards/stats",
         headers: headers,
       );
@@ -266,7 +266,7 @@ class ApiServicesImpl implements ApiServices {
       getQuestionBankProgress() async {
     try {
       final Map<String, String> headers = await _getHeaders(contentType: true);
-      final String response = await _networkClient.post(
+      final String response = await _networkClient.get(
         _getBaseUrl() + "/questions/stats",
         headers: headers,
       );
