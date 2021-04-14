@@ -60,6 +60,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
   Widget _skipButton(BuildContext context) {
     return FlatButton(
         onPressed: () {
+          userManager.markOnboardingComplete();
           _analyticsProvider.logEvent("tap_question_of_the_day_skip",
               params: null);
           Navigator.pushNamed(context, Routes.home);
@@ -96,6 +97,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
                   "${widget.source == Routes.profile_screen ?
                   "save" : "continue"}").toUpperCase(),
               onPressed: () async {
+                userManager.markOnboardingComplete();
                 userManager.updateQuestionOfTheDayTime(sliderValue.toInt());
                 final FlutterLocalNotificationsPlugin notifsPlugin =
                 FlutterLocalNotificationsPlugin();
@@ -106,7 +108,6 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
                 }
                 _analyticsProvider.logEvent("tap_question_of_the_day_confirm",
                     params: null);
-                userManager.markOnboardingComplete();
                 if (widget.source == Routes.profile_screen)
                   Navigator.of(context).pop();
                 else
