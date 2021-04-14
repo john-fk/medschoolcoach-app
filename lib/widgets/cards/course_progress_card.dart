@@ -177,7 +177,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
       children: [
         Text(
           "${widget.scheduleProgress.courseProgress}% "
-              " of video courses completed",
+              "of video courses completed",
           style: normalResponsiveFont(context,
               fontWeight: FontWeight.w600),
         ),
