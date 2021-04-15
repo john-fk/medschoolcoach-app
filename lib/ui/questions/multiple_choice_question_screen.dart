@@ -413,7 +413,10 @@ class _MultipleChoiceQuestionScreenState
 
   void _updateState(Function updateFunction) {
     if (this.mounted) {
-      updateFunction();
+      setState(() {
+        updateFunction();
+      });
+    } else {
     }
   }
 
