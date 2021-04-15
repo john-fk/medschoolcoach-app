@@ -256,7 +256,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   Widget _buildCourseProgressCard() {
     ScheduleStats courseProgress = SuperStateful.of(context).courseProgress;
-    if (_courseProgressLoading) {
+    if (_courseProgressLoading || courseProgress == null) {
       return Card(
           elevation: 5,
           shadowColor: Colors.black.withOpacity(0.1),

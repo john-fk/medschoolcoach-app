@@ -217,6 +217,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
     SuperStateful.of(context).updateSchedule(forceApiRequest: true);
     SuperStateful.of(context).updateTodaySchedule(forceApiRequest: true);
     SuperStateful.of(context).updateScheduleProgress();
+    SuperStateful.of(context).courseProgress = null;
     SuperStateful.of(context).updateBookmarks(forceApiRequest: true);
     if (_topic != null) {
       final sectionId = _topic?.videos[0]?.sectionId;

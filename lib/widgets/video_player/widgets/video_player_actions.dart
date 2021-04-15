@@ -288,6 +288,7 @@ class VideoPlayerActions extends StatelessWidget {
     SuperStateful.of(context).updateSchedule(forceApiRequest: true);
     SuperStateful.of(context).updateTodaySchedule(forceApiRequest: true);
     SuperStateful.of(context).updateScheduleProgress();
+    SuperStateful.of(context).courseProgress = null;
     SuperStateful.of(context).updateBookmarks(forceApiRequest: true);
   }
 

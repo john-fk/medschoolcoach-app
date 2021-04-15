@@ -284,7 +284,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
       },
       child: ListView.separated(
         key: Key("schedule_scroll"),
-        itemCount: videos.length + 1,
+        itemCount: videos != null ? videos.length + 1 : 0,
         separatorBuilder: (context, index) => Container(
           height: 1,
           color: Style.of(context).colors.separator,
@@ -305,6 +305,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
                     videos[index].progress.percentage = 0;
                   }
                 });
+                SuperStateful.of(context).courseProgress = null;
                 await SuperStateful.of(context).updateScheduleProgress();
                 scheduleProgress = SuperStateful.of(context).scheduleProgress;
 
