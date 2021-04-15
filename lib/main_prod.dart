@@ -25,14 +25,12 @@ Future<void> main() async {
 
 
   await initNotifications(notifsPlugin, navigatorKey);
-  //TODO: Revert before release
   await _analyticsProvider.initialize(Config.prodMixPanelToken);
   _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen);
 
-  //TODO: Revert before release
   initializeDependencyInjection(
-    apiUrl: Config.devApiUrl,
-    auth0Url: Config.devBaseAuth0Url,
+    apiUrl: Config.prodApiUrl,
+    auth0Url: Config.prodBaseAuth0Url,
     analyticsProvider: _analyticsProvider,
   );
   Config.showSwitch = false;

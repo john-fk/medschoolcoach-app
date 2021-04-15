@@ -24,16 +24,15 @@ Future<void> main() async {
   AnalyticsProvider _analyticsProvider = await AnalyticsProvider();
   await initNotifications(notifsPlugin, navigatorKey);
 
-  //TODO: Revert before release
-  await _analyticsProvider.initialize(Config.prodMixPanelToken);
+  await _analyticsProvider.initialize(Config.devMixPanelToken);
   _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen, params: null);
 
-  //TODO: Revert before release
   initializeDependencyInjection(
     apiUrl: Config.devApiUrl,
     auth0Url: Config.devBaseAuth0Url,
     analyticsProvider: _analyticsProvider,
   );
+  
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
 
