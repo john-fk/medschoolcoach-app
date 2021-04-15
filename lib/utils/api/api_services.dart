@@ -294,7 +294,7 @@ class ApiServicesImpl implements ApiServices {
     try {
       final Map<String, String> headers = await _getHeaders();
       final String response = await _networkClient
-          .get(_getBaseUrl() + "/questions/day", headers: headers);
+          .get(_getBaseUrl() + "/questions/day?limit=5", headers: headers);
       var data = questionFromJson(response);
       return SuccessResponse<List<Question>>(data);
     } catch (error) {
