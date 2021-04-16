@@ -251,10 +251,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ]);
     if (await shouldShowOnboarding()) {
       if (isLogin) {
-        userManager.markOnboardingState(OnboardingState.showForExistingUser);
+        userManager.markOnboardingState(OnboardingState.ShowForExistingUser);
         Navigator.pushNamed(context, Routes.oldUserOnboarding);
       } else {
-        userManager.markOnboardingState(OnboardingState.showForNewUser);
+        userManager.markOnboardingState(OnboardingState.ShowForNewUser);
         Navigator.pushNamed(context, Routes.newUserOnboardingScreen);
       }
     } else {

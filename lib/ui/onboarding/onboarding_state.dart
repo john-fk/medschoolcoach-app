@@ -1,6 +1,7 @@
 enum OnboardingState {
-  showForNewUser,
-  showForExistingUser,
+  Unset,
+  ShowForNewUser,
+  ShowForExistingUser,
   Completed
 }
 

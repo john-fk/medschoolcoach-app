@@ -179,10 +179,12 @@ class UserManagerImpl implements UserManager {
     var state = await storage.read(key: "OnboardingState");
     if (state == OnboardingState.Completed.key()) {
       return OnboardingState.Completed;
-    } else if (state == OnboardingState.showForNewUser.key()) {
-      return OnboardingState.showForNewUser;
+    } else if (state == OnboardingState.ShowForNewUser.key()) {
+      return OnboardingState.ShowForNewUser;
+    } else if (state == OnboardingState.ShowForExistingUser.key()) {
+      return OnboardingState.ShowForExistingUser;
     } else {
-      return OnboardingState.showForExistingUser;
+      return OnboardingState.Unset;
     }
   }
 
