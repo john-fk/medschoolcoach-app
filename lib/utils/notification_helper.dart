@@ -1,6 +1,5 @@
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
-import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

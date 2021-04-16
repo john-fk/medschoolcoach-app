@@ -5,9 +5,8 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/dependency_injection.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/utils/crash_reporting.dart';
 import 'package:Medschoolcoach/utils/notification_helper.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -36,8 +35,7 @@ Future<void> main() async {
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
 
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
-
+  await CrashReporting.initialize();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
   var enableDevicePreview = false;

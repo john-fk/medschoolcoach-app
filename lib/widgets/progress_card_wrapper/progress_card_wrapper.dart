@@ -3,7 +3,6 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 // ignore: must_be_immutable
 class ProgressCardWrapper extends StatefulWidget {

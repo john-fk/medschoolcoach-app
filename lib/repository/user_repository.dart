@@ -193,9 +193,11 @@ class UserRepository implements Repository {
       if (userResponse is SuccessResponse<Auth0UserData>) {
         if (userLoggingEmail != null && userLoggingEmail.isNotEmpty) {
           await _identifyUser(userResponse);
-          Crashlytics.instance.setUserIdentifier(userResponse.body.sub);
-          Crashlytics.instance.setUserEmail(userResponse.body.email);
-          Crashlytics.instance.setUserName(userResponse.body.name);
+          FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.sub);
+          FirebaseCrashlytics.instance
+              .setCustomKey("email", userResponse.body.email);
+          FirebaseCrashlytics.instance
+              .setCustomKey("name", userResponse.body.name);
         }
 
         _userCache.set(_userCacheKey, userResponse.body);

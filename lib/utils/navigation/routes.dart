@@ -78,7 +78,7 @@ abstract class Routes {
   static const String questionOfTheDayScreen = "screen_question_of_the_day";
 
   static Route<void> generateRoute(RouteSettings settings) {
-    Crashlytics.instance.log("Open ${settings.name}");
+    FirebaseCrashlytics.instance.log("Open ${settings.name}");
     switch (settings.name) {
       case welcome:
         return MaterialPageRoute<void>(
