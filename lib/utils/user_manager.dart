@@ -104,6 +104,9 @@ class UserManagerImpl implements UserManager {
   void logout() async {
     storage.delete(key: _userStoreKey);
     storage.delete(key: "OnboardingState");
+    storage.delete(key: "test_date");
+    storage.delete(key: "question_of_the_day_time");
+    storage.delete(key: "study_time_per_day");
     storage.deleteAll();
   }
 
