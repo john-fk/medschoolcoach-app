@@ -37,7 +37,6 @@ class AppRouter {
     ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
     var data = await apiServices.getAccountData();
     final hasOnboarded = data?.onboarded ?? false;
-    return !hasOnboarded;
     return hasOnboarded;
   }
 }
