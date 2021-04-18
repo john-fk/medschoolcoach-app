@@ -38,5 +38,6 @@ class AppRouter {
     var data = await apiServices.getAccountData();
     final hasOnboarded = data?.onboarded ?? false;
     return !hasOnboarded;
+    return hasOnboarded;
   }
 }

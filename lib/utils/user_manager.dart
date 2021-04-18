@@ -103,6 +103,7 @@ class UserManagerImpl implements UserManager {
   @override
   void logout() async {
     storage.delete(key: _userStoreKey);
+    storage.delete(key: "OnboardingState");
     storage.deleteAll();
   }
 
