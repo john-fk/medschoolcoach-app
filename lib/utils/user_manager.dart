@@ -172,7 +172,8 @@ class UserManagerImpl implements UserManager {
   }
 
   Future<bool> shouldShowOnboarding() async {
-    return getOnboardingState() != OnboardingState.Completed.key();
+    final status = await getOnboardingState();
+    return status != OnboardingState.Completed;
   }
 
   Future<OnboardingState> getOnboardingState() async {
