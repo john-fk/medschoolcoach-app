@@ -1,8 +1,8 @@
 
 abstract class Config {
   static final prodApiUrl = "https://api.medschoolcoach.com";
-  static final devApiUrl =  "https://mcat-prep-staging.medschoolcoach.com";
-  // static final devApiUrl =  "http://localhost:8000";
+   static final devApiUrl =  "https://mcat-prep-staging.medschoolcoach.com";
+//  static final devApiUrl =  "http://localhost:8000";
   static const appTitle = "MedSchoolCoach";
   static const fontFamily = "Rubik";
   static const devBaseAuth0Url = 'https://auth.medschoolcoach.com';

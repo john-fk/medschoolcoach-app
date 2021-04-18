@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _scheduleLoading = true;
   bool _lastWatchedLoading = true;
   static final FlutterLocalNotificationsPlugin notifsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -55,12 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
         final NotificationAppLaunchDetails notificationAppLaunchDetails =
             await notifsPlugin.getNotificationAppLaunchDetails();
 
-        if (notificationAppLaunchDetails.didNotificationLaunchApp == true
-            && Config.enteredAppFromQOTDNotification == true) {
+        if (notificationAppLaunchDetails.didNotificationLaunchApp == true &&
+            Config.enteredAppFromQOTDNotification == true) {
           print("handling notif from home and marking false");
           Config.enteredAppFromQOTDNotification = false;
-          Navigator.pushNamed(context,
-              Routes.questionOfTheDayScreen, arguments: "notification");
+          Navigator.pushNamed(context, Routes.questionOfTheDayScreen,
+              arguments: "notification");
         }
       },
     );
@@ -103,26 +103,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_lastWatchedLoading && _scheduleLoading) {
       return _buildLoading();
-    } else if (!_lastWatchedLoading
-        && !_scheduleLoading
-        && recentlyWatched == null
-        && todaySchedule == null) {
+    } else if (!_lastWatchedLoading &&
+        !_scheduleLoading &&
+        recentlyWatched == null &&
+        todaySchedule == null) {
       return EmptyStateView(
-          title: FlutterI18n.translate(
-              context,
-              "empty_state.title"),
-          message: FlutterI18n.translate(
-              context,
-              "empty_state.message"),
-          ctaText: FlutterI18n.translate(
-              context,
-              "empty_state.button"),
+          title: FlutterI18n.translate(context, "empty_state.title"),
+          message: FlutterI18n.translate(context, "empty_state.message"),
+          ctaText: FlutterI18n.translate(context, "empty_state.button"),
           image: Image.asset(Style.of(context).pngAsset.emptyState),
           onTap: () {
             _lastWatchedLoading = true;
             _scheduleLoading = true;
             _refresh();
-      });
+          });
     }
     return _buildFetchedItems();
   }

@@ -279,8 +279,8 @@ class _ScheduleTabState extends State<ScheduleTab> {
     return RefreshIndicator(
       onRefresh: () {
         return _fetchSingleSchedule(
-        day: _days.firstWhere((element) => element.selected).day,
-        forceApiRequest: true);
+            day: _days.firstWhere((element) => element.selected).day,
+            forceApiRequest: true);
       },
       child: ListView.separated(
         key: Key("schedule_scroll"),
@@ -605,24 +605,25 @@ class _ScheduleTabState extends State<ScheduleTab> {
   Widget _updateScheduleSection() {
     return Column(
       children: [
-        _completed ? Container() :
-        PrimaryButton(
-            text: FlutterI18n.translate(
-                context, "schedule_screen.speed_up_schedule"),
-            onPressed: () {
-              _analyticsProvider.logEvent("tap_speed_up_schedule");
-              Routes.navigateToTutoringScreen(
-                  context, AnalyticsConstants.screenLearn,
-                  isNavBar: false);
-            }),
+        _completed
+            ? Container()
+            : PrimaryButton(
+                text: FlutterI18n.translate(
+                    context, "schedule_screen.speed_up_schedule"),
+                onPressed: () {
+                  _analyticsProvider.logEvent("tap_speed_up_schedule");
+                  Routes.navigateToTutoringScreen(
+                      context, AnalyticsConstants.screenLearn,
+                      isNavBar: false);
+                }),
         TextButton(
             onPressed: () {
               _analyticsProvider.logEvent("tap_change_my_schedule");
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                        builder: (_) =>
-                            TimePerDay()),
-                  ).then((_) => setScheduleInfo(forceApiRequest: true));
+              Navigator.of(context)
+                  .push(
+                    MaterialPageRoute<void>(builder: (_) => TimePerDay()),
+                  )
+                  .then((_) => setScheduleInfo(forceApiRequest: true));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

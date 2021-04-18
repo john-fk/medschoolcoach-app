@@ -24,8 +24,6 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   double _scheduleProgress = 0.0;
   bool isOnTrack;
   Color scheduleProgressColor;
-  int currentDay;
-  int totalDays;
   double scheduleProgressPercent;
   bool failedToCompleteSchedule;
   bool hasStarted;
@@ -33,21 +31,19 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   @override
   void initState() {
     super.initState();
+    int daysLeft = widget.scheduleProgress.daysLeft;
+    int totalDays = widget.scheduleProgress.totalDays;
+    scheduleProgressPercent = (totalDays - daysLeft) / totalDays;
 
-    currentDay = widget.scheduleProgress.currentDay;
-    totalDays = currentDay + widget.scheduleProgress.daysLeft;
-    scheduleProgressPercent = currentDay / totalDays;
+    hasStarted = widget.scheduleProgress.courseProgress > 0;
 
-    hasStarted = widget.scheduleProgress.courseProgress > 0 &&
-        scheduleProgressPercent > 0;
-
-    failedToCompleteSchedule = widget.scheduleProgress.daysLeft == 0
-        && widget.scheduleProgress.courseProgress != 100;
+    failedToCompleteSchedule = widget.scheduleProgress.daysLeft == 0 &&
+        widget.scheduleProgress.courseProgress != 100;
 
     var actualCompletionDate =
-    DateTime.parse(widget.scheduleProgress.actualCompletionDate);
-    var currentCompletionDate = DateTime.now()
-        .add(Duration(days: widget.scheduleProgress.daysLeft));
+        DateTime.parse(widget.scheduleProgress.actualCompletionDate);
+    var currentCompletionDate =
+        DateTime.now().add(Duration(days: widget.scheduleProgress.daysLeft));
     isOnTrack = currentCompletionDate.isBefore(actualCompletionDate);
     _programProgress = widget.scheduleProgress.courseProgress / 100;
     _scheduleProgress = scheduleProgressPercent;
@@ -67,106 +63,103 @@ class _CourseProgressCardState extends State<CourseProgressCard>
                   const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20),
               child: _programProgress == 1
                   ? _buildCourseCompletedCard()
-                  : _buildCourseInProgressCard()
-            )
+                  : _buildCourseInProgressCard())
           : _buildCourseNotStartedCard(),
     );
   }
 
   Widget _scheduleButton() {
     if (failedToCompleteSchedule) {
-      return
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: PrimaryButton(text: "Update My Schedule",
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(Routes.timePerDay,
-                  arguments: Routes.progressScreen);
-              },
-      ),
-        );
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: PrimaryButton(
+          text: "Update My Schedule",
+          onPressed: () {
+            Navigator.of(context)
+                .pushNamed(Routes.timePerDay, arguments: Routes.progressScreen);
+          },
+        ),
+      );
     } else {
-      return
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: PrimaryButton(text: "View My Schedule",
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(Routes.schedule, arguments: Routes.progressScreen);
-            },
-          ),
-        );
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: PrimaryButton(
+          text: "View My Schedule",
+          onPressed: () {
+            Navigator.of(context)
+                .pushNamed(Routes.schedule, arguments: Routes.progressScreen);
+          },
+        ),
+      );
     }
   }
 
   Widget _courseProgressFooter() {
-    var progressText = isOnTrack
-        ? "Keep going, you're making progress"
-        : "You're behind schedule!";
+    var hasMadeScheduleProgress = scheduleProgressPercent > 0;
+    var progressText = isOnTrack ? "Keep going, you're making progress"
+        : !hasMadeScheduleProgress ?
+    "You haven't completed a full day yet" : "You're behind schedule!";
 
     if (failedToCompleteSchedule) {
-      return
-        Text("But you've fallen behind schedule",
+      return Text(
+        "But you've fallen behind schedule",
         style: smallResponsiveFont(context, fontColor: FontColor.BannerOrange),
       );
     } else {
-      return
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            progressText,
+            style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
             children: [
               Text(
-                progressText,
-                style: normalResponsiveFont(context,
-                    fontWeight: FontWeight.w600),
+                "Estimated Completion:  ",
+                style: smallResponsiveFont(context, opacity: 0.6),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Estimated Completion:  ",
-                    style: smallResponsiveFont(context, opacity: 0.6),
-                  ),
-                  Text(
-                    formatDate(DateTime.now()
-                        .add(Duration(
-                        days: widget.scheduleProgress.daysLeft)), 'MM/dd/yyyy'),
-                    style: smallResponsiveFont(context,
-                        fontWeight: FontWeight.w500),
-                  ),
-
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Days left:  ",
-                    style: smallResponsiveFont(context, opacity: 0.6),
-                  ),
-                  Text(
-                    "${widget.scheduleProgress.daysLeft} days",
-                    style: smallResponsiveFont(context,
-                        fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              LinearPercentIndicator(
-                backgroundColor: Style.of(context).colors.background3,
-                percent: _scheduleProgress,
-                lineHeight: 15,
-                progressColor: scheduleProgressColor,
+              Text(
+                formatDate(
+                    DateTime.now()
+                        .add(Duration(days: widget.scheduleProgress.daysLeft)),
+                    'MM/dd/yyyy'),
+                style:
+                    smallResponsiveFont(context, fontWeight: FontWeight.w500),
               ),
             ],
-          );
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              Text(
+                "Days left:  ",
+                style: smallResponsiveFont(context, opacity: 0.6),
+              ),
+              Text(
+                "${widget.scheduleProgress.daysLeft} days",
+                style:
+                    smallResponsiveFont(context, fontWeight: FontWeight.w500),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          LinearPercentIndicator(
+            backgroundColor: Style.of(context).colors.background3,
+            percent: _scheduleProgress,
+            lineHeight: 15,
+            progressColor: scheduleProgressColor,
+          ),
+        ],
+      );
     }
   }
 
@@ -177,9 +170,8 @@ class _CourseProgressCardState extends State<CourseProgressCard>
       children: [
         Text(
           "${widget.scheduleProgress.courseProgress}% "
-              "of video courses completed",
-          style: normalResponsiveFont(context,
-              fontWeight: FontWeight.w600),
+          "of video courses completed",
+          style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
         ),
         SizedBox(
           height: 15,
@@ -208,8 +200,9 @@ class _CourseProgressCardState extends State<CourseProgressCard>
         children: [
           Flexible(
               flex: 2,
-              child: Image(image: AssetImage("assets/png/course_completed.png"),
-                height: 50)),
+              child: Image(
+                  image: AssetImage("assets/png/course_completed.png"),
+                  height: 50)),
           SizedBox(
             width: 10,
           ),

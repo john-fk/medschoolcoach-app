@@ -28,23 +28,19 @@ class _HomeScheduleVideo {
 class HomeSchedule extends StatefulWidget {
   final AnalyticsProvider analyticsProvider;
 
-  HomeSchedule({
-    Key key,
-    this.analyticsProvider
-  }) : super(key: key);
+  HomeSchedule({Key key, this.analyticsProvider}) : super(key: key);
 
   @override
   _HomeScheduleState createState() => _HomeScheduleState();
 }
 
 class _HomeScheduleState extends State<HomeSchedule> {
-
   bool _isToggled = true;
   List<_HomeScheduleVideo> videosToDisplay;
 
   //this is part of the hack to make sure the favorte attribute is
   // updated correctly in the topic for the LessonVideoScreen
-  void _toggleBookmark(int index)  {
+  void _toggleBookmark(int index) {
     _isToggled = false;
     DashboardSchedule dashboardSchedule =
         SuperStateful.of(context).todaySchedule;
@@ -170,7 +166,7 @@ class _HomeScheduleState extends State<HomeSchedule> {
   }
 
   void _navigateToLessonVideoScreen(List<Video> videos, int index) {
-    if (videos!=null) {
+    if (videos != null) {
       widget.analyticsProvider.logEvent(AnalyticsConstants.tapLesson,
           params: widget.analyticsProvider.getVideoParam(
               videosToDisplay[index].video.id,
@@ -185,8 +181,7 @@ class _HomeScheduleState extends State<HomeSchedule> {
           videos: videos,
           order: videosToDisplay[index].index,
           topicId: videosToDisplay[index].video.topicId,
-          source: "home_practice_section"
-      ),
+          source: "home_practice_section"),
     );
   }
 
@@ -199,15 +194,12 @@ class _HomeScheduleState extends State<HomeSchedule> {
           "home_screen.see_full_schedule_button",
         ),
         onPressed: () {
-          widget.analyticsProvider.logEvent(
-              AnalyticsConstants.tapSeeFullSchedule, params: {
+          widget.analyticsProvider
+              .logEvent(AnalyticsConstants.tapSeeFullSchedule, params: {
             AnalyticsConstants.keySource: AnalyticsConstants.screenHome
           });
-          Navigator.pushNamed(
-            context,
-            Routes.schedule,
-            arguments: AnalyticsConstants.screenHome
-          );
+          Navigator.pushNamed(context, Routes.schedule,
+              arguments: AnalyticsConstants.screenHome);
         },
       ),
     );
