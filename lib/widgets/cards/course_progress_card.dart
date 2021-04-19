@@ -95,6 +95,10 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   }
 
   Widget _courseProgressFooter() {
+    // TODO:
+    // If schedule is behind, show you're behind text
+    // // If schedule is on track, it's showing you're behind right now
+    // Make isOnTrack to currentStatus an enum, and power UI so we show them when behind, on track, ahead and not completed one full day
     var hasMadeScheduleProgress = scheduleProgressPercent > 0;
     var progressText = isOnTrack ? "Keep going, you're making progress"
         : !hasMadeScheduleProgress ?
