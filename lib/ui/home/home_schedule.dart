@@ -123,8 +123,6 @@ class _HomeScheduleState extends State<HomeSchedule> {
                       forceApiRequest: true,
                     );
                     await SuperStateful.of(context)
-                        .updateGlobalStatistics(forceApiRequest: true);
-                    await SuperStateful.of(context)
                         .updateSectionsList(forceApiRequest: true);
                     if (watched)
                       showWatchedToast(context);
