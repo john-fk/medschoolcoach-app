@@ -13,6 +13,7 @@ import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/buttons/secondary_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/text_button.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
@@ -245,10 +246,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
 
     UserManager userManager = Injector.appInstance.getDependency<UserManager>();
-    Future.wait([
-      this.fetchAndStoreMcatTestDate(),
-      this.fetchAndStoreNumberOfHoursPerDay()
-    ]);
+
     if (await shouldShowOnboarding()) {
       if (isLogin) {
         userManager.markOnboardingState(OnboardingState.ShowForExistingUser);
@@ -258,6 +256,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         Navigator.pushNamed(context, Routes.newUserOnboardingScreen);
       }
     } else {
+      Future.wait([
+        this.fetchAndStoreMcatTestDate(),
+        this.fetchAndStoreNumberOfHoursPerDay()
+      ]);
+
       userManager.markOnboardingComplete();
 
       if (await userManager.getQuestionOfTheDayTime() == null) {
@@ -296,7 +299,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final response = await apiServices.getScheduleDate();
     var userManager = Injector.appInstance.getDependency<UserManager>();
     if (response is SuccessResponse<ScheduleDateResponse>) {
-      userManager.updateStudyTimePerDay(int.parse(response.body.hours));
+      var hours = response.body.hours;
+      if (hours != null) {
+        userManager.updateStudyTimePerDay(int.parse(hours));
+      } else {
+        FirebaseCrashlytics.instance
+            .log("Client expected onboarded to be true but data was invalid");
+        await apiServices.setTimePerDay(2);
+        userManager.updateStudyTimePerDay(2);
+      }
     }
   }
 }
