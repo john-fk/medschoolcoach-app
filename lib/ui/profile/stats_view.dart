@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/models/milestones.dart';
+import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -29,7 +30,7 @@ class _StatsViewState extends State<StatsView> {
 
   bool _loading = true;
   Badges _badges;
-
+  Statistics _statistics;
 
   @override
   void initState() {
@@ -48,7 +49,8 @@ class _StatsViewState extends State<StatsView> {
           _loading ? Container() : GlobalProgressWidget(
             showHeader: false,
             source: AnalyticsConstants.screenProfileMyStats,
-            analyticsProvider: _analyticsProvider
+            analyticsProvider: _analyticsProvider,
+            statistics: SuperStateful.of(context).globalStatistics,
           ),
           SizedBox(
             height: 16,
@@ -191,6 +193,7 @@ class _StatsViewState extends State<StatsView> {
 
     setState(() {
       _loading = false;
+      _statistics = SuperStateful.of(context).globalStatistics;
     });
   }
 }

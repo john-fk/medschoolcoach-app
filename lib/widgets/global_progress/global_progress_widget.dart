@@ -3,6 +3,7 @@ import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/home/home_section.dart';
 import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
+import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
@@ -18,12 +19,14 @@ class GlobalProgressWidget extends StatefulWidget {
   final bool showHeader;
   final String source;
   final AnalyticsProvider analyticsProvider;
+  final Statistics statistics;
 
   const GlobalProgressWidget({
     Key key,
     this.showHeader = true,
     this.source,
-    this.analyticsProvider
+    this.analyticsProvider,
+    this.statistics
   }) : super(key: key);
 
   @override
@@ -32,9 +35,30 @@ class GlobalProgressWidget extends StatefulWidget {
 
 class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    SuperStateful.of(context).updateGlobalStatistics(forceApiRequest: false);
-    final stats = SuperStateful.of(context).globalStatistics;
+    var stats = widget.statistics;
+    if (stats == null) {
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Container(
+          child: Text(
+            "There was an error loading your stats."
+                "\n\nPlease try again later.",
+            textAlign: TextAlign.center,
+            style: mediumResponsiveFont(
+              context,
+              fontColor: FontColor.QualifyingText,
+              fontWeight: FontWeight.w500,
+            )
+          )
+        ),
+      );
+    }
 
     final iconHeight = whenDevice(
       context,
