@@ -98,7 +98,7 @@ class SuperState extends State<SuperStateful> {
   QuestionBankProgress questionBankProgress;
   List<Bookmark> bookmarksList = List();
   Map<String, int> scheduleProgress = Map();
-  int currentScheduleDay;
+  int currentScheduleDay = 1;
 
   LastWatchedResponse recentlyWatched;
   SearchResult searchResult;
