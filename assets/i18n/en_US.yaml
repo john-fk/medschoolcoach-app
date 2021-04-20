@@ -376,6 +376,10 @@ progress_screen:
   goto_question_bank: Go to Question Bank
   goto_flashcards: Go to Flashcards
   no_progress: You haven't made enough progress yet
+  no_flashcards: You haven't completed any flashcards yet
+  no_questions: You haven't completed any questions yet
+  see_questions: See Questions
+  try_flashcards: Try Flashcards
   get_started: Get Started
 
 upsell_banner:

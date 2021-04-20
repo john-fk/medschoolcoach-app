@@ -316,14 +316,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
             routeToFlashcards();
           },
           onSubjectChange: (subject) {
+            _analyticsProvider.logEvent("filter_flashcard_subject",
+                params: {"subject_name": subject.name});
             setState(() {
               selectedFlashcardSubject = subject.name;
             });
           },
           child: NoProgressCard(
             icon: Icons.flash_on,
-            text: "You haven't completed any flashcards yet",
-            buttonText: "Try Flashcards",
+            text: "progress_screen.no_flashcards",
+            buttonText: "progress_screen.try_flashcards",
             onTapButton: () async {
               routeToFlashcards();
             },
@@ -345,6 +347,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
           routeToFlashcards();
         },
         onSubjectChange: (subject) {
+          _analyticsProvider.logEvent("filter_flashcard_subject",
+              params: {"subject_name": subject.name});
           setState(() {
             selectedFlashcardSubject = subject.name;
           });
@@ -404,16 +408,18 @@ class _ProgressScreenState extends State<ProgressScreen> {
             routeToQuestionBank();
           },
           onSubjectChange: (subject) {
+            _analyticsProvider.logEvent("filter_question_subject",
+                params: {"subject_name": subject.name});
             setState(() {
               selectedQuestionBankSubject = subject.name;
             });
           },
           child: NoProgressCard(
-            text: "You haven't completed any questions yet",
+            text: "progress_screen.no_questions",
             onTapButton: () async {
               routeToQuestionBank();
             },
-            buttonText: "See Questions",
+            buttonText: "progress_screen.see_questions",
             icon: Icons.help_outline_rounded,
           ));
     }
@@ -432,6 +438,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
           routeToQuestionBank();
         },
         onSubjectChange: (subject) {
+          _analyticsProvider.logEvent("filter_question_subject",
+              params: {"subject_name": subject.name});
           setState(() {
             selectedQuestionBankSubject = subject.name;
           });

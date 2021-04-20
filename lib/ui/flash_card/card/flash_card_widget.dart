@@ -47,7 +47,7 @@ class FlashCardWidget extends StatefulWidget {
 
 class _FlashCardWidgetState extends State<FlashCardWidget>
     with TickerProviderStateMixin {
-  bool _swipeDissmis = false;
+  bool _swipeDismiss = false;
   FlashcardStatus _flashcardStatus;
   Orientation _currentOrientation;
 
@@ -93,9 +93,9 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
                 AnimationStatus.completed) {
               _changeAnimationController.reverse();
               _flipAnimationController.reset();
-              if (!_swipeDissmis) widget.changeCardIndex();
+              if (!_swipeDismiss) widget.changeCardIndex();
               setState(() {
-                _swipeDissmis = false;
+                _swipeDismiss = false;
                 widget.setFront(front: true);
               });
             }
@@ -187,7 +187,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
   void _onDissmised(DismissDirection direction) {
     setState(() {
-      _swipeDissmis = true;
+      _swipeDismiss = true;
     });
 
     _nextFlashcard(
@@ -195,12 +195,13 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   }
 
   void _nextFlashcard({bool increase = true}) async {
-    if (_changeAnimationController.isAnimating) return;
+    if (_changeAnimationController.isAnimating ||
+        _flipAnimationController.isAnimating) return;
 
     _updateFlashcardStatus();
 
     _logEvents(
-        _swipeDissmis
+        _swipeDismiss
             ? AnalyticsConstants.swipeFlashcard
             : AnalyticsConstants.tapNextFlashcard,
         additionalParams: {
@@ -209,7 +210,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
               : AnalyticsConstants.keyRightSwipe
         });
 
-    if (_swipeDissmis) {
+    if (_swipeDismiss) {
       widget.changeCardIndex(increase: increase);
       _changeAnimationController.value = 1;
     } else
