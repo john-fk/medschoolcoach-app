@@ -8,6 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:Medschoolcoach/utils/format_date.dart';
 
+enum ProgressType {
+  Behind, // now < actual_completion_date && daysLeft + now > actual_completion_date
+  OnTrack, // daysLeft + now == actual_completion_date
+  Ahead, // daysLeft + now < actual_completion_date
+  FirstDay, // courseProgress == 0
+  Failed, // now > actual_completion_date && courseProgress < 100
+  Completed,
+  NotStarted
+}
+
 class CourseProgressCard extends StatefulWidget {
   final ScheduleStats scheduleProgress;
   final VoidCallback onRefresh;
@@ -22,42 +32,65 @@ class _CourseProgressCardState extends State<CourseProgressCard>
     with SingleTickerProviderStateMixin {
   double _programProgress = 0.0;
   double _scheduleProgress = 0.0;
-  bool isOnTrack;
   Color scheduleProgressColor;
   double scheduleProgressPercent;
-  bool failedToCompleteSchedule;
-  bool hasStarted;
+  ProgressType track;
 
   @override
   void initState() {
     super.initState();
+    setProgress();
+  }
+
+  void setProgress() {
+    var courseProgress = widget.scheduleProgress.courseProgress;
     int daysLeft = widget.scheduleProgress.daysLeft;
     int totalDays = widget.scheduleProgress.totalDays;
-    scheduleProgressPercent = (totalDays - daysLeft) / totalDays;
-
-    hasStarted = widget.scheduleProgress.courseProgress > 0;
-
-    failedToCompleteSchedule = widget.scheduleProgress.daysLeft == 0 &&
-        widget.scheduleProgress.courseProgress != 100;
-
-    var actualCompletionDate =
+    DateTime actualCompletionDate =
         DateTime.parse(widget.scheduleProgress.actualCompletionDate);
-    var currentCompletionDate =
-        DateTime.now().add(Duration(days: widget.scheduleProgress.daysLeft));
-    isOnTrack = currentCompletionDate.isBefore(actualCompletionDate);
+    scheduleProgressPercent = (totalDays - daysLeft) / totalDays;
+    DateTime currentCompletionDate =
+        DateTime.now().add(Duration(days: daysLeft));
+
+    bool hasStarted = courseProgress > 0;
+
+    if (!hasStarted) {
+      track = ProgressType.NotStarted;
+      return;
+    }
+
+    if (scheduleProgressPercent == 0) {
+      track = ProgressType.FirstDay;
+    } else if (formatDate(actualCompletionDate, 'MM/dd/yyyy') ==
+        formatDate(currentCompletionDate, 'MM/dd/yyyy')) {
+      track = ProgressType.OnTrack;
+    } else if (DateTime.now().isBefore(actualCompletionDate) &&
+        currentCompletionDate.isAfter(actualCompletionDate)) {
+      track = ProgressType.Behind;
+    } else if (currentCompletionDate.isBefore(actualCompletionDate)) {
+      track = ProgressType.Ahead;
+    } else if (courseProgress < 100 &&
+        DateTime.now().isAfter(actualCompletionDate)) {
+      track = ProgressType.Failed;
+    } else if (courseProgress == 100) {
+      track = ProgressType.Completed;
+    } else {
+      track = ProgressType.NotStarted;
+    }
+
     _programProgress = widget.scheduleProgress.courseProgress / 100;
     _scheduleProgress = scheduleProgressPercent;
   }
 
   @override
   Widget build(BuildContext context) {
-    scheduleProgressColor = isOnTrack
+    scheduleProgressColor = track != ProgressType.Behind
         ? Style.of(context).colors.accent4
         : Style.of(context).colors.questions;
     return Card(
       elevation: 5,
       shadowColor: Colors.black.withOpacity(0.1),
-      child: hasStarted
+      child: track != ProgressType.NotStarted
           ? Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20),
@@ -69,7 +102,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   }
 
   Widget _scheduleButton() {
-    if (failedToCompleteSchedule) {
+    if (track == ProgressType.Failed) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: PrimaryButton(
@@ -95,16 +128,25 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   }
 
   Widget _courseProgressFooter() {
-    // TODO:
-    // If schedule is behind, show you're behind text
-    // // If schedule is on track, it's showing you're behind right now
-    // Make isOnTrack to currentStatus an enum, and power UI so we show them when behind, on track, ahead and not completed one full day
-    var hasMadeScheduleProgress = scheduleProgressPercent > 0;
-    var progressText = isOnTrack ? "Keep going, you're making progress"
-        : !hasMadeScheduleProgress ?
-    "You haven't completed a full day yet" : "You're behind schedule!";
+    String progressText;
+    switch (track) {
+      case ProgressType.OnTrack:
+        progressText = "Keep going, you're making progress";
+        break;
+      case ProgressType.FirstDay:
+        progressText = "You haven't completed a full day yet";
+        break;
+      case ProgressType.Behind:
+        progressText = "You're behind schedule!";
+        break;
+      case ProgressType.Ahead:
+        progressText = "Great job, you’re ahead of schedule!";
+        break;
+      default:
+        break;
+    }
 
-    if (failedToCompleteSchedule) {
+    if (track == ProgressType.Failed) {
       return Text(
         "But you've fallen behind schedule",
         style: smallResponsiveFont(context, fontColor: FontColor.BannerOrange),
@@ -147,7 +189,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
                 style: smallResponsiveFont(context, opacity: 0.6),
               ),
               Text(
-                "${widget.scheduleProgress.daysLeft} days",
+                """${widget.scheduleProgress.daysLeft} ${widget.scheduleProgress.daysLeft == 1 ? 'day' : 'days'}""",
                 style:
                     smallResponsiveFont(context, fontWeight: FontWeight.w500),
               )
