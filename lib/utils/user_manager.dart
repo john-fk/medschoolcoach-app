@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:Medschoolcoach/ui/onboarding/onboarding_state.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
@@ -13,14 +14,19 @@ class User {
   String refreshToken;
   int expiresIn;
   String lastTokenAccessTimeStamp;
+  DateTime testDate;
+  int studyHoursPerDay;
+  TimeOfDay questionOfTheDayTime;
 
-  User({
-    this.accessToken,
-    this.idToken,
-    this.refreshToken,
-    this.expiresIn,
-    this.lastTokenAccessTimeStamp,
-  });
+  User(
+      {this.accessToken,
+      this.idToken,
+      this.refreshToken,
+      this.expiresIn,
+      this.lastTokenAccessTimeStamp,
+      this.testDate,
+      this.studyHoursPerDay,
+      this.questionOfTheDayTime});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         accessToken: json["access_token"] == null ? null : json["access_token"],
@@ -52,6 +58,19 @@ abstract class UserManager {
   Future<bool> isUserLoggedIn();
 
   Future<void> updateScheduleDays(int days);
+  void markOnboardingComplete();
+  void markOnboardingState(OnboardingState state);
+
+  void updateTestDate(DateTime date);
+  Future<DateTime> getTestDate();
+  void updateStudyTimePerDay(int hours);
+  Future<int> getStudyTimePerDay();
+  void updateQuestionOfTheDayTime(int time);
+  Future<int> getQuestionOfTheDayTime();
+  void removeDailyNotification();
+  void removeTestDate();
+  Future<bool> shouldShowOnboarding();
+  Future<OnboardingState> getOnboardingState();
 }
 
 class UserManagerImpl implements UserManager {
@@ -74,6 +93,7 @@ class UserManagerImpl implements UserManager {
         return null;
       }
 
+      // log(userJson);
       return userFromJson(userJson);
     } catch (error) {
       return null;
@@ -83,6 +103,11 @@ class UserManagerImpl implements UserManager {
   @override
   void logout() async {
     storage.delete(key: _userStoreKey);
+    storage.delete(key: "OnboardingState");
+    storage.delete(key: "test_date");
+    storage.delete(key: "question_of_the_day_time");
+    storage.delete(key: "study_time_per_day");
+    storage.deleteAll();
   }
 
   @override
@@ -101,6 +126,75 @@ class UserManagerImpl implements UserManager {
     User user = await get();
 
     return update(user);
+  }
+
+  @override
+  void updateTestDate(DateTime date) {
+    storage.write(key: "test_date", value: date.toString());
+  }
+
+  @override
+  Future<DateTime> getTestDate() async {
+    String date = await storage?.read(key: "test_date");
+    if (date?.isNotEmpty ?? false) {
+      return DateTime.parse(date);
+    }
+    return null;
+  }
+
+  void updateStudyTimePerDay(int hours) {
+    storage.write(key: "study_time_per_day", value: hours.toString());
+  }
+
+  Future<int> getStudyTimePerDay() async {
+    String time = await storage?.read(key: "study_time_per_day") ?? "2";
+    return int.parse(time);
+  }
+
+  void updateQuestionOfTheDayTime(int time) {
+    storage.write(key: "question_of_the_day_time", value: time.toString());
+  }
+
+  Future<int> getQuestionOfTheDayTime() async {
+    var time = await storage.read(key: "question_of_the_day_time");
+    if (time != null) {
+      return int.parse(time);
+    }
+    return null;
+  }
+
+  void removeDailyNotification() {
+    storage.delete(key: "question_of_the_day_time");
+  }
+
+  void removeTestDate() {
+    storage.delete(key: "test_date");
+  }
+
+  void markOnboardingComplete() {
+    markOnboardingState(OnboardingState.Completed);
+  }
+
+  Future<bool> shouldShowOnboarding() async {
+    final status = await getOnboardingState();
+    return status != OnboardingState.Completed;
+  }
+
+  Future<OnboardingState> getOnboardingState() async {
+    var state = await storage.read(key: "OnboardingState");
+    if (state == OnboardingState.Completed.key()) {
+      return OnboardingState.Completed;
+    } else if (state == OnboardingState.ShowForNewUser.key()) {
+      return OnboardingState.ShowForNewUser;
+    } else if (state == OnboardingState.ShowForExistingUser.key()) {
+      return OnboardingState.ShowForExistingUser;
+    } else {
+      return OnboardingState.Unset;
+    }
+  }
+
+  void markOnboardingState(OnboardingState state) {
+    storage.write(key: "OnboardingState", value: state.key());
   }
 
   static final _userStoreKey = "userStoreKey";

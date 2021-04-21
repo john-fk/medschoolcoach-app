@@ -13,7 +13,7 @@ import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
 import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -153,7 +153,6 @@ class _MultipleChoiceQuestionScreenState
                 isBookmarked: _favourite != null ? _favourite : _getFavourite(),
                 onBookmarkTap: () {
                   _favourite = !_favourite;
-
                 },
               ),
               Expanded(
@@ -412,8 +411,17 @@ class _MultipleChoiceQuestionScreenState
     );
   }
 
+  void _updateState(Function updateFunction) {
+    if (this.mounted) {
+      setState(() {
+        updateFunction();
+      });
+    } else {
+    }
+  }
+
   void _showAnswers(int index) {
-    setState(() {
+    _updateState(() {
       _selectedIndex = index;
     });
     _questionsRepository.sendQuestionAnswer(
@@ -467,7 +475,7 @@ class _MultipleChoiceQuestionScreenState
         _addListItem(i);
       }
     }
-    setState(() {
+    _updateState(() {
       _currentQuestionIndex = _currentQuestionIndex + 1;
       _selectedIndex = null;
       _answers = [];
@@ -502,7 +510,7 @@ class _MultipleChoiceQuestionScreenState
   Future<void> _fetchQuestions({
     bool forceApiRequest = false,
   }) async {
-    setState(() {
+    _updateState(() {
       _loading = true;
     });
     if (widget.arguments.status != null &&
@@ -517,7 +525,7 @@ class _MultipleChoiceQuestionScreenState
     final result = await _questionsRepository.fetchFavouriteQuestions();
 
     if (result is RepositorySuccessResult<QuestionList>) {
-      setState(() {
+      _updateState(() {
         _questionsList = result.data.items
           ..sort(
             (a, b) => a.order.compareTo(b.order),
@@ -539,7 +547,7 @@ class _MultipleChoiceQuestionScreenState
     );
 
     if (result is RepositorySuccessResult<QuestionList>) {
-      setState(() {
+      _updateState(() {
         _questionsList = result.data.items
           ..sort(
             (a, b) => a.order.compareTo(b.order),

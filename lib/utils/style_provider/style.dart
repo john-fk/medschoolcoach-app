@@ -15,13 +15,17 @@ class AppColors {
   const AppColors({
     @required this.accent2,
     @required this.accent3,
+    @required this.accent4,
     @required this.content2,
+    @required this.content4,
     @required this.inputBackground,
     @required this.shadow2,
     @required this.accent,
     @required this.content,
     @required this.content3,
     @required this.background,
+    @required this.background2,
+    @required this.background3,
     @required this.shadow,
     @required this.brightShadow,
     @required this.error,
@@ -30,17 +34,22 @@ class AppColors {
     @required this.questions,
     @required this.divider,
     @required this.qualifyingText,
+    @required this.border,
   });
 
   final Color accent;
   final Color accent2;
   final Color accent3;
+  final Color accent4;
 
   final Color content;
   final Color content2;
   final Color content3;
+  final Color content4;
 
   final Color background;
+  final Color background2;
+  final Color background3;
   final Color inputBackground;
 
   final Color shadow;
@@ -55,6 +64,7 @@ class AppColors {
   final Color divider;
 
   final Color qualifyingText;
+  final Color border;
 
   /// Creates a copy of this [AppColors] but with the given
   /// fields replaced with the new values.
@@ -62,38 +72,47 @@ class AppColors {
           Color accent,
           Color accent2,
           Color accent3,
+          Color accent4,
           Color content,
           Color content2,
           Color content3,
+          Color content4,
           Color background,
           Color background2,
+          Color background3,
+          Color inputBackground,
           Color shadow,
           Color shadow2,
           Color brightShadow,
           Color error,
           Color premium,
           Color separator,
+          Color questions,
           Color divider,
           Color qualifyingText) =>
       AppColors(
-        accent: accent ?? this.accent,
-        accent2: accent2 ?? this.accent2,
-        accent3: accent3 ?? this.accent3,
-        content: content ?? this.content,
-        content2: content2 ?? this.content2,
-        content3: content3 ?? this.content3,
-        background: background ?? this.background,
-        inputBackground: background2 ?? this.inputBackground,
-        shadow: shadow ?? this.shadow,
-        shadow2: shadow2 ?? this.shadow2,
-        brightShadow: brightShadow ?? this.brightShadow,
-        error: error ?? this.error,
-        premium: premium ?? this.premium,
-        separator: separator ?? this.separator,
-        divider: divider ?? this.divider,
-        questions: questions ?? this.questions,
-        qualifyingText: qualifyingText ?? this.qualifyingText,
-      );
+          accent: accent ?? this.accent,
+          accent2: accent2 ?? this.accent2,
+          accent3: accent3 ?? this.accent3,
+          accent4: accent4 ?? this.accent4,
+          content: content ?? this.content,
+          content2: content2 ?? this.content2,
+          content3: content3 ?? this.content3,
+          content4: content4 ?? this.content4,
+          background: background ?? this.background,
+          background2: background2 ?? this.background2,
+          background3: background3 ?? this.background3,
+          inputBackground: inputBackground ?? this.inputBackground,
+          shadow: shadow ?? this.shadow,
+          shadow2: shadow2 ?? this.shadow2,
+          brightShadow: brightShadow ?? this.brightShadow,
+          error: error ?? this.error,
+          premium: premium ?? this.premium,
+          separator: separator ?? this.separator,
+          divider: divider ?? this.divider,
+          questions: questions ?? this.questions,
+          qualifyingText: qualifyingText ?? this.qualifyingText,
+          border: border ?? this.border);
 }
 
 /// Provides app style

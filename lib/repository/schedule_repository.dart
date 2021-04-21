@@ -33,6 +33,10 @@ class ScheduleRepository implements Repository {
   final RateLimiter _rateLimiter = RateLimiter();
   final RateLimiter _dateRateLimiter = RateLimiter();
 
+  Future<List<Video>> getCacheVideos({@required int day}) {
+    return _scheduleCache.get(day);
+  }
+
   Future<RepositoryResult<void>> startSchedule({
     @required int days,
   }) async {

@@ -33,8 +33,11 @@ class Auth0UserData {
             ? null
             : DateTime.parse(json["updated_at"]),
         email: json["email"] == null ? null : json["email"],
-        emailVerified:
-            json["email_verified"] == null ? null : json["email_verified"],
+        emailVerified: json["email_verified"] == null
+            ? null
+            : json["email_verified"] is bool
+                ? json["email_verified"]
+                : json["email_verified"] == 'true',
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{

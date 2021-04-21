@@ -25,7 +25,8 @@ class AnalyticsProvider {
   }
 
   void logEvent(String eventName, {dynamic params}) {
-    _mixpanel.track(eventName, params);
+    final emptyList = <String, String>{};
+    _mixpanel.track(eventName, params == null ? emptyList : params);
   }
 
   void logScreenView(String screenName, String sourceName, {dynamic params}) {
@@ -50,6 +51,7 @@ class AnalyticsProvider {
     return args;
   }
 
+  // ignore: avoid_positional_boolean_parameters
   void logVideoBookMarkEvent(bool isRemove, String videoId, String videoName) {
     logEvent(
         isRemove
@@ -59,6 +61,7 @@ class AnalyticsProvider {
   }
 
   void logAccountManagementEvent(
+      // ignore: avoid_positional_boolean_parameters
       String event, String email, bool isSuccess, String errorMessage) {
     logEvent(event, params: {
       AnalyticsConstants.keyEmail: email,

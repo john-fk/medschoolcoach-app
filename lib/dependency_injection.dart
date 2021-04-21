@@ -2,6 +2,8 @@ import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
+import 'package:Medschoolcoach/repository/progress_repository.dart';
+import 'package:Medschoolcoach/repository/questions_day_repository.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/schedule_repository.dart';
 import 'package:Medschoolcoach/repository/section_repository.dart';
@@ -12,10 +14,13 @@ import 'package:Medschoolcoach/repository/tutoring_repository.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
+import 'package:Medschoolcoach/utils/api/auth_service.dart';
 import 'package:Medschoolcoach/utils/api/network_client.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injector/injector.dart';
 
 void initializeDependencyInjection({
@@ -38,13 +43,13 @@ void initializeDependencyInjection({
   );
 
   injector.registerSingleton<AnalyticsProvider>(
-        (injector) {
+    (injector) {
       return analyticsProvider;
     },
   );
 
   injector.registerSingleton<FirebaseAnalytics>(
-        (injector) {
+    (injector) {
       return FirebaseAnalytics();
     },
   );
@@ -91,7 +96,7 @@ void initializeDependencyInjection({
   );
 
   injector.registerSingleton<LectureNoteRepository>(
-        (injector) {
+    (injector) {
       final apiServices = injector.getDependency<ApiServices>();
       return LectureNoteRepository(
         apiServices,
@@ -145,6 +150,15 @@ void initializeDependencyInjection({
       );
     },
   );
+  
+  injector.registerSingleton<QuestionsDayRepository>(
+    (injector) {
+      final apiServices = injector.getDependency<ApiServices>();
+      return QuestionsDayRepository(
+        apiServices,
+      );
+    },
+  );
 
   injector.registerSingleton<StatisticsRepository>(
     (injector) {
@@ -161,6 +175,22 @@ void initializeDependencyInjection({
     },
   );
 
+  injector.registerSingleton<ProgressRepository>(
+    (injector) {
+      final apiServices = injector.getDependency<ApiServices>();
+      return ProgressRepository(apiServices);
+    },
+  );
+
+  injector.registerSingleton<AuthServices>(
+    (injector) {
+      final userRepository = injector.getDependency<UserRepository>();
+      final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+      final FlutterAppAuth appAuth = FlutterAppAuth();
+      return AuthServicesImpl(userRepository, secureStorage, appAuth);
+    },
+  );
+
   injector.registerSingleton<UserRepository>(
     (injector) {
       final apiServices = injector.getDependency<ApiServices>();
@@ -168,7 +198,8 @@ void initializeDependencyInjection({
       final sectionRepository = injector.getDependency<SectionRepository>();
       final subjectRepository = injector.getDependency<SubjectRepository>();
       final topicRepository = injector.getDependency<TopicRepository>();
-      final lectureNoteRepository = injector.getDependency<LectureNoteRepository>();
+      final lectureNoteRepository =
+          injector.getDependency<LectureNoteRepository>();
       final videoRepository = injector.getDependency<VideoRepository>();
       final flashcardRepository = injector.getDependency<FlashcardRepository>();
       final scheduleRepository = injector.getDependency<ScheduleRepository>();
@@ -179,23 +210,21 @@ void initializeDependencyInjection({
       final analyticsProvider = injector.getDependency<AnalyticsProvider>();
       final firebaseAnalytics = injector.getDependency<FirebaseAnalytics>();
 
-
       return UserRepository(
-        apiServices,
-        userManager,
-        sectionRepository,
-        subjectRepository,
-        topicRepository,
-        lectureNoteRepository,
-        videoRepository,
-        flashcardRepository,
-        scheduleRepository,
-        bookmarksRepository,
-        questionsRepository,
-        statisticsRepository,
-        analyticsProvider,
-        firebaseAnalytics
-      );
+          apiServices,
+          userManager,
+          sectionRepository,
+          subjectRepository,
+          topicRepository,
+          lectureNoteRepository,
+          videoRepository,
+          flashcardRepository,
+          scheduleRepository,
+          bookmarksRepository,
+          questionsRepository,
+          statisticsRepository,
+          analyticsProvider,
+          firebaseAnalytics);
     },
   );
 }

@@ -39,13 +39,15 @@ abstract class NetworkClient {
 class NetworkClientImpl implements NetworkClient {
   @override
   Future<String> get(String url, {Map<String, String> headers}) {
-    Crashlytics.instance.log("Request: GET url: ${url} headers: ${headers}");
+    FirebaseCrashlytics.instance
+        .log("Request: GET url: ${url} headers: ${headers}");
     return http.get(url, headers: headers).then((response) {
       String body = response.body;
       int statusCode = response.statusCode;
 
       if (_isError(statusCode, body)) {
-        Crashlytics.instance.log(
+        FirebaseCrashlytics.instance
+            .log(
             "Error: GET url: ${url} statusCode: ${statusCode} body: ${body}");
         throw ApiException(statusCode, body);
       }
@@ -56,7 +58,7 @@ class NetworkClientImpl implements NetworkClient {
   @override
   Future<String> post(String url,
       {Map headers, dynamic body, dynamic encoding}) {
-    Crashlytics.instance
+    FirebaseCrashlytics.instance
         .log("Request: POST url: ${url} headers: ${headers} body: ${body}");
 
     return http
@@ -66,7 +68,7 @@ class NetworkClientImpl implements NetworkClient {
       int statusCode = response.statusCode;
 
       if (_isError(statusCode, body)) {
-        Crashlytics.instance.log(
+        FirebaseCrashlytics.instance.log(
             "Error: POST url: ${url} statusCode: ${statusCode} body: ${body}");
         throw ApiException(statusCode, body);
       }
@@ -82,7 +84,7 @@ class NetworkClientImpl implements NetworkClient {
     dynamic body,
     dynamic encoding,
   }) {
-    Crashlytics.instance
+    FirebaseCrashlytics.instance
         .log("Request: PUT url: ${url} headers: ${headers} body: ${body}");
     return http
         .put(url, headers: headers, body: body, encoding: encoding)
@@ -91,7 +93,7 @@ class NetworkClientImpl implements NetworkClient {
       int statusCode = response.statusCode;
 
       if (_isError(statusCode, body)) {
-        Crashlytics.instance.log(
+        FirebaseCrashlytics.instance.log(
             "Error: PUT url: ${url} statusCode: ${statusCode} body: ${body}");
         throw ApiException(statusCode, body);
       }
@@ -106,7 +108,7 @@ class NetworkClientImpl implements NetworkClient {
     Map<String, String> headers,
     dynamic requestBody,
   }) async {
-    Crashlytics.instance.log(
+    FirebaseCrashlytics.instance.log(
         "Request: DELT url: ${url} headrs: ${headers} reqBody: ${requestBody}");
 
     final client = http.Client();
@@ -121,7 +123,7 @@ class NetworkClientImpl implements NetworkClient {
       int statusCode = response.statusCode;
 
       if (_isError(statusCode, responseBody)) {
-        Crashlytics.instance.log(
+        FirebaseCrashlytics.instance.log(
             "Error: DELT url: ${url} stat: ${statusCode} bdy: ${responseBody}");
         throw ApiException(statusCode, responseBody);
       }
@@ -143,7 +145,7 @@ class NetworkClientImpl implements NetworkClient {
   @override
   Future<String> patch(String url,
       {Map headers, dynamic body, dynamic encoding}) {
-    Crashlytics.instance
+    FirebaseCrashlytics.instance
         .log("Request: PATCH url: ${url} headrs: ${headers} body: ${body}");
     return http
         .patch(url, headers: headers, body: body, encoding: encoding)
@@ -152,7 +154,7 @@ class NetworkClientImpl implements NetworkClient {
       int statusCode = response.statusCode;
 
       if (_isError(statusCode, body)) {
-        Crashlytics.instance.log(
+        FirebaseCrashlytics.instance.log(
             "Error: PATCH url: ${url} statusCode: ${statusCode} body: ${body}");
         throw ApiException(statusCode, body);
       }

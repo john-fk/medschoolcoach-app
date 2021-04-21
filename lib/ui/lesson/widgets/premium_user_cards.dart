@@ -95,8 +95,11 @@ class PremiumUserCards extends StatelessWidget {
                 ),
               ),
             ),
-            onTap: () => Routes.navigateToTutoringScreen(
-                context, AnalyticsConstants.screenLessonVideo),
+            onTap: () =>
+            {pausePlayer(),
+              Routes.navigateToTutoringScreen(
+                  context, AnalyticsConstants.screenLessonVideo)
+            },
           ),
           const SizedBox(
             height: 10,
@@ -170,7 +173,7 @@ class PremiumUserCards extends StatelessWidget {
           ),
         if (video.whiteboardNotesUrl != null)
           SquareFeatureButton(
-            color: Color(0xFFe344ff),
+            color: Color(0xFF42B8EB),
             text: FlutterI18n.translate(
                 context, "lesson_screen.whiteboard_notes"),
             icon: SvgPicture.asset(

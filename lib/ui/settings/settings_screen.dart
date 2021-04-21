@@ -1,3 +1,4 @@
+import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
@@ -6,7 +7,6 @@ import 'package:Medschoolcoach/repository/user_repository.dart';
 // import 'package:Medschoolcoach/ui/register/number_prefix_input_fromatter.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
-import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -16,7 +16,7 @@ import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/inputs/main_text_field.dart';
 import 'package:Medschoolcoach/widgets/inputs/validators.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _loading = true;
   bool _buttonLoading = false;
   String _errorMessage = "";
+  ProfileUser user;
 
   final _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
@@ -56,8 +57,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _analyticsProvider.logScreenView(AnalyticsConstants.screenSettings,
-        AnalyticsConstants.screenHome);
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenSettings, AnalyticsConstants.screenHome);
     _getProfileUser();
     // _phonePrefixController.text = "+1";
   }
@@ -87,7 +88,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       child: Form(
                         key: _formKey,
-                        autovalidate: _autoValidate,
+                        autovalidateMode: _autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
@@ -95,8 +98,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             const SizedBox(height: 8),
                             _buildLastNameTextField(),
                             const SizedBox(height: 8),
-                            _buildEmailTextField(),
-                            const SizedBox(height: 8),
+                            _isRegularLogin(user?.id)
+                                ? _buildEmailTextField()
+                                : SizedBox.shrink(),
+                            _isRegularLogin(user?.id)
+                                ? const SizedBox(height: 8)
+                                : SizedBox.shrink(),
                             // _buildPhoneTextField(),
                             // const SizedBox(height: 8),
                             // _buildYearTextField(),
@@ -313,7 +320,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (response is RepositorySuccessResult<ProfileUser>) {
-      ProfileUser user = response.data;
+      user = response.data;
 
       if (user.firstName != null && user.firstName.isNotEmpty) {
         _firstNameController.text = user.firstName;
@@ -333,13 +340,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  bool _isRegularLogin(String id) {
+    bool isRegularLogin = false;
+    if (id != null && id.isNotEmpty) {
+      final idArray = id.split('|');
+      if (idArray.length > 0 && idArray[0] != null && idArray[0].isNotEmpty) {
+        isRegularLogin = id.contains(Config.REGULAR_AUTH_PREFIX);
+      }
+    }
+    return isRegularLogin;
+  }
+
   Future<void> _updateUserProfile() async {
     setState(() {
       _autoValidate = true;
       _buttonLoading = true;
     });
-
-    _emailController.text = _emailController.text.trim();
+    String email;
+    if (_isRegularLogin(user?.id)) {
+      _emailController.text = _emailController.text.trim();
+      email = _emailController.text;
+    }
     _logAnalytics();
     if (!_formKey.currentState.validate()) {
       setState(() {
@@ -347,26 +368,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
       return;
     }
-
     final response = await _userRepository.updateUserProfile(
-      userFirstName: _firstNameController.text,
-      userLastName: _lastNameController.text,
-      userEmail: _emailController.text,
-      // phone: _phonePrefixController.text +
-      //     _phoneNumberController.text
-      //         .replaceAll(" ", "")
-      //         .replaceAll("(", "")
-      //         .replaceAll("-", "")
-      //         .replaceAll(")", ""),
-      // graduationYear: _yearController.text,
-      // mcatTestDate: _testDateController.text,
-    );
+        userFirstName: _firstNameController.text,
+        userLastName: _lastNameController.text,
+        userEmail: email);
 
     if (response is RepositorySuccessResult) {
       setState(() {
         _buttonLoading = false;
       });
       SuperStateful.of(context).updateUserData();
+      _getProfileUser();
       _showSuccessDialog();
     } else {
       setState(() {
@@ -415,12 +427,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             getDict("user_name", user.firstName, _firstNameController.text));
       }
       if (_lastNameController.text?.trim() != user.lastName?.trim()) {
-        args.add(
-            getDict("last_name", user.lastName, _lastNameController.text));
+        args.add(getDict("last_name", user.lastName, _lastNameController.text));
       }
       if (_emailController.text?.trim() != user.email?.trim()) {
-        args.add(
-            getDict("email_id", user.email, _emailController.text));
+        args.add(getDict("email_id", user.email, _emailController.text));
       }
       _analyticsProvider.logEvent(AnalyticsConstants.tapUpdateProfile,
           params: {"updated": args.toString()});
@@ -442,19 +452,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           actions: <DialogActionData>[
             DialogActionData(
-              text: FlutterI18n.translate(
-                context,
-                "general.continue",
-              ),
-              onTap: () => {
-                _userRepository.logout(),
-                SuperStateful.of(context).clearData(),
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.welcome,
-                  (_) => false,
-                )
-              },
-            ),
+                text: FlutterI18n.translate(
+                  context,
+                  "general.continue",
+                ),
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                }),
           ],
         );
       },

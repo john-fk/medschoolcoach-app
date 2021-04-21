@@ -1,19 +1,14 @@
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
-import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/video_player/custom_video_controller.dart';
 import 'package:Medschoolcoach/widgets/video_player/video_player_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:injector/injector.dart';
 
 class FullscreenVideo extends StatelessWidget {
   final bool loading;
   final CustomVideoController customVideoController;
   final VoidCallback closeFullscreenVideo;
-  final AnalyticsProvider _analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   FullscreenVideo({
     @required this.loading,

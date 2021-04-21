@@ -247,7 +247,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     _logEvents(AnalyticsConstants.tapFlashcardFlipForward);
   }
 
-  Map<String, String> _logEvents(String event,
+  void _logEvents(String event,
       {dynamic additionalParams}) {
     var args = {
       "id": widget.flashCard.id,

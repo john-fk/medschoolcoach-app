@@ -1,4 +1,3 @@
-import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/cache/cache.dart';
 import 'package:Medschoolcoach/repository/cache/map_chache.dart';
 import 'package:Medschoolcoach/repository/rate_limiter/rate_limiter.dart';
@@ -54,9 +53,7 @@ class FlashcardRepository implements Repository {
         return RepositorySuccessResult(response.body);
       } else if (response is ErrorResponse<FlashcardsStackModel>) {
         _rateLimiter.reset(key);
-        return RepositoryUtils.handleRepositoryError(
-          response,
-        );
+        return RepositoryUtils.handleRepositoryError(response);
       }
     } else {
       return RepositorySuccessResult(

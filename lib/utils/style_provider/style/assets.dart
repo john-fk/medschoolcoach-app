@@ -26,6 +26,34 @@ class _AppPngAssets {
   //Premium modal
   final premiumModal = "assets/png/premium_modal.png";
   final premiumModalStar = "assets/png/premium_modal_star.png";
+
+  //Navigation bar items
+  final homeActive = "assets/png/home_selected.png";
+  final home = "assets/png/home_unselected.png";
+
+  final progressActive = "assets/png/progress_selected.png";
+  final progress = "assets/png/progress_unselected.png";
+
+  final learnActive = "assets/png/learn_selected.png";
+  final learn = "assets/png/learn_unselected.png";
+
+  final practiceActive ="assets/png/practice_selected.png";
+  final practice ="assets/png/practice_unselected.png";
+
+  final profileActive = "assets/png/profile_selected.png";
+  final profile = "assets/png/profile_unselected.png";
+
+  //Tutoring sliders
+  final tutoringSliderOne = "assets/png/tutoring_slider_1.png";
+  final tutoringSliderTwo = "assets/png/tutoring_slider_2.png";
+  final tutoringSliderThree = "assets/png/tutoring_slider_3.png";
+
+  //Progress Screen
+  final upSellBannerGraphic  = "assets/png/upsell_banner_graphic.png";
+
+  final globalDoctors  = "assets/png/global_doctors.png";
+
+  final emptyState = "assets/png/empty_state.png";
 }
 
 class _AppSvgAssets {
@@ -33,20 +61,12 @@ class _AppSvgAssets {
   final welcomeScreenBackground = "assets/svg/welcome_screen_background.svg";
   final manOnBooks = "assets/svg/man_on_books.svg";
   final backArrowDark = "assets/svg/back_arrow_dark.svg";
-  final scienceLady = "assets/svg/science_lady.svg";
   final close = "assets/svg/close.svg";
   final questionsBackground = "assets/svg/question_background.svg";
   final pickSchedule = "assets/svg/pick_schedule.svg";
 
-  //Navigation bar items
-  final homeActive = "assets/svg/home_active.svg";
-  final home = "assets/svg/home.svg";
   final searchActive = "assets/svg/search_active.svg";
   final search = "assets/svg/search.svg";
-  final moreActive = "assets/svg/more_active.svg";
-  final schedule = "assets/svg/schedule.svg";
-  final scheduleActive = "assets/svg/schedule_active.svg";
-  final more = "assets/svg/more.svg";
   final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon_active.svg";
   final tutoringNavigationIcon = "assets/svg/tutoring_navigation_icon.svg";
 
@@ -64,11 +84,11 @@ class _AppSvgAssets {
   final flashcards = "assets/svg/flashcards.svg";
   final tutoring = "assets/svg/tutoring.svg";
   final questions = "assets/svg/questions.svg";
-  final logout = "assets/svg/logout.svg";
   final notes = "assets/svg/notes.svg";
   final youtube = "assets/svg/yt.svg";
   final support = "assets/svg/support.svg";
   final star = "assets/svg/star.svg";
+  final notification = "assets/svg/notification.svg";
 
   //Flash card assets
   final flashCardBackground = "assets/svg/flash_card_background.svg";
@@ -95,9 +115,13 @@ class _AppSvgAssets {
   final questionMilestone = "assets/svg/question_milestone.svg";
   final videoMilestone = "assets/svg/video_milestone.svg";
 
-  //Tutoring sliders
-  final tutoringSliderOne = "assets/svg/slider_1.svg";
-  final tutoringSliderTwo = "assets/svg/slider_2.svg";
-  final tutoringSliderThree = "assets/svg/slider_3.svg";
+  final scienceLady = "assets/svg/science_lady.svg";
 
+  //Profile menu icons
+  final profileMyAccount = "assets/svg/profile_account.svg";
+  final profileBookmarkVideos = "assets/svg/profile_bookmark.svg";
+  final profileQuestionOfTheDay = "assets/svg/profile_question_of_the_day.svg";
+  final profileTestDate = "assets/svg/profile_test_date.svg";
+  final profileStopWatch = "assets/svg/profile_stopwatch.svg";
+  final profileLogout = "assets/svg/profile_logout.svg";
 }

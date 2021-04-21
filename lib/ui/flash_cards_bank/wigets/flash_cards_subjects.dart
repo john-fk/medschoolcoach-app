@@ -15,14 +15,11 @@ class SubjectAndSetting {
   final Subject subject;
   final Setting setting;
 
-  SubjectAndSetting(
-    this.subject,
-    this.setting,
-  );
+  SubjectAndSetting(this.subject,
+      this.setting,);
 }
 
 class FlashCardsSubjects extends StatelessWidget {
-
   final AnalyticsProvider _analyticsProvider;
 
   const FlashCardsSubjects(this._analyticsProvider);
@@ -30,20 +27,26 @@ class FlashCardsSubjects extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subjectsWithSettings = List<SubjectAndSetting>();
-    final sections = SuperStateful.of(context).flashcardsSections;
+    final sections = SuperStateful
+        .of(context)
+        .flashcardsSections;
 
     sections.where((section) => section.amountOfFlashcards != 0).forEach(
-          (section) => section.subjects
+          (section) =>
+          section.subjects
               .where((subject) => subject.amountOfFlashcards != 0)
               .forEach(
-                (subject) => subjectsWithSettings.add(
-                  SubjectAndSetting(
-                    subject,
-                    section.setting,
-                  ),
-                ),
-              ),
-        );
+                (subject)
+                {
+                  subjectsWithSettings.add(
+                    SubjectAndSetting(
+                      subject,
+                      section.setting,
+                    )
+                  );
+                },
+          ),
+    );
 
     final spacing = whenDevice(
       context,
@@ -59,7 +62,8 @@ class FlashCardsSubjects extends StatelessWidget {
       crossAxisSpacing: spacing,
       children: subjectsWithSettings
           .map(
-            (subjectWithSetting) => SubjectCell(
+            (subjectWithSetting) =>
+            SubjectCell(
               subjectName: subjectWithSetting.subject.name,
               setting: subjectWithSetting.setting,
               itemsWithNumber: FlutterI18n.translate(
@@ -67,7 +71,7 @@ class FlashCardsSubjects extends StatelessWidget {
                 "flashcards_bank.flashcards_count",
                 {
                   "number":
-                      subjectWithSetting.subject.amountOfFlashcards.toString(),
+                  subjectWithSetting.subject.amountOfFlashcards.toString(),
                 },
               ),
               onTap: () {
@@ -76,20 +80,20 @@ class FlashCardsSubjects extends StatelessWidget {
                     context,
                     Routes.flashCard,
                     arguments: FlashcardsStackArguments(
-                      subjectId: subjectWithSetting.subject.id,
-                      subjectName: subjectWithSetting.subject.name,
-                      source: AnalyticsConstants.screenFlashcardsBank
-                    ),
+                        subjectId: subjectWithSetting.subject.id,
+                        subjectName: subjectWithSetting.subject.name,
+                        source: AnalyticsConstants.screenFlashcardsBank),
                   );
                   _analyticsProvider.logEvent(
-                      AnalyticsConstants.tapFlashcardsSubject, params: {
-                    "subject_id": subjectWithSetting.subject.id,
-                    "subject_name": subjectWithSetting.subject.name
-                  });
+                      AnalyticsConstants.tapFlashcardsSubject,
+                      params: {
+                        "subject_id": subjectWithSetting.subject.id,
+                        "subject_name": subjectWithSetting.subject.name
+                      });
                 }
               },
             ),
-          )
+      )
           .toList(),
     );
   }

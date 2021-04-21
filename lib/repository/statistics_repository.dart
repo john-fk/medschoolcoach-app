@@ -24,7 +24,8 @@ class StatisticsRepository implements Repository {
     Duration aDuration = const Duration(
       seconds: 60,
     );
-    final shouldFetch = _rateLimiter.shouldFetchWithVariableLimit(_globalStatsKey,aDuration);
+    final shouldFetch =
+        _rateLimiter.shouldFetchWithVariableLimit(_globalStatsKey, aDuration);
 
     if (shouldFetch || forceApiRequest) {
       final response = await _apiServices.getGlobalStatistics();

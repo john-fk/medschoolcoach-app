@@ -2,7 +2,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/list_cells/buddy_list_cell.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/refer_friend_cell/refer_friend_cell.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injector/injector.dart';

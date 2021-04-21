@@ -59,7 +59,9 @@ class QuestionButton extends StatelessWidget {
                 child: Center(
                   child: Html(
                     data: text,
-                    style: {"html":  Style.fromTextStyle(_getTextStyle(context))},
+                    style: {
+                      "html": Style.fromTextStyle(_getTextStyle(context))
+                    },
                   ),
                 ),
               ),

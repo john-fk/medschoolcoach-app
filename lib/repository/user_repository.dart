@@ -91,7 +91,7 @@ class UserRepository implements Repository {
       userLoggingEmail = userEmail;
 
 
-      await _updateUser(
+      await updateUser(
         accessToken: response.body.accessToken,
         idToken: response.body.idToken,
         refreshToken: response.body.refreshToken,
@@ -193,9 +193,11 @@ class UserRepository implements Repository {
       if (userResponse is SuccessResponse<Auth0UserData>) {
         if (userLoggingEmail != null && userLoggingEmail.isNotEmpty) {
           await _identifyUser(userResponse);
-          Crashlytics.instance.setUserIdentifier(userResponse.body.sub);
-          Crashlytics.instance.setUserEmail(userResponse.body.email);
-          Crashlytics.instance.setUserName(userResponse.body.name);
+          FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.sub);
+          FirebaseCrashlytics.instance
+              .setCustomKey("email", userResponse.body.email);
+          FirebaseCrashlytics.instance
+              .setCustomKey("name", userResponse.body.name);
         }
 
         _userCache.set(_userCacheKey, userResponse.body);
@@ -261,7 +263,7 @@ class UserRepository implements Repository {
     }
   }
 
-  Future _updateUser({
+  Future updateUser({
     @required String accessToken,
     @required String idToken,
     @required String refreshToken,
@@ -315,7 +317,6 @@ class UserRepository implements Repository {
     _analyticsProvider.logEvent(AnalyticsConstants.tapSignOut, params: {
       AnalyticsConstants.keyEmail: userLoggingEmail
     });
-    _apiServices.logout();
     _subjectRepository.clearCache();
     _sectionRepository.clearCache();
     _topicRepository.clearCache();

@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/utils/api/models/auth0_user_data.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -46,7 +47,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                   "user": userData != null ? userData.name : "",
                 },
               ),
-              style: greatResponsiveFont(context, fontWeight: FontWeight.bold),
+              style: biggerResponsiveFont(context, fontWeight: FontWeight.bold),
               maxLines: 1,
               overflow: TextOverflow.fade,
               softWrap: false,
@@ -55,42 +56,28 @@ class _HomeAppBarState extends State<HomeAppBar> {
           const SizedBox(
             width: 8,
           ),
-          InkWell(
-            onTap: () => Navigator.of(context).pushNamed(
-              Routes.profile,
-              arguments: AnalyticsConstants.screenHome
-            ),
-            child: CircleAvatar(
-              backgroundImage: userData != null && userData.picture.isNotEmpty
-                  ? NetworkImage(userData.picture)
-                  : null,
-              backgroundColor: Style.of(context).colors.separator,
-              radius: whenDevice(
-                context,
-                large: 20,
-                tablet: 30,
-              ),
-            ),
-          )
         ],
       ),
     );
   }
-}
 
-/*Row( POST MVP
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.star,
-                    color: Style.of(context).colors.premium,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    FlutterI18n.translate(
-                        context, "home_screen.premium_account"),
-                    style: Style.of(context).font.premium,
-                  ),
-                ],
-              )*/
+  Widget profileAvatar(Auth0UserData userData) {
+    return InkWell(
+      onTap: () => Navigator.of(context).pushNamed(
+          Routes.profile,
+          arguments: AnalyticsConstants.screenHome
+      ),
+      child: CircleAvatar(
+        backgroundImage: userData != null && userData.picture.isNotEmpty
+            ? NetworkImage(userData.picture)
+            : null,
+        backgroundColor: Style.of(context).colors.separator,
+        radius: whenDevice(
+          context,
+          large: 20,
+          tablet: 30,
+        ),
+      ),
+    );
+  }
+}

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:Medschoolcoach/config.dart';
@@ -10,14 +11,19 @@ import 'package:Medschoolcoach/utils/api/models/auth0_user_data.dart';
 import 'package:Medschoolcoach/utils/api/models/bookmark.dart';
 import 'package:Medschoolcoach/utils/api/models/buddy.dart';
 import 'package:Medschoolcoach/utils/api/models/dashboard_schedule.dart';
+import 'package:Medschoolcoach/utils/api/models/estimate_schedule.dart';
+import 'package:Medschoolcoach/utils/api/models/flashcards_progress.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/api/models/last_watched_response.dart';
+import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:Medschoolcoach/utils/api/models/login_response.dart';
 import 'package:Medschoolcoach/utils/api/models/milestones.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
 import 'package:Medschoolcoach/utils/api/models/question.dart';
+import 'package:Medschoolcoach/utils/api/models/question_bank_progress.dart';
 import 'package:Medschoolcoach/utils/api/models/schedule_date_response.dart';
 import 'package:Medschoolcoach/utils/api/models/schedule_progress.dart';
+import 'package:Medschoolcoach/utils/api/models/schedule_stats.dart';
 import 'package:Medschoolcoach/utils/api/models/search_result.dart';
 import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/api/models/sections_list.dart';
@@ -25,7 +31,6 @@ import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
-import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,6 +54,10 @@ class SearchArguments {
 
 abstract class ApiServices {
   Future<NetworkResponse<SectionsList>> getSectionsList();
+
+  Future<NetworkResponse<bool>> setTestDate(DateTime date);
+
+  Future<NetworkResponse<bool>> setTimePerDay(int time);
 
   Future<NetworkResponse<SectionsList>> getFlashcardsSections();
 
@@ -184,6 +193,18 @@ abstract class ApiServices {
 
   Future<NetworkResponse<ProfileUser>> getProfileUser();
 
+  Future<NetworkResponse<FlashcardsProgress>> getFlashcardsProgress();
+
+  Future<EstimateSchedule> getEstimateCompletion();
+
+  Future<NetworkResponse<ScheduleStats>> getCourseProgress();
+
+  Future<ProfileUser> getAccountData();
+
+  Future<NetworkResponse<List<Question>>> getQuestionOfTheDayQuestions();
+
+  Future<NetworkResponse<QuestionBankProgress>> getQuestionBankProgress();
+
   Future<NetworkResponse<void>> updateUserProfile({
     @required String userFirstName,
     @required String userLastName,
@@ -192,6 +213,8 @@ abstract class ApiServices {
     // String graduationYear,
     // String mcatTestDate,
   });
+
+  Future<NetworkResponse<bool>> setOnboarded();
 }
 
 class ApiServicesImpl implements ApiServices {
@@ -219,7 +242,108 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<SectionsList>(sectionListFromJson(response));
     } catch (error) {
-      return _handleError<SectionsList>(error);
+      return _handleError<SectionsList>(error, SectionsList);
+    }
+  }
+
+  @override
+  Future<NetworkResponse<FlashcardsProgress>> getFlashcardsProgress() async {
+    try {
+      Map<String, String> headers = await _getHeaders(contentType: true);
+      final String response = await _networkClient.get(
+        _getBaseUrl() + "/flashcards/stats",
+        headers: headers,
+      );
+      var data = FlashcardsProgress.fromJson(json.decode(response));
+      return SuccessResponse(data);
+    } catch (error) {
+      return _handleError<FlashcardsProgress>(error, FlashcardsProgress);
+    }
+  }
+
+  @override
+  Future<NetworkResponse<QuestionBankProgress>>
+      getQuestionBankProgress() async {
+    try {
+      final Map<String, String> headers = await _getHeaders(contentType: true);
+      final String response = await _networkClient.get(
+        _getBaseUrl() + "/questions/stats",
+        headers: headers,
+      );
+      var data = QuestionBankProgress.fromJson(json.decode(response));
+      return SuccessResponse(data);
+    } catch (error) {
+      return _handleError<QuestionBankProgress>(error, QuestionBankProgress);
+    }
+  }
+
+  Future<NetworkResponse<ScheduleStats>> getCourseProgress() async {
+    try {
+      final Map<String, String> headers = await _getHeaders();
+      final String response = await _networkClient
+          .get(_getBaseUrl() + "/stats/schedule?isHour=true", headers: headers);
+      var data = ScheduleStats.fromJson(jsonDecode(response));
+      return SuccessResponse<ScheduleStats>(data);
+    } catch (error) {
+      log("getCourseProgress Error:- $error");
+      return null;
+    }
+  }
+
+  Future<NetworkResponse<List<Question>>> getQuestionOfTheDayQuestions() async {
+    try {
+      final Map<String, String> headers = await _getHeaders();
+      final String response = await _networkClient
+          .get(_getBaseUrl() + "/questions/day?limit=5", headers: headers);
+      var data = questionFromJson(response);
+      return SuccessResponse<List<Question>>(data);
+    } catch (error) {
+      log("getQuestionOfTheDayQuestions:- $error");
+      return null;
+    }
+  }
+
+  @override
+  Future<NetworkResponse<bool>> setTestDate(DateTime date) async {
+    final body = json.encode({"mcatTestDate": date.toString()});
+    try {
+      final Map<String, String> headers = await _getHeaders(contentType: true);
+
+      await _networkClient.patch(_getBaseUrl() + "/users/onboard",
+          headers: headers, body: body);
+      return SuccessResponse<bool>(true);
+    } catch (error) {
+      return _handleError<bool>(error, bool);
+    }
+  }
+
+  @override
+  Future<NetworkResponse<bool>> setOnboarded() async {
+    try {
+      final Map<String, String> headers = await _getHeaders(contentType: true);
+      final body = json.encode({"onboarded": "true"});
+      await _networkClient.patch(_getBaseUrl() + "/users/onboard",
+          headers: headers, body: body);
+      return SuccessResponse<bool>(true);
+    } catch (error) {
+      return _handleError<bool>(error, bool);
+    }
+  }
+
+  @override
+  Future<NetworkResponse<bool>> setTimePerDay(int time) async {
+    final body = {"hours": "$time"};
+    try {
+      final Map<String, String> headers = await _getHeaders();
+      final String response = await _networkClient.post(
+          _getBaseUrl() + "/schedule/create",
+          headers: headers,
+          body: body);
+      log("create schedule response:- " + response);
+      return SuccessResponse<bool>(true);
+    } catch (error) {
+      log(error.toString());
+      return _handleError<bool>(error, bool);
     }
   }
 
@@ -237,7 +361,7 @@ class ApiServicesImpl implements ApiServices {
         response,
       ));
     } catch (error) {
-      return _handleError<SectionsList>(error);
+      return _handleError<SectionsList>(error, SectionsList);
     }
   }
 
@@ -255,7 +379,7 @@ class ApiServicesImpl implements ApiServices {
         response,
       ));
     } catch (error) {
-      return _handleError<SectionsList>(error);
+      return _handleError<SectionsList>(error, SectionsList);
     }
   }
 
@@ -277,7 +401,7 @@ class ApiServicesImpl implements ApiServices {
         ),
       );
     } catch (error) {
-      return _handleError<Section>(error);
+      return _handleError<Section>(error, Section);
     }
   }
 
@@ -290,14 +414,13 @@ class ApiServicesImpl implements ApiServices {
         _getBaseUrl() + "/stats/global",
         headers: headers,
       );
-
       return SuccessResponse<Statistics>(
         Statistics.fromJson(
           json.decode(response),
         ),
       );
     } catch (error) {
-      return _handleError<Statistics>(error);
+      return _handleError<Statistics>(error, Statistics);
     }
   }
 
@@ -312,14 +435,13 @@ class ApiServicesImpl implements ApiServices {
         _getBaseUrl() + "/subjects/$subjectId?progress=1",
         headers: headers,
       );
-
       return SuccessResponse<Subject>(
         Subject.fromJson(
           json.decode(response),
         ),
       );
     } catch (error) {
-      return _handleError<Subject>(error);
+      return _handleError<Subject>(error, Subject);
     }
   }
 
@@ -341,7 +463,7 @@ class ApiServicesImpl implements ApiServices {
         ),
       );
     } catch (error) {
-      return _handleError<Topic>(error);
+      return _handleError<Topic>(error, Topic);
     }
   }
 
@@ -363,7 +485,7 @@ class ApiServicesImpl implements ApiServices {
         ),
       );
     } catch (error) {
-      return _handleError<LectureNote>(error);
+      return _handleError<LectureNote>(error, LectureNote);
     }
   }
 
@@ -398,7 +520,7 @@ class ApiServicesImpl implements ApiServices {
         loginResponseFromJson(response),
       );
     } catch (error) {
-      return _handleError<LoginResponse>(error);
+      return _handleError<LoginResponse>(error, LoginResponse);
     }
   }
 
@@ -416,7 +538,7 @@ class ApiServicesImpl implements ApiServices {
       );
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -463,7 +585,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -492,7 +614,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -514,7 +636,7 @@ class ApiServicesImpl implements ApiServices {
         auth0UserDataFromJson(response),
       );
     } catch (error) {
-      return _handleError<Auth0UserData>(error);
+      return _handleError<Auth0UserData>(error, Auth0UserData);
     }
   }
 
@@ -558,7 +680,7 @@ class ApiServicesImpl implements ApiServices {
         loginResponseFromJson(response),
       );
     } catch (error) {
-      return _handleError<LoginResponse>(error);
+      return _handleError<LoginResponse>(error, LoginResponse);
     }
   }
 
@@ -584,7 +706,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -611,7 +733,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -637,7 +759,7 @@ class ApiServicesImpl implements ApiServices {
         FlashcardsStackModel.fromRawJson(response),
       );
     } catch (error) {
-      return _handleError<FlashcardsStackModel>(error);
+      return _handleError<FlashcardsStackModel>(error, FlashcardsStackModel);
     }
   }
 
@@ -669,7 +791,7 @@ class ApiServicesImpl implements ApiServices {
         searchResultFromJson(response),
       );
     } catch (error) {
-      return _handleError<SearchResult>(error);
+      return _handleError<SearchResult>(error, SearchResult);
     }
   }
 
@@ -689,7 +811,7 @@ class ApiServicesImpl implements ApiServices {
         ),
       );
     } catch (error) {
-      return _handleError<LastWatchedResponse>(error);
+      return _handleError<LastWatchedResponse>(error, LastWatchedResponse);
     }
   }
 
@@ -704,7 +826,7 @@ class ApiServicesImpl implements ApiServices {
       );
       return SuccessResponse<String>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -719,7 +841,7 @@ class ApiServicesImpl implements ApiServices {
       );
       return SuccessResponse<String>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -743,7 +865,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -752,7 +874,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/dashboard",
+        "${_getBaseUrl()}/schedule/dashboard?isHour=true",
         headers: headers,
       );
 
@@ -760,7 +882,7 @@ class ApiServicesImpl implements ApiServices {
         scheduleDashboardFromJson(response),
       );
     } catch (error) {
-      return _handleError<DashboardSchedule>(error);
+      return _handleError<DashboardSchedule>(error, DashboardSchedule);
     }
   }
 
@@ -771,7 +893,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/$day",
+        "${_getBaseUrl()}/schedule/$day?isHour=true",
         headers: headers,
       );
 
@@ -779,7 +901,7 @@ class ApiServicesImpl implements ApiServices {
         videoFromJson(response),
       );
     } catch (error) {
-      return _handleError<List<Video>>(error);
+      return _handleError<List<Video>>(error, [Video]);
     }
   }
 
@@ -789,15 +911,14 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/users/settings/schedule",
+        "${_getBaseUrl()}/users/settings/schedule?isHour=true",
         headers: headers,
       );
-
       return SuccessResponse<ScheduleDateResponse>(
         scheduleDateResponseFromJson(response),
       );
     } catch (error) {
-      return _handleError<ScheduleDateResponse>(error);
+      return _handleError<ScheduleDateResponse>(error, ScheduleDateResponse);
     }
   }
 
@@ -807,7 +928,7 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders();
 
       final String response = await _networkClient.get(
-        "${_getBaseUrl()}/schedule/progress",
+        "${_getBaseUrl()}/schedule/progress?isHour=true",
         headers: headers,
       );
 
@@ -815,7 +936,7 @@ class ApiServicesImpl implements ApiServices {
         scheduleProgressObjectFromJson(response).list,
       );
     } catch (error) {
-      return _handleError<Map<String, dynamic>>(error);
+      return _handleError<Map<String, dynamic>>(error, Map);
     }
   }
 
@@ -833,7 +954,7 @@ class ApiServicesImpl implements ApiServices {
         bookmarkFromJson(response),
       );
     } catch (error) {
-      return _handleError<List<Bookmark>>(error);
+      return _handleError<List<Bookmark>>(error, [Bookmark]);
     }
   }
 
@@ -858,7 +979,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -883,7 +1004,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -912,7 +1033,7 @@ class ApiServicesImpl implements ApiServices {
       );
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -941,7 +1062,7 @@ class ApiServicesImpl implements ApiServices {
       );
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -970,7 +1091,7 @@ class ApiServicesImpl implements ApiServices {
         questionListFromJson(response),
       );
     } catch (error) {
-      return _handleError<QuestionList>(error);
+      return _handleError<QuestionList>(error, QuestionList);
     }
   }
 
@@ -991,7 +1112,7 @@ class ApiServicesImpl implements ApiServices {
       );
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -1011,7 +1132,7 @@ class ApiServicesImpl implements ApiServices {
         ),
       );
     } catch (error) {
-      return _handleError<QuestionList>(error);
+      return _handleError<QuestionList>(error, QuestionList);
     }
   }
 
@@ -1036,7 +1157,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -1061,7 +1182,7 @@ class ApiServicesImpl implements ApiServices {
 
       return SuccessResponse<void>(response);
     } catch (error) {
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
     }
   }
 
@@ -1081,7 +1202,7 @@ class ApiServicesImpl implements ApiServices {
         answersSummariesFromJson(response),
       );
     } catch (error) {
-      return _handleError<AnswersSummary>(error);
+      return _handleError<AnswersSummary>(error, AnswersSummary);
     }
   }
 
@@ -1101,7 +1222,7 @@ class ApiServicesImpl implements ApiServices {
         milestonesFromJson(response),
       );
     } catch (error) {
-      return _handleError<Milestones>(error);
+      return _handleError<Milestones>(error, Milestones);
     }
   }
 
@@ -1121,7 +1242,7 @@ class ApiServicesImpl implements ApiServices {
         buddyFromJson(response),
       );
     } catch (error) {
-      return _handleError<List<Buddy>>(error);
+      return _handleError<List<Buddy>>(error, [Buddy]);
     }
   }
 
@@ -1141,7 +1262,23 @@ class ApiServicesImpl implements ApiServices {
         profileUserFromJson(response),
       );
     } catch (error) {
-      return _handleError<ProfileUser>(error);
+      return _handleError<ProfileUser>(error, ProfileUser);
+    }
+  }
+
+  Future<ProfileUser> getAccountData() async {
+    try {
+      final Map<String, String> headers = await _getHeaders();
+
+      String url = _getBaseUrl() + "/users/account";
+
+      final String response = await _networkClient.get(
+        url,
+        headers: headers,
+      );
+      return profileUserFromJson(response);
+    } catch (error) {
+      return null;
     }
   }
 
@@ -1158,19 +1295,20 @@ class ApiServicesImpl implements ApiServices {
       final Map<String, String> headers = await _getHeaders(
         contentType: true,
       );
+
+      Map<String, dynamic> body = <String, dynamic>{
+        "first_name": userFirstName,
+        "last_name": userLastName,
+      };
+
+      if (userEmail != null) {
+        body.addAll(<String, dynamic>{"email": userEmail});
+      }
+
       final String response = await _networkClient.put(
         "${_getBaseUrl()}/users/update",
         headers: headers,
-        body: json.encode(
-          <String, dynamic>{
-            "first_name": userFirstName,
-            "last_name": userLastName,
-            "email": userEmail,
-            // "phone": phone,
-            // "graduation_year": graduationYear,
-            // "mcat_test_date": mcatTestDate
-          },
-        ),
+        body: json.encode(body),
       );
 
       return SuccessResponse<void>(response);
@@ -1178,7 +1316,21 @@ class ApiServicesImpl implements ApiServices {
       if (error is ApiException && error.code == 400)
         return ErrorResponse(UnavailableEmailException());
 
-      return _handleError<void>(error);
+      return _handleError<void>(error, null);
+    }
+  }
+
+  @override
+  Future<EstimateSchedule> getEstimateCompletion() async {
+    try {
+      final Map<String, String> headers = await _getHeaders();
+      final String response = await _networkClient.get(
+        "${_getBaseUrl()}/schedule/estimate-completion?isHour=true",
+        headers: headers,
+      );
+      return EstimateSchedule.fromJSON(json.decode(response));
+    } catch (error) {
+      return null;
     }
   }
 
@@ -1197,13 +1349,11 @@ class ApiServicesImpl implements ApiServices {
     }
 
     if (authHeader) {
+      var token = await _getToken(
+        accessToken: false,
+      );
       headers.addAll(
-        {
-          "Authorization": "Bearer " +
-              await _getToken(
-                accessToken: false,
-              )
-        },
+        {"Authorization": "Bearer " + token},
       );
     }
 
@@ -1262,7 +1412,8 @@ class ApiServicesImpl implements ApiServices {
     }
   }
 
-  NetworkResponse<T> _handleError<T>(dynamic error) {
+  NetworkResponse<T> _handleError<T>(dynamic error, dynamic type) {
+    log("type is:- ${type} and error is: - " + error.toString());
     if (error is SocketException) {
       return ErrorResponse<T>(error);
     }

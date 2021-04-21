@@ -113,7 +113,8 @@ class CustomVideoController {
     _connectToVideoResource();
     _logAnalyticsEvent(AnalyticsConstants.tapVideoChangeQuality,
         additionalArgs: {
-          AnalyticsConstants.keyQuality: describeEnum(videoQuality).toLowerCase()
+          AnalyticsConstants.keyQuality:
+              describeEnum(videoQuality).toLowerCase()
         });
   }
 
@@ -122,9 +123,9 @@ class CustomVideoController {
     videoPlaybackSpeed = newPlaybackSpeed;
     setState();
     videoPlayerController.setSpeed(_getVideoSpeed(videoPlaybackSpeed));
-    _logAnalyticsEvent(AnalyticsConstants.tapVideoChangeSpeed,
-        additionalArgs: {
-      AnalyticsConstants.keySpeed: describeEnum(videoPlaybackSpeed).toLowerCase()
+    _logAnalyticsEvent(AnalyticsConstants.tapVideoChangeSpeed, additionalArgs: {
+      AnalyticsConstants.keySpeed:
+          describeEnum(videoPlaybackSpeed).toLowerCase()
     });
   }
 

@@ -166,7 +166,8 @@ class _TopicScreenState extends State<TopicScreen> {
             ),
             onTap: () => _goToLessonScreen(index),
               onBookmarkTap: () {
-                //TODO: Do we need to update the screen here? ScheduleListCell invoke this when bookmark changed.
+                //TODO: Do we need to update the screen here?
+                // ScheduleListCell invoke this when bookmark changed.
               }),
         ),
       ),

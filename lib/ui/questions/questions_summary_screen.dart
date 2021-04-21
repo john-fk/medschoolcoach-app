@@ -8,7 +8,7 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:Medschoolcoach/widgets/list_cells/answer_list_cell.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';

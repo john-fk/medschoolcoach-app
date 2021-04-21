@@ -6,16 +6,24 @@ import 'package:Medschoolcoach/ui/flash_cards_bank/flash_cards_bank_screen.dart'
 import 'package:Medschoolcoach/ui/forgot/forgot_password_screen.dart';
 import 'package:Medschoolcoach/ui/go_premium/go_premium_screen.dart';
 import 'package:Medschoolcoach/ui/home/home_screen.dart';
+import 'package:Medschoolcoach/ui/learn/learn_screen.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
 import 'package:Medschoolcoach/ui/login/login_screen.dart';
-import 'package:Medschoolcoach/ui/more/more_screen.dart';
+import 'package:Medschoolcoach/ui/onboarding/new_user_onboarding.dart';
+import 'package:Medschoolcoach/ui/onboarding/old_user_onboarding.dart';
+import 'package:Medschoolcoach/ui/onboarding/schedule_question_of_the_day_screen.dart';
+import 'package:Medschoolcoach/ui/onboarding/schedule_test_date_screen.dart';
+import 'package:Medschoolcoach/ui/onboarding/time_per_day_screen.dart';
+import 'package:Medschoolcoach/ui/practice/practice_screen.dart';
 import 'package:Medschoolcoach/ui/profile/profile_screen.dart';
+import 'package:Medschoolcoach/ui/profile_tab/profile_screen.dart';
+import 'package:Medschoolcoach/ui/progress/progress_screen.dart';
+import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
 import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
 import 'package:Medschoolcoach/ui/questions/question_bank_screen.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
 import 'package:Medschoolcoach/ui/refer_friend/refer_friend_screen.dart';
 import 'package:Medschoolcoach/ui/register/register_screen.dart';
-import 'package:Medschoolcoach/ui/schedule/schedule_screen.dart';
 import 'package:Medschoolcoach/ui/search/search_screen.dart';
 import 'package:Medschoolcoach/ui/section/section_screen.dart';
 import 'package:Medschoolcoach/ui/settings/settings_screen.dart';
@@ -31,13 +39,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 abstract class Routes {
+  static const String onboarding = "onboarding";
   static const String welcome = "welcome";
   static const String login = "login";
   static const String register = "register";
   static const String forgotPassword = "forgot";
   static const String home = "home";
   static const String schedule = "schedule";
-  static const String more = "more";
+  static const String profile_screen = "profile_screen";
   static const String search = "search";
   static const String videos = "videos";
   static const String lectureNotes = "lectureNotes";
@@ -58,9 +67,18 @@ abstract class Routes {
   static const String profile = "profile";
   static const String userSettings = "settings";
   static const String tutoring = "tutoring";
+  static const String scheduleQuestionOfTheDay
+  = "screen_schedule_question_of_the_day";
+  static const String scheduleTestDate = "screen_schedule_test_date";
+  static const String timePerDay = "screen_study_time_per_day";
+  static const String progressScreen = "screen_progress";
+  static const String newUserOnboardingScreen = "screen_new_user_onboarding";
+  static const String practiceScreen = "screen_practice";
+  static const String oldUserOnboarding = "screen_old_user_onboarding";
+  static const String questionOfTheDayScreen = "screen_question_of_the_day";
 
   static Route<void> generateRoute(RouteSettings settings) {
-    Crashlytics.instance.log("Open ${settings.name}");
+    FirebaseCrashlytics.instance.log("Open ${settings.name}");
     switch (settings.name) {
       case welcome:
         return MaterialPageRoute<void>(
@@ -84,11 +102,11 @@ abstract class Routes {
         );
       case schedule:
         return FadeRoute(
-          page: ScheduleScreen(settings.arguments),
+          page: LearnScreen(settings.arguments),
         );
-      case more:
+      case profile_screen:
         return FadeRoute(
-          page: MoreScreen(),
+          page: ProfileTabScreen(),
         );
       case search:
         return FadeRoute(
@@ -176,6 +194,29 @@ abstract class Routes {
         return FadeRoute(
           page: TutoringScreen(settings.arguments),
         );
+      case scheduleQuestionOfTheDay:
+        return FadeRoute(
+            page: ScheduleQuestionOfTheDay(
+          source: settings.arguments,
+        ));
+      case scheduleTestDate:
+        return FadeRoute(
+            page: SchedulingTestDateScreen(source: settings.arguments));
+      case timePerDay:
+        return FadeRoute(
+            page: TimePerDay(
+          source: (settings.arguments is String) ? settings.arguments : null,
+        ));
+      case progressScreen:
+        return FadeRoute(page: ProgressScreen());
+      case newUserOnboardingScreen:
+        return FadeRoute(page: NewUserOnboarding());
+      case practiceScreen:
+        return FadeRoute(page: PracticeScreen(source: settings.arguments));
+      case oldUserOnboarding:
+        return FadeRoute(page: OldUserOnboarding());
+      case questionOfTheDayScreen:
+        return FadeRoute(page: QuestionOfTheDay(source: settings.arguments));
       default:
         throw Exception("No route defined for \"${settings.name}\"");
     }
@@ -184,6 +225,7 @@ abstract class Routes {
   static void navigateToTutoringScreen(BuildContext context, String source,
       {bool isNavBar = false}) {
     Navigator.of(context).pushNamed(Routes.tutoring,
-        arguments: TutoringScreenData(source: source, isNavBar: isNavBar));
+        arguments: TutoringScreenData(source: source,
+            showNavigationBar: isNavBar));
   }
 }

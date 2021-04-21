@@ -65,7 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Form(
                   key: _formKey,
-                  autovalidate: _autoValidate,
+                  autovalidateMode: _autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[

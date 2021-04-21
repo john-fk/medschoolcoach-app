@@ -4,7 +4,6 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/tutoring/tutoring_slider_item.dart';
-import 'package:Medschoolcoach/ui/webview/webview_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
@@ -15,6 +14,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +24,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 class TutoringScreenData {
   final String source;
-  final bool isNavBar;
+  final bool showNavigationBar;
 
   TutoringScreenData({
     @required this.source,
-    @required this.isNavBar,
+    @required this.showNavigationBar,
   });
 }
 
@@ -69,7 +69,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     _sliders = SuperStateful.of(context).tutoringSliders;
 
     return Scaffold(
-      bottomNavigationBar: widget.tutoringScreenData.isNavBar
+      bottomNavigationBar: widget.tutoringScreenData.showNavigationBar
           ? NavigationBar(page: NavigationPage.Tutoring)
           : null,
       key: _scaffoldKey,
@@ -185,9 +185,11 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                   children: [
                                     InkWell(
                                       child: Container(
-                                        child: Text(
+                                        child: AutoSizeText(
                                           FlutterI18n.translate(context,
                                               "tutoring_sliders.qualifier"),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
                                           style: mediumResponsiveFont(
                                             context,
                                             fontColor: FontColor.QualifyingText,
@@ -228,11 +230,23 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
           ),
           Align(
             alignment: Alignment.topLeft,
-            child: widget.tutoringScreenData.isNavBar
-                ? SizedBox.shrink()
+            child: !widget.tutoringScreenData.showNavigationBar
+                ? closeButton()
                 : _getAppBar(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget closeButton() {
+    return  SafeArea(
+      child: CloseButton(
+        color: Colors.black,
+        key: Key("dialog close"),
+        onPressed: () {
+          Navigator.of(_scaffoldKey.currentContext).pop();
+        },
       ),
     );
   }
@@ -284,7 +298,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
             ),
           ),
         ),
-        color: Style.of(context).colors.premium,
+        color: Color(0xFF009D7A),
         onPressed: () async {
           _analyticsProvider
               .logEvent(AnalyticsConstants.tapExploreOptions, params: {
@@ -390,20 +404,21 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     });
   }
 
+  void launchURL(String url) async {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        print('Could not launch $url');
+      }
+  }
   Future _navigateToScheduleAMeeting() async {
-    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
+    _analyticsProvider.logEvent(
+    AnalyticsConstants.tapTutoringScheduleAMeeting,
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
     Navigator.of(_scaffoldKey.currentContext).pop("success");
-    Navigator.of(_scaffoldKey.currentContext).push<dynamic>(
-      MaterialPageRoute<dynamic>(
-          builder: (BuildContext context) => WebviewScreen(
-                key: const Key("schedule meeting webview"),
-                initialUrl: Config.scheduleMeetingUrl,
-                title: "Schedule a Meeting",
-              )),
-    );
+    await launchURL(Config.scheduleMeetingUrl);
   }
 
   Future _flagForTutoringUpsell() async {

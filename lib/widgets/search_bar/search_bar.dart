@@ -10,6 +10,7 @@ class SearchBar extends StatelessWidget {
   final TextEditingController searchController;
   final bool autoFocus;
   final FocusNode focusNode;
+  final bool isEnabled;
 
   const SearchBar({
     this.searchFunction,
@@ -17,15 +18,17 @@ class SearchBar extends StatelessWidget {
     this.searchController,
     this.autoFocus = false,
     this.focusNode,
+    this.isEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 10,
+      elevation: 5,
       borderRadius: BorderRadius.circular(5),
-      shadowColor: Colors.black,
+      shadowColor: Colors.black45,
       child: TextFormField(
+        enabled: isEnabled,
         style: normalResponsiveFont(context),
         key: const Key("search form"),
         textInputAction: TextInputAction.search,
@@ -35,7 +38,7 @@ class SearchBar extends StatelessWidget {
         autofocus: autoFocus,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(
-            whenDevice(context, large: 20, tablet: 25),
+            whenDevice(context, large: 14, tablet: 18),
           ),
           hintText: FlutterI18n.translate(context, "search.search_hint"),
           hintStyle: TextStyle(
@@ -54,15 +57,18 @@ class SearchBar extends StatelessWidget {
             key: const Key("search clear"),
             icon: Icon(Icons.clear),
             onPressed: () => {
+              if(searchController.text.isEmpty)
+                Navigator.of(context).pop()
+              else
               Future<dynamic>.delayed(
                 Duration(
                   milliseconds: 50,
                 ),
               ).then((dynamic _) {
+                clearFunction();
                 searchController.clear();
                 focusNode.unfocus();
               }),
-              clearFunction,
             },
           ),
         ),

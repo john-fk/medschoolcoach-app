@@ -1,4 +1,4 @@
-import 'package:Medschoolcoach/widgets/progrss_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:Medschoolcoach/widgets/video_player/widgets/video_player_actions.dart';
 import 'package:flutter/material.dart';
 

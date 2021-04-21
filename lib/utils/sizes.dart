@@ -29,3 +29,14 @@ T whenDevice<T>(
 bool isPortrait(BuildContext context) {
   return MediaQuery.of(context).orientation == Orientation.portrait;
 }
+
+bool isTablet(BuildContext context) {
+  double width;
+  if (isPortrait(context)) {
+    width = MediaQuery.of(context).size.width;
+  } else {
+    width = MediaQuery.of(context).size.height;
+  }
+
+  return width > 650;
+}

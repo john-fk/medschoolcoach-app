@@ -1,8 +1,8 @@
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_svg/svg.dart';
 
 class TutoringSliderItem extends StatelessWidget {
   final TutoringSlider sliderModel;
@@ -20,8 +20,7 @@ class TutoringSliderItem extends StatelessWidget {
             Container(
                 width: size.width / 1.2,
                 height: size.height * 0.32,
-                child: SvgPicture.asset(
-                  sliderModel.image,
+                child: Image(image: AssetImage(sliderModel.image),
                 )),
             Container(
               height: size.height * 0.17,
@@ -47,17 +46,20 @@ class TutoringSliderItem extends StatelessWidget {
     );
   }
 
-  Text _getHeader(String text, BuildContext context) {
-    return Text(
+  AutoSizeText _getHeader(String text, BuildContext context) {
+    return AutoSizeText(
       _getText(text, context),
+      maxLines: 1,
       style: bigResponsiveFont(context,
           fontWeight: FontWeight.bold, fontColor: FontColor.Accent3),
+      textAlign: TextAlign.center,
     );
   }
 
-  Text _getDescription(String text, BuildContext context) {
-    return Text(
+  AutoSizeText _getDescription(String text, BuildContext context) {
+    return AutoSizeText(
       _getText(text, context),
+      maxLines: 3,
       style: mediumResponsiveFont(context).copyWith(color: Colors.black),
       textAlign: TextAlign.center,
     );

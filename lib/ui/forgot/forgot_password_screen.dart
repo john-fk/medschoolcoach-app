@@ -105,7 +105,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         : Container(),
                     Form(
                       key: _formKey,
-                      autovalidate: _autoValidate,
+                      autovalidateMode: _autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
                       child: MainTextField(
                         onEditingComplete: () =>
                             FocusScope.of(context).unfocus(),

@@ -15,7 +15,6 @@ class ReferFriendCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final AnalyticsProvider analyticsProvider =
         Injector.appInstance.getDependency<AnalyticsProvider>();
 
@@ -81,15 +80,11 @@ class ReferFriendCell extends StatelessWidget {
                     top: width * 0.05,
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(
-                    context,
-                    Routes.referFriend,
-                    arguments: source);
-                    analyticsProvider
-                        .logEvent(AnalyticsConstants.tapInviteFriend, params: {
-                      AnalyticsConstants.keySource:
-                          source
-                    });
+                    Navigator.pushNamed(context, Routes.referFriend,
+                        arguments: source);
+                    analyticsProvider.logEvent(
+                        AnalyticsConstants.tapInviteFriend,
+                        params: {AnalyticsConstants.keySource: source});
                   },
                   text: FlutterI18n.translate(
                     context,

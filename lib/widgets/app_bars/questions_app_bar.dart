@@ -19,6 +19,7 @@ class QuestionAppBar extends StatefulWidget {
   final String stem;
   bool isBookmarked;
   VoidCallback onBookmarkTap;
+  bool showBookmark;
 
   QuestionAppBar({
     @required this.title,
@@ -30,6 +31,7 @@ class QuestionAppBar extends StatefulWidget {
     this.questionId,
     this.isBookmarked,
     this.onBookmarkTap,
+    this.showBookmark = true
   }) : super(key: key);
 
   @override
@@ -132,6 +134,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                             const SizedBox(
                               height: 10,
                             ),
+                            if (widget.showBookmark)
                             _drawBookmark()
                           ],
                         ),

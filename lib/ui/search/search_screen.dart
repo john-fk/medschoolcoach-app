@@ -10,14 +10,13 @@ import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/list_cells/search_list_cell.dart';
-import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
-import 'package:Medschoolcoach/widgets/progrss_bar/progress_bar.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/search_bar/search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 
@@ -43,72 +42,72 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _analyticsProvider.logScreenView(AnalyticsConstants.screenSearch,
-        AnalyticsConstants.screenHome);
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenSearch, AnalyticsConstants.screenHome);
     if (widget.searchPhrase != null) {
       _searchController.text = widget.searchPhrase;
       WidgetsBinding.instance.addPostFrameCallback((_) => _search());
     }
   }
 
-  Future<bool> onWillPop() async {
-    if (Platform.isAndroid) SystemNavigator.pop();
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: onWillPop,
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          bottomNavigationBar: NavigationBar(
-            page: NavigationPage.Search,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: Platform.isIOS? TransparentAppBar(
+          leading: BackButton(
+            color: Colors.black,
           ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 12,
-              ),
-              child: Column(
-                children: <Widget>[
-                  SearchBar(
+          title: const Text('Search', style: TextStyle(
+              color: Colors.black
+          )),
+        ):null,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              top: 12,
+            ),
+            child: Column(
+              children: <Widget>[
+                Hero(
+                  tag: "search_bar",
+                  child: SearchBar(
                     searchFunction: _search,
                     searchController: _searchController,
                     autoFocus: _searchController.text.isEmpty,
-                    focusNode: _searchInputFocusNode,
+                    // focusNode: _searchInputFocusNode,
                     clearFunction: _clear,
                   ),
-                  Expanded(
-                    child: _tooShortTextError
-                        ? Center(
-                            child: Text(
-                              FlutterI18n.translate(
-                                context,
-                                "search.text_too_short",
-                              ),
-                              style: Style.of(context).font.error,
-                              textAlign: TextAlign.center,
+                ),
+                Expanded(
+                  child: _tooShortTextError
+                      ? Center(
+                          child: Text(
+                            FlutterI18n.translate(
+                              context,
+                              "search.text_too_short",
                             ),
-                          )
-                        : _loading
-                            ? Center(
-                                child: ProgressBar(),
-                              )
-                            : _repositoryResult
-                                    is RepositorySuccessResult<SearchResult>
-                                ? _buildListView()
-                                : _repositoryResult != null
-                                    ? EmptyState(
-                                        repositoryResult: _repositoryResult,
-                                      )
-                                    : Container(),
-                  ),
-                ],
-              ),
+                            style: Style.of(context).font.error,
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : _loading
+                          ? Center(
+                              child: ProgressBar(),
+                            )
+                          : _repositoryResult
+                                  is RepositorySuccessResult<SearchResult>
+                              ? _buildListView()
+                              : _repositoryResult != null
+                                  ? EmptyState(
+                                      repositoryResult: _repositoryResult,
+                                    )
+                                  : Container(),
+                ),
+              ],
             ),
           ),
         ),
@@ -172,10 +171,9 @@ class _SearchScreenState extends State<SearchScreen> {
             Navigator.of(context).pushNamed(
               Routes.lesson,
               arguments: LessonVideoScreenArguments(
-                order: videos[index].order,
-                topicId: videos[index].topicId,
-                source: AnalyticsConstants.screenSearch
-              ),
+                  order: videos[index].order,
+                  topicId: videos[index].topicId,
+                  source: AnalyticsConstants.screenSearch),
             );
 
             _analyticsProvider.logEvent(AnalyticsConstants.tapLesson,
