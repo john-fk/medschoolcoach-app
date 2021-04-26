@@ -189,9 +189,7 @@ class _QuestionOfTheDayState extends State<QuestionOfTheDay> {
             )
           else
             Center(
-              child: ProgressBar(
-                isDark: true,
-              ),
+              child: ButtonProgressBar()
             )
         ],
       ),

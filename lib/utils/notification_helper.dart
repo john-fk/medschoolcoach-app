@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/config.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,6 +46,8 @@ Future<void> initNotifications(
 
   await notifsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
+    var analytics = Injector.appInstance.getDependency<AnalyticsProvider>();
+    analytics.logEvent("tap_question_of_the_day_notification", params: null);
     selectNotificationSubject.add(payload);
     final userManager = Injector.appInstance.getDependency<UserManager>();
     final isLoggedIn = await userManager.isUserLoggedIn();
