@@ -88,6 +88,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
         });
       }
     }
+
     var progress = SuperStateful.of(context).courseProgress;
     if (progress == null) {
       await SuperStateful.of(context)
@@ -306,6 +307,8 @@ class _ScheduleTabState extends State<ScheduleTab> {
                   }
                 });
                 SuperStateful.of(context).courseProgress = null;
+                await SuperStateful.of(context)
+                    .updateCourseProgress(forceApiRequest: true);
                 await SuperStateful.of(context).updateScheduleProgress();
                 scheduleProgress = SuperStateful.of(context).scheduleProgress;
 

@@ -231,9 +231,17 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _fetchUserData({
+    bool forceApiRequest,
+  }) async {
+    await SuperStateful.of(context)
+        .updateUserData(forceApiRequest: forceApiRequest);
+  }
+
   Future<void> _refresh() async {
     _fetchLastWatched();
     _fetchSchedule(forceApiRequest: true);
+    _fetchUserData(forceApiRequest: true);
     return null;
   }
 

@@ -28,6 +28,8 @@ import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
+import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 
@@ -83,7 +85,6 @@ class SuperState extends State<SuperStateful> {
       Injector.appInstance.getDependency<ProgressRepository>();
   final QuestionsDayRepository _questionsDayRepository =
       Injector.appInstance.getDependency<QuestionsDayRepository>();
-
   final _apiServices = Injector.appInstance.getDependency<ApiServices>();
 
   Map<String, Topic> topics = Map();
@@ -132,6 +133,7 @@ class SuperState extends State<SuperStateful> {
     if (result is RepositorySuccessResult<Auth0UserData>) {
       userData = result.data;
     }
+    FlutterSecureStorage().write(key: "name", value: userData.name);
     setState(() {});
     return result;
   }
@@ -154,7 +156,7 @@ class SuperState extends State<SuperStateful> {
     );
     if (result is RepositorySuccessResult<List<Section>>) {
       flashcardsSections = result.data;
-      flashcardsSections.sort((a,b) => a.name.compareTo(b.name));
+      flashcardsSections.sort((a, b) => a.name.compareTo(b.name));
     }
     setState(() {});
     return result;

@@ -43,6 +43,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
   }
 
   void setProgress() {
+    if (widget.scheduleProgress == null) return;
     var courseProgress = widget.scheduleProgress.courseProgress;
     int daysLeft = widget.scheduleProgress.daysLeft;
     int totalDays = widget.scheduleProgress.totalDays;
@@ -157,7 +158,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            progressText,
+            progressText ?? "0",
             style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
           ),
           SizedBox(
@@ -215,8 +216,8 @@ class _CourseProgressCardState extends State<CourseProgressCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${widget.scheduleProgress.courseProgress}% "
-          "of video courses completed",
+          "${(widget.scheduleProgress == null) ? 0 : widget.scheduleProgress.courseProgress}%" +
+              "of video courses completed",
           style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
         ),
         SizedBox(
