@@ -61,7 +61,6 @@ class _LearnScreenState extends State<LearnScreen>
           automaticallyImplyLeading: false,
           bottom: ShrinkedTabBar(TabBar(
             controller: _tabController,
-            // indicatorSize: TabBarIndicatorSize.label,
             indicatorWeight: 3,
             labelColor: Style.of(context).colors.accent,
             labelStyle:
