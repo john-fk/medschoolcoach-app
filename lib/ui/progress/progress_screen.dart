@@ -276,9 +276,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   child: ProgressBar(),
                 ),
               )));
-    } else if (!frontStack() && courseProgress == null) {
-      //_fetchCourseProgress();
-    }
+    } 
     return CourseProgressCard(
       onRefresh: () {
         _fetchCourseProgress();
