@@ -21,13 +21,6 @@ class FlashCardFront extends StatelessWidget {
     @required this.progress,
   }) : super(key: key);
 
-  double fontSize(String content) {
-    var words = content.split(" ");
-    int longest = 0;
-    for (var i = 0; i < words.length || longest > 12; i++) {}
-    return 0.00;
-  }
-
   bool textOnly(String text) {
     return !RegExp(
       r"^/<\/?[a-z][\s\S]*>/i",
