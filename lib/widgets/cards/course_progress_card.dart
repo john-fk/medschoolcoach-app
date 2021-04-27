@@ -163,7 +163,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            progressText ?? "0",
+            progressText,
             style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
           ),
           SizedBox(

@@ -306,7 +306,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
                     videos[index].progress.percentage = 0;
                   }
                 });
-                SuperStateful.of(context).courseProgress = null;
                 await SuperStateful.of(context)
                     .updateCourseProgress(forceApiRequest: true);
                 await SuperStateful.of(context).updateScheduleProgress();
