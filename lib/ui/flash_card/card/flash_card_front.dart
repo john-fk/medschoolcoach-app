@@ -7,6 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class FlashCardFront extends StatelessWidget {
   final VoidCallback flip;
@@ -19,6 +20,14 @@ class FlashCardFront extends StatelessWidget {
     @required this.flashCard,
     @required this.progress,
   }) : super(key: key);
+
+  bool textOnly(String text) {
+    return !RegExp(
+      r"^/<\/?[a-z][\s\S]*>/i",
+      caseSensitive: false,
+      multiLine: true,
+    ).hasMatch(text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +42,9 @@ class FlashCardFront extends StatelessWidget {
       height = MediaQuery.of(context).size.width;
     }
 
+    TextStyle txtStyle =
+        medstyles.Style.of(context).font.bold.copyWith(fontSize: width * 0.07);
+
     return GestureDetector(
       onTap: flip,
       child: Container(
@@ -46,15 +58,17 @@ class FlashCardFront extends StatelessWidget {
             ),
             flashCard.frontImage == null || flashCard.frontImage.isEmpty
                 ? Container(
-                margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
-                child: Html(data: flashCard.front, style: {
-                    "html": Style.fromTextStyle(
-                      medstyles.Style.of(context)
-                          .font
-                          .bold
-                          .copyWith(fontSize: width * 0.07),
-                    )
-                  }))
+                    margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                    child: textOnly(flashCard.front)
+                        ? AutoSizeText(
+                            flashCard.front,
+                            style: txtStyle,
+                            maxLines: 10,
+                            wrapWords: false,
+                          )
+                        : Html(
+                            data: flashCard.front,
+                            style: {"html": Style.fromTextStyle(txtStyle)}))
                 : ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: height * 0.2),
                     child: Image.network(

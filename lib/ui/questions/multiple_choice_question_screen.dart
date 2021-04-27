@@ -92,6 +92,7 @@ class _MultipleChoiceQuestionScreenState
   bool _favourite;
   int _selectedIndex;
   RepositoryResult<QuestionList> _error;
+  bool _firstPressed = true;
 
   @override
   void initState() {
@@ -311,9 +312,14 @@ class _MultipleChoiceQuestionScreenState
                               text: _getQuestionText(index),
                               isCorrect: _isCorrect(index),
                             );
+                            if (index > 3 ||
+                                (!shouldAdd && index + 1 > _answers.length))
+                              return null;
+
                             if (shouldAdd) {
                               _answers.add(answer);
                             }
+
                             return _buildListItem(
                               _answers[index],
                               animation,
@@ -416,13 +422,13 @@ class _MultipleChoiceQuestionScreenState
       setState(() {
         updateFunction();
       });
-    } else {
-    }
+    } else {}
   }
 
   void _showAnswers(int index) {
     _updateState(() {
       _selectedIndex = index;
+      _firstPressed = true;
     });
     _questionsRepository.sendQuestionAnswer(
       questionId: _questionsList[_currentQuestionIndex].id,
@@ -466,6 +472,9 @@ class _MultipleChoiceQuestionScreenState
   }
 
   void _goToNextQuestion() {
+    if (!_firstPressed) return;
+    _firstPressed = false;
+
     if (_answers.length == 1) {
       for (int i = 1; i < 4; i++) {
         _addListItem(i);
@@ -475,12 +484,14 @@ class _MultipleChoiceQuestionScreenState
         _addListItem(i);
       }
     }
+
     _updateState(() {
       _currentQuestionIndex = _currentQuestionIndex + 1;
       _selectedIndex = null;
       _answers = [];
       _favourite = null;
     });
+
     _logQuestionEvent(AnalyticsConstants.tapNextQuestion);
   }
 

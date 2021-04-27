@@ -17,15 +17,15 @@ class QuestionButton extends StatelessWidget {
   final bool isCorrect;
   final bool nextQuestion;
 
-  QuestionButton({
-    @required this.text,
-    this.optionLetter,
-    @required this.onPressed,
-    Key key,
-    this.showAnswer = false,
-    this.isCorrect = false,
-    this.nextQuestion = false,
-  }) : super(key: key);
+  QuestionButton(
+      {@required this.text,
+      this.optionLetter,
+      @required this.onPressed,
+      Key key,
+      this.showAnswer = false,
+      this.isCorrect = false,
+      this.nextQuestion = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

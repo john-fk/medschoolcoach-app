@@ -99,15 +99,22 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   Future<void> _fetchCourseProgress() async {
-    var existingData = SuperStateful.of(context).courseProgress;
-    setState(() {
-      _courseProgressLoading = existingData == null ? true : false;
-    });
+    if (frontStack()) {
+      var existingData = SuperStateful.of(context).courseProgress;
+      setState(() {
+        _courseProgressLoading = existingData == null ? true : false;
+      });
 
-    await SuperStateful.of(context).updateCourseProgress(forceApiRequest: true);
-    setState(() {
-      _courseProgressLoading = false;
-    });
+      await SuperStateful.of(context)
+          .updateCourseProgress(forceApiRequest: true);
+      setState(() {
+        _courseProgressLoading = false;
+      });
+    }
+  }
+
+  bool frontStack() {
+    return ModalRoute.of(context).isCurrent;
   }
 
   Future<void> _fetchFlashcardProgress() async {
@@ -138,7 +145,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(child: _buildBody()),
       backgroundColor: Style.of(context).colors.background2,
       bottomNavigationBar: NavigationBar(
@@ -229,22 +238,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
     QuestionBankProgress questionBankProgress =
         SuperStateful.of(context).questionBankProgress;
 
-    return (!_courseProgressLoading && courseProgress == null)
-        && (!_flashcardProgressLoading && flashcardsProgress == null)
-        && (!_questionBankProgressLoading && questionBankProgress == null);
+    return (!_courseProgressLoading && courseProgress == null) &&
+        (!_flashcardProgressLoading && flashcardsProgress == null) &&
+        (!_questionBankProgressLoading && questionBankProgress == null);
   }
 
   Widget _emptyStateView() {
     return EmptyStateView(
-        title: FlutterI18n.translate(
-            context,
-            "empty_state.title"),
-        message: FlutterI18n.translate(
-            context,
-            "empty_state.message"),
-        ctaText: FlutterI18n.translate(
-            context,
-            "empty_state.button"),
+        title: FlutterI18n.translate(context, "empty_state.title"),
+        message: FlutterI18n.translate(context, "empty_state.message"),
+        ctaText: FlutterI18n.translate(context, "empty_state.button"),
         image: Image.asset(Style.of(context).pngAsset.emptyState),
         onTap: () {
           _courseProgressLoading = true;
@@ -256,7 +259,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   Widget _buildCourseProgressCard() {
     ScheduleStats courseProgress = SuperStateful.of(context).courseProgress;
-    if (_courseProgressLoading || courseProgress == null) {
+    if (frontStack() && (_courseProgressLoading || courseProgress == null)) {
       return Card(
           elevation: 5,
           shadowColor: Colors.black.withOpacity(0.1),
@@ -273,7 +276,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   child: ProgressBar(),
                 ),
               )));
-    }
+    } 
     return CourseProgressCard(
       onRefresh: () {
         _fetchCourseProgress();
@@ -474,19 +477,18 @@ class _ProgressScreenState extends State<ProgressScreen> {
   void routeToFlashcards() {
     Navigator.of(context)
         .push(
-      MaterialPageRoute<void>(
-          builder: (_) =>
-              FlashCardsBankScreen(Routes.progressScreen)),
-    )
+          MaterialPageRoute<void>(
+              builder: (_) => FlashCardsBankScreen(Routes.progressScreen)),
+        )
         .then((_) => _reload());
   }
 
   void routeToQuestionBank() {
     Navigator.of(context)
         .push(
-      MaterialPageRoute<void>(
-          builder: (_) => QuestionBankScreen(Routes.progressScreen)),
-    )
+          MaterialPageRoute<void>(
+              builder: (_) => QuestionBankScreen(Routes.progressScreen)),
+        )
         .then((_) => _reload());
   }
 }

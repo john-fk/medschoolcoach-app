@@ -6,7 +6,6 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/global_progress/widgets/global_progress_widget_cell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -21,13 +20,13 @@ class GlobalProgressWidget extends StatefulWidget {
   final AnalyticsProvider analyticsProvider;
   final Statistics statistics;
 
-  const GlobalProgressWidget({
-    Key key,
-    this.showHeader = true,
-    this.source,
-    this.analyticsProvider,
-    this.statistics
-  }) : super(key: key);
+  const GlobalProgressWidget(
+      {Key key,
+      this.showHeader = true,
+      this.source,
+      this.analyticsProvider,
+      this.statistics})
+      : super(key: key);
 
   @override
   _GlobalProgressWidgetState createState() => _GlobalProgressWidgetState();
@@ -46,17 +45,15 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
       return Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
-          child: Text(
-            "There was an error loading your stats."
+            child: Text(
+                "There was an error loading your stats."
                 "\n\nPlease try again later.",
-            textAlign: TextAlign.center,
-            style: mediumResponsiveFont(
-              context,
-              fontColor: FontColor.QualifyingText,
-              fontWeight: FontWeight.w500,
-            )
-          )
-        ),
+                textAlign: TextAlign.center,
+                style: mediumResponsiveFont(
+                  context,
+                  fontColor: FontColor.QualifyingText,
+                  fontWeight: FontWeight.w500,
+                ))),
       );
     }
 
@@ -100,24 +97,29 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
             onTap: () {
               _logAnalytics("schedule", "${stats.courseProgress}%");
               Navigator.pushNamed(context, Routes.schedule,
-                arguments: widget.source);},
+                  arguments: widget.source);
+            },
           ),
           GlobalProgressWidgetCell(
-            color: Style.of(context).colors.premium,
-            icon: SvgPicture.asset(
-              Style.of(context).svgAsset.videos,
-              color: Style.of(context).colors.content2,
-              height: iconHeight,
-            ),
-            name: FlutterI18n.translate(context, "global_progress.watched"),
-            progress: stats.lessonsWatched.toString() +
-                "/" +
-                stats.totalLessons.toString(),
-            onTap: () {
-              _logAnalytics("videos", stats.lessonsWatched.toString() + "/" + stats.totalLessons.toString());
-              Navigator.pushNamed(context, Routes.videos,
-                arguments: widget.source); }
-          ),
+              color: Style.of(context).colors.premium,
+              icon: SvgPicture.asset(
+                Style.of(context).svgAsset.videos,
+                color: Style.of(context).colors.content2,
+                height: iconHeight,
+              ),
+              name: FlutterI18n.translate(context, "global_progress.watched"),
+              progress: stats.lessonsWatched.toString() +
+                  "/" +
+                  stats.totalLessons.toString(),
+              onTap: () {
+                _logAnalytics(
+                    "videos",
+                    stats.lessonsWatched.toString() +
+                        "/" +
+                        stats.totalLessons.toString());
+                Navigator.pushNamed(context, Routes.videos,
+                    arguments: widget.source);
+              }),
           _buildQuestionsWidget(iconHeight, stats),
           _buildFlashcardsWidget(iconHeight, stats),
         ],
@@ -126,8 +128,7 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
   }
 
   void _logAnalytics(String section, String progress) {
-    widget.analyticsProvider
-        .logEvent(AnalyticsConstants.tapProgress, params: {
+    widget.analyticsProvider.logEvent(AnalyticsConstants.tapProgress, params: {
       AnalyticsConstants.keySection: section,
       AnalyticsConstants.keyCurrentCompletion: progress
     });
@@ -186,13 +187,13 @@ class _GlobalProgressWidgetState extends State<GlobalProgressWidget> {
                       "/" +
                       stats.totalFlashcards.toString());
               Navigator.pushNamed(context, Routes.flashCardsMenu,
-                      arguments: widget.source); },
+                  arguments: widget.source);
+            },
           )
         : GlobalProgressWidgetLockedCell(
             iconHeight: iconHeight,
             lockedFeature: LockedFeature.Flashcards,
-            source: widget.source
-          );
+            source: widget.source);
   }
 
   Widget _buildCourseProgressWidget(int progress) {
