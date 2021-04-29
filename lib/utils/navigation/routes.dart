@@ -40,7 +40,7 @@ import 'package:flutter/material.dart';
 
 abstract class Routes {
   static const String onboarding = "onboarding";
-  static const String welcome = "welcome";
+  static const String welcome = "screen_welcome";
   static const String login = "login";
   static const String register = "register";
   static const String forgotPassword = "forgot";

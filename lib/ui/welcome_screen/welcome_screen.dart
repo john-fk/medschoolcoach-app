@@ -238,8 +238,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _navigateToAuth(bool isLogin) async {
-    bool isSuccess = await _authService.loginAuth0(isLogin);
-    if (!isSuccess) return;
+    _analyticsProvider.logScreenView("screen_auth", Routes.welcome);
+    var response = await _authService.loginAuth0(isLogin);
+    if (!response.didSucceed) return;
+
+    var eventName = isLogin ?
+    AnalyticsConstants.signIn : AnalyticsConstants.signUp;
+    _analyticsProvider.logEvent(eventName,
+        params: {"network": response.network});
 
     setState(() {
       loading = true;
