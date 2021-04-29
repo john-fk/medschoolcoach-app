@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/repository/questions_day_repository.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
@@ -10,10 +11,10 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
-import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -22,12 +23,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 
-enum QuestionStatusType {
-  newQuestions,
-  incorrect,
-  correct,
-  flagged,
-}
+enum QuestionStatusType { newQuestions, incorrect, correct, flagged, qotd }
 
 class MultipleChoiceQuestionScreenArguments {
   final String screenName;
@@ -74,6 +70,8 @@ class _MultipleChoiceQuestionScreenState
     extends State<MultipleChoiceQuestionScreen> {
   final _questionsRepository =
       Injector.appInstance.getDependency<QuestionsRepository>();
+  final _questionsDayRepository =
+      Injector.appInstance.getDependency<QuestionsDayRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
@@ -138,11 +136,7 @@ class _MultipleChoiceQuestionScreenState
           Column(
             children: <Widget>[
               QuestionAppBar(
-                title: FlutterI18n.translate(
-                  context,
-                  "question_screen.title",
-                ),
-                subTitle: widget.arguments.screenName,
+                category: widget.arguments.screenName,
                 currentQuestion: _currentQuestionIndex + 1,
                 questionsSize: _questionsList.length,
                 questionId: _questionsList.isNotEmpty
@@ -151,10 +145,6 @@ class _MultipleChoiceQuestionScreenState
                 stem: _questionsList.isNotEmpty
                     ? _questionsList[_currentQuestionIndex].stem
                     : "",
-                isBookmarked: _favourite != null ? _favourite : _getFavourite(),
-                onBookmarkTap: () {
-                  _favourite = !_favourite;
-                },
               ),
               Expanded(
                 child: _loading
@@ -163,75 +153,152 @@ class _MultipleChoiceQuestionScreenState
                       )
                     : _buildListViewContent(context, shouldAdd),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: AnimatedContainer(
-                  duration: const Duration(
-                    milliseconds: 300,
-                  ),
-                  height: _selectedIndex != null
-                      ? whenDevice(
-                          context,
-                          large: 168,
-                          tablet: 230,
-                        )
-                      : 0,
-                  child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 1,
-                          color: Colors.white.withOpacity(0.2),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        QuestionButton(
-                          text:
-                              _currentQuestionIndex != _questionsList.length - 1
-                                  ? FlutterI18n.translate(
-                                      context,
-                                      "question_screen.next_question",
-                                    )
-                                  : FlutterI18n.translate(
-                                      context,
-                                      "question_screen.summerize",
-                                    ),
-                          onPressed:
-                              _currentQuestionIndex != _questionsList.length - 1
-                                  ? _goToNextQuestion
-                                  : _goToSummarize,
-                          nextQuestion: true,
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        WhiteBorderButton(
-                          text: FlutterI18n.translate(
-                            context,
-                            "question_screen.view_explanation",
+              Container(
+                  color: Color.fromRGBO(12, 83, 199, 1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: AnimatedContainer(
+                      duration: const Duration(
+                        milliseconds: 300,
+                      ),
+                      height: _selectedIndex != null
+                          ? whenDevice(
+                              context,
+                              large: 168,
+                              tablet: 230,
+                            )
+                          : 0,
+                      child: SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  width: size.width,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      _drawBookmark(),
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      _drawExplanation()
+                                    ],
+                                  )),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              QuestionButton(
+                                text: _currentQuestionIndex !=
+                                        _questionsList.length - 1
+                                    ? FlutterI18n.translate(
+                                        context,
+                                        "question_screen.next_question",
+                                      )
+                                    : FlutterI18n.translate(
+                                        context,
+                                        "question_screen.summerize",
+                                      ),
+                                onPressed: _currentQuestionIndex !=
+                                        _questionsList.length - 1
+                                    ? _goToNextQuestion
+                                    : _goToSummarize,
+                                nextQuestion: true,
+                              )
+                            ],
                           ),
-                          onPressed: () {
-                            _logQuestionEvent(
-                                AnalyticsConstants.tapViewExplanation);
-                            openExplanationModal(
-                              context: context,
-                              explanationText:
-                                  _questionsList[_currentQuestionIndex]
-                                      .explanation,
-                            );
-                          },
-                        )
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              )
+                  ))
             ],
           )
         ],
       ),
+    );
+  }
+
+  InkWell _drawBookmark() {
+    final size = whenDevice(context, large: 25.0, tablet: 40.0);
+    return InkWell(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            (_favourite != null ? _favourite : _getFavourite())
+                ? Icon(
+                    Icons.bookmark,
+                    color: Colors.white,
+                    size: size,
+                  )
+                : Icon(
+                    Icons.bookmark_border,
+                    color: Colors.white,
+                    size: size,
+                  ),
+            Text("Save",
+                style: smallerResponsiveFont(context,
+                    fontColor: FontColor.DividerColor))
+          ]),
+      onTap: _onTap,
+    );
+  }
+
+  Future<void> _onTap() async {
+    bool initialValue = _favourite;
+
+    setState(() {
+      _favourite = !_favourite;
+    });
+
+    RepositoryResult response;
+    if (initialValue) {
+      response = await _questionsRepository.deleteFavouriteQuestion(
+        questionId: _questionsList[_currentQuestionIndex].id,
+      );
+    } else {
+      response = await _questionsRepository.addFavouriteQuestion(
+          questionId: _questionsList[_currentQuestionIndex].id);
+    }
+
+    if (response is RepositoryErrorResult) {
+      setState(() {
+        _favourite = initialValue;
+      });
+    }
+
+    _analyticsProvider.logEvent(
+        initialValue
+            ? AnalyticsConstants.tapQuestionBookmarkRemove
+            : AnalyticsConstants.tapQuestionBookmarkAdd,
+        params: {
+          AnalyticsConstants.keyQuestionId:
+              _questionsList[_currentQuestionIndex].id,
+          AnalyticsConstants.keyStem: _questionsList[_currentQuestionIndex].stem
+        });
+  }
+
+  InkWell _drawExplanation() {
+    final size = whenDevice(context, large: 25.0, tablet: 40.0);
+    return InkWell(
+      child: Column(children: <Widget>[
+        SvgPicture.asset(
+            medstyles.Style.of(context).svgAsset.questionExplanation,
+            width: size,
+            height: size),
+        Text("Explanation",
+            style: smallerResponsiveFont(context,
+                fontColor: FontColor.DividerColor))
+      ]),
+      onTap: () {
+        _logQuestionEvent(AnalyticsConstants.tapViewExplanation);
+        openExplanationModal(
+          context: context,
+          explanationText: _questionsList[_currentQuestionIndex].explanation,
+        );
+      },
     );
   }
 
@@ -396,22 +463,22 @@ class _MultipleChoiceQuestionScreenState
             vertical: 8.0,
           ),
           child: QuestionButton(
-            key: Key("ans$index"),
-            text: answer.text,
-            optionLetter: answer.optionLetter,
-            onPressed: () async {
-              if (_selectedIndex == null) {
-                if (answer.isCorrect) {
-                  correctAnswers = correctAnswers + 1;
-                } else {
-                  wrongAnswers = wrongAnswers + 1;
+              key: Key("ans$index"),
+              text: answer.text,
+              optionLetter: answer.optionLetter,
+              onPressed: () async {
+                if (_selectedIndex == null) {
+                  if (answer.isCorrect) {
+                    correctAnswers = correctAnswers + 1;
+                  } else {
+                    wrongAnswers = wrongAnswers + 1;
+                  }
+                  _showAnswers(index);
                 }
-                _showAnswers(index);
-              }
-            },
-            showAnswer: _selectedIndex != null,
-            isCorrect: answer.isCorrect,
-          ),
+              },
+              showAnswer: _selectedIndex != null,
+              isCorrect: answer.isCorrect,
+              pressed: _getOptionLetter(_selectedIndex)),
         ),
       ),
     );
@@ -430,6 +497,7 @@ class _MultipleChoiceQuestionScreenState
       _selectedIndex = index;
       _firstPressed = true;
     });
+
     _questionsRepository.sendQuestionAnswer(
       questionId: _questionsList[_currentQuestionIndex].id,
       answer: _getAnswer(index),
@@ -438,26 +506,18 @@ class _MultipleChoiceQuestionScreenState
     _logShowAnswersEvent(index);
 
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
-    int answersLength = _answers.length - 1;
-    for (int i = answersLength; i >= 0; i--) {
-      if (!_answers[i].isCorrect && index != i) {
-        Answer removedItem = _answers.removeAt(i);
-        builder(
-          BuildContext context,
-          Animation animation,
-        ) {
-          return _buildListItem(
-            removedItem,
-            animation,
-            i,
-          );
-        }
 
-        _listKey.currentState.removeItem(
-          i,
-          builder,
-          duration: _animationDuration,
-        );
+    if (widget.arguments.status == QuestionStatusType.qotd) {
+      if (_currentQuestionIndex == 4) {
+        setState(() {
+          _questionsDayRepository.clearCache();
+          SuperStateful.of(context).currentQOTDIndex = 0;
+        });
+      } else {
+        setState(() {
+          SuperStateful.of(context).currentQOTDIndex =
+              _currentQuestionIndex + 1;
+        });
       }
     }
   }
@@ -524,12 +584,30 @@ class _MultipleChoiceQuestionScreenState
     _updateState(() {
       _loading = true;
     });
-    if (widget.arguments.status != null &&
-        widget.arguments.status == QuestionStatusType.flagged) {
-      await _fetchFavouriteQuestions();
-    } else {
-      await _fetchNormalQuestions(forceApiRequest);
+    switch (widget.arguments.status) {
+      case QuestionStatusType.flagged:
+        await _fetchFavouriteQuestions();
+        break;
+      case QuestionStatusType.qotd:
+        await _fetchQOTD();
+        break;
+      default:
+        await _fetchNormalQuestions(forceApiRequest);
     }
+  }
+
+  Future _fetchQOTD() async {
+    final result = await _questionsDayRepository.fetchQuestionOfTheDay();
+
+    if (result is RepositorySuccessResult<List<Question>>) {
+      SuperStateful.of(context).questionsOfTheDay = result.data;
+    }
+
+    _updateState(() {
+      _questionsList = SuperStateful.of(context).questionsOfTheDay;
+      _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;
+      _loading = false;
+    });
   }
 
   Future _fetchFavouriteQuestions() async {
@@ -599,6 +677,7 @@ class _MultipleChoiceQuestionScreenState
             .toList();
         break;
       case QuestionStatusType.flagged:
+      case QuestionStatusType.qotd:
         break;
     }
   }

@@ -45,45 +45,36 @@ class FlashCardFront extends StatelessWidget {
     TextStyle txtStyle =
         medstyles.Style.of(context).font.bold.copyWith(fontSize: width * 0.07);
 
-    return GestureDetector(
-      onTap: flip,
-      child: Container(
-        color: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            FlashCardStatusWidget(
-              progress: progress,
-              status: flashCard.status,
-            ),
-            flashCard.frontImage == null || flashCard.frontImage.isEmpty
-                ? Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
-                    child: textOnly(flashCard.front)
-                        ? AutoSizeText(
-                            flashCard.front,
-                            style: txtStyle,
-                            maxLines: 10,
-                            wrapWords: false,
-                          )
-                        : Html(
-                            data: flashCard.front,
-                            style: {"html": Style.fromTextStyle(txtStyle)}))
-                : ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: height * 0.2),
-                    child: Image.network(
-                      flashCard.frontImage,
-                    ),
+    return Container(
+      color: Colors.transparent,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          FlashCardStatusWidget(status: flashCard.status),
+          flashCard.frontImage == null || flashCard.frontImage.isEmpty
+              ? Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                  child: textOnly(flashCard.front)
+                      ? AutoSizeText(
+                          flashCard.front,
+                          style: txtStyle,
+                          maxLines: 10,
+                          wrapWords: false,
+                        )
+                      : Html(
+                          data: flashCard.front,
+                          style: {"html": Style.fromTextStyle(txtStyle)}))
+              : ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: height * 0.2),
+                  child: Image.network(
+                    flashCard.frontImage,
                   ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FlashCardButton(
-                onPress: flip,
-                text: FlutterI18n.translate(context, "flashcard_screen.flip"),
-              ),
-            ),
-          ],
-        ),
+                ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(),
+          ),
+        ],
       ),
     );
   }

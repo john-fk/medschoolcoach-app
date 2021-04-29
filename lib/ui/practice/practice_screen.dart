@@ -113,21 +113,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
       );
 
     if (didFailLoading()) {
-    return EmptyStateView(
-        title: FlutterI18n.translate(
-            context,
-            "empty_state.title"),
-        message: FlutterI18n.translate(
-            context,
-            "empty_state.message"),
-        ctaText: FlutterI18n.translate(
-            context,
-            "empty_state.button"),
-        image: Image.asset(Style.of(context).pngAsset.emptyState),
-        onTap: () {
-          _loading = true;
-          _fetchFlashcardsAndQuestionsSections(forceApiRequest: true);
-    });
+      return EmptyStateView(
+          title: FlutterI18n.translate(context, "empty_state.title"),
+          message: FlutterI18n.translate(context, "empty_state.message"),
+          ctaText: FlutterI18n.translate(context, "empty_state.button"),
+          image: Image.asset(Style.of(context).pngAsset.emptyState),
+          onTap: () {
+            _loading = true;
+            _fetchFlashcardsAndQuestionsSections(forceApiRequest: true);
+          });
     }
 
     return RefreshIndicator(
@@ -142,8 +136,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
           _buildCardButton(
               color: Style.of(context).colors.accent,
               label:
-                  "${allSubjects.isNotEmpty ? 
-                    allSubjects[selectedIndex]?.amountOfFlashcards ?? 0 : 0}"
+                  "${allSubjects.isNotEmpty ? allSubjects[selectedIndex]?.amountOfFlashcards ?? 0 : 0}"
                   " Flashcards",
               onPressed: () {
                 _analyticsProvider.logEvent("tap_practice_flashcards",
@@ -160,8 +153,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
           _buildCardButton(
               color: Style.of(context).colors.questions,
               label:
-                  "${allSubjects.isNotEmpty ? 
-                    allSubjects[selectedIndex]?.amountOfQuestions ?? 0 : 0}"
+                  "${allSubjects.isNotEmpty ? allSubjects[selectedIndex]?.amountOfQuestions ?? 0 : 0}"
                   " Questions",
               onPressed: () {
                 _analyticsProvider.logEvent("tap_practice_questions",
@@ -257,8 +249,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
               color: index == selectedIndex ? Color(0xff009D7A) : Colors.white,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(capsuleWidth),
-              border: Border.all(color: index == selectedIndex
-                  ? Color(0xff009D7A) : Colors.black.withOpacity(0.08)),
+              border: Border.all(
+                  color: index == selectedIndex
+                      ? Color(0xff009D7A)
+                      : Colors.black.withOpacity(0.08)),
               boxShadow: [
                 BoxShadow(
                     color: Colors.black.withOpacity(0.03),
@@ -332,7 +326,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     style: smallResponsiveFont(context,
                         fontColor: FontColor.Content2,
                         fontWeight: FontWeight.w600)),
-                Icon(Icons.arrow_forward_rounded)
+                Icon(Icons.arrow_right_alt_outlined)
               ],
             ),
           ),

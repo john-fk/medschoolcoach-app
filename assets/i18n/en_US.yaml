@@ -196,8 +196,8 @@ question_screen:
   no_flagged_questions: No flagged questions yet
   questions_count: "{number} questions"
   question_index: "Question {index}"
-  your_answer: Your answer
-  correct_answer: Correct answer
+  your_answer: • Your answer
+  correct_answer: • Correct answer
   other_users_percentage: "{percentage}% of all users answered this question correctly"
 premium_modal:
   description: We are hard at work building some awesome new features. Stay tuned!
@@ -283,6 +283,16 @@ global_progress:
   flashcards: Total Flashcards Reviewed
   locked_flashcards: Go Premium and unlock Flashcards!
   locked_questions: Go Premium and unlock Questions!
+flashcards_tips:
+  welcome: HOW TO USE
+  tips1_title: Tap the card
+  tips1_subtitle: View the reverse side
+  tips2_title: Swipe left
+  tips2_subtitle: Indicate negative confidence
+  tips3_title: Swipe down
+  tips3_subtitle: Indicate neutral confidence
+  tips4_title: Swipe right
+  tips4_subtitle: Indicate positive confidence
 flashcards_how_to:
   welcome: Welcome to Flashcards
   flip: Tap on the card to flip it

@@ -2,12 +2,10 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:flutter/material.dart';
 
 class PracticeCard extends StatelessWidget {
-
   final Color bgColor;
   final IconData iconData;
   final String text;
   final String route;
-
 
   PracticeCard({this.bgColor, this.iconData, this.text, this.route});
 
@@ -20,8 +18,8 @@ class PracticeCard extends StatelessWidget {
         child: InkWell(
           onTap: () {
             if (route != null)
-              Navigator.of(context).pushNamed(route,
-                  arguments: "home_practice_section");
+              Navigator.of(context)
+                  .pushNamed(route, arguments: "home_practice_section");
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -31,10 +29,7 @@ class PracticeCard extends StatelessWidget {
                 child: Icon(
                   iconData,
                   color: Colors.white.withOpacity(0.75),
-                  size: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.12,
+                  size: MediaQuery.of(context).size.width * 0.12,
                 ),
               ),
               Padding(

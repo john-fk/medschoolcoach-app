@@ -12,6 +12,7 @@ import 'package:flutter_svg/svg.dart';
 class QuestionButton extends StatelessWidget {
   final String text;
   final String optionLetter;
+  final String pressed;
   final Function onPressed;
   final bool showAnswer;
   final bool isCorrect;
@@ -24,7 +25,8 @@ class QuestionButton extends StatelessWidget {
       Key key,
       this.showAnswer = false,
       this.isCorrect = false,
-      this.nextQuestion = false})
+      this.nextQuestion = false,
+      this.pressed = ""})
       : super(key: key);
 
   @override
@@ -36,14 +38,14 @@ class QuestionButton extends StatelessWidget {
       child: RaisedButton(
         onPressed: onPressed,
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(whenDevice(context, large: 25, tablet: 50)),
+          borderRadius: BorderRadius.circular(whenDevice(context,
+              large: nextQuestion ? 25 : 12, tablet: nextQuestion ? 50 : 25)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              width: _getProperWidth(),
+              width: nextQuestion ? 0 : _getProperWidth(),
             ),
             optionLetter != null && optionLetter.isNotEmpty
                 ? Text(
@@ -56,23 +58,45 @@ class QuestionButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                   vertical: 8.0,
                 ),
-                child: Center(
-                  child: Html(
-                    data: text,
-                    style: {
-                      "html": Style.fromTextStyle(_getTextStyle(context))
-                    },
-                  ),
-                ),
+                child: nextQuestion
+                    ? Container(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                            Text(text, style: _getTextStyle(context)),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            SvgPicture.asset(
+                              medstyles.Style.of(context)
+                                  .svgAsset
+                                  .questionArrowNext,
+                              height: 14,
+                            )
+                          ]))
+                    : Center(
+                        child: Html(
+                          data: text,
+                          style: {
+                            "html": Style.fromTextStyle(_getTextStyle(context))
+                          },
+                        ),
+                      ),
               ),
             ),
             SizedBox(
-              width: 5,
+              width: nextQuestion ? 0 : 5,
             ),
-            _buildProperIcon(context),
+            nextQuestion ? Container() : _buildProperIcon(context),
           ],
         ),
-        color: medstyles.Style.of(context).colors.content2,
+        color: showAnswer
+            ? (isCorrect
+                ? medstyles.Style.of(context).colors.accent2
+                : (pressed == optionLetter
+                    ? medstyles.Style.of(context).colors.questions
+                    : medstyles.Style.of(context).colors.content2))
+            : medstyles.Style.of(context).colors.content2,
       ),
     );
   }
@@ -81,24 +105,9 @@ class QuestionButton extends StatelessWidget {
     if (showAnswer) {
       if (isCorrect) {
         return TickIcon();
-      } else {
+      } else if (pressed == optionLetter) {
         return ErrorIcon();
       }
-    }
-
-    if (nextQuestion) {
-      return Padding(
-        padding: const EdgeInsets.only(
-          right: 8.0,
-        ),
-        child: RotatedBox(
-          quarterTurns: 2,
-          child: SvgPicture.asset(
-            medstyles.Style.of(context).svgAsset.backArrowDark,
-            color: medstyles.Style.of(context).colors.accent,
-          ),
-        ),
-      );
     }
 
     return Container(
@@ -107,23 +116,16 @@ class QuestionButton extends StatelessWidget {
   }
 
   TextStyle _getTextStyle(BuildContext context) {
-    if (!showAnswer) {
+    if (!showAnswer || (!isCorrect && !(pressed == optionLetter))) {
       return normalResponsiveFont(
         context,
         fontColor: FontColor.Accent,
         fontWeight: FontWeight.w500,
       );
-    }
-    if (isCorrect) {
-      return normalResponsiveFont(
-        context,
-        fontColor: FontColor.Accent2,
-        fontWeight: FontWeight.w500,
-      );
     } else {
       return normalResponsiveFont(
         context,
-        fontColor: FontColor.Questions,
+        fontColor: FontColor.Content2,
         fontWeight: FontWeight.w500,
       );
     }

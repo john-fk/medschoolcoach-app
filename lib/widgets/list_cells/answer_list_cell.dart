@@ -38,7 +38,13 @@ class AnswerListCell extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              _isCorrect ? TickIcon() : ErrorIcon(),
+              _isCorrect
+                  ? TickIcon(
+                      flipColor: true,
+                    )
+                  : ErrorIcon(
+                      flipColor: true,
+                    ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 16.0,
@@ -166,6 +172,12 @@ class AnswerListCell extends StatelessWidget {
           data: isCorrect
               ? _getAnswer(index, question.answer)
               : _getAnswer(index, question.yourAnswer),
+          style: {
+            "html": Style.fromTextStyle(smallResponsiveFont(
+              context,
+              fontColor: FontColor.Content2,
+            ))
+          },
         ),
       ],
     );

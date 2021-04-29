@@ -1,6 +1,6 @@
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
+import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,14 +22,13 @@ class NotificationClass {
 
 final _rxsub.BehaviorSubject<NotificationClass>
     didReceiveLocalNotificationSubject =
-_rxsub.BehaviorSubject<NotificationClass>();
+    _rxsub.BehaviorSubject<NotificationClass>();
 final _rxsub.BehaviorSubject<String> selectNotificationSubject =
-_rxsub.BehaviorSubject<String>();
+    _rxsub.BehaviorSubject<String>();
 
 Future<void> initNotifications(
     notifs.FlutterLocalNotificationsPlugin notifsPlugin,
-        GlobalKey<NavigatorState> navigatorKey) async {
-
+    GlobalKey<NavigatorState> navigatorKey) async {
   var initializationSettingsAndroid =
       notifs.AndroidInitializationSettings('ic_notification');
   var initializationSettingsIOS = notifs.IOSInitializationSettings(
@@ -54,8 +53,10 @@ Future<void> initNotifications(
     if (isLoggedIn) {
       await Navigator.push(
         navigatorKey.currentState.context,
-        MaterialPageRoute<void>(builder: (context) =>
-            QuestionOfTheDay(source: "notification")),
+        MaterialPageRoute<void>(
+            builder: (context) => MultipleChoiceQuestionScreen(
+                arguments: MultipleChoiceQuestionScreenArguments(
+                    status: QuestionStatusType.qotd, source: "notification"))),
       );
     }
   });
@@ -109,8 +110,9 @@ Future<void> scheduleNotification(
   var platformChannelSpecifics =
       notifs.NotificationDetails(android: androidSpecifics, iOS: iOSSpecifics);
   // ignore: lines_longer_than_80_chars
-  print("Scheduling local notification with ${title}, for time ${scheduledTime}");
+  print(
+      "Scheduling local notification with ${title}, for time ${scheduledTime}");
   // ignore: deprecated_member_use
-  await notifsPlugin.schedule(id, title,
-      body, scheduledTime, platformChannelSpecifics);
+  await notifsPlugin.schedule(
+      id, title, body, scheduledTime, platformChannelSpecifics);
 }

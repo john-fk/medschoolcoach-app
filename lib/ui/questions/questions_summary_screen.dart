@@ -86,11 +86,11 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
           Column(
             children: <Widget>[
               QuestionAppBar(
-                title: FlutterI18n.translate(
-                  context,
-                  "question_screen.title",
-                ),
-                subTitle: widget.arguments.screenName,
+                summary: true,
+                questionsSize: widget.arguments.correctAnswers +
+                    widget.arguments.wrongAnswers,
+                currentQuestion: widget.arguments.correctAnswers,
+                category: widget.arguments.screenName,
               ),
               Expanded(
                 child: SingleChildScrollView(

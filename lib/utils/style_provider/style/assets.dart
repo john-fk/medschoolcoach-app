@@ -37,8 +37,8 @@ class _AppPngAssets {
   final learnActive = "assets/png/learn_selected.png";
   final learn = "assets/png/learn_unselected.png";
 
-  final practiceActive ="assets/png/practice_selected.png";
-  final practice ="assets/png/practice_unselected.png";
+  final practiceActive = "assets/png/practice_selected.png";
+  final practice = "assets/png/practice_unselected.png";
 
   final profileActive = "assets/png/profile_selected.png";
   final profile = "assets/png/profile_unselected.png";
@@ -49,9 +49,9 @@ class _AppPngAssets {
   final tutoringSliderThree = "assets/png/tutoring_slider_3.png";
 
   //Progress Screen
-  final upSellBannerGraphic  = "assets/png/upsell_banner_graphic.png";
+  final upSellBannerGraphic = "assets/png/upsell_banner_graphic.png";
 
-  final globalDoctors  = "assets/png/global_doctors.png";
+  final globalDoctors = "assets/png/global_doctors.png";
 
   final emptyState = "assets/png/empty_state.png";
 }
@@ -63,11 +63,18 @@ class _AppSvgAssets {
   final backArrowDark = "assets/svg/back_arrow_dark.svg";
   final close = "assets/svg/close.svg";
   final questionsBackground = "assets/svg/question_background.svg";
+  final questionExplanation = "assets/svg/button_explanation.svg";
+  final questionArrowNext = "assets/svg/question_arrow_next.svg";
   final pickSchedule = "assets/svg/pick_schedule.svg";
+
+  //how to in flashcards
+  final flipTips = "assets/svg/flip_tips";
+  final flipTips4 = "assets/svg/flip_tips1.svg";
 
   final searchActive = "assets/svg/search_active.svg";
   final search = "assets/svg/search.svg";
-  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon_active.svg";
+  final tutoringNavigationIconActive =
+      "assets/svg/tutoring_navigation_icon_active.svg";
   final tutoringNavigationIcon = "assets/svg/tutoring_navigation_icon.svg";
 
   //Video player icons

@@ -1,12 +1,10 @@
 import 'dart:math' as math;
-
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/flash_card/card/flash_card_widget.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_more_flashcards.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
-
 import 'flash_card_screen.dart';
 
 class FlashCardsStack extends StatelessWidget {
@@ -17,15 +15,15 @@ class FlashCardsStack extends StatelessWidget {
   final bool front;
   final AnalyticsProvider analyticsProvider;
 
-  const FlashCardsStack({
-    Key key,
-    @required this.flashcardsStackModel,
-    @required this.cardIndex,
-    @required this.changeCardIndex,
-    @required this.front,
-    @required this.setFront,
-    @required this.analyticsProvider
-  }) : super(key: key);
+  const FlashCardsStack(
+      {Key key,
+      @required this.flashcardsStackModel,
+      @required this.cardIndex,
+      @required this.changeCardIndex,
+      @required this.front,
+      @required this.setFront,
+      @required this.analyticsProvider})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -61,6 +59,7 @@ class FlashCardsStack extends StatelessWidget {
 
     return Positioned.fill(
       child: Container(
+        margin: EdgeInsets.only(top: 20),
         child: Center(
           child: AnimatedOpacity(
             opacity: cardIndex < flashcardsStackModel.items.length - 1 ? 1 : 0,

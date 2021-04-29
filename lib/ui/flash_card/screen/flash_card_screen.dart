@@ -6,16 +6,19 @@ import 'package:Medschoolcoach/ui/flash_card/how_to/flashcards_how_to.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_html/style.dart' as medstyles;
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
-
-import 'flash_card_bar.dart';
 import 'flash_cards_stack.dart';
 
 typedef ChangeCardIndex({bool increase});
@@ -136,7 +139,18 @@ class _FlashCardScreenState extends State<FlashCardScreen>
           ),
           Column(
             children: <Widget>[
-              FlashCardBar(),
+              QuestionAppBar(
+                isFlashCard: true,
+                onHowtoTap: openModal,
+                category: widget.arguments.subjectName,
+                currentQuestion: _cardIndex + 1,
+                questionsSize: _result != null
+                    ? (_result as RepositorySuccessResult<FlashcardsStackModel>)
+                        .data
+                        .items
+                        .length
+                    : 0,
+              ),
               Expanded(
                 child: _buildContent(),
               ),
@@ -206,6 +220,100 @@ class _FlashCardScreenState extends State<FlashCardScreen>
 
       _animationController.forward();
     }
+  }
+
+  void openModal() {
+    openExplanationModal(context: context);
+  }
+
+  void openExplanationModal({@required BuildContext context}) {
+    final width = MediaQuery.of(context).size.width;
+    List<int> tips = [1, 2, 3, 4];
+
+    showModalBottomSheet<void>(
+      backgroundColor: Color.fromRGBO(12, 83, 199, 1),
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Container(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            color: Colors.white,
+                            iconSize:
+                                whenDevice(context, large: 25.0, tablet: 40.0),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          )),
+                      Text(
+                        FlutterI18n.translate(
+                            context, "flashcards_tips.welcome"),
+                        style: biggerResponsiveFont(context,
+                            fontColor: FontColor.HalfWhite),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      for (var i in tips) _buildTips(i),
+                    ])),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTips(int tipsNumber) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 70, width: MediaQuery.of(context).size.width / 15),
+        SizedBox(
+            width: whenDevice(
+              context,
+              large: 78,
+              tablet: 83,
+            ),
+            child: SvgPicture.asset(
+                Style.of(context).svgAsset.flipTips +
+                    tipsNumber.toString() +
+                    ".svg",
+                fit: BoxFit.fitHeight)),
+        SizedBox(width: 20),
+        Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                FlutterI18n.translate(
+                    context, "flashcards_tips.tips${tipsNumber}_title"),
+                style: biggerResponsiveFont(context,
+                    fontColor: FontColor.DividerColor),
+              ),
+              Text(
+                FlutterI18n.translate(
+                    context, "flashcards_tips.tips${tipsNumber}_subtitle"),
+                style: bigResponsiveFont(context,
+                    fontColor: FontColor.DividerColor),
+              )
+            ])
+      ],
+    );
   }
 
   @override

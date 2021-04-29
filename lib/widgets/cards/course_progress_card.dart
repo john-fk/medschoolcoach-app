@@ -221,8 +221,8 @@ class _CourseProgressCardState extends State<CourseProgressCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${widget.scheduleProgress.courseProgress}%" +
-              " of video courses completed",
+          "${widget.scheduleProgress.courseProgress}%"
+          " of video courses completed",
           style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
         ),
         SizedBox(

@@ -1,51 +1,42 @@
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
-import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/repository/questions_repository.dart';
-import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/widgets/buttons/pop_back_button.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/buttons/pop_back_questions.dart';
 import 'package:flutter/material.dart';
-import 'package:injector/injector.dart';
 
 // ignore: must_be_immutable
 class QuestionAppBar extends StatefulWidget {
-  final String title;
-  final String subTitle;
+  final String category;
   final int currentQuestion;
   final int questionsSize;
   final String questionId;
   final String stem;
-  bool isBookmarked;
-  VoidCallback onBookmarkTap;
-  bool showBookmark;
+  final bool summary;
+  final bool isFlashCard;
+  VoidCallback onHowtoTap;
 
-  QuestionAppBar({
-    @required this.title,
-    Key key,
-    this.subTitle,
-    this.currentQuestion,
-    this.stem,
-    this.questionsSize,
-    this.questionId,
-    this.isBookmarked,
-    this.onBookmarkTap,
-    this.showBookmark = true
-  }) : super(key: key);
+  QuestionAppBar(
+      {Key key,
+      @required this.category,
+      this.currentQuestion,
+      this.stem,
+      this.questionsSize,
+      this.questionId,
+      this.summary = false,
+      this.isFlashCard = false,
+      this.onHowtoTap})
+      : super(key: key);
 
   @override
   _QuestionAppBarState createState() => _QuestionAppBarState();
 }
 
 class _QuestionAppBarState extends State<QuestionAppBar> {
-  final QuestionsRepository _questionsRepository =
-      Injector.appInstance.getDependency<QuestionsRepository>();
-  final AnalyticsProvider _analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
-
   @override
   Widget build(BuildContext context) {
+    final String userAnswer = widget.questionsSize > 0
+        ? "${widget.currentQuestion}/${widget.questionsSize}"
+        : "";
     return Column(
       children: <Widget>[
         Container(
@@ -59,16 +50,15 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           child: Padding(
             padding: EdgeInsets.only(
               top: 30,
-              bottom: 16,
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 InkWell(
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: PopBackButton(),
+                    child: PopBackQuestions(),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -80,70 +70,86 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.title ?? "",
+                        widget.category ?? "Questions of the Day",
                         style: greatResponsiveFont(
                           context,
                           fontColor: FontColor.Content2,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (widget.subTitle != null)
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            widget.subTitle,
-                            style: normalResponsiveFont(
-                              context,
-                              fontColor: FontColor.Content2,
-                            ),
-                          ),
-                        )
                     ],
                   ),
                 ),
-                widget.currentQuestion != null &&
-                        widget.questionsSize != null &&
-                        widget.questionsSize != 0
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
+                !widget.isFlashCard
+                    ? Container()
+                    : ClipOval(
+                        child: Material(
+                          color: Colors.white60, // button color
+                          child: InkWell(
+                            splashColor: Colors.white, // inkwell color
+                            child: SizedBox(
+                                height: whenDevice(context,
+                                    small: 16.5,
+                                    medium: 19.5,
+                                    large: 23.25,
+                                    tablet: 25.5),
+                                width: whenDevice(context,
+                                    small: 16.5,
+                                    medium: 19.5,
+                                    large: 23.25,
+                                    tablet: 25.5),
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text("?",
+                                        style: mediumResponsiveFont(
+                                          context,
+                                          fontColor: FontColor.Accent,
+                                          fontWeight: FontWeight.bold,
+                                        )))),
+                            onTap: widget.onHowtoTap,
+                          ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Style.of(context).colors.content2,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 10,
-                                ),
-                                child: Text(
-                                  "${widget.currentQuestion}/${widget.questionsSize}",
-                                  style: smallResponsiveFont(
-                                    context,
-                                    fontWeight: FontWeight.w500,
-                                    fontColor: FontColor.Accent,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            if (widget.showBookmark)
-                            _drawBookmark()
-                          ],
-                        ),
-                      )
-                    : Container(),
+                      ),
+                widget.isFlashCard ? const SizedBox(width: 20) : Container(),
               ],
             ),
           ),
         ),
+        Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.only(top: 0),
+          child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 200),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SlideTransition(
+                  child: child,
+                  position: Tween<Offset>(
+                          begin: Offset(0.0, -0.5), end: Offset(0.0, 0.0))
+                      .animate(animation),
+                );
+              },
+              child: Text(
+                userAnswer,
+                key: ValueKey<String>(userAnswer),
+                style: normalResponsiveFont(context,
+                    fontColor: FontColor.Content2),
+              )),
+        ),
+        Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
+            child: widget.questionsSize > 0
+                ? (FAProgressBar(
+                    currentValue: ((widget.questionsSize > 0 &&
+                                widget.currentQuestion > 1) ||
+                            widget.summary)
+                        ? (widget.currentQuestion * 100 / widget.questionsSize)
+                            .floor()
+                        : 0,
+                    backgroundColor: Color(0x4BFFFFFF),
+                    progressColor: Color(0xFFFFFFFF),
+                    size: 10))
+                : Container()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Container(
@@ -153,55 +159,5 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
         )
       ],
     );
-  }
-
-  InkWell _drawBookmark() {
-    final size = whenDevice(context, large: 25.0, tablet: 40.0);
-    return InkWell(
-      child: widget.isBookmarked
-          ? Icon(
-              Icons.bookmark,
-              color: Colors.white,
-              size: size,
-            )
-          : Icon(
-              Icons.bookmark_border,
-              color: Colors.white,
-              size: size,
-            ),
-      onTap: _onTap,
-    );
-  }
-
-  Future<void> _onTap() async {
-    bool initialValue = widget.isBookmarked;
-
-    setState(() {
-      widget.isBookmarked = !initialValue;
-    });
-
-    RepositoryResult response;
-    if (initialValue) {
-      response = await _questionsRepository.deleteFavouriteQuestion(
-        questionId: widget.questionId,
-      );
-    } else {
-      response = await _questionsRepository.addFavouriteQuestion(
-          questionId: widget.questionId);
-    }
-    if (response is RepositoryErrorResult) {
-      setState(() {
-        widget.isBookmarked = initialValue;
-      });
-    } else {
-      widget.onBookmarkTap();
-    }
-    _analyticsProvider.logEvent(initialValue
-        ? AnalyticsConstants.tapQuestionBookmarkRemove
-        : AnalyticsConstants.tapQuestionBookmarkAdd,
-        params: {
-          AnalyticsConstants.keyQuestionId: widget.questionId,
-          AnalyticsConstants.keyStem: widget.stem
-        });
   }
 }
