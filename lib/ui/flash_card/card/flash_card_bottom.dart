@@ -111,10 +111,11 @@ class _FlashCardBottomState extends State<FlashCardBottom>
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Expanded(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
                 FlutterI18n.translate(
@@ -148,6 +149,7 @@ class _FlashCardBottomState extends State<FlashCardBottom>
                   _emoji(EmojiType.Positive, context),
                 ],
               ),
+              SizedBox(height: 10),
             ],
           ),
         )

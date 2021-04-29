@@ -68,18 +68,18 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       setState(() {});
     }
 
-    return Column(children: [
+    return Stack(children: [
       Container(
-          margin: EdgeInsets.only(top: 20, bottom: 20),
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(top: 20),
           child: _buildFlipAnimation()),
       FlashCardBottom(
-        progress: widget.progress,
-        flashCard: widget.flashCard,
-        nextFlashcard: _nextFlashcard,
-        flashcardStatus: _flashcardStatus,
-        setFlashcardStatus: _setFlashcardStatus,
-        flip: _switchCardReverse,
-      )
+          progress: widget.progress,
+          flashCard: widget.flashCard,
+          nextFlashcard: _nextFlashcard,
+          flashcardStatus: _flashcardStatus,
+          setFlashcardStatus: _setFlashcardStatus,
+          flip: _switchCardReverse)
     ]);
   }
 
@@ -223,22 +223,26 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     final wCard = width * FlashCardWidget.flashCardWidthFactor;
     final hCard = height * FlashCardWidget.flashCardHeightFactor;
 
-    return Container(
-      constraints: BoxConstraints.tight(Size(wCard, hCard)),
-      alignment: Alignment.topCenter,
-      child: GestureDetector(
-          onTap: _switchCard,
-          child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 800),
-            transitionBuilder: __transitionBuilder,
-            layoutBuilder: (widget, list) => Stack(children: [widget, ...list]),
-            child: _showFrontSide
-                ? _buildCardFront(bCard, hCard + 200, wCard)
-                : _buildCardRear(bCard, hCard, wCard),
-            switchInCurve: Curves.easeInBack,
-            switchOutCurve: Curves.easeInBack.flipped,
-          )),
-    );
+    return Column(children: [
+      Container(
+        constraints: BoxConstraints.tight(Size(wCard, hCard)),
+        margin: EdgeInsets.only(bottom: 20),
+        alignment: Alignment.topCenter,
+        child: GestureDetector(
+            onTap: _switchCard,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 800),
+              transitionBuilder: __transitionBuilder,
+              layoutBuilder: (widget, list) =>
+                  Stack(children: [widget, ...list]),
+              child: _showFrontSide
+                  ? _buildCardFront(bCard, hCard, wCard)
+                  : _buildCardRear(bCard, hCard, wCard),
+              switchInCurve: Curves.easeInBack,
+              switchOutCurve: Curves.easeInBack.flipped,
+            )),
+      )
+    ]);
   }
 
   Widget __transitionBuilder(Widget widget, Animation<double> animation) {

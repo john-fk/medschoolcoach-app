@@ -34,10 +34,6 @@ class FlashCardScreen extends StatefulWidget {
 
 class _FlashCardScreenState extends State<FlashCardScreen>
     with SingleTickerProviderStateMixin {
-  static const _howToFrontKey = "flashcardsHowToFront";
-  static const _howToBackKey = "flashcardsHowToBack";
-  static const _howToSeen = "seen";
-
   final _flashcardsRepository =
       Injector.appInstance.getDependency<FlashcardRepository>();
   final AnalyticsProvider _analyticsProvider =
@@ -46,10 +42,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
   int _cardIndex = 0;
-  Animation<double> _animation;
-  AnimationController _animationController;
   bool _front = true;
-  bool _showBackHowTo = false;
 
   @override
   void initState() {
@@ -61,14 +54,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.portraitUp,
     ]);
-
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-
-    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
-      ..addListener(() {
-        setState(() {});
-      });
 
     _analyticsProvider.logScreenView(
         AnalyticsConstants.screenFlashcards, widget.arguments.source);
@@ -88,29 +73,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       _result = result;
       _loading = false;
     });
-
-    if (_result is RepositorySuccessResult<FlashcardsStackModel> &&
-        (_result as RepositorySuccessResult<FlashcardsStackModel>)
-                .data
-                .items
-                .length !=
-            0) _showFlashcardsHowTo();
-  }
-
-  void _showFlashcardsHowTo() async {
-    final storage = FlutterSecureStorage();
-
-    final valueFront = await storage.read(key: _howToFrontKey);
-    final valueBack = await storage.read(key: _howToBackKey);
-
-    if (valueFront == null || valueFront != _howToSeen) {
-      await storage.write(key: _howToFrontKey, value: _howToSeen);
-      _animationController.forward();
-    }
-
-    if (valueBack == null || valueBack != _howToSeen) {
-      _showBackHowTo = true;
-    }
   }
 
   void _changeCardIndex({bool increase = true}) {
@@ -155,25 +117,10 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                 child: _buildContent(),
               ),
             ],
-          ),
-          Positioned.fill(
-            child: Opacity(
-              opacity: _animation.value,
-              child: _animation.value == 0
-                  ? Container()
-                  : FlashcardsHowTo(
-                      front: _front,
-                      gotIt: _hideHowTo,
-                    ),
-            ),
-          ),
+          )
         ],
       ),
     );
-  }
-
-  void _hideHowTo() {
-    if (_animation.value == 1) _animationController.reverse();
   }
 
   Widget _buildContent() {
@@ -211,15 +158,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     setState(() {
       _front = front;
     });
-    if (!front && _showBackHowTo) {
-      setState(() {
-        _showBackHowTo = false;
-      });
-      final storage = FlutterSecureStorage();
-      storage.write(key: _howToBackKey, value: _howToSeen);
-
-      _animationController.forward();
-    }
   }
 
   void openModal() {

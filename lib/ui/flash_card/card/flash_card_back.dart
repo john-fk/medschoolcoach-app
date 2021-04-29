@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_button.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_status.dart';
@@ -11,11 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
-
-import 'flash_card_widget.dart';
 
 enum EmojiType {
   Neutral,
@@ -181,15 +176,6 @@ class _FlashCardBackState extends State<FlashCardBack>
             ],
           ),
         ));
-  }
-
-  void _logAnalyticsEvent(EmojiType type) {
-    _analyticsProvider
-        .logEvent(AnalyticsConstants.tapFlashcardConfidence, params: {
-      "id": widget.flashCard.id,
-      "front": _anHtml,
-      "confidence": describeEnum(type).toLowerCase()
-    });
   }
 
   @override
