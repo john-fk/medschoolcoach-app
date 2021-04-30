@@ -79,6 +79,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   void toggleCardVisibility() {
     setState(() {
       _hideCard = !_hideCard;
+      _externalUpdate = false;
     });
   }
 
@@ -160,7 +161,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
               child: _buildFlipAnimation())),
       FlashCardBottom(
           nextCard: _nextFlashcard,
-          externalUpdate: _externalUpdate,
+          updatedOption: _externalUpdate,
           forceUpdated: forceUpdated,
           status: _currentConfidence),
     ]);
@@ -245,20 +246,30 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
               : AnalyticsConstants.keyRightSwipe
         });
     */
-    setState(() {
-      _flashcardStatus = getFlashcardStatusEnum(cardstatus);
-      _hideCard = true;
+    bool isSwiped = trigger == "swipe";
+
+    if (isSwiped) {
+      setState(() {
+        _externalUpdate = true;
+        _currentConfidence = cardstatus;
+      });
+    }
+    Future.delayed(Duration(milliseconds: isSwiped ? 1000 : 0), () {
+      setState(() {
+        _flashcardStatus = getFlashcardStatusEnum(cardstatus);
+        _hideCard = true;
+      });
     });
     //animate, when complete change card index, then animate back
     //
     Future.delayed(
-        const Duration(
-            milliseconds: FlashCardWidget.animationDurationValue + 200), () {
-      widget.changeCardIndex(increase: increase);
+        Duration(
+            milliseconds: FlashCardWidget.animationDurationValue +
+                200 +
+                (isSwiped ? 1000 : 0)), () {
+      if (_externalUpdate) _externalUpdate = false;
 
-      setState(() {
-        _externalUpdate = true;
-      });
+      widget.changeCardIndex(increase: increase);
       toggleCardVisibility();
     });
   }

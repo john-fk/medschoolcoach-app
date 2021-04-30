@@ -38,8 +38,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
-  final GlobalKey _draggableKey = GlobalKey();
-
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
   int _cardIndex = 0;

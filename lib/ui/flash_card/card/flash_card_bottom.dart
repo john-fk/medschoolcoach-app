@@ -26,10 +26,10 @@ class FlashCardBottom extends StatefulWidget {
   final nextFlashCard nextCard;
   final VoidCallback animateCard;
   final VoidCallback forceUpdated;
-  final bool externalUpdate;
+  final bool updatedOption;
   FlashCardBottom(
       {this.status,
-      this.externalUpdate = false,
+      this.updatedOption = false,
       this.nextCard,
       this.animateCard,
       this.forceUpdated,
@@ -58,6 +58,7 @@ class _FlashCardBottomState extends State<FlashCardBottom>
   String _anHtml = "";
   String _anHtmlDefinition = "";
   String _anHtmlExample = "";
+  bool _updatedOption = false;
   EmojiType selectedEmoji;
 
   @override
@@ -110,15 +111,19 @@ class _FlashCardBottomState extends State<FlashCardBottom>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.externalUpdate) {
+    if (widget.updatedOption) {
       selectedEmoji = null;
-      widget.forceUpdated();
+      _updatedOption = false;
     }
-    if (selectedEmoji == null ) {
+
+    if (_updatedOption || selectedEmoji == null) {
       _neutralAnimationController.reverse();
       _positiveAnimationController.reverse();
       _negativeAnimationController.reverse();
-      switch (widget.status) {
+      String confidence = widget.status;
+      if (_updatedOption && selectedEmoji != null)
+        confidence = selectedEmoji.toString().split(".")[1];
+      switch (confidence) {
         case "Negative":
           selectedEmoji = EmojiType.Negative;
           _positiveAnimationController.forward();
@@ -185,35 +190,15 @@ class _FlashCardBottomState extends State<FlashCardBottom>
     );
   }
 
-  void _updateEmoji(EmojiType type) {
-    switch (type) {
-      case EmojiType.Neutral:
-        _neutralAnimationController.reverse();
-        _positiveAnimationController.forward();
-        _negativeAnimationController.forward();
-        break;
-      case EmojiType.Positive:
-        _neutralAnimationController.forward();
-        _positiveAnimationController.reverse();
-        _negativeAnimationController.forward();
-        break;
-      case EmojiType.Negative:
-        _neutralAnimationController.forward();
-        _positiveAnimationController.forward();
-        _negativeAnimationController.reverse();
-        break;
-    }
+  void _tapEmoji(EmojiType type) {
     setState(() {
       selectedEmoji = type;
-      if (widget.externalUpdate) widget.forceUpdated();
+      _updatedOption = true;
     });
-  }
-
-  void _tapEmoji(EmojiType type) {
-    _updateEmoji(type);
 
     Future.delayed(const Duration(milliseconds: 1000), () {
       selectedEmoji = null;
+      _updatedOption = false;
       widget.nextCard(
           increase: true,
           trigger: "bottom_navigation",
