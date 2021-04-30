@@ -114,6 +114,11 @@ class _FlashCardBottomState extends State<FlashCardBottom>
     if (widget.updatedOption) {
       selectedEmoji = null;
       _updatedOption = false;
+
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        selectedEmoji = null;
+        _updatedOption = false;
+      });
     }
 
     if (_updatedOption || selectedEmoji == null) {
@@ -123,6 +128,7 @@ class _FlashCardBottomState extends State<FlashCardBottom>
       String confidence = widget.status;
       if (_updatedOption && selectedEmoji != null)
         confidence = selectedEmoji.toString().split(".")[1];
+
       switch (confidence) {
         case "Negative":
           selectedEmoji = EmojiType.Negative;
@@ -158,8 +164,8 @@ class _FlashCardBottomState extends State<FlashCardBottom>
                 style: medstyles.Style.of(context).font.medium.copyWith(
                     fontSize: whenDevice(
                       context,
-                      large: 15,
-                      small: 12,
+                      large: 20,
+                      small: 15,
                       tablet: 30,
                     ),
                     color: Color(0x7AFFFFFF)),
@@ -230,12 +236,7 @@ class _FlashCardBottomState extends State<FlashCardBottom>
         opacity: opacityValue,
         child: SvgPicture.asset(
           asset,
-          height: whenDevice(
-            context,
-            small: 15,
-            large: 25,
-            tablet: 35,
-          ),
+          fit: BoxFit.fitHeight,
           color: selectedEmoji == type
               ? selectedEmoji == EmojiType.Neutral
                   ? Color.fromRGBO(255, 129, 49, 1)

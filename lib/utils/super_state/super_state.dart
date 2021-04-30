@@ -108,8 +108,13 @@ class SuperState extends State<SuperStateful> {
   List<Buddy> buddiesList = List();
   Auth0UserData userData;
   List<TutoringSlider> tutoringSliders = List();
+
+  //QOTD issues
   int currentQOTDIndex = 0;
   List<Question> questionsOfTheDay = List();
+  int correctAnswers = 0;
+  int wrongAnswers = 0;
+  List<String> answeredQuestionsIds = [];
 
   Future<RepositoryResult<List<Section>>> updateSectionsList({
     bool forceApiRequest = false,

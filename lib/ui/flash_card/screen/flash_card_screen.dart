@@ -181,8 +181,18 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                 Container(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                      Container(
+                        alignment: Alignment.centerRight,
+                        width: MediaQuery.of(context).size.width / 3,
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color.fromRGBO(0, 0, 0, 0.25),
+                        ),
+                        height: MediaQuery.of(context).size.height / 100,
+                      ),
                       Container(
                           alignment: Alignment.centerRight,
                           child: IconButton(
@@ -194,12 +204,14 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                               Navigator.pop(context);
                             },
                           )),
-                      Text(
-                        FlutterI18n.translate(
-                            context, "flashcards_tips.welcome"),
-                        style: biggerResponsiveFont(context,
-                            fontColor: FontColor.HalfWhite),
-                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            FlutterI18n.translate(
+                                context, "flashcards_tips.welcome"),
+                            style: biggerResponsiveFont(context,
+                                fontColor: FontColor.HalfWhite),
+                          )),
                       const SizedBox(
                         height: 40,
                       ),

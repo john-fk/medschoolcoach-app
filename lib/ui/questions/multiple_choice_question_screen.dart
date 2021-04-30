@@ -91,7 +91,7 @@ class _MultipleChoiceQuestionScreenState
   int _selectedIndex;
   RepositoryResult<QuestionList> _error;
   bool _firstPressed = true;
-
+  bool isQOTD = false;
   @override
   void initState() {
     super.initState();
@@ -119,6 +119,7 @@ class _MultipleChoiceQuestionScreenState
 
   @override
   Widget build(BuildContext context) {
+    isQOTD = widget.arguments.status == QuestionStatusType.qotd;
     final size = MediaQuery.of(context).size;
     bool shouldAdd = _answers.isEmpty;
     return Scaffold(
@@ -239,7 +240,7 @@ class _MultipleChoiceQuestionScreenState
                     size: size,
                   ),
             Text("Save",
-                style: smallerResponsiveFont(context,
+                style: mediumResponsiveFont(context,
                     fontColor: FontColor.DividerColor))
           ]),
       onTap: _onTap,
@@ -289,7 +290,7 @@ class _MultipleChoiceQuestionScreenState
             width: size,
             height: size),
         Text("Explanation",
-            style: smallerResponsiveFont(context,
+            style: mediumResponsiveFont(context,
                 fontColor: FontColor.DividerColor))
       ]),
       onTap: () {
@@ -470,8 +471,10 @@ class _MultipleChoiceQuestionScreenState
                 if (_selectedIndex == null) {
                   if (answer.isCorrect) {
                     correctAnswers = correctAnswers + 1;
+                    SuperStateful.of(context).correctAnswers++;
                   } else {
                     wrongAnswers = wrongAnswers + 1;
+                    SuperStateful.of(context).wrongAnswers++;
                   }
                   _showAnswers(index);
                 }
@@ -504,7 +507,10 @@ class _MultipleChoiceQuestionScreenState
     );
 
     _logShowAnswersEvent(index);
-
+    if (isQOTD)
+      SuperStateful.of(context)
+          .answeredQuestionsIds
+          .add(_questionsList[_currentQuestionIndex].id);
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
 
     if (widget.arguments.status == QuestionStatusType.qotd) {
@@ -567,13 +573,15 @@ class _MultipleChoiceQuestionScreenState
       context,
       Routes.questionsSummary,
       arguments: QuestionSummaryScreenArguments(
-        screenName: widget.arguments.screenName,
-        subjectId: widget.arguments.subjectId,
-        videoId: widget.arguments.videoId,
-        answeredQuestionsIds: _answeredQuestionsIds,
-        correctAnswers: correctAnswers,
-        wrongAnswers: wrongAnswers,
-      ),
+          screenName: widget.arguments.screenName,
+          subjectId: widget.arguments.subjectId,
+          videoId: widget.arguments.videoId,
+          answeredQuestionsIds: _answeredQuestionsIds,
+          correctAnswers: isQOTD
+              ? SuperStateful.of(context).correctAnswers
+              : correctAnswers,
+          wrongAnswers:
+              isQOTD ? SuperStateful.of(context).wrongAnswers : wrongAnswers),
     );
     _logQuestionEvent(AnalyticsConstants.tapSummarize);
   }
@@ -606,6 +614,14 @@ class _MultipleChoiceQuestionScreenState
     _updateState(() {
       _questionsList = SuperStateful.of(context).questionsOfTheDay;
       _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;
+      _answeredQuestionsIds.clear();
+      if (_currentQuestionIndex == 0) {
+        SuperStateful.of(context).answeredQuestionsIds.clear();
+        SuperStateful.of(context).correctAnswers = 0;
+        SuperStateful.of(context).wrongAnswers = 0;
+      }
+      _answeredQuestionsIds
+          .addAll(SuperStateful.of(context).answeredQuestionsIds);
       _loading = false;
     });
   }

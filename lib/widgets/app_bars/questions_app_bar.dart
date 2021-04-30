@@ -33,8 +33,14 @@ class QuestionAppBar extends StatefulWidget {
 
 class _QuestionAppBarState extends State<QuestionAppBar> {
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final String userAnswer = widget.questionsSize > 0
+    String userAnswer = "";
+    userAnswer = widget.questionsSize > 0
         ? "${widget.currentQuestion}/${widget.questionsSize}"
         : "";
     return Column(
@@ -118,16 +124,9 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
         Container(
           alignment: Alignment.center,
           margin: const EdgeInsets.only(top: 0),
-          child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return SlideTransition(
-                  child: child,
-                  position: Tween<Offset>(
-                          begin: Offset(0.0, -0.5), end: Offset(0.0, 0.0))
-                      .animate(animation),
-                );
-              },
+          child: AnimatedOpacity(
+              opacity: 1.0,
+              duration: Duration(milliseconds: 500),
               child: Text(
                 userAnswer,
                 key: ValueKey<String>(userAnswer),

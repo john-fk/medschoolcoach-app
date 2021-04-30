@@ -59,6 +59,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   AnimationController _changeAnimationController;
   Animation<double> _fadeAnimation;
   bool _showFrontSide;
+  int _flipBack = 0;
   bool _hideCard;
   double bCard;
   double wCard;
@@ -71,16 +72,27 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     super.initState();
     _setupAnimations();
     _showFrontSide = true;
-    _hideCard = true;
     _externalUpdate = false;
-    toggleCardVisibility();
+    _hideCard = true;
+    Future.delayed(Duration(milliseconds: 500), () {
+      toggleCardVisibility();
+    });
   }
 
-  void toggleCardVisibility() {
+  void toggleCardVisibility({bool flipback = false}) {
     setState(() {
-      _hideCard = !_hideCard;
+      _flipBack = flipback ? 2 : 0;
+      _showFrontSide = true;
+      if (!flipback) _hideCard = !_hideCard;
       _externalUpdate = false;
     });
+    if (flipback) {
+      Future.delayed(Duration(milliseconds: 800), () {
+        setState(() {
+          _hideCard = !_hideCard;
+        });
+      });
+    }
   }
 
   void _setupAnimations() {
@@ -129,7 +141,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       DragTarget<String>(onAccept: (value) {
         swipeAction("Negative");
       }, builder: (_, candidateData, rejectedData) {
-        return Container(width: width / 3, height: height);
+        return Container(width: width / 4, height: height);
       }),
       //Swipe right target
       Positioned(
@@ -139,17 +151,16 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
           child: DragTarget<String>(onAccept: (value) {
             swipeAction("Positive");
           }, builder: (_, candidateData, rejectedData) {
-            return Container(width: width / 2, height: height);
+            return Container(width: width / 4, height: height);
           })),
       //swipe down
       Positioned(
-          top: height / 3,
-          left: width / 3,
-          right: width / 3,
+          bottom: 0,
+          left: width * 0.25,
           child: DragTarget<String>(onAccept: (value) {
             swipeAction("Neutral");
           }, builder: (_, candidateData, rejectedData) {
-            return Container(width: width / 3, height: height);
+            return Container(width: width * 0.5, height: height / 3);
           })),
       AnimatedOpacity(
           opacity: _hideCard ? 0 : 1,
@@ -254,7 +265,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         _currentConfidence = cardstatus;
       });
     }
-    Future.delayed(Duration(milliseconds: isSwiped ? 1000 : 0), () {
+
+    Future.delayed(Duration(milliseconds: isSwiped ? 500 : 0), () {
       setState(() {
         _flashcardStatus = getFlashcardStatusEnum(cardstatus);
         _hideCard = true;
@@ -266,11 +278,10 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         Duration(
             milliseconds: FlashCardWidget.animationDurationValue +
                 200 +
-                (isSwiped ? 1000 : 0)), () {
+                (isSwiped ? 500 : 0)), () {
       if (_externalUpdate) _externalUpdate = false;
-
       widget.changeCardIndex(increase: increase);
-      toggleCardVisibility();
+      toggleCardVisibility(flipback: !_showFrontSide);
     });
   }
 
@@ -322,7 +333,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
   void _switchCard() {
     _toggleDisplayState(false);
-    _logEvents(AnalyticsConstants.tapFlashcardFlipBackward);
+    _logEvents(AnalyticsConstants.tapFlashcardFlipForward);
   }
 
   void _switchCardReverse() {
@@ -348,24 +359,32 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         child: Draggable(
           data: "Text",
           child: _draggableCard(),
-          feedback: _draggableCard(),
+          feedback: _draggableCard(true),
           childWhenDragging: Container(),
         ),
       )
     ]);
   }
 
-  Widget _draggableCard() {
+  Widget _draggableCard([bool isFeedback = false]) {
     return GestureDetector(
         onTap: _switchCard,
         child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 800),
+          duration: Duration(milliseconds: flipBack() ? 0 : 800),
           transitionBuilder: __transitionBuilder,
           layoutBuilder: (widget, list) => Stack(children: [widget, ...list]),
           child: _showFrontSide ? _buildCardFront() : _buildCardRear(),
           switchInCurve: Curves.easeInBack,
           switchOutCurve: Curves.easeInBack.flipped,
         ));
+  }
+
+  bool flipBack() {
+    if (_flipBack > 0) {
+      _flipBack--;
+      return true;
+    } else
+      return false;
   }
 
   void logAnalyticsEvent(String type, String action) {
