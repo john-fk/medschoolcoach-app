@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_button.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
+import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'dart:async';
 
 enum EmojiType {
@@ -19,25 +19,22 @@ enum EmojiType {
   Negative,
 }
 
-typedef SetFlashcardStatus(FlashcardStatus status);
+typedef nextFlashCard({bool increase, String trigger, String cardstatus});
 
 class FlashCardBottom extends StatefulWidget {
-  final VoidCallback nextFlashcard;
-  final FlashcardModel flashCard;
-  final String progress;
-  final FlashcardStatus flashcardStatus;
-  final SetFlashcardStatus setFlashcardStatus;
-  final VoidCallback flip;
-
-  const FlashCardBottom({
-    Key key,
-    @required this.nextFlashcard,
-    @required this.flashCard,
-    @required this.progress,
-    @required this.flashcardStatus,
-    @required this.setFlashcardStatus,
-    @required this.flip,
-  }) : super(key: key);
+  final String status;
+  final nextFlashCard nextCard;
+  final VoidCallback animateCard;
+  final VoidCallback forceUpdated;
+  final bool externalUpdate;
+  FlashCardBottom(
+      {this.status,
+      this.externalUpdate = false,
+      this.nextCard,
+      this.animateCard,
+      this.forceUpdated,
+      Key key})
+      : super(key: key);
 
   @override
   _FlashCardBottomState createState() => _FlashCardBottomState();
@@ -55,24 +52,27 @@ class _FlashCardBottomState extends State<FlashCardBottom>
   Animation<double> _neutralAnimation;
   Animation<double> _positiveAnimation;
   final animationDuration = const Duration(milliseconds: 300);
+  String definition = "";
+  String example = "";
+  String front = "";
   String _anHtml = "";
   String _anHtmlDefinition = "";
   String _anHtmlExample = "";
-  Timer _timer;
+  EmojiType selectedEmoji;
 
   @override
   void initState() {
     super.initState();
     _setupAnimation();
-    _anHtmlDefinition = widget.flashCard.definition;
+    _anHtmlDefinition = definition;
     _anHtmlDefinition = _anHtmlDefinition.replaceAll("<sup>", "&#8288<sup>");
     _anHtmlDefinition = _anHtmlDefinition.replaceAll("<sub>", "&#8288<sub>");
 
-    _anHtmlExample = widget.flashCard.example;
+    _anHtmlExample = example;
     _anHtmlExample = _anHtmlExample.replaceAll("<sup>", "&#8288<sup>");
     _anHtmlExample = _anHtmlExample.replaceAll("<sub>", "&#8288<sub>");
 
-    _anHtml = widget.flashCard.front;
+    _anHtml = front;
     _anHtml = _anHtml.replaceAll("<sup>", "&#8288<sup>");
     _anHtml = _anHtml.replaceAll("<sub>", "&#8288<sub>");
   }
@@ -110,6 +110,34 @@ class _FlashCardBottomState extends State<FlashCardBottom>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.externalUpdate) {
+      selectedEmoji = null;
+      widget.forceUpdated();
+    }
+    if (selectedEmoji == null ) {
+      _neutralAnimationController.reverse();
+      _positiveAnimationController.reverse();
+      _negativeAnimationController.reverse();
+      switch (widget.status) {
+        case "Negative":
+          selectedEmoji = EmojiType.Negative;
+          _positiveAnimationController.forward();
+          _neutralAnimationController.forward();
+          break;
+        case "Positive":
+          selectedEmoji = EmojiType.Positive;
+          _neutralAnimationController.forward();
+          _negativeAnimationController.forward();
+          break;
+        case "Neutral":
+          selectedEmoji = EmojiType.Neutral;
+          _positiveAnimationController.forward();
+          _negativeAnimationController.forward();
+          break;
+        default:
+          selectedEmoji = null;
+      }
+    }
     return Row(
       children: <Widget>[
         Expanded(
@@ -143,9 +171,9 @@ class _FlashCardBottomState extends State<FlashCardBottom>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   _emoji(EmojiType.Negative, context),
-                  SizedBox(width: 10),
+                  SizedBox(width: MediaQuery.of(context).size.width / 15),
                   _emoji(EmojiType.Neutral, context),
-                  SizedBox(width: 10),
+                  SizedBox(width: MediaQuery.of(context).size.width / 15),
                   _emoji(EmojiType.Positive, context),
                 ],
               ),
@@ -157,33 +185,39 @@ class _FlashCardBottomState extends State<FlashCardBottom>
     );
   }
 
-  void _tapEmoji(EmojiType type) {
-    widget.setFlashcardStatus(getFlahcardStatusEnum(
-      type.toString().substring(10).toLowerCase(),
-    ));
-
-    _logAnalyticsEvent(type);
-
+  void _updateEmoji(EmojiType type) {
     switch (type) {
       case EmojiType.Neutral:
+        _neutralAnimationController.reverse();
+        _positiveAnimationController.forward();
+        _negativeAnimationController.forward();
         break;
       case EmojiType.Positive:
+        _neutralAnimationController.forward();
+        _positiveAnimationController.reverse();
+        _negativeAnimationController.forward();
         break;
       case EmojiType.Negative:
+        _neutralAnimationController.forward();
+        _positiveAnimationController.forward();
+        _negativeAnimationController.reverse();
         break;
     }
-
-    _timer = Timer(const Duration(milliseconds: 400), () {
-      widget.nextFlashcard();
+    setState(() {
+      selectedEmoji = type;
+      if (widget.externalUpdate) widget.forceUpdated();
     });
   }
 
-  void _logAnalyticsEvent(EmojiType type) {
-    _analyticsProvider
-        .logEvent(AnalyticsConstants.tapFlashcardConfidence, params: {
-      "id": widget.flashCard.id,
-      "front": _anHtml,
-      "confidence": describeEnum(type).toLowerCase()
+  void _tapEmoji(EmojiType type) {
+    _updateEmoji(type);
+
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      selectedEmoji = null;
+      widget.nextCard(
+          increase: true,
+          trigger: "bottom_navigation",
+          cardstatus: type.toString().substring(10));
     });
   }
 
@@ -217,7 +251,13 @@ class _FlashCardBottomState extends State<FlashCardBottom>
             large: 25,
             tablet: 35,
           ),
-          color: Colors.white,
+          color: selectedEmoji == type
+              ? selectedEmoji == EmojiType.Neutral
+                  ? Color.fromRGBO(255, 129, 49, 1)
+                  : selectedEmoji == EmojiType.Positive
+                      ? Color.fromRGBO(10, 209, 165, 1)
+                      : Color.fromRGBO(255, 184, 74, 1)
+              : Colors.white,
         ),
       ),
     );

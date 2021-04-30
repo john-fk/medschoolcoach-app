@@ -14,8 +14,8 @@ String flashcardStatusToString(FlashcardStatus status) {
   return status.toString().substring(16).toLowerCase();
 }
 
-FlashcardStatus getFlahcardStatusEnum(String status) {
-  switch (status) {
+FlashcardStatus getFlashcardStatusEnum(String status) {
+  switch (status.toLowerCase()) {
     case "new":
       return FlashcardStatus.New;
     case "seen":
@@ -97,7 +97,7 @@ class FlashcardModel {
             : DateTime.parse(json["updated_at"]),
         status: json["status"] == null
             ? null
-            : getFlahcardStatusEnum(json["status"]),
+            : getFlashcardStatusEnum(json["status"]),
         section:
             json["section"] == null ? null : Section.fromJson(json["section"]),
       );

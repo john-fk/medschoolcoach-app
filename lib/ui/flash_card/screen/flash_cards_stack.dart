@@ -39,15 +39,13 @@ class FlashCardsStack extends StatelessWidget {
         ),
         _buildBackgroundFlashCard(context),
         if (cardIndex < flashcardsStackModel.items.length)
-          Positioned.fill(
-            child: FlashCardWidget(
-              flashCard: flashcardsStackModel.items[cardIndex],
-              changeCardIndex: changeCardIndex,
-              progress: "${cardIndex + 1}/${flashcardsStackModel.items.length}",
-              front: front,
-              setFront: setFront,
-              analyticsProvider: analyticsProvider,
-            ),
+          FlashCardWidget(
+            flashCard: flashcardsStackModel.items[cardIndex],
+            changeCardIndex: changeCardIndex,
+            progress: "${cardIndex + 1}/${flashcardsStackModel.items.length}",
+            front: front,
+            setFront: setFront,
+            analyticsProvider: analyticsProvider,
           ),
       ],
     );

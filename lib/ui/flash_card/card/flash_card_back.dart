@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_button.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/flash_card_status.dart';
@@ -12,29 +10,15 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:injector/injector.dart';
 
-enum EmojiType {
-  Neutral,
-  Positive,
-  Negative,
-}
-
-typedef SetFlashcardStatus(FlashcardStatus status);
-
 class FlashCardBack extends StatefulWidget {
-  final VoidCallback nextFlashcard;
   final FlashcardModel flashCard;
   final String progress;
-  final FlashcardStatus flashcardStatus;
-  final SetFlashcardStatus setFlashcardStatus;
   final VoidCallback flip;
 
   const FlashCardBack({
     Key key,
-    @required this.nextFlashcard,
     @required this.flashCard,
     @required this.progress,
-    @required this.flashcardStatus,
-    @required this.setFlashcardStatus,
     @required this.flip,
   }) : super(key: key);
 

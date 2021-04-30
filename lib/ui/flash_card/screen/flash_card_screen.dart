@@ -2,7 +2,6 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
-import 'package:Medschoolcoach/ui/flash_card/how_to/flashcards_how_to.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -11,10 +10,10 @@ import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash_card_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_html/style.dart' as medstyles;
 import 'package:Medschoolcoach/utils/sizes.dart';
@@ -38,6 +37,8 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       Injector.appInstance.getDependency<FlashcardRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
+
+  final GlobalKey _draggableKey = GlobalKey();
 
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
@@ -115,9 +116,9 @@ class _FlashCardScreenState extends State<FlashCardScreen>
               ),
               Expanded(
                 child: _buildContent(),
-              ),
+              )
             ],
-          )
+          ),
         ],
       ),
     );
@@ -165,7 +166,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void openExplanationModal({@required BuildContext context}) {
-    final width = MediaQuery.of(context).size.width;
     List<int> tips = [1, 2, 3, 4];
 
     showModalBottomSheet<void>(
@@ -220,7 +220,9 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(height: 70, width: MediaQuery.of(context).size.width / 15),
+        SizedBox(
+            height: MediaQuery.of(context).size.height / 10,
+            width: MediaQuery.of(context).size.width / 15),
         SizedBox(
             width: whenDevice(
               context,
