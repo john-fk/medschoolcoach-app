@@ -140,14 +140,16 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
               duration: Duration(milliseconds: 200),
               child: Text(
                 userAnswer,
-                key: ValueKey<String>(userAnswer),
-                style: normalResponsiveFont(context,
-                    fontColor: FontColor.Content2),
+                style:
+                    smallResponsiveFont(context, fontColor: FontColor.Content2),
               )),
         ),
         Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
+            padding: EdgeInsets.symmetric(
+                horizontal: 30.0,
+                vertical: whenDevice(context,
+                    small: 5, medium: 6, large: 8, tablet: 10)),
             child: widget.questionsSize > 0
                 ? (FAProgressBar(
                     currentValue: ((widget.questionsSize > 0 &&
@@ -158,10 +160,15 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                         : 0,
                     backgroundColor: Color(0x4BFFFFFF),
                     progressColor: Color(0xFFFFFFFF),
-                    size: 10))
+                    size: whenDevice(context,
+                        small: 5, medium: 6, large: 8, tablet: 10)))
                 : Container()),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.fromLTRB(
+              16,
+              whenDevice(context, small: 8, medium: 12, large: 16, tablet: 32),
+              16,
+              0),
           child: Container(
             height: 1,
             color: Colors.white.withOpacity(0.2),

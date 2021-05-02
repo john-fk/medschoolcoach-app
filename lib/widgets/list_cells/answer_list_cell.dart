@@ -121,10 +121,9 @@ class AnswerListCell extends StatelessWidget {
                             question.stats.usersAnsweredCorrect.toString(),
                       },
                     ),
-                    style: smallResponsiveFont(
-                      context,
-                      fontColor: FontColor.HalfWhite,
-                    ).copyWith(
+                    style: smallResponsiveFont(context,
+                            fontColor: FontColor.White, opacity: 0.5)
+                        .copyWith(
                       fontStyle: FontStyle.italic,
                     ),
                   ),

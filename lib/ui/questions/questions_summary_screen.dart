@@ -155,7 +155,7 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
             fontColor: FontColor.Content2,
             fontWeight: FontWeight.bold,
           ),
-          legendStyle: normalResponsiveFont(
+          legendStyle: mediumResponsiveFont(
             context,
             fontColor: FontColor.Content2,
             fontWeight: FontWeight.bold,

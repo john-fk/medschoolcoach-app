@@ -159,8 +159,8 @@ class _MultipleChoiceQuestionScreenState
               ),
               Container(
                   color: Color.fromRGBO(12, 83, 199, 1),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Container(
                     child: AnimatedContainer(
                       duration: const Duration(
                         milliseconds: 300,
@@ -172,55 +172,57 @@ class _MultipleChoiceQuestionScreenState
                               tablet: 230,
                             )
                           : 0,
-                      child: SingleChildScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: whenDevice(
+                      child: Container(
+                          margin: EdgeInsets.only(
+                              top: whenDevice(
                             context,
-                            large: 31,
+                            large: 32,
                             tablet: 40,
                           )),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                  width: size.width,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      _drawBookmark(),
-                                      SizedBox(
-                                        width: 16,
-                                      ),
-                                      _drawExplanation()
-                                    ],
-                                  )),
-                              SizedBox(
-                                height: 16,
+                          child: SingleChildScrollView(
+                            physics: NeverScrollableScrollPhysics(),
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                      width: size.width,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          _drawBookmark(),
+                                          SizedBox(
+                                            width: 16,
+                                          ),
+                                          _drawExplanation()
+                                        ],
+                                      )),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  QuestionButton(
+                                    text: _currentQuestionIndex !=
+                                            _questionsList.length - 1
+                                        ? FlutterI18n.translate(
+                                            context,
+                                            "question_screen.next_question",
+                                          )
+                                        : FlutterI18n.translate(
+                                            context,
+                                            "question_screen.summerize",
+                                          ),
+                                    onPressed: _currentQuestionIndex !=
+                                            _questionsList.length - 1
+                                        ? _goToNextQuestion
+                                        : _goToSummarize,
+                                    nextQuestion: true,
+                                  )
+                                ],
                               ),
-                              QuestionButton(
-                                text: _currentQuestionIndex !=
-                                        _questionsList.length - 1
-                                    ? FlutterI18n.translate(
-                                        context,
-                                        "question_screen.next_question",
-                                      )
-                                    : FlutterI18n.translate(
-                                        context,
-                                        "question_screen.summerize",
-                                      ),
-                                onPressed: _currentQuestionIndex !=
-                                        _questionsList.length - 1
-                                    ? _goToNextQuestion
-                                    : _goToSummarize,
-                                nextQuestion: true,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                            ),
+                          )),
                     ),
                   ))
             ],
@@ -393,24 +395,19 @@ class _MultipleChoiceQuestionScreenState
                     ),
                     child: Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16.0,
-                          ),
-                          child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
-                              child: Html(
-                                  data: _questionsList[_currentQuestionIndex]
-                                      .stem,
-                                  style: {
-                                    "html": Style.fromTextStyle(
-                                        biggerResponsiveFont(
-                                      context,
-                                      fontColor: FontColor.Content2,
-                                      fontWeight: FontWeight.bold,
-                                    ))
-                                  })),
-                        ),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                            child: Html(
+                                data:
+                                    _questionsList[_currentQuestionIndex].stem,
+                                style: {
+                                  "html":
+                                      Style.fromTextStyle(biggerResponsiveFont(
+                                    context,
+                                    fontColor: FontColor.Content2,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+                                })),
                         AnimatedList(
                           key: _listKey,
                           shrinkWrap: true,
