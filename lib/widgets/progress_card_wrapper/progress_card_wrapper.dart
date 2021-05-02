@@ -1,6 +1,11 @@
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/api/models/question_bank_progress.dart';
+import 'package:Medschoolcoach/utils/api/models/flashcards_progress.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:Medschoolcoach/widgets/cards/no_progress_card.dart';
+import 'package:Medschoolcoach/widgets/progress_card/progress_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 
@@ -10,8 +15,10 @@ class ProgressCardWrapper extends StatefulWidget {
   List<Subject> allSubjects;
   String footerLinkText;
   VoidCallback onTapFooter;
+  VoidCallback onTapAction;
   final Function(Subject) onSubjectChange;
   final Widget child;
+  final bool isFlashCard;
   String selectedSubject;
 
   ProgressCardWrapper(
@@ -21,6 +28,8 @@ class ProgressCardWrapper extends StatefulWidget {
       this.allSubjects,
       this.onSubjectChange,
       this.selectedSubject = 'All',
+      this.onTapAction,
+      this.isFlashCard = true,
       this.child});
 
   @override
@@ -42,11 +51,49 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
     "Sociology",
     "Physics"
   ];
-
+  QuestionBankProgress questionBankProgress;
+  FlashcardsProgress flashCardProgress;
   _ProgressCardWrapper(this.selectedSubject);
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isFlashCard) {
+      flashCardProgress = SuperStateful.of(context).flashcardProgress;
+    } else {
+      questionBankProgress = SuperStateful.of(context).questionBankProgress;
+    }
+
+    bool noProgress;
+    double incorrect, correct, positive, negative, neutral;
+    int attempted;
+    if (widget.isFlashCard) {
+      var progress = flashCardProgress?.progress == null
+          ? null
+          : flashCardProgress?.progress[selectedSubject];
+      noProgress = progress?.attempted == null || progress.attempted == 0;
+      if (!noProgress) {
+        positive = double.parse(
+            (progress.positive / progress.attempted * 100).toStringAsFixed(1));
+        negative = double.parse(
+            (progress.negative / progress.attempted * 100).toStringAsFixed(1));
+        neutral = double.parse(
+            (progress.neutral / progress.attempted * 100).toStringAsFixed(1));
+        attempted = progress.attempted;
+      }
+    } else {
+      var progress = questionBankProgress?.progress == null
+          ? null
+          : questionBankProgress?.progress[selectedSubject];
+      noProgress = progress?.attempted == null || progress.attempted == 0;
+      if (!noProgress) {
+        incorrect = double.parse(
+            ((progress.wrong / progress.attempted) * 100).toStringAsFixed(1));
+        correct = double.parse(
+            ((progress.correct / progress.attempted) * 100).toStringAsFixed(1));
+        attempted = progress.attempted;
+      }
+    }
+
     return Card(
       elevation: 5,
       shadowColor: Colors.black.withOpacity(0.1),
@@ -83,7 +130,48 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
             SizedBox(
               height: 20,
             ),
-            widget.child,
+            noProgress
+                ? NoProgressCard(
+                    text: "progress_screen.no_questions",
+                    onTapButton: widget.onTapAction,
+                    buttonText: "progress_screen.see_questions",
+                    icon: Icons.help_outline_rounded,
+                  )
+                : widget.isFlashCard
+                    ? PracticeProgressCard(
+                        cardData: ProgressCardData(
+                            graphData: [
+                              RadianGraphData(
+                                  label: "Positive Confidence",
+                                  percent: positive,
+                                  color: Style.of(context).colors.accent4),
+                              RadianGraphData(
+                                  label: "Neutral Confidence",
+                                  percent: neutral,
+                                  color: Style.of(context).colors.premium),
+                              RadianGraphData(
+                                  label: "Negative Confidence",
+                                  percent: negative,
+                                  color: Style.of(context).colors.questions),
+                            ],
+                            graphSubtitle: attempted.toString(),
+                            graphTitle: "Total Attempted"),
+                      )
+                    : PracticeProgressCard(
+                        cardData: ProgressCardData(
+                            graphData: [
+                              RadianGraphData(
+                                  label: "Correctly Answered",
+                                  percent: correct,
+                                  color: Style.of(context).colors.accent4),
+                              RadianGraphData(
+                                  label: "Incorrectly Answered",
+                                  percent: incorrect,
+                                  color: Style.of(context).colors.questions),
+                            ],
+                            graphSubtitle: attempted.toString(),
+                            graphTitle: "Total Attempted"),
+                      ),
             SizedBox(
               height: 10,
             ),

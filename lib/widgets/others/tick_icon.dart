@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class TickIcon extends StatelessWidget {
   final double customSize;
@@ -21,23 +22,12 @@ class TickIcon extends StatelessWidget {
         : customSize;
 
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          size / 2,
-        ),
-        color: flipColor
-            ? Style.of(context).colors.accent2
-            : Style.of(context).colors.content2,
-      ),
-      child: Icon(
-        Icons.done,
-        size: size * 0.66,
-        color: flipColor
-            ? Style.of(context).colors.content2
-            : Style.of(context).colors.accent2,
-      ),
-      width: size,
+        child: SvgPicture.asset(
+      !flipColor
+          ? Style.of(context).svgAsset.qbCorrect
+          : Style.of(context).svgAsset.qbCorrectFlip,
       height: size,
-    );
+      width: size,
+    ));
   }
 }

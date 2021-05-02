@@ -123,7 +123,7 @@ class AnswerListCell extends StatelessWidget {
                     ),
                     style: smallResponsiveFont(
                       context,
-                      fontColor: FontColor.Content2,
+                      fontColor: FontColor.HalfWhite,
                     ).copyWith(
                       fontStyle: FontStyle.italic,
                     ),

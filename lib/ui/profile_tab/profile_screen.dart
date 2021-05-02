@@ -54,8 +54,8 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var horizontalInset = whenDevice(context,
-        large: 4.0, medium: 0.0, small: 0.0);
+    var horizontalInset =
+        whenDevice(context, large: 4.0, medium: 0.0, small: 0.0);
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
@@ -118,7 +118,9 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                             setState(() {});
                           },
                           trailingOpacity:
-                          snapshot.hasError || !snapshot.hasData ? 0.5 : 1.0,
+                              snapshot.hasError || !snapshot.hasData
+                                  ? 0.5
+                                  : 1.0,
                         );
                       }),
                   //Test Date
@@ -180,6 +182,16 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                         await Navigator.pushNamed(context, Routes.bookmarks);
                         setState(() {});
                       }),
+                  MorePageListCell(
+                    iconAssetName: Style.of(context).svgAsset.support,
+                    cellText: FlutterI18n.translate(
+                      context,
+                      "more_screen.support",
+                    ),
+                    onTap: () => Navigator.of(context).pushNamed(
+                      Routes.contactSupport,
+                    ),
+                  ),
                   MorePageListCell(
                     iconAssetName: Style.of(context).svgAsset.profileLogout,
                     cellText: FlutterI18n.translate(
@@ -299,7 +311,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
         onTap: () => _openSocialMediaWebsite(
           Config.secretsUrl,
         ),
-      iconSize: _getSubMenuIconSize(),
+        iconSize: _getSubMenuIconSize(),
       )
     ];
   }

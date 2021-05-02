@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ErrorIcon extends StatelessWidget {
   final double customSize;
@@ -19,23 +20,12 @@ class ErrorIcon extends StatelessWidget {
     );
 
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          whenDevice(context, large: 10, tablet: 20),
-        ),
-        color: flipColor
-            ? Style.of(context).colors.questions
-            : Style.of(context).colors.content2,
-      ),
-      child: Icon(
-        Icons.clear,
-        size: size * 0.66,
-        color: flipColor
-            ? Style.of(context).colors.content2
-            : Style.of(context).colors.questions,
-      ),
-      width: size,
+        child: SvgPicture.asset(
+      !flipColor
+          ? Style.of(context).svgAsset.qbIncorrect
+          : Style.of(context).svgAsset.qbIncorrectFlip,
       height: size,
-    );
+      width: size,
+    ));
   }
 }

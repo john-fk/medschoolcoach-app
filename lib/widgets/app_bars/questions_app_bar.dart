@@ -13,6 +13,7 @@ class QuestionAppBar extends StatefulWidget {
   final String stem;
   final bool summary;
   final bool isFlashCard;
+  bool isVisible;
   VoidCallback onHowtoTap;
 
   QuestionAppBar(
@@ -24,7 +25,8 @@ class QuestionAppBar extends StatefulWidget {
       this.questionId,
       this.summary = false,
       this.isFlashCard = false,
-      this.onHowtoTap})
+      this.onHowtoTap,
+      this.isVisible = false})
       : super(key: key);
 
   @override
@@ -39,9 +41,18 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.isVisible) {
+      Future.delayed(Duration(milliseconds: 200), () {
+        setState(() {
+          widget.isVisible = true;
+        });
+      });
+    }
+
     String userAnswer = "";
-    userAnswer = widget.questionsSize > 0
-        ? "${widget.currentQuestion}/${widget.questionsSize}"
+    userAnswer = widget.questionsSize > 0 &&
+            !(!widget.isVisible && widget.currentQuestion == 1)
+        ? "${widget.currentQuestion - (widget.isVisible ? 0 : 1)}/${widget.questionsSize}"
         : "";
     return Column(
       children: <Widget>[
@@ -125,8 +136,8 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           alignment: Alignment.center,
           margin: const EdgeInsets.only(top: 0),
           child: AnimatedOpacity(
-              opacity: 1.0,
-              duration: Duration(milliseconds: 500),
+              opacity: widget.isVisible ? 1.0 : 0.0,
+              duration: Duration(milliseconds: 200),
               child: Text(
                 userAnswer,
                 key: ValueKey<String>(userAnswer),

@@ -276,7 +276,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   child: ProgressBar(),
                 ),
               )));
-    } 
+    }
     return CourseProgressCard(
       onRefresh: () {
         _fetchCourseProgress();
@@ -285,183 +285,59 @@ class _ProgressScreenState extends State<ProgressScreen> {
     );
   }
 
-  Widget _buildFlashcardsCard() {
-    if (_flashcardProgressLoading) {
-      return Card(
-          elevation: 5,
-          shadowColor: Colors.black.withOpacity(0.1),
-          child: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: whenDevice(
-                context,
-                medium: 100,
-                large: 100,
-                tablet: 150,
-              )),
-              child: Container(
-                child: Center(
-                  child: ProgressBar(),
-                ),
-              )));
-    }
-    FlashcardsProgress flashcardsProgress =
-        SuperStateful.of(context).flashcardProgress;
-    var progress = flashcardsProgress?.progress == null
-        ? null
-        : flashcardsProgress?.progress[selectedFlashcardSubject];
-    if (progress?.attempted == null || progress.attempted == 0) {
-      return ProgressCardWrapper(
-          selectedSubject: selectedFlashcardSubject,
-          allSubjects: allSubjects,
-          title: "progress_screen.flashcards",
-          footerLinkText: null,
-          onTapFooter: () async {
-            routeToFlashcards();
-          },
-          onSubjectChange: (subject) {
-            _analyticsProvider.logEvent("filter_flashcard_subject",
-                params: {"subject_name": subject.name});
-            setState(() {
-              selectedFlashcardSubject = subject.name;
-            });
-          },
-          child: NoProgressCard(
-            icon: Icons.flash_on,
-            text: "progress_screen.no_flashcards",
-            buttonText: "progress_screen.try_flashcards",
-            onTapButton: () async {
-              routeToFlashcards();
-            },
-          ));
-    }
+  Widget _loadingCard() {
+    return Card(
+        elevation: 5,
+        shadowColor: Colors.black.withOpacity(0.1),
+        child: Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: whenDevice(
+              context,
+              medium: 100,
+              large: 100,
+              tablet: 150,
+            )),
+            child: Container(
+              child: Center(
+                child: ProgressBar(),
+              ),
+            )));
+  }
 
-    var positive = double.parse(
-        (progress.positive / progress.attempted * 100).toStringAsFixed(1));
-    var negative = double.parse(
-        (progress.negative / progress.attempted * 100).toStringAsFixed(1));
-    var neutral = double.parse(
-        (progress.neutral / progress.attempted * 100).toStringAsFixed(1));
+  Widget _buildFlashcardsCard() {
+    if (_flashcardProgressLoading) return _loadingCard();
+
     return ProgressCardWrapper(
         selectedSubject: selectedFlashcardSubject,
         allSubjects: allSubjects,
         title: "progress_screen.flashcards",
         footerLinkText: "progress_screen.goto_flashcards",
+        onTapAction: routeToFlashcards,
+        isFlashCard: true,
         onTapFooter: () async {
           routeToFlashcards();
         },
         onSubjectChange: (subject) {
-          _analyticsProvider.logEvent("filter_flashcard_subject",
-              params: {"subject_name": subject.name});
-          setState(() {
-            selectedFlashcardSubject = subject.name;
-          });
-        },
-        child: PracticeProgressCard(
-          cardData: ProgressCardData(
-              graphData: [
-                RadianGraphData(
-                    label: "Positive Confidence",
-                    percent: positive,
-                    color: Style.of(context).colors.accent4),
-                RadianGraphData(
-                    label: "Neutral Confidence",
-                    percent: neutral,
-                    color: Style.of(context).colors.premium),
-                RadianGraphData(
-                    label: "Negative Confidence",
-                    percent: negative,
-                    color: Style.of(context).colors.questions),
-              ],
-              graphSubtitle: progress.attempted.toString(),
-              graphTitle: "Total Attempted"),
-        ));
+          updateSubject(subject, false);
+        });
   }
 
   Widget _buildQuestionBankProgressCard() {
-    if (_questionBankProgressLoading) {
-      return Card(
-          elevation: 5,
-          shadowColor: Colors.black.withOpacity(0.1),
-          child: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: whenDevice(
-                context,
-                medium: 100,
-                large: 100,
-                tablet: 150,
-              )),
-              child: Container(
-                child: Center(
-                  child: ProgressBar(),
-                ),
-              )));
-    }
-    QuestionBankProgress questionBankProgress =
-        SuperStateful.of(context).questionBankProgress;
-    var progress = questionBankProgress?.progress == null
-        ? null
-        : questionBankProgress?.progress[selectedQuestionBankSubject];
-    if (progress?.attempted == null || progress.attempted == 0) {
-      return ProgressCardWrapper(
-          selectedSubject: selectedQuestionBankSubject,
-          allSubjects: allSubjects,
-          title: "progress_screen.question_bank",
-          footerLinkText: null,
-          onTapFooter: () async {
-            routeToQuestionBank();
-          },
-          onSubjectChange: (subject) {
-            _analyticsProvider.logEvent("filter_question_subject",
-                params: {"subject_name": subject.name});
-            setState(() {
-              selectedQuestionBankSubject = subject.name;
-            });
-          },
-          child: NoProgressCard(
-            text: "progress_screen.no_questions",
-            onTapButton: () async {
-              routeToQuestionBank();
-            },
-            buttonText: "progress_screen.see_questions",
-            icon: Icons.help_outline_rounded,
-          ));
-    }
-
-    var incorrect = double.parse(
-        ((progress.wrong / progress.attempted) * 100).toStringAsFixed(1));
-    var correct = double.parse(
-        ((progress.correct / progress.attempted) * 100).toStringAsFixed(1));
+    if (_questionBankProgressLoading) return _loadingCard();
 
     return ProgressCardWrapper(
         selectedSubject: selectedQuestionBankSubject,
         allSubjects: allSubjects,
         title: "progress_screen.question_bank",
+        isFlashCard: false,
         footerLinkText: "progress_screen.goto_question_bank",
+        onTapAction: routeToQuestionBank,
         onTapFooter: () async {
           routeToQuestionBank();
         },
         onSubjectChange: (subject) {
-          _analyticsProvider.logEvent("filter_question_subject",
-              params: {"subject_name": subject.name});
-          setState(() {
-            selectedQuestionBankSubject = subject.name;
-          });
-        },
-        child: PracticeProgressCard(
-          cardData: ProgressCardData(
-              graphData: [
-                RadianGraphData(
-                    label: "Correctly Answered",
-                    percent: correct,
-                    color: Style.of(context).colors.accent4),
-                RadianGraphData(
-                    label: "Incorrectly Answered",
-                    percent: incorrect,
-                    color: Style.of(context).colors.questions),
-              ],
-              graphSubtitle: progress.attempted.toString(),
-              graphTitle: "Total Attempted"),
-        ));
+          updateSubject(subject, true);
+        });
   }
 
   Widget _label(String text) {
@@ -472,6 +348,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
         style: bigResponsiveFont(context, fontWeight: FontWeight.w700),
       ),
     );
+  }
+
+  void updateSubject(Subject subject, bool isQB) {
+    _analyticsProvider.logEvent("filter_question_subject",
+        params: {"subject_name": subject.name});
+
+    if (isQB)
+      selectedQuestionBankSubject = subject.name;
+    else
+      selectedFlashcardSubject = subject.name;
   }
 
   void routeToFlashcards() {

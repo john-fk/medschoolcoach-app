@@ -18,7 +18,8 @@ enum FontColor {
   Premium,
   Unselected,
   BannerOrange,
-  HalfWhite
+  HalfWhite,
+  White
 }
 
 Color _getFontColor(BuildContext context, FontColor fontColor) {
@@ -53,6 +54,8 @@ Color _getFontColor(BuildContext context, FontColor fontColor) {
       return Color(0xff757575);
     case FontColor.HalfWhite:
       return Color(0x7AFFFFFF);
+    case FontColor.White:
+      return Color(0xFFFFFFFF);
     case FontColor.Content:
     default:
       return Style.of(context).colors.content;

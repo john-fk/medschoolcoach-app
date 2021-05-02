@@ -42,6 +42,9 @@ class SecondaryButton extends StatelessWidget {
         questions: Style.of(context).colors.questions,
         qualifyingText: Style.of(context).colors.qualifyingText,
         border: Style.of(context).colors.border,
+        qbIncorrect: Style.of(context).colors.qbIncorrect,
+        qbCorrect: Style.of(context).colors.qbCorrect,
+        bottomSlider: Style.of(context).colors.bottomSlider,
       ),
       child: PrimaryButton(
         onPressed: onPressed,

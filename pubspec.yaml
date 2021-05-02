@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  animated_size_and_fade: ^1.1.4
   yaml: 2.2.1
   json_annotation: 3.0.1
   intl: 0.16.1

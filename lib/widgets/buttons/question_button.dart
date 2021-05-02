@@ -39,7 +39,7 @@ class QuestionButton extends StatelessWidget {
         onPressed: onPressed,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(whenDevice(context,
-              large: nextQuestion ? 25 : 12, tablet: nextQuestion ? 50 : 25)),
+              large: nextQuestion ? 25 : 8, tablet: nextQuestion ? 50 : 15)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -84,19 +84,21 @@ class QuestionButton extends StatelessWidget {
                       ),
               ),
             ),
-            SizedBox(
-              width: nextQuestion ? 0 : 5,
-            ),
+            nextQuestion
+                ? Container()
+                : SizedBox(
+                    width: 5,
+                  ),
             nextQuestion ? Container() : _buildProperIcon(context),
           ],
         ),
         color: showAnswer
             ? (isCorrect
-                ? medstyles.Style.of(context).colors.accent2
+                ? medstyles.Style.of(context).colors.qbCorrect
                 : (pressed == optionLetter
-                    ? medstyles.Style.of(context).colors.questions
-                    : medstyles.Style.of(context).colors.content2))
-            : medstyles.Style.of(context).colors.content2,
+                    ? medstyles.Style.of(context).colors.qbIncorrect
+                    : Colors.white))
+            : Colors.white,
       ),
     );
   }

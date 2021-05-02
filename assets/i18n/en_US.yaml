@@ -33,7 +33,7 @@ home_screen:
   video_watched_toast: Video marked as watched
   video_unwatched_toast: Video marked as unwatched
   video: Video
-  question_of_the_day: Question Of The Day
+  question_of_the_day: Questions Of The Day
   flashcards: Flashcards
   question_bank: Question Bank
 bloc_example_screen:

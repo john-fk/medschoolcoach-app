@@ -67,6 +67,14 @@ class _AppSvgAssets {
   final questionArrowNext = "assets/svg/question_arrow_next.svg";
   final pickSchedule = "assets/svg/pick_schedule.svg";
 
+  //question banks
+  final qbCorrect = "assets/svg/qbCorrect.svg";
+  final bookmarkQB = "assets/svg/qbBookmark.svg";
+  final bookmarkedQB = "assets/svg/qbBookmarked.svg";
+  final qbIncorrect = "assets/svg/qbIncorrect.svg";
+  final qbCorrectFlip = "assets/svg/qbCorrectFlip.svg";
+  final qbIncorrectFlip = "assets/svg/qbIncorrectFlip.svg";
+
   //how to in flashcards
   final flipTips = "assets/svg/flip_tips";
   final flipTips4 = "assets/svg/flip_tips1.svg";

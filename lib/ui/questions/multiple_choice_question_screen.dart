@@ -15,6 +15,8 @@ import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -67,7 +69,7 @@ class MultipleChoiceQuestionScreen extends StatefulWidget {
 }
 
 class _MultipleChoiceQuestionScreenState
-    extends State<MultipleChoiceQuestionScreen> {
+    extends State<MultipleChoiceQuestionScreen> with TickerProviderStateMixin {
   final _questionsRepository =
       Injector.appInstance.getDependency<QuestionsRepository>();
   final _questionsDayRepository =
@@ -84,6 +86,7 @@ class _MultipleChoiceQuestionScreenState
   int wrongAnswers = 0;
   final List<String> _answeredQuestionsIds = [];
   int _currentQuestionIndex = 0;
+  int _previousQuestionIndex;
   List<Question> _questionsList = [];
   List<Answer> _answers = [];
   bool _loading = false;
@@ -137,16 +140,16 @@ class _MultipleChoiceQuestionScreenState
           Column(
             children: <Widget>[
               QuestionAppBar(
-                category: widget.arguments.screenName,
-                currentQuestion: _currentQuestionIndex + 1,
-                questionsSize: _questionsList.length,
-                questionId: _questionsList.isNotEmpty
-                    ? _questionsList[_currentQuestionIndex].id
-                    : "",
-                stem: _questionsList.isNotEmpty
-                    ? _questionsList[_currentQuestionIndex].stem
-                    : "",
-              ),
+                  category: widget.arguments.screenName,
+                  currentQuestion: _currentQuestionIndex + 1,
+                  questionsSize: _questionsList.length,
+                  questionId: _questionsList.isNotEmpty
+                      ? _questionsList[_currentQuestionIndex].id
+                      : "",
+                  stem: _questionsList.isNotEmpty
+                      ? _questionsList[_currentQuestionIndex].stem
+                      : "",
+                  isVisible: _previousQuestionIndex == _currentQuestionIndex),
               Expanded(
                 child: _loading
                     ? Center(
@@ -157,7 +160,7 @@ class _MultipleChoiceQuestionScreenState
               Container(
                   color: Color.fromRGBO(12, 83, 199, 1),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: AnimatedContainer(
                       duration: const Duration(
                         milliseconds: 300,
@@ -172,7 +175,12 @@ class _MultipleChoiceQuestionScreenState
                       child: SingleChildScrollView(
                         physics: NeverScrollableScrollPhysics(),
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          margin: EdgeInsets.symmetric(
+                              vertical: whenDevice(
+                            context,
+                            large: 31,
+                            tablet: 40,
+                          )),
                           child: Column(
                             children: <Widget>[
                               Container(
@@ -225,27 +233,35 @@ class _MultipleChoiceQuestionScreenState
   InkWell _drawBookmark() {
     final size = whenDevice(context, large: 25.0, tablet: 40.0);
     return InkWell(
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            (_favourite != null ? _favourite : _getFavourite())
-                ? Icon(
-                    Icons.bookmark,
-                    color: Colors.white,
-                    size: size,
-                  )
-                : Icon(
-                    Icons.bookmark_border,
-                    color: Colors.white,
-                    size: size,
-                  ),
-            Text("Save",
-                style: mediumResponsiveFont(context,
-                    fontColor: FontColor.DividerColor))
-          ]),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Container(
+            height: size,
+            child: FittedBox(
+              fit: BoxFit.fitHeight,
+              child: AnimatedSizeAndFade(
+                  vsync: this,
+                  fadeDuration: const Duration(milliseconds: 1000),
+                  child: (_favourite != null ? _favourite : _getFavourite())
+                      ? booked
+                      : unbooked),
+            )),
+        Text("Save",
+            style: mediumResponsiveFont(context,
+                fontColor: FontColor.DividerColor))
+      ]),
       onTap: _onTap,
     );
   }
+
+  var unbooked = Container(
+    key: ValueKey("unbooked"),
+    child: SvgPicture.asset("assets/svg/qbBookmark.svg"),
+  );
+
+  var booked = Container(
+    key: ValueKey("booked"),
+    child: SvgPicture.asset("assets/svg/qbBookmarked.svg"),
+  );
 
   Future<void> _onTap() async {
     bool initialValue = _favourite;
@@ -297,9 +313,38 @@ class _MultipleChoiceQuestionScreenState
         _logQuestionEvent(AnalyticsConstants.tapViewExplanation);
         openExplanationModal(
           context: context,
-          explanationText: _questionsList[_currentQuestionIndex].explanation,
+          title: FlutterI18n.translate(context, "question_screen.explanation"),
+          content:
+              explanation(_questionsList[_currentQuestionIndex].explanation),
         );
       },
+    );
+  }
+
+  Widget explanation(String explanationText) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+              Html(
+                  data: explanationText +
+                      explanationText +
+                      explanationText +
+                      explanationText +
+                      explanationText +
+                      explanationText,
+                  style: {
+                    "html": Style.fromTextStyle(
+                      normalResponsiveFont(context,
+                          fontColor: FontColor.Content2),
+                    )
+                  })
+            ]))
+      ],
     );
   }
 
@@ -497,6 +542,7 @@ class _MultipleChoiceQuestionScreenState
 
   void _showAnswers(int index) {
     _updateState(() {
+      _previousQuestionIndex = _currentQuestionIndex;
       _selectedIndex = index;
       _firstPressed = true;
     });
@@ -526,6 +572,7 @@ class _MultipleChoiceQuestionScreenState
         });
       }
     }
+    _previousQuestionIndex = _currentQuestionIndex;
   }
 
   void _logShowAnswersEvent(int index) {
@@ -592,6 +639,7 @@ class _MultipleChoiceQuestionScreenState
     _updateState(() {
       _loading = true;
     });
+    _previousQuestionIndex = -1;
     switch (widget.arguments.status) {
       case QuestionStatusType.flagged:
         await _fetchFavouriteQuestions();
