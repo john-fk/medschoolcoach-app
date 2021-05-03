@@ -46,7 +46,6 @@ dependencies:
   flutter_appauth:
   auto_size_text: ^2.1.0
   shake: ^0.1.0
-  flutter_swipable: ^0.1.1
   syncfusion_flutter_datepicker:
   vector_math: ^2.0.8
   percent_indicator: "^2.1.7+2"

@@ -135,7 +135,9 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
                     text: "progress_screen.no_questions",
                     onTapButton: widget.onTapAction,
                     buttonText: "progress_screen.see_questions",
-                    icon: Icons.help_outline_rounded,
+                    icon: widget.isFlashCard
+                        ? Icons.flash_on
+                        : Icons.help_outline_rounded,
                   )
                 : widget.isFlashCard
                     ? PracticeProgressCard(

@@ -9,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_swipable/flutter_swipable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -243,10 +242,10 @@ class FlashCardBottomState extends State<FlashCardBottom>
           fit: BoxFit.fitHeight,
           color: selectedEmoji == type
               ? selectedEmoji == EmojiType.Neutral
-                  ? Color.fromRGBO(255, 129, 49, 1)
+                  ? Color(0xFFFF8131)
                   : selectedEmoji == EmojiType.Positive
-                      ? Color.fromRGBO(10, 209, 165, 1)
-                      : Color.fromRGBO(255, 184, 74, 1)
+                      ? Color(0xFF0AD1A5)
+                      : Color(0xFFFFB84A)
               : Colors.white,
         ),
       ),

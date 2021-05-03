@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:rxdart/subjects.dart' as _rxsub;
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
@@ -16,6 +15,8 @@ import 'dart:async';
 import 'flash_card_widget.dart';
 import 'flash_card_back.dart';
 import 'flash_card_front.dart';
+import 'flash_card_top.dart';
+
 import 'swipable.dart';
 
 enum EmojiType {
@@ -25,22 +26,26 @@ enum EmojiType {
 }
 
 typedef nextFlashCard({bool increase, String trigger, String cardstatus});
+typedef updateEmoji(String event, double opacity);
 typedef logEvent(String event, {dynamic additionalParams});
 
 class FlashCardSwipe extends StatefulWidget {
   final nextFlashCard nextCard;
   final logEvent logEvents;
+  final updateEmoji emojiMe;
   final String progress;
 
   final double wCard;
   final double hCard;
   final FlashcardModel flashCard;
+
   FlashCardSwipe(
       {this.wCard,
       this.hCard,
       this.nextCard,
       this.logEvents,
       this.progress,
+      this.emojiMe,
       this.flashCard,
       Key key})
       : super(key: key);
@@ -55,6 +60,8 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
   StreamController<double> _controller = StreamController<double>();
+  final GlobalKey<FlashCardTopState> _flashcardtop =
+      GlobalKey<FlashCardTopState>();
 
   bool _showFrontSide;
   int _flipBack = 0;
@@ -64,10 +71,16 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   Animation<double> _fadeAnimation;
   FlashcardStatus _flashcardStatus;
   bool emojiClick;
-  _rxsub.BehaviorSubject<bool> willAcceptStream;
+  Color topColor;
+  String topText;
 
+  double screenWidth;
+  double screenHeight;
+  DragStartDetails startPosition;
   @override
   void initState() {
+    topColor = Color.fromRGBO(0, 0, 0, 0.0);
+    topText = "";
     super.initState();
     _flashcardStatus = widget.flashCard.status;
     _setupAnimations();
@@ -75,15 +88,12 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     _hideCard = true;
 
     Future.delayed(Duration(milliseconds: 300), toggleCardVisibility);
-
-    willAcceptStream = _rxsub.BehaviorSubject<bool>();
-    willAcceptStream.add(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.width;
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     if (_hideCard) {
       _controller = StreamController<double>();
     } else {
@@ -102,6 +112,9 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
                         onSwipeRight: positiveConfidence,
                         onSwipeLeft: negativeConfidence,
                         onSwipeDown: neutralConfidence,
+                        onSwipeStart: startDrag,
+                        onSwipeCancel: endDrag,
+                        onPositionChanged: confidenceDrag,
                         swipe: _controller.stream,
                         child: Container(
                             alignment: Alignment.center,
@@ -148,6 +161,8 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
               width: widget.wCard,
               height: widget.hCard,
               child: FlashCardFront(
+                height: widget.hCard,
+                width: widget.wCard,
                 progress: widget.progress,
                 flashCard: widget.flashCard,
                 flip: _switchCard,
@@ -204,16 +219,25 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   Widget _draggableCard([bool isFeedback = false]) {
-    return GestureDetector(
-        onTap: _switchCard,
-        child: AnimatedSwitcher(
-          duration: Duration(milliseconds: flipBack() ? 0 : 300),
-          transitionBuilder: __transitionBuilder,
-          layoutBuilder: (widget, list) => Stack(children: [widget, ...list]),
-          child: _showFrontSide ? _buildCardFront() : _buildCardRear(),
-          switchInCurve: Curves.easeInBack,
-          switchOutCurve: Curves.easeInBack.flipped,
-        ));
+    return Stack(children: [
+      Align(
+          alignment: Alignment.center,
+          child: GestureDetector(
+              onTap: _switchCard,
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: flipBack() ? 0 : 300),
+                transitionBuilder: __transitionBuilder,
+                layoutBuilder: (widget, list) =>
+                    Stack(children: [widget, ...list]),
+                child: _showFrontSide ? _buildCardFront() : _buildCardRear(),
+                switchInCurve: Curves.easeInBack,
+                switchOutCurve: Curves.easeInBack.flipped,
+              ))),
+      Align(
+          alignment: Alignment.center,
+          child: FlashCardTop(
+              key: _flashcardtop, height: widget.hCard, width: widget.wCard)),
+    ]);
   }
 
   bool flipBack() {
@@ -282,8 +306,58 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     }
   }
 
-  //this will trigger confidences from swipe and proceed to animate to next card
-  //
+  void startDrag(DragStartDetails details) {
+    startPosition = details;
+  }
+
+  void endDrag(Offset position, DragEndDetails details) {
+    _flashcardtop.currentState.updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
+    return;
+  }
+
+  double calculateOpacity(double X, double space) {
+    return X / space > 1 ? 1 : (X / space);
+  }
+
+  //these will be triggered on drag
+  void confidenceDrag(DragUpdateDetails position) {
+    double moveX = position.globalPosition.dx - startPosition.globalPosition.dx;
+    double moveY = position.globalPosition.dy - startPosition.globalPosition.dy;
+    double verticalSpace =
+        (screenHeight - (startPosition.localPosition.dy + widget.hCard / 2)) /
+            2;
+    double horizontalSpace = (screenWidth - widget.wCard) / 2;
+    if (moveY > moveX.abs()) {
+      setConfidenceHelper(calculateOpacity(moveY, verticalSpace), "bottom");
+    } else if (moveX > 0) {
+      setConfidenceHelper(calculateOpacity(moveX, horizontalSpace), "right");
+    } else {
+      setConfidenceHelper(
+          calculateOpacity(moveX.abs(), horizontalSpace), "left");
+    }
+  }
+
+  void setConfidenceHelper(double opacity, String type) {
+    //update opacity & text for top banner
+    switch (type) {
+      case "left":
+        _flashcardtop.currentState.updateTab(
+            Color(0xFFFFAEA6).withOpacity(opacity), "Negative Confidence");
+        break;
+      case "right":
+        _flashcardtop.currentState.updateTab(
+            Color(0xFF009D7A).withOpacity(opacity), "Positive Confidence");
+        break;
+      case "bottom":
+        _flashcardtop.currentState.updateTab(
+            Color(0xFFFFB84A).withOpacity(opacity), "Neutral Confidence");
+        break;
+    }
+    //update opacity for bottom icon
+    return null;
+  }
+  //these will trigger confidences from swipe and proceed to animate to next card
+
   void negativeConfidence(Offset offset) {
     triggerConfidence("negative");
   }

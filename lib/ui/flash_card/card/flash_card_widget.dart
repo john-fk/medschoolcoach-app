@@ -57,8 +57,10 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     with TickerProviderStateMixin {
   FlashcardStatus _flashcardStatus;
   Orientation _currentOrientation;
-  final GlobalKey<FlashCardBottomState> _flashCardBottom = GlobalKey();
-  final GlobalKey<FlashCardSwipeState> _flashCardSwipe = GlobalKey();
+  final GlobalKey<FlashCardBottomState> _flashCardBottom =
+      GlobalKey<FlashCardBottomState>();
+  final GlobalKey<FlashCardSwipeState> _flashCardSwipe =
+      GlobalKey<FlashCardSwipeState>();
 
   @override
   void initState() {
@@ -86,6 +88,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         child: Stack(children: [
           FlashCardSwipe(
               key: _flashCardSwipe,
+              emojiMe: updateEmoji,
               wCard: wCard,
               hCard: hCard,
               flashCard: widget.flashCard,
@@ -97,6 +100,23 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
               updatedOption: false,
               status: widget.flashCard.status.toString().split(".")[1]),
         ]));
+  }
+
+  void updateEmoji(String event, double opacity) {
+    switch (event) {
+      //triggered on start drag
+      case "reset":
+        break;
+      //triggered on return drag condition not met
+      case "return":
+        break;
+      case "left":
+        break;
+      case "right":
+        break;
+      case "bottom":
+        break;
+    }
   }
 
   void _setFlashcardStatus(FlashcardStatus status) {

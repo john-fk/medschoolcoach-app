@@ -178,7 +178,6 @@ class SwipableState extends State<Swipable> {
     bool shouldSwipe = potentialX.abs() >= width || potentialY.abs() >= height;
 
     if (shouldSwipe) {
-      // horizontal speed or vertical speed is enough to make the card disappear in _duration ms.
       newX = potentialX;
       newY = potentialY;
 
