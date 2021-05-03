@@ -24,7 +24,7 @@ void openExplanationModal(
             children: [
               Container(
                 width: (MediaQuery.of(context).size.width - 32) / 4,
-                margin: EdgeInsets.only(top: 10),
+                margin: EdgeInsets.only(top: 10, bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -69,14 +69,7 @@ void openExplanationModal(
       backgroundColor: medstyles.Style.of(context).colors.accent,
       context: context,
       builder: (context) {
-        return DraggableScrollableSheet(
-            initialChildSize: 0.5,
-            maxChildSize: 1,
-            minChildSize: 0.25,
-            builder: (BuildContext context, ScrollController scrollController) {
-              return _content();
-            });
+        return _content();
       });
-
   ;
 }

@@ -207,12 +207,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-            width: whenDevice(
-              context,
-              medium: 50,
-              large: 90,
-              tablet: 83,
-            ),
             height: whenDevice(
               context,
               medium: 50,
@@ -221,13 +215,10 @@ class _FlashCardScreenState extends State<FlashCardScreen>
             ),
             child: Container(
                 alignment: Alignment.center,
-                padding:
-                    EdgeInsets.fromLTRB(tipsNumber % 2 == 1 ? 10 : 0, 0, 0, 0),
                 child: SvgPicture.asset(
                   Style.of(context).svgAsset.flipTips +
                       tipsNumber.toString() +
                       ".svg",
-                  fit: BoxFit.contain,
                 ))),
         SizedBox(
             width: whenDevice(
