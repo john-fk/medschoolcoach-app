@@ -1,11 +1,13 @@
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/pop_back_questions.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class QuestionAppBar extends StatefulWidget {
+  final Function onChange;
   final String category;
   final int currentQuestion;
   final int questionsSize;
@@ -19,6 +21,7 @@ class QuestionAppBar extends StatefulWidget {
   QuestionAppBar(
       {Key key,
       @required this.category,
+      this.onChange,
       this.currentQuestion,
       this.stem,
       this.questionsSize,
@@ -39,8 +42,24 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
     super.dispose();
   }
 
+  var widgetKey = GlobalKey();
+  Size oldSize;
+
+  void postFrameCallback() {
+    var context = widgetKey.currentContext;
+    if (context == null) return;
+
+    var newSize = context.size;
+    if (oldSize == newSize) return;
+
+    oldSize = newSize;
+    if (widget.onChange != null) widget.onChange(newSize);
+  }
+
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) => postFrameCallback());
+
     if (!widget.isVisible) {
       Future.delayed(Duration(milliseconds: 200), () {
         setState(() {
@@ -55,6 +74,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
         ? "${widget.currentQuestion - (widget.isVisible ? 0 : 1)}/${widget.questionsSize}"
         : "";
     return Column(
+      key: widgetKey,
       children: <Widget>[
         Container(
           color: Colors.transparent,

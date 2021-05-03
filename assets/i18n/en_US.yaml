@@ -293,6 +293,8 @@ flashcards_tips:
   tips3_subtitle: Indicate neutral confidence
   tips4_title: Swipe right
   tips4_subtitle: Indicate positive confidence
+  tips5_title : Shake phone
+  tips5_subtitle: Return to previous question
 flashcards_how_to:
   welcome: Welcome to Flashcards
   flip: Tap on the card to flip it

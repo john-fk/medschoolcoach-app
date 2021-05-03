@@ -140,7 +140,7 @@ TextStyle biggerResponsiveFont(
   return TextStyle(
     color: _getFontColor(context, fontColor).withOpacity(opacity),
     fontWeight: fontWeight,
-    fontSize: whenDevice(context, large: 20, tablet: 32),
+    fontSize: whenDevice(context, medium: 15, large: 20, tablet: 32),
   );
 }
 

@@ -332,19 +332,11 @@ class _MultipleChoiceQuestionScreenState
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-              Html(
-                  data: explanationText +
-                      explanationText +
-                      explanationText +
-                      explanationText +
-                      explanationText +
-                      explanationText,
-                  style: {
-                    "html": Style.fromTextStyle(
-                      normalResponsiveFont(context,
-                          fontColor: FontColor.Content2),
-                    )
-                  })
+              Html(data: explanationText, style: {
+                "html": Style.fromTextStyle(
+                  normalResponsiveFont(context, fontColor: FontColor.Content2),
+                )
+              })
             ]))
       ],
     );

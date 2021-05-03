@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:rxdart/subjects.dart' as _rxsub;
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
@@ -11,6 +12,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
+import 'package:shake/shake.dart';
 
 import 'flash_card_back.dart';
 import 'flash_card_front.dart';
@@ -31,11 +33,11 @@ class FlashCardWidget extends StatefulWidget {
   final SetFront setFront;
   final bool front;
   final AnalyticsProvider analyticsProvider;
-
+  final Size cardArea;
   static const flashCardWidthFactor = 0.75;
-  static const flashCardHeightFactor = 0.65;
+  static const flashCardHeightFactor = 1;
   static const flashCardBottomMarginFactor = 0.1;
-  static const animationDurationValue = 500;
+  static const animationDurationValue = 200;
 
   const FlashCardWidget(
       {Key key,
@@ -44,6 +46,7 @@ class FlashCardWidget extends StatefulWidget {
       @required this.progress,
       @required this.front,
       @required this.setFront,
+      @required this.cardArea,
       @required this.analyticsProvider})
       : super(key: key);
 
@@ -61,11 +64,12 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   bool _showFrontSide;
   int _flipBack = 0;
   bool _hideCard;
-  double bCard;
   double wCard;
   double hCard;
   String _currentConfidence;
   bool _externalUpdate;
+  _rxsub.BehaviorSubject<bool> willAcceptStream;
+  final GlobalKey<FlashCardBottomState> _flashCardBottom = GlobalKey();
 
   @override
   void initState() {
@@ -74,9 +78,16 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     _showFrontSide = true;
     _externalUpdate = false;
     _hideCard = true;
-    Future.delayed(Duration(milliseconds: 500), () {
-      toggleCardVisibility();
+
+    Future.delayed(Duration(milliseconds: 500), toggleCardVisibility);
+
+    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
+      // Do stuff on phone shake
+      widget.changeCardIndex(increase: false);
     });
+
+    willAcceptStream = _rxsub.BehaviorSubject<bool>();
+    willAcceptStream.add(false);
   }
 
   void toggleCardVisibility({bool flipback = false}) {
@@ -87,7 +98,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       _externalUpdate = false;
     });
     if (flipback) {
-      Future.delayed(Duration(milliseconds: 800), () {
+      Future.delayed(Duration(milliseconds: 300), () {
         setState(() {
           _hideCard = !_hideCard;
         });
@@ -125,57 +136,61 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       setState(() {});
     }
 
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = widget.cardArea.height;
+    final width = widget.cardArea.width;
 
-    bCard = height * FlashCardWidget.flashCardBottomMarginFactor;
     wCard = width * FlashCardWidget.flashCardWidthFactor;
-    hCard = height * FlashCardWidget.flashCardHeightFactor;
+    hCard = widget.cardArea.height * FlashCardWidget.flashCardHeightFactor;
 
     _currentConfidence = _externalUpdate
         ? _currentConfidence
         : widget.flashCard.status.toString().split(".")[1];
 
-    return Stack(children: [
-      //swipe left target
-      DragTarget<String>(onAccept: (value) {
-        swipeAction("Negative");
-      }, builder: (_, candidateData, rejectedData) {
-        return Container(width: width / 4, height: height);
-      }),
-      //Swipe right target
-      Positioned(
-          top: 0,
-          bottom: 0,
-          right: 0,
-          child: DragTarget<String>(onAccept: (value) {
-            swipeAction("Positive");
+    return Container(
+        width: widget.cardArea.width,
+        child: Stack(children: [
+          //swipe left target
+          DragTarget<String>(onAccept: (value) {
+            swipeAction("Negative");
           }, builder: (_, candidateData, rejectedData) {
             return Container(width: width / 4, height: height);
-          })),
-      //swipe down
-      Positioned(
-          bottom: 0,
-          left: width * 0.25,
-          child: DragTarget<String>(onAccept: (value) {
-            swipeAction("Neutral");
-          }, builder: (_, candidateData, rejectedData) {
-            return Container(width: width * 0.5, height: height / 3);
-          })),
-      AnimatedOpacity(
-          opacity: _hideCard ? 0 : 1,
-          duration:
-              Duration(milliseconds: FlashCardWidget.animationDurationValue),
-          child: Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(top: 20),
-              child: _buildFlipAnimation())),
-      FlashCardBottom(
-          nextCard: _nextFlashcard,
-          updatedOption: _externalUpdate,
-          forceUpdated: forceUpdated,
-          status: _currentConfidence),
-    ]);
+          }),
+          //Swipe right target
+          Positioned(
+              top: 0,
+              bottom: 0,
+              right: 0,
+              child: DragTarget<String>(onAccept: (value) {
+                swipeAction("Positive");
+              }, builder: (_, candidateData, rejectedData) {
+                return Container(width: width / 4, height: height);
+              })),
+          //swipe down
+          Positioned(
+              bottom: 0,
+              left: width * 0.25,
+              child: DragTarget<String>(onAccept: (value) {
+                swipeAction("Neutral");
+              }, builder: (_, candidateData, rejectedData) {
+                return Container(width: width * 0.5, height: height / 3);
+              })),
+          Container(
+              child: Center(
+                  child: AnimatedOpacity(
+                      opacity: _hideCard ? 0 : 1,
+                      duration: Duration(
+                          milliseconds: FlashCardWidget.animationDurationValue),
+                      child: Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(top: 20),
+                          child: _buildFlipAnimation())))),
+          FlashCardBottom(
+              key: _flashCardBottom,
+              nextCard: _nextFlashcard,
+              updatedOption: _externalUpdate,
+              forceUpdated: forceUpdated,
+              status: _currentConfidence),
+        ]));
   }
 
   void swipeAction(String confidence) {
@@ -354,12 +369,16 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     return Column(children: [
       Container(
         constraints: BoxConstraints.tight(Size(wCard, hCard)),
-        margin: EdgeInsets.only(bottom: 20),
         alignment: Alignment.topCenter,
         child: Draggable(
           data: "Text",
           child: _draggableCard(),
-          feedback: _draggableCard(true),
+          feedback: StreamBuilder(
+              initialData: false,
+              stream: willAcceptStream,
+              builder: (context, snapshot) {
+                return _draggableCard(true);
+              }),
           childWhenDragging: Container(),
         ),
       )
@@ -370,7 +389,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     return GestureDetector(
         onTap: _switchCard,
         child: AnimatedSwitcher(
-          duration: Duration(milliseconds: flipBack() ? 0 : 800),
+          duration: Duration(milliseconds: flipBack() ? 0 : 300),
           transitionBuilder: __transitionBuilder,
           layoutBuilder: (widget, list) => Stack(children: [widget, ...list]),
           child: _showFrontSide ? _buildCardFront() : _buildCardRear(),

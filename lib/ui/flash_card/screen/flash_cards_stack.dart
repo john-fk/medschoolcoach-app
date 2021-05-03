@@ -14,6 +14,7 @@ class FlashCardsStack extends StatelessWidget {
   final SetFront setFront;
   final bool front;
   final AnalyticsProvider analyticsProvider;
+  final Size cardArea;
 
   const FlashCardsStack(
       {Key key,
@@ -22,6 +23,7 @@ class FlashCardsStack extends StatelessWidget {
       @required this.changeCardIndex,
       @required this.front,
       @required this.setFront,
+      @required this.cardArea,
       @required this.analyticsProvider})
       : super(key: key);
   @override
@@ -41,6 +43,7 @@ class FlashCardsStack extends StatelessWidget {
         if (cardIndex < flashcardsStackModel.items.length)
           FlashCardWidget(
             flashCard: flashcardsStackModel.items[cardIndex],
+            cardArea: cardArea,
             changeCardIndex: changeCardIndex,
             progress: "${cardIndex + 1}/${flashcardsStackModel.items.length}",
             front: front,
@@ -52,32 +55,28 @@ class FlashCardsStack extends StatelessWidget {
   }
 
   Widget _buildBackgroundFlashCard(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = cardArea.height;
+    final width = cardArea.width;
 
     return Positioned.fill(
       child: Container(
         margin: EdgeInsets.only(top: 20),
-        child: Center(
-          child: AnimatedOpacity(
-            opacity: cardIndex < flashcardsStackModel.items.length - 1 ? 1 : 0,
-            duration: const Duration(milliseconds: 250),
-            child: Transform.rotate(
-              angle: -math.pi / 32,
-              child: Container(
-                margin: EdgeInsets.only(
-                  bottom: height * FlashCardWidget.flashCardBottomMarginFactor,
-                ),
-                width: width * FlashCardWidget.flashCardWidthFactor,
-                height: height * FlashCardWidget.flashCardHeightFactor,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Style.of(context).colors.background,
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          AnimatedOpacity(
+              opacity:
+                  cardIndex < flashcardsStackModel.items.length - 1 ? 1 : 0,
+              duration: const Duration(milliseconds: 250),
+              child: Transform.rotate(
+                  angle: -math.pi / 32,
+                  child: Container(
+                    width: width * FlashCardWidget.flashCardWidthFactor,
+                    height: height * FlashCardWidget.flashCardHeightFactor,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Style.of(context).colors.background,
+                    ),
+                  )))
+        ]),
       ),
     );
   }

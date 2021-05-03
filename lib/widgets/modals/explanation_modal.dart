@@ -16,6 +16,7 @@ void openExplanationModal(
   showModalBottomSheet<void>(
     backgroundColor: medstyles.Style.of(context).colors.accent,
     context: context,
+    isScrollControlled: !scrollable,
     builder: (context) {
       return Padding(
           padding: const EdgeInsets.symmetric(
@@ -34,24 +35,29 @@ void openExplanationModal(
                   ),
                   height: MediaQuery.of(context).size.height / 120,
                 ),
-                Container(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: Icon(Icons.close),
-                      color: Colors.white,
-                      iconSize: whenDevice(context, large: 25.0, tablet: 40.0),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )),
-                Container(
-                    alignment: Alignment.topLeft,
-                    margin: EdgeInsets.symmetric(horizontal: 6),
-                    child: Text(
-                      title,
-                      style: normalResponsiveFont(context,
-                          fontColor: FontColor.White, opacity: 0.5),
-                    )),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(
+                            title,
+                            style: normalResponsiveFont(context,
+                                fontColor: FontColor.White, opacity: 0.5),
+                          )),
+                      Container(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            color: Colors.white,
+                            iconSize:
+                                whenDevice(context, large: 25.0, tablet: 40.0),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          )),
+                    ]),
                 const SizedBox(
                   height: 20,
                 ),

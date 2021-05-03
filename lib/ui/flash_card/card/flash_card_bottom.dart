@@ -8,6 +8,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_swipable/flutter_swipable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -37,10 +38,10 @@ class FlashCardBottom extends StatefulWidget {
       : super(key: key);
 
   @override
-  _FlashCardBottomState createState() => _FlashCardBottomState();
+  FlashCardBottomState createState() => FlashCardBottomState();
 }
 
-class _FlashCardBottomState extends State<FlashCardBottom>
+class FlashCardBottomState extends State<FlashCardBottom>
     with TickerProviderStateMixin {
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
@@ -164,9 +165,9 @@ class _FlashCardBottomState extends State<FlashCardBottom>
                 style: medstyles.Style.of(context).font.medium.copyWith(
                     fontSize: whenDevice(
                       context,
-                      large: 20,
-                      small: 15,
-                      tablet: 30,
+                      small: 10,
+                      large: 13,
+                      tablet: 20,
                     ),
                     color: Color(0x7AFFFFFF)),
                 textAlign: TextAlign.start,
