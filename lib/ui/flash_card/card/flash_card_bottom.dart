@@ -193,7 +193,9 @@ class FlashCardBottomState extends State<FlashCardBottom>
                   _emoji(EmojiType.Positive, context),
                 ],
               ),
-              SizedBox(height: 10),
+              SizedBox(
+                height: 10,
+              ),
             ],
           ),
         )

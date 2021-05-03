@@ -549,17 +549,10 @@ class _MultipleChoiceQuestionScreenState
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
 
     if (widget.arguments.status == QuestionStatusType.qotd) {
-      if (_currentQuestionIndex == 4) {
-        setState(() {
-          _questionsDayRepository.clearCache();
-          SuperStateful.of(context).currentQOTDIndex = 0;
-        });
-      } else {
-        setState(() {
-          SuperStateful.of(context).currentQOTDIndex =
-              _currentQuestionIndex + 1;
-        });
-      }
+      //clear cache at summarize instead
+      setState(() {
+        SuperStateful.of(context).currentQOTDIndex = _currentQuestionIndex + 1;
+      });
     }
     _previousQuestionIndex = _currentQuestionIndex;
   }
@@ -605,6 +598,12 @@ class _MultipleChoiceQuestionScreenState
   }
 
   void _goToSummarize() {
+    if (isQOTD) {
+      setState(() {
+        _questionsDayRepository.clearCache();
+        SuperStateful.of(context).currentQOTDIndex = 0;
+      });
+    }
     Navigator.pushReplacementNamed(
       context,
       Routes.questionsSummary,
@@ -647,7 +646,8 @@ class _MultipleChoiceQuestionScreenState
     if (result is RepositorySuccessResult<List<Question>>) {
       SuperStateful.of(context).questionsOfTheDay = result.data;
     }
-
+    if (SuperStateful.of(context).currentQOTDIndex == 5)
+      return _goToSummarize();
     _updateState(() {
       _questionsList = SuperStateful.of(context).questionsOfTheDay;
       _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;

@@ -69,10 +69,14 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
     }
 
     String userAnswer = "";
-    userAnswer = widget.questionsSize > 0 &&
-            !(!widget.isVisible && widget.currentQuestion == 1)
-        ? "${widget.currentQuestion - (widget.isVisible ? 0 : 1)}/${widget.questionsSize}"
-        : "";
+    if (widget.summary) {
+      userAnswer = widget.category ?? "Questions of the Day";
+    } else {
+      userAnswer = widget.questionsSize > 0 &&
+              !(!widget.isVisible && widget.currentQuestion == 1)
+          ? "${widget.currentQuestion - (widget.isVisible ? 0 : 1)}/${widget.questionsSize}"
+          : "";
+    }
     return Column(
       key: widgetKey,
       children: <Widget>[
@@ -80,7 +84,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           color: Colors.transparent,
           padding: EdgeInsets.fromLTRB(
             10,
-            MediaQuery.of(context).padding.top,
+            10,
             10,
             10,
           ),
@@ -107,7 +111,9 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.category ?? "Questions of the Day",
+                        widget.summary
+                            ? "Questions"
+                            : (widget.category ?? "Questions of the Day"),
                         style: greatResponsiveFont(
                           context,
                           fontColor: FontColor.Content2,
@@ -153,8 +159,13 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           ),
         ),
         Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(top: 0),
+          alignment: widget.summary ? Alignment.centerLeft : Alignment.center,
+          margin: EdgeInsets.only(
+            top: 0,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: widget.summary ? 30.0 : 0,
+          ),
           child: AnimatedOpacity(
               opacity: widget.isVisible ? 1.0 : 0.0,
               duration: Duration(milliseconds: 200),
@@ -170,7 +181,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                 horizontal: 30.0,
                 vertical: whenDevice(context,
                     small: 5, medium: 6, large: 8, tablet: 10)),
-            child: widget.questionsSize > 0
+            child: !widget.summary && widget.questionsSize > 0
                 ? (FAProgressBar(
                     currentValue: ((widget.questionsSize > 0 &&
                                 widget.currentQuestion > 1) ||

@@ -28,7 +28,7 @@ class FlashCardTopState extends State<FlashCardTop> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color.fromRGBO(255, 255, 255, 0.0), _currentColor],
+              colors: [_currentColor.withOpacity(0.1), _currentColor],
             ),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10.0),

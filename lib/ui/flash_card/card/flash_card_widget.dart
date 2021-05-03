@@ -166,12 +166,12 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     }
 
     _flashcardStatus = getFlashcardStatusEnum(cardstatus);
+    _flashCardSwipe.currentState.returnToFront();
     Future.delayed(Duration(milliseconds: isSwiped ? 0 : 200), () {
       _flashCardSwipe.currentState.hideCard();
     });
 
     Future.delayed(Duration(milliseconds: isSwiped ? 100 : 400), () {
-      _flashCardSwipe.currentState.returnToFront();
       widget.changeCardIndex(increase: increase);
       _flashCardSwipe.currentState.hideCard(hide: false);
     });

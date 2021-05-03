@@ -106,7 +106,8 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                 onChange: updateHeader,
                 isFlashCard: true,
                 onHowtoTap: openModal,
-                category: widget.arguments.subjectName,
+                category: widget.arguments.subjectName ??
+                    widget.arguments.status.toString().split(".")[1],
                 currentQuestion: _cardIndex + 1,
                 questionsSize: _result != null
                     ? (_result as RepositorySuccessResult<FlashcardsStackModel>)
@@ -186,6 +187,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   void openModal() {
     openExplanationModal(
       context: context,
+      scrollable: true,
       title: FlutterI18n.translate(context, "flashcards_tips.welcome"),
       content: _explanationContent(),
     );
