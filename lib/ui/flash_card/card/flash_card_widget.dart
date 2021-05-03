@@ -104,17 +104,20 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
   void updateEmoji(String event, double opacity) {
     switch (event) {
-      //triggered on start drag
-      case "reset":
+      case "success":
+        _flashCardBottom.currentState.cancelExternal();
         break;
-      //triggered on return drag condition not met
-      case "return":
+      case "reset":
+        _flashCardBottom.currentState.cancelUpdate();
         break;
       case "left":
+        _flashCardBottom.currentState.externalUpdate("Negative", opacity);
         break;
       case "right":
+        _flashCardBottom.currentState.externalUpdate("Positive", opacity);
         break;
       case "bottom":
+        _flashCardBottom.currentState.externalUpdate("Neutral", opacity);
         break;
     }
   }

@@ -312,6 +312,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
 
   void endDrag(Offset position, DragEndDetails details) {
     _flashcardtop.currentState.updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
+    widget.emojiMe("reset", 1);
     return;
   }
 
@@ -325,7 +326,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     double moveY = position.globalPosition.dy - startPosition.globalPosition.dy;
     double verticalSpace =
         (screenHeight - (startPosition.localPosition.dy + widget.hCard / 2)) /
-            2;
+            4;
     double horizontalSpace = (screenWidth - widget.wCard) / 2;
     if (moveY > moveX.abs()) {
       setConfidenceHelper(calculateOpacity(moveY, verticalSpace), "bottom");
@@ -341,14 +342,17 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     //update opacity & text for top banner
     switch (type) {
       case "left":
+        widget.emojiMe("left", opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFFFFAEA6).withOpacity(opacity), "Negative Confidence");
         break;
       case "right":
+        widget.emojiMe("right", opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFF009D7A).withOpacity(opacity), "Positive Confidence");
         break;
       case "bottom":
+        widget.emojiMe("bottom", opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFFFFB84A).withOpacity(opacity), "Neutral Confidence");
         break;
@@ -377,8 +381,11 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void triggerConfidence(String cardstatus) {
-    if (!emojiClick)
+    if (!emojiClick) {
+      widget.emojiMe("success", 1);
+
       widget.nextCard(increase: true, trigger: "swipe", cardstatus: cardstatus);
+    }
   }
 
   @override

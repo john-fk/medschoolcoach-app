@@ -59,6 +59,9 @@ class FlashCardBottomState extends State<FlashCardBottom>
   String _anHtmlExample = "";
   bool _updatedOption = false;
   EmojiType selectedEmoji;
+  bool _externalUpdate;
+  double _externalOpacity;
+  String _externalEmoji;
 
   @override
   void initState() {
@@ -75,6 +78,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
     _anHtml = front;
     _anHtml = _anHtml.replaceAll("<sup>", "&#8288<sup>");
     _anHtml = _anHtml.replaceAll("<sub>", "&#8288<sub>");
+    _externalUpdate = false;
   }
 
   void _setupAnimation() {
@@ -110,7 +114,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.updatedOption) {
+    if (widget.updatedOption && !_externalUpdate) {
       selectedEmoji = null;
       _updatedOption = false;
 
@@ -120,12 +124,14 @@ class FlashCardBottomState extends State<FlashCardBottom>
       });
     }
 
-    if (_updatedOption || selectedEmoji == null) {
+    if (_updatedOption || selectedEmoji == null || _externalUpdate) {
       _neutralAnimationController.reverse();
       _positiveAnimationController.reverse();
       _negativeAnimationController.reverse();
       String confidence = widget.status;
-      if (_updatedOption && selectedEmoji != null)
+      if (_externalUpdate)
+        confidence = _externalEmoji;
+      else if (_updatedOption && selectedEmoji != null)
         confidence = selectedEmoji.toString().split(".")[1];
 
       switch (confidence) {
@@ -195,6 +201,29 @@ class FlashCardBottomState extends State<FlashCardBottom>
     );
   }
 
+  void cancelUpdate() {
+    setState(() {
+      _externalUpdate = false;
+      _externalOpacity = 1;
+      _externalEmoji = "";
+      selectedEmoji = null;
+      _updatedOption = true;
+    });
+  }
+
+  void cancelExternal() {
+    _externalUpdate = false;
+    selectedEmoji = null;
+  }
+
+  void externalUpdate(String text, double opacity) {
+    setState(() {
+      _externalUpdate = true;
+      _externalOpacity = opacity;
+      _externalEmoji = text;
+    });
+  }
+
   void swipeEmoji(String status) {
     //_tapEmoji(EnumToString.fromString(EmojiType.values, status),false);
   }
@@ -203,6 +232,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
     setState(() {
       selectedEmoji = type;
       _updatedOption = true;
+      _externalUpdate = false;
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -221,15 +251,21 @@ class FlashCardBottomState extends State<FlashCardBottom>
     switch (type) {
       case EmojiType.Neutral:
         asset = medstyles.Style.of(context).svgAsset.neutral;
-        opacityValue = _neutralAnimation.value;
+        opacityValue = _externalUpdate
+            ? (selectedEmoji == type ? _externalOpacity : 0.3)
+            : _neutralAnimation.value;
         break;
       case EmojiType.Positive:
         asset = medstyles.Style.of(context).svgAsset.positive;
-        opacityValue = _positiveAnimation.value;
+        opacityValue = _externalUpdate
+            ? (selectedEmoji == type ? _externalOpacity : 0.3)
+            : _positiveAnimation.value;
         break;
       case EmojiType.Negative:
         asset = medstyles.Style.of(context).svgAsset.negative;
-        opacityValue = _negativeAnimation.value;
+        opacityValue = _externalUpdate
+            ? (selectedEmoji == type ? _externalOpacity : 0.3)
+            : _negativeAnimation.value;
         break;
     }
     return GestureDetector(
