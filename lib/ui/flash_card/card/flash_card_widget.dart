@@ -79,7 +79,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     _externalUpdate = false;
     _hideCard = true;
 
-    Future.delayed(Duration(milliseconds: 500), toggleCardVisibility);
+    Future.delayed(Duration(milliseconds: 300), toggleCardVisibility);
 
     ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
       // Do stuff on phone shake
@@ -281,7 +281,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       });
     }
 
-    Future.delayed(Duration(milliseconds: isSwiped ? 500 : 0), () {
+    Future.delayed(Duration(milliseconds: isSwiped ? 300 : 0), () {
       setState(() {
         _flashcardStatus = getFlashcardStatusEnum(cardstatus);
         _hideCard = true;
@@ -292,8 +292,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     Future.delayed(
         Duration(
             milliseconds: FlashCardWidget.animationDurationValue +
-                200 +
-                (isSwiped ? 500 : 0)), () {
+                (isSwiped ? 300 : 0)), () {
       if (_externalUpdate) _externalUpdate = false;
       widget.changeCardIndex(increase: increase);
       toggleCardVisibility(flipback: !_showFrontSide);

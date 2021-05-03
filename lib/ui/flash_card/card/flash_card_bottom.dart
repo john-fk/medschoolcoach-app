@@ -116,7 +116,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
       selectedEmoji = null;
       _updatedOption = false;
 
-      Future.delayed(const Duration(milliseconds: 1000), () {
+      Future.delayed(const Duration(milliseconds: 500), () {
         selectedEmoji = null;
         _updatedOption = false;
       });
@@ -203,7 +203,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
       _updatedOption = true;
     });
 
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       selectedEmoji = null;
       _updatedOption = false;
       widget.nextCard(
