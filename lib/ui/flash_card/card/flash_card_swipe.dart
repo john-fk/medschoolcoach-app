@@ -188,6 +188,10 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     });
   }
 
+  void returnToFront() {
+    _showFrontSide = true;
+  }
+
   void toggleCardVisibility({bool flipback = false}) {
     setState(() {
       _flipBack = flipback ? 2 : 0;
@@ -360,7 +364,6 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     //update opacity for bottom icon
     return null;
   }
-  //these will trigger confidences from swipe and proceed to animate to next card
 
   void negativeConfidence(Offset offset) {
     triggerConfidence("negative");
@@ -383,7 +386,6 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   void triggerConfidence(String cardstatus) {
     if (!emojiClick) {
       widget.emojiMe("success", 1);
-
       widget.nextCard(increase: true, trigger: "swipe", cardstatus: cardstatus);
     }
   }
