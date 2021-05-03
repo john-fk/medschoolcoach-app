@@ -175,7 +175,7 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
             SizedBox(
               height: 10,
             ),
-            _footerButton(),
+            noProgress ? Container() : _footerButton(),
           ],
         ),
       ),

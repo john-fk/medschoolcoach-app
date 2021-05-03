@@ -6,6 +6,7 @@ import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:flutter/foundation.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_swipable/flutter_swipable.dart';
@@ -26,14 +27,12 @@ class FlashCardBottom extends StatefulWidget {
   final String status;
   final nextFlashCard nextCard;
   final VoidCallback animateCard;
-  final VoidCallback forceUpdated;
   final bool updatedOption;
   FlashCardBottom(
       {this.status,
       this.updatedOption = false,
       this.nextCard,
       this.animateCard,
-      this.forceUpdated,
       Key key})
       : super(key: key);
 
@@ -197,7 +196,11 @@ class FlashCardBottomState extends State<FlashCardBottom>
     );
   }
 
-  void _tapEmoji(EmojiType type) {
+  void swipeEmoji(String status) {
+    //_tapEmoji(EnumToString.fromString(EmojiType.values, status),false);
+  }
+
+  void _tapEmoji(EmojiType type, bool isTap) {
     setState(() {
       selectedEmoji = type;
       _updatedOption = true;
@@ -231,7 +234,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
         break;
     }
     return GestureDetector(
-      onTap: () => _tapEmoji(type),
+      onTap: () => _tapEmoji(type, true),
       key: Key(type.toString()),
       child: Opacity(
         opacity: opacityValue,

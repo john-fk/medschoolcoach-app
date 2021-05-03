@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:Medschoolcoach/ui/flash_card/card/flash_card_swipe.dart';
 import 'package:rxdart/subjects.dart' as _rxsub;
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
@@ -14,8 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:shake/shake.dart';
 
-import 'flash_card_back.dart';
-import 'flash_card_front.dart';
 import 'flash_card_bottom.dart';
 
 typedef SetFront({@required bool front});
@@ -56,77 +55,19 @@ class FlashCardWidget extends StatefulWidget {
 
 class _FlashCardWidgetState extends State<FlashCardWidget>
     with TickerProviderStateMixin {
-  bool _swipeDismiss = false;
   FlashcardStatus _flashcardStatus;
   Orientation _currentOrientation;
-  AnimationController _changeAnimationController;
-  Animation<double> _fadeAnimation;
-  bool _showFrontSide;
-  int _flipBack = 0;
-  bool _hideCard;
-  double wCard;
-  double hCard;
-  String _currentConfidence;
-  bool _externalUpdate;
-  _rxsub.BehaviorSubject<bool> willAcceptStream;
   final GlobalKey<FlashCardBottomState> _flashCardBottom = GlobalKey();
+  final GlobalKey<FlashCardSwipeState> _flashCardSwipe = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    _setupAnimations();
-    _showFrontSide = true;
-    _externalUpdate = false;
-    _hideCard = true;
 
-    Future.delayed(Duration(milliseconds: 300), toggleCardVisibility);
-
-    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
-      // Do stuff on phone shake
+    ShakeDetector.autoStart(onPhoneShake: () {
+      //todo : ensure not shaking during flip or other animation
       widget.changeCardIndex(increase: false);
     });
-
-    willAcceptStream = _rxsub.BehaviorSubject<bool>();
-    willAcceptStream.add(false);
-  }
-
-  void toggleCardVisibility({bool flipback = false}) {
-    setState(() {
-      _flipBack = flipback ? 2 : 0;
-      _showFrontSide = true;
-      if (!flipback) _hideCard = !_hideCard;
-      _externalUpdate = false;
-    });
-    if (flipback) {
-      Future.delayed(Duration(milliseconds: 300), () {
-        setState(() {
-          _hideCard = !_hideCard;
-        });
-      });
-    }
-  }
-
-  void _setupAnimations() {
-    _changeAnimationController = AnimationController(
-      vsync: this,
-      duration:
-          const Duration(milliseconds: FlashCardWidget.animationDurationValue),
-    );
-
-    _fadeAnimation =
-        Tween<double>(begin: 1, end: 0).animate(_changeAnimationController)
-          ..addListener(() {
-            setState(() {});
-            if (_changeAnimationController.status ==
-                AnimationStatus.completed) {
-              _changeAnimationController.reverse();
-              if (!_swipeDismiss) widget.changeCardIndex();
-              setState(() {
-                _swipeDismiss = false;
-                widget.setFront(front: true);
-              });
-            }
-          });
   }
 
   @override
@@ -136,123 +77,45 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       setState(() {});
     }
 
-    final height = widget.cardArea.height;
-    final width = widget.cardArea.width;
-
-    wCard = width * FlashCardWidget.flashCardWidthFactor;
-    hCard = widget.cardArea.height * FlashCardWidget.flashCardHeightFactor;
-
-    _currentConfidence = _externalUpdate
-        ? _currentConfidence
-        : widget.flashCard.status.toString().split(".")[1];
+    double wCard = widget.cardArea.width * FlashCardWidget.flashCardWidthFactor;
+    double hCard =
+        widget.cardArea.height * FlashCardWidget.flashCardHeightFactor;
 
     return Container(
         width: widget.cardArea.width,
         child: Stack(children: [
-          //swipe left target
-          DragTarget<String>(onAccept: (value) {
-            swipeAction("Negative");
-          }, builder: (_, candidateData, rejectedData) {
-            return Container(width: width / 4, height: height);
-          }),
-          //Swipe right target
-          Positioned(
-              top: 0,
-              bottom: 0,
-              right: 0,
-              child: DragTarget<String>(onAccept: (value) {
-                swipeAction("Positive");
-              }, builder: (_, candidateData, rejectedData) {
-                return Container(width: width / 4, height: height);
-              })),
-          //swipe down
-          Positioned(
-              bottom: 0,
-              left: width * 0.25,
-              child: DragTarget<String>(onAccept: (value) {
-                swipeAction("Neutral");
-              }, builder: (_, candidateData, rejectedData) {
-                return Container(width: width * 0.5, height: height / 3);
-              })),
-          Container(
-              child: Center(
-                  child: AnimatedOpacity(
-                      opacity: _hideCard ? 0 : 1,
-                      duration: Duration(
-                          milliseconds: FlashCardWidget.animationDurationValue),
-                      child: Container(
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 20),
-                          child: _buildFlipAnimation())))),
+          FlashCardSwipe(
+              key: _flashCardSwipe,
+              wCard: wCard,
+              hCard: hCard,
+              flashCard: widget.flashCard,
+              progress: widget.progress,
+              nextCard: _nextFlashcard),
           FlashCardBottom(
               key: _flashCardBottom,
               nextCard: _nextFlashcard,
-              updatedOption: _externalUpdate,
-              forceUpdated: forceUpdated,
-              status: _currentConfidence),
+              updatedOption: false,
+              status: widget.flashCard.status.toString().split(".")[1]),
         ]));
-  }
-
-  void swipeAction(String confidence) {
-    _nextFlashcard(
-      cardstatus: confidence,
-    );
-  }
-
-  Widget _buildCardRear() {
-    return Material(
-        elevation: 1,
-        color: Style.of(context).colors.background,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-            padding: EdgeInsets.all(
-              whenDevice(
-                context,
-                large: 15.0,
-                tablet: 30.0,
-              ),
-            ),
-            width: wCard,
-            height: hCard,
-            child: FlashCardBack(
-              progress: widget.progress,
-              flashCard: widget.flashCard,
-              flip: _switchCardReverse,
-            )));
-  }
-
-  Widget _buildCardFront() {
-    return Container(
-      child: Material(
-          elevation: 1,
-          color: Style.of(context).colors.background,
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-              padding: EdgeInsets.all(
-                whenDevice(
-                  context,
-                  large: 15.0,
-                  tablet: 30.0,
-                ),
-              ),
-              width: wCard,
-              height: hCard,
-              child: FlashCardFront(
-                progress: widget.progress,
-                flashCard: widget.flashCard,
-                flip: _switchCard,
-              ))),
-    );
-  }
-
-  void forceUpdated() {
-    _externalUpdate = false;
   }
 
   void _setFlashcardStatus(FlashcardStatus status) {
     setState(() {
       _flashcardStatus = status;
     });
+  }
+
+  String swipeDirection(String confidence) {
+    switch (confidence) {
+      case "Neutral":
+        return "bottom";
+      case "Positive":
+        return "right";
+      case "Negative":
+        return "left";
+      default:
+        return "";
+    }
   }
 
   void _nextFlashcard(
@@ -273,35 +136,26 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         });
     */
     bool isSwiped = trigger == "swipe";
-
     if (isSwiped) {
-      setState(() {
-        _externalUpdate = true;
-        _currentConfidence = cardstatus;
-      });
+      _flashCardBottom.currentState.swipeEmoji(cardstatus);
+    } else {
+      _flashCardSwipe.currentState.animateSwipe(swipeDirection(cardstatus));
     }
 
-    Future.delayed(Duration(milliseconds: isSwiped ? 300 : 0), () {
-      setState(() {
-        _flashcardStatus = getFlashcardStatusEnum(cardstatus);
-        _hideCard = true;
-      });
+    _flashcardStatus = getFlashcardStatusEnum(cardstatus);
+    Future.delayed(Duration(milliseconds: isSwiped ? 0 : 200), () {
+      _flashCardSwipe.currentState.hideCard();
     });
-    //animate, when complete change card index, then animate back
-    //
-    Future.delayed(
-        Duration(
-            milliseconds: FlashCardWidget.animationDurationValue +
-                (isSwiped ? 300 : 0)), () {
-      if (_externalUpdate) _externalUpdate = false;
+
+    Future.delayed(Duration(milliseconds: isSwiped ? 100 : 400), () {
       widget.changeCardIndex(increase: increase);
-      toggleCardVisibility(flipback: !_showFrontSide);
+      _flashCardSwipe.currentState.hideCard(hide: false);
     });
   }
 
   void _updateFlashcardStatus({String flashcardStatus, String source}) async {
     //log if confidence level changed
-    if (getEmojiType(flashcardStatus)) {
+    if (isConfidence(flashcardStatus)) {
       logAnalyticsEvent(flashcardStatus, source);
     }
 
@@ -321,15 +175,13 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     if (result is ErrorResponse) print(result.toString());
   }
 
-  bool getEmojiType(String emojitype) {
-    switch (emojitype.toLowerCase()) {
-      case "positive":
-      case "neutral":
-      case "negative":
-        return true;
-      default:
-        return false;
-    }
+  bool isConfidence(String emojitype) {
+    return ["positive", "neutral", "negative"].contains(emojitype);
+  }
+
+  void logAnalyticsEvent(String type, String action) {
+    _logEvents(AnalyticsConstants.tapFlashcardConfidence,
+        additionalParams: {"confidence": type.toLowerCase(), "action": action});
   }
 
   void _logEvents(String event, {dynamic additionalParams}) {
@@ -343,90 +195,5 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   @override
   void dispose() {
     super.dispose();
-  }
-
-  void _switchCard() {
-    _toggleDisplayState(false);
-    _logEvents(AnalyticsConstants.tapFlashcardFlipForward);
-  }
-
-  void _switchCardReverse() {
-    _toggleDisplayState(true);
-    _logEvents(AnalyticsConstants.tapFlashcardFlipForward);
-  }
-
-  void _toggleDisplayState(bool reverse) {
-    setState(() {
-      _showFrontSide = !_showFrontSide;
-      if (!reverse && _flashcardStatus == FlashcardStatus.New)
-        _flashcardStatus = FlashcardStatus.Seen;
-    });
-    widget.setFront(front: !widget.front);
-  }
-
-  Widget _buildFlipAnimation() {
-    return Column(children: [
-      Container(
-        constraints: BoxConstraints.tight(Size(wCard, hCard)),
-        alignment: Alignment.topCenter,
-        child: Draggable(
-          data: "Text",
-          child: _draggableCard(),
-          feedback: StreamBuilder(
-              initialData: false,
-              stream: willAcceptStream,
-              builder: (context, snapshot) {
-                return _draggableCard(true);
-              }),
-          childWhenDragging: Container(),
-        ),
-      )
-    ]);
-  }
-
-  Widget _draggableCard([bool isFeedback = false]) {
-    return GestureDetector(
-        onTap: _switchCard,
-        child: AnimatedSwitcher(
-          duration: Duration(milliseconds: flipBack() ? 0 : 300),
-          transitionBuilder: __transitionBuilder,
-          layoutBuilder: (widget, list) => Stack(children: [widget, ...list]),
-          child: _showFrontSide ? _buildCardFront() : _buildCardRear(),
-          switchInCurve: Curves.easeInBack,
-          switchOutCurve: Curves.easeInBack.flipped,
-        ));
-  }
-
-  bool flipBack() {
-    if (_flipBack > 0) {
-      _flipBack--;
-      return true;
-    } else
-      return false;
-  }
-
-  void logAnalyticsEvent(String type, String action) {
-    _logEvents(AnalyticsConstants.tapFlashcardConfidence,
-        additionalParams: {"confidence": type.toLowerCase(), "action": action});
-  }
-
-  Widget __transitionBuilder(Widget widget, Animation<double> animation) {
-    final rotateAnim = Tween(begin: pi, end: 0.0).animate(animation);
-    return AnimatedBuilder(
-      animation: rotateAnim,
-      child: widget,
-      builder: (context, widget) {
-        final isUnder = (ValueKey(_showFrontSide) != true);
-        var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
-        tilt *= isUnder ? -1.0 : 1.0;
-        final value =
-            isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
-        return Transform(
-          transform: (Matrix4.rotationY(value)..setEntry(3, 0, tilt)),
-          child: widget,
-          alignment: Alignment.bottomCenter,
-        );
-      },
-    );
   }
 }
