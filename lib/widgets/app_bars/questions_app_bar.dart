@@ -73,6 +73,8 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
     String userAnswer = "";
     if (widget.summary) {
       userAnswer = widget.category ?? "Questions of the Day";
+    } else if (widget.currentQuestion > widget.questionsSize) {
+      userAnswer = "";
     } else {
       userAnswer = widget.questionsSize > 0 &&
               !(!widget.isVisible && widget.currentQuestion == 1)
@@ -184,7 +186,9 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                 horizontal: 30.0,
                 vertical: whenDevice(context,
                     small: 5, medium: 6, large: 8, tablet: 10)),
-            child: !widget.summary && widget.questionsSize > 0
+            child: !widget.summary &&
+                    widget.questionsSize > 0 &&
+                    widget.currentQuestion <= widget.questionsSize
                 ? (FAProgressBar(
                     currentValue: ((widget.questionsSize > 0 &&
                                 widget.currentQuestion > 1) ||
