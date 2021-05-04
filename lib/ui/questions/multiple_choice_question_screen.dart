@@ -250,7 +250,7 @@ class _MultipleChoiceQuestionScreenState
             )),
         Text("Save",
             style: mediumResponsiveFont(context,
-                fontColor: FontColor.DividerColor))
+                fontColor: FontColor.White, opacity: 0.5))
       ]),
       onTap: _onTap,
     );
@@ -310,7 +310,7 @@ class _MultipleChoiceQuestionScreenState
             height: size),
         Text("Explanation",
             style: mediumResponsiveFont(context,
-                fontColor: FontColor.DividerColor))
+                fontColor: FontColor.White, opacity: 0.5))
       ]),
       onTap: () {
         _logQuestionEvent(AnalyticsConstants.tapViewExplanation);

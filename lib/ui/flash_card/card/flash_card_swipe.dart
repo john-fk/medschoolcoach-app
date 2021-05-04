@@ -77,6 +77,8 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   double screenWidth;
   double screenHeight;
   DragStartDetails startPosition;
+  int lastCard;
+  bool _cardInPosition;
   @override
   void initState() {
     topColor = Color.fromRGBO(0, 0, 0, 0.0);
@@ -86,12 +88,19 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     _setupAnimations();
     _showFrontSide = true;
     _hideCard = true;
-
+    _cardInPosition = false;
     Future.delayed(Duration(milliseconds: 300), toggleCardVisibility);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (lastCard == null)
+      lastCard = widget.flashCard.order;
+    else if (lastCard > widget.flashCard.order) {
+      //trigger fly from left
+    }
+    lastCard = widget.flashCard.order;
+
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
     if (_hideCard) {
@@ -171,20 +180,40 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void _switchCard() {
-    _toggleDisplayState(false);
-    widget.logEvents(AnalyticsConstants.tapFlashcardFlipForward);
+    if (_cardInPosition) {
+      _toggleDisplayState(false);
+      widget.logEvents(AnalyticsConstants.tapFlashcardFlipForward);
+    }
   }
 
   void _switchCardReverse() {
-    _toggleDisplayState(true);
-    widget.logEvents(AnalyticsConstants.tapFlashcardFlipBackward);
+    if (_cardInPosition) {
+      _toggleDisplayState(true);
+      widget.logEvents(AnalyticsConstants.tapFlashcardFlipBackward);
+    }
   }
 
   void _toggleDisplayState(bool reverse) {
     setState(() {
       _showFrontSide = !_showFrontSide;
+      _cardInPosition = false;
       if (!reverse && _flashcardStatus == FlashcardStatus.New)
         _flashcardStatus = FlashcardStatus.Seen;
+    });
+  }
+
+  void undo() {
+    //hide card
+    setState(() {
+      _hideCard = true;
+      _showFrontSide = true;
+      _cardInPosition = false;
+    });
+    Future.delayed(Duration(milliseconds: 300), () {
+      setState(() {
+        _hideCard = false;
+        _cardInPosition = false;
+      });
     });
   }
 
@@ -194,14 +223,15 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
 
   void toggleCardVisibility({bool flipback = false}) {
     setState(() {
-      _flipBack = flipback ? 2 : 0;
       _showFrontSide = true;
       if (!flipback) _hideCard = !_hideCard;
+      _cardInPosition = false;
     });
     if (flipback) {
       Future.delayed(Duration(milliseconds: 300), () {
         setState(() {
           _hideCard = !_hideCard;
+          _cardInPosition = false;
         });
       });
     }
@@ -223,13 +253,17 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   Widget _draggableCard([bool isFeedback = false]) {
+    Future.delayed(Duration(milliseconds: _hideCard ? 0 : 300), () {
+      _cardInPosition = true;
+    });
+
     return Stack(children: [
       Align(
           alignment: Alignment.center,
           child: GestureDetector(
               onTap: _switchCard,
               child: AnimatedSwitcher(
-                duration: Duration(milliseconds: flipBack() ? 0 : 300),
+                duration: Duration(milliseconds: _hideCard ? 0 : 300),
                 transitionBuilder: __transitionBuilder,
                 layoutBuilder: (widget, list) =>
                     Stack(children: [widget, ...list]),
@@ -286,11 +320,6 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
             if (_changeAnimationController.status ==
                 AnimationStatus.completed) {
               _changeAnimationController.reverse();
-              //if (!_swipeDismiss) widget.changeCardIndex();
-              setState(() {
-                //_swipeDismiss = false;
-                //widget.setFront(front: true);
-              });
             }
           });
   }

@@ -357,6 +357,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                 _userRepository.logout(),
                 _userManager.logout(),
                 await QuestionOfTheDayNotification.cancelNotifications(),
+                SuperStateful.of(context).userData = null,
                 SuperStateful.of(context).clearData(),
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   Routes.welcome,

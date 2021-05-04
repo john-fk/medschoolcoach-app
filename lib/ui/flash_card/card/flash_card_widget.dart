@@ -68,7 +68,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
     ShakeDetector.autoStart(onPhoneShake: () {
       //todo : ensure not shaking during flip or other animation
-      _flashCardSwipe.currentState.returnToFront();
+      _flashCardSwipe.currentState.undo();
       widget.changeCardIndex(increase: false);
     });
   }
