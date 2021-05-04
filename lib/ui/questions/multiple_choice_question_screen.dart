@@ -123,6 +123,7 @@ class _MultipleChoiceQuestionScreenState
   @override
   Widget build(BuildContext context) {
     isQOTD = widget.arguments.status == QuestionStatusType.qotd;
+    if (isQOTD && _currentQuestionIndex == 5) return Container();
     final size = MediaQuery.of(context).size;
     bool shouldAdd = _answers.isEmpty;
     return Scaffold(
@@ -646,21 +647,22 @@ class _MultipleChoiceQuestionScreenState
     if (result is RepositorySuccessResult<List<Question>>) {
       SuperStateful.of(context).questionsOfTheDay = result.data;
     }
+
+    _questionsList = SuperStateful.of(context).questionsOfTheDay;
+    _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;
+    _answeredQuestionsIds.clear();
+    if (_currentQuestionIndex == 0) {
+      SuperStateful.of(context).answeredQuestionsIds.clear();
+      SuperStateful.of(context).correctAnswers = 0;
+      SuperStateful.of(context).wrongAnswers = 0;
+    }
+    _answeredQuestionsIds
+        .addAll(SuperStateful.of(context).answeredQuestionsIds);
+    _loading = false;
     if (SuperStateful.of(context).currentQOTDIndex == 5)
       return _goToSummarize();
-    _updateState(() {
-      _questionsList = SuperStateful.of(context).questionsOfTheDay;
-      _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;
-      _answeredQuestionsIds.clear();
-      if (_currentQuestionIndex == 0) {
-        SuperStateful.of(context).answeredQuestionsIds.clear();
-        SuperStateful.of(context).correctAnswers = 0;
-        SuperStateful.of(context).wrongAnswers = 0;
-      }
-      _answeredQuestionsIds
-          .addAll(SuperStateful.of(context).answeredQuestionsIds);
-      _loading = false;
-    });
+    else
+      _updateState(() {});
   }
 
   Future _fetchFavouriteQuestions() async {

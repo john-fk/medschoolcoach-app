@@ -62,9 +62,11 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
 
     if (!widget.isVisible) {
       Future.delayed(Duration(milliseconds: 200), () {
-        setState(() {
-          widget.isVisible = true;
-        });
+        if (this.mounted) {
+          setState(() {
+            widget.isVisible = true;
+          });
+        }
       });
     }
 
@@ -203,7 +205,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                     whenDevice(context,
                         small: 8, medium: 12, large: 16, tablet: 32),
                     16,
-                    0),
+                    16),
                 child: Container(
                   height: 1,
                   color: Colors.white.withOpacity(0.2),
