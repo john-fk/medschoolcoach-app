@@ -280,10 +280,10 @@ class FlashCardBottomState extends State<FlashCardBottom>
           fit: BoxFit.fitHeight,
           color: selectedEmoji == type
               ? selectedEmoji == EmojiType.Neutral
-                  ? Color(0xFFFF8131)
+                  ? Color(0xFFFFB84A)
                   : selectedEmoji == EmojiType.Positive
                       ? Color(0xFF0AD1A5)
-                      : Color(0xFFFFB84A)
+                      : Color(0xFFFF8131)
               : Colors.white,
         ),
       ),
