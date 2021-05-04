@@ -136,6 +136,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   }
 
   void showCustomDatePicker() {
+    if (scheduleDate != null) dateController.selectedDate = scheduleDate;
     showDialog<Dialog>(
         context: context,
         builder: (_) => Dialog(
@@ -244,14 +245,13 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
           ),
           actions: <DialogActionData>[
             DialogActionData(
-              text: FlutterI18n.translate(
-                context,
-                "general.cancel",
-              ),
-              onTap: () => {
-                Navigator.pop(context),
-              },
-            ),
+                text: FlutterI18n.translate(
+                  context,
+                  "general.cancel",
+                ),
+                onTap: () => {
+                      Navigator.pop(context),
+                    }),
             DialogActionData(
               text: FlutterI18n.translate(
                 context,
@@ -261,6 +261,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 _analyticsProvider.logEvent("tap_test_date_remove",
                     params: null);
                 Navigator.pop(context);
+
+                dateController.selectedDate = null; //Add this in your Code.
                 setState(() {
                   scheduleDate = null;
                   userManager.removeTestDate();

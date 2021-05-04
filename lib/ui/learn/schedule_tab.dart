@@ -155,6 +155,13 @@ class _ScheduleTabState extends State<ScheduleTab> {
 
     if (_shouldShowSchedule) {
       final videos = SuperStateful.of(context).videosScheduleList;
+      if (videos != null &&
+          videos.isNotEmpty &&
+          !videos.any(
+              (video) => video.progress.percentage != 100 && !_completed)) {
+        _completed = !_days.any((day) => !day.completed);
+      }
+
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

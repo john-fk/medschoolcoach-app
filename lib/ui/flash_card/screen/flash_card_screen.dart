@@ -200,7 +200,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   Widget _buildTips(int tipsNumber) {
-    final double width = MediaQuery.of(context).size.width;
     return Container(
         child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,

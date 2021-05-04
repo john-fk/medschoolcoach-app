@@ -84,13 +84,14 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           color: Colors.transparent,
           padding: EdgeInsets.fromLTRB(
             10,
-            10,
+            MediaQuery.of(context).padding.top,
             10,
             10,
           ),
           child: Padding(
             padding: EdgeInsets.only(
-              top: 30,
+              top: whenDevice(context,
+                  small: 10, medium: 15, large: 20, tablet: 25),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,17 +195,20 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                     size: whenDevice(context,
                         small: 5, medium: 6, large: 8, tablet: 10)))
                 : Container()),
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-              16,
-              whenDevice(context, small: 8, medium: 12, large: 16, tablet: 32),
-              16,
-              0),
-          child: Container(
-            height: 1,
-            color: Colors.white.withOpacity(0.2),
-          ),
-        )
+        widget.isFlashCard
+            ? Container()
+            : Padding(
+                padding: EdgeInsets.fromLTRB(
+                    16,
+                    whenDevice(context,
+                        small: 8, medium: 12, large: 16, tablet: 32),
+                    16,
+                    0),
+                child: Container(
+                  height: 1,
+                  color: Colors.white.withOpacity(0.2),
+                ),
+              )
       ],
     );
   }

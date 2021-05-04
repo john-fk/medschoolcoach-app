@@ -328,12 +328,27 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   void confidenceDrag(DragUpdateDetails position) {
     double moveX = position.globalPosition.dx - startPosition.globalPosition.dx;
     double moveY = position.globalPosition.dy - startPosition.globalPosition.dy;
-    double verticalSpace =
+    double lowerVerticalSpace =
         (screenHeight - (startPosition.localPosition.dy + widget.hCard / 2)) /
             4;
+    double topVerticalSpace =
+        (startPosition.globalPosition.dy - widget.hCard / 2) / 2;
+
     double horizontalSpace = (screenWidth - widget.wCard) / 2;
-    if (moveY > moveX.abs()) {
-      setConfidenceHelper(calculateOpacity(moveY, verticalSpace), "bottom");
+    if (moveY < 0) {
+      if (moveY.abs() > moveX.abs()) {
+        setConfidenceHelper(
+            calculateOpacity(moveY.abs(), topVerticalSpace), "top");
+      } else if (moveX > 0) {
+        setConfidenceHelper(
+            calculateOpacity(moveX * 2, horizontalSpace), "right");
+      } else {
+        setConfidenceHelper(
+            calculateOpacity(moveX.abs() * 2, horizontalSpace), "left");
+      }
+    } else if (moveY > moveX.abs()) {
+      setConfidenceHelper(
+          calculateOpacity(moveY, lowerVerticalSpace), "bottom");
     } else if (moveX > 0) {
       setConfidenceHelper(calculateOpacity(moveX, horizontalSpace), "right");
     } else {
@@ -359,6 +374,11 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
         widget.emojiMe("bottom", opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFFFFB84A).withOpacity(opacity), "Neutral Confidence");
+        break;
+      case "top":
+        widget.emojiMe("reset", 1);
+        _flashcardtop.currentState
+            .updateTab(Color(0xFFFFFFFF).withOpacity(opacity), "");
         break;
     }
     //update opacity for bottom icon
