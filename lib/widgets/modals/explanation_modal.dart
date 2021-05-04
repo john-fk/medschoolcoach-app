@@ -27,7 +27,7 @@ void openExplanationModal(
                 margin: EdgeInsets.only(top: 10, bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromRGBO(0, 0, 0, 0.25),
+                  color: Color(0xFFFFFFFF).withOpacity(0.25),
                 ),
                 height: MediaQuery.of(context).size.height / 120,
               ),
