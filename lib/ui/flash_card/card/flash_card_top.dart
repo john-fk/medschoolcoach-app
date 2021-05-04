@@ -20,7 +20,7 @@ class FlashCardTopState extends State<FlashCardTop> {
 
   @override
   Widget build(BuildContext context) {
-    if (_currentColor == null) _currentColor = Color(0xFFBCBCBC);
+    if (_currentColor == null) _currentColor = Color(0x00BCBCBC);
     if (_currentText == null) _currentText = "";
     return Container(
         decoration: BoxDecoration(
