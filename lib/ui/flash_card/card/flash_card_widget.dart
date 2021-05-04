@@ -65,10 +65,11 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   @override
   void initState() {
     super.initState();
-
     ShakeDetector.autoStart(onPhoneShake: () {
-      _flashCardSwipe.currentState.undo();
-      widget.changeCardIndex(increase: false);
+      if (_flashCardSwipe != null) {
+        _flashCardSwipe.currentState.undo();
+        widget.changeCardIndex(increase: false);
+      }
     });
   }
 
