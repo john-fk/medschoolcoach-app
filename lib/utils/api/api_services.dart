@@ -620,15 +620,11 @@ class ApiServicesImpl implements ApiServices {
 
   @override
   Future<NetworkResponse<Auth0UserData>> getAuth0UserData() async {
-    final Map<String, String> headers = await _getHeaders(
-      mobileHeader: false,
-      authHeader: false,
-      accessTokenHeader: true,
-    );
+    final Map<String, String> headers = await _getHeaders();
 
     try {
       final String response = await _networkClient.get(
-        _baseAuth0Url + "/userinfo",
+        _baseUrl + "/users/account",
         headers: headers,
       );
 
@@ -1315,7 +1311,6 @@ class ApiServicesImpl implements ApiServices {
     } catch (error) {
       if (error is ApiException && error.code == 400)
         return ErrorResponse(UnavailableEmailException());
-
       return _handleError<void>(error, null);
     }
   }

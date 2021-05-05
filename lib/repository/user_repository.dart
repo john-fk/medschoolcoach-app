@@ -192,7 +192,7 @@ class UserRepository implements Repository {
       if (userResponse is SuccessResponse<Auth0UserData>) {
         if (userLoggingEmail != null && userLoggingEmail.isNotEmpty) {
           await _identifyUser(userResponse);
-          FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.sub);
+          FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.id);
           FirebaseCrashlytics.instance
               .setCustomKey("email", userResponse.body.email);
           FirebaseCrashlytics.instance
@@ -219,8 +219,8 @@ class UserRepository implements Repository {
   }
 
   Future _identifyUser(SuccessResponse<Auth0UserData> userResponse) async {
-    await _analyticsProvider.identify(userResponse.body.sub);
-    await _analyticsProvider.identifyPeople(userResponse.body.sub);
+    await _analyticsProvider.identify(userResponse.body.id);
+    await _analyticsProvider.identifyPeople(userResponse.body.id);
     await _setEmail(userResponse);
     // result = _mixpanel.identy...
     // print(result + result1 + result2);
