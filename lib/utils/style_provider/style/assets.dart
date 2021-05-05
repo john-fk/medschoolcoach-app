@@ -54,6 +54,9 @@ class _AppPngAssets {
   final globalDoctors = "assets/png/global_doctors.png";
 
   final emptyState = "assets/png/empty_state.png";
+
+  //question bank
+  final questionExplanation = "assets/png/button_explanation.png";
 }
 
 class _AppSvgAssets {

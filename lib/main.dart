@@ -16,7 +16,7 @@ import 'providers/analytics_constants.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final FlutterLocalNotificationsPlugin notifsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,11 +38,11 @@ Future<void> main() async {
   await CrashReporting.initialize();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
-  var enableDevicePreview = false;
+  var enableDevicePreview = true;
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) {
+        (_) {
       runApp(_dp.DevicePreview(
         enabled: enableDevicePreview,
         builder: (context) => MyApp(initialRoute: initialRoute),

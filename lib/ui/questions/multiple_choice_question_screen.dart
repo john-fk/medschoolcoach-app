@@ -195,7 +195,7 @@ class _MultipleChoiceQuestionScreenState
                                         children: <Widget>[
                                           _drawBookmark(),
                                           SizedBox(
-                                            width: 16,
+                                            width: 24,
                                           ),
                                           _drawExplanation()
                                         ],
@@ -239,6 +239,7 @@ class _MultipleChoiceQuestionScreenState
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
             height: size,
+            margin: EdgeInsets.only(bottom: 8),
             child: FittedBox(
               fit: BoxFit.fitHeight,
               child: AnimatedSizeAndFade(
@@ -249,7 +250,7 @@ class _MultipleChoiceQuestionScreenState
                       : unbooked),
             )),
         Text("Save",
-            style: mediumResponsiveFont(context,
+            style: smallerResponsiveFont(context,
                 fontColor: FontColor.White, opacity: 0.5))
       ]),
       onTap: _onTap,
@@ -304,12 +305,16 @@ class _MultipleChoiceQuestionScreenState
     final size = whenDevice(context, large: 25.0, tablet: 40.0);
     return InkWell(
       child: Column(children: <Widget>[
-        SvgPicture.asset(
-            medstyles.Style.of(context).svgAsset.questionExplanation,
-            width: size,
-            height: size),
+        Container(
+          margin: EdgeInsets.only(bottom: 8),
+          child: Image(
+              image: AssetImage(
+                  medstyles.Style.of(context).pngAsset.questionExplanation),
+              height: size,
+              fit: BoxFit.fitHeight),
+        ),
         Text("Explanation",
-            style: mediumResponsiveFont(context,
+            style: smallerResponsiveFont(context,
                 fontColor: FontColor.White, opacity: 0.5))
       ]),
       onTap: () {

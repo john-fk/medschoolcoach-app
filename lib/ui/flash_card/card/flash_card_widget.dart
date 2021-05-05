@@ -28,6 +28,7 @@ enum EmojiType {
 class FlashCardWidget extends StatefulWidget {
   final FlashcardModel flashCard;
   final ChangeCardIndex changeCardIndex;
+  final int cardIndex;
   final String progress;
   final SetFront setFront;
   final bool front;
@@ -46,6 +47,7 @@ class FlashCardWidget extends StatefulWidget {
       @required this.front,
       @required this.setFront,
       @required this.cardArea,
+      @required this.cardIndex,
       @required this.analyticsProvider})
       : super(key: key);
 
@@ -62,15 +64,25 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   final GlobalKey<FlashCardSwipeState> _flashCardSwipe =
       GlobalKey<FlashCardSwipeState>();
 
+  ShakeDetector detector;
   @override
   void initState() {
     super.initState();
-    ShakeDetector.autoStart(onPhoneShake: () {
-      if (_flashCardSwipe != null) {
-        _flashCardSwipe.currentState.undo();
-        widget.changeCardIndex(increase: false);
-      }
-    });
+    if (detector == null)
+      detector = ShakeDetector.autoStart(onPhoneShake: () {
+        if (_flashCardSwipe != null && widget.cardIndex > 1) {
+          _flashCardSwipe.currentState.undo();
+          Future.delayed(Duration(milliseconds: 1200), () {
+            widget.changeCardIndex(increase: false);
+          });
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    detector.stopListening();
+    super.dispose();
   }
 
   @override
@@ -89,9 +101,11 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         child: Stack(children: [
           FlashCardSwipe(
               key: _flashCardSwipe,
+              logEvents: _logEvents,
               emojiMe: updateEmoji,
               wCard: wCard,
               hCard: hCard,
+              cardIndex: widget.cardIndex,
               flashCard: widget.flashCard,
               progress: widget.progress,
               nextCard: _nextFlashcard),
@@ -215,10 +229,5 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       args.addAll(additionalParams);
     }
     widget.analyticsProvider.logEvent(event, params: args);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

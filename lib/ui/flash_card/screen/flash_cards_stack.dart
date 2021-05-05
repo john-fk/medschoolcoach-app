@@ -43,6 +43,7 @@ class FlashCardsStack extends StatelessWidget {
         if (cardIndex < flashcardsStackModel.items.length)
           FlashCardWidget(
             flashCard: flashcardsStackModel.items[cardIndex],
+            cardIndex: cardIndex,
             cardArea: cardArea,
             changeCardIndex: changeCardIndex,
             progress: "${cardIndex + 1}/${flashcardsStackModel.items.length}",

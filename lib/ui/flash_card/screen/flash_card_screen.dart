@@ -167,7 +167,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       return FlashCardsStack(
         changeCardIndex: _changeCardIndex,
         cardArea: cardArea,
-        cardIndex: _cardIndex,
+        cardIndex: _cardIndex + 1,
         front: _front,
         flashcardsStackModel: flashcardsStack,
         setFront: setFront,
@@ -201,72 +201,60 @@ class _FlashCardScreenState extends State<FlashCardScreen>
 
   Widget _buildTips(int tipsNumber) {
     return Container(
+        margin: EdgeInsets.only(bottom: biggerResponsiveFont(context).fontSize),
         child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-            height: whenDevice(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+                height: whenDevice(
+                  context,
+                  medium: 50,
+                  large: 80,
+                  tablet: 90,
+                ),
+                child: Container(
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      Style.of(context).svgAsset.flipTips +
+                          tipsNumber.toString() +
+                          ".svg",
+                    ))),
+            SizedBox(
+                width: whenDevice(
               context,
-              medium: 50,
-              large: 80,
+              medium: 25,
+              large: 45,
               tablet: 90,
-            ),
-            child: Container(
-                alignment: Alignment.center,
-                child: SvgPicture.asset(
-                  Style.of(context).svgAsset.flipTips +
-                      tipsNumber.toString() +
-                      ".svg",
-                ))),
-        SizedBox(
-            width: whenDevice(
-          context,
-          medium: 25,
-          large: 45,
-          tablet: 90,
-        )),
-        SizedBox(
-            width: whenDevice(
-              context,
-              small: 155,
-              medium: 165,
-              large: 175,
-              tablet: 250,
-            ),
-            height: whenDevice(
-              context,
-              medium: 50,
-              large: 80,
-              tablet: 90,
-            ),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    FlutterI18n.translate(
-                        context, "flashcards_tips.tips${tipsNumber}_title"),
-                    style: biggerResponsiveFont(context,
-                        fontColor: FontColor.DividerColor),
-                  ),
-                  SizedBox(
-                      height: whenDevice(
-                    context,
-                    small: 4,
-                    medium: 6,
-                    large: 11,
-                    tablet: 15,
-                  )),
-                  Text(
-                    FlutterI18n.translate(
-                        context, "flashcards_tips.tips${tipsNumber}_subtitle"),
-                    style: mediumResponsiveFont(context,
-                        fontColor: FontColor.DividerColor),
-                  )
-                ]))
-      ],
-    ));
+            )),
+            SizedBox(
+                width: whenDevice(
+                  context,
+                  small: 155,
+                  medium: 165,
+                  large: 175,
+                  tablet: 250,
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        FlutterI18n.translate(
+                            context, "flashcards_tips.tips${tipsNumber}_title"),
+                        style: biggerResponsiveFont(context,
+                                fontColor: FontColor.DividerColor)
+                            .copyWith(fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                        FlutterI18n.translate(context,
+                            "flashcards_tips.tips${tipsNumber}_subtitle"),
+                        style: mediumResponsiveFont(context,
+                            fontColor: FontColor.DividerColor),
+                      )
+                    ]))
+          ],
+        ));
   }
 
   @override

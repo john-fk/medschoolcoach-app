@@ -32,11 +32,16 @@ class FlashCardFront extends StatelessWidget {
       multiLine: true,
     ).hasMatch(text);
   }
+  String reformatText(String text){
 
+    return text
+        .replaceAll("<sup>", "&#8288<sup>")
+        .replaceAll("<sub>", "&#8288<sub>");
+
+  }
   @override
   Widget build(BuildContext context) {
     double cWidth = isPortrait(context) ? width : height;
-    double cHeight = isPortrait(context) ? height : width;
 
     TextStyle txtStyle =
         medstyles.Style.of(context).font.bold.copyWith(fontSize: cWidth * 0.1);
@@ -58,7 +63,7 @@ class FlashCardFront extends StatelessWidget {
                             wrapWords: false,
                           )
                         : Html(
-                            data: flashCard.front,
+                            data: reformatText(flashCard.front),
                             style: {"html": Style.fromTextStyle(txtStyle)}))
                 : ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: height * 0.8),

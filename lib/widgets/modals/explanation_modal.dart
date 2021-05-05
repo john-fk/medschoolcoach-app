@@ -52,15 +52,11 @@ void openExplanationModal(
                     )),
               ]),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
-              Expanded(
-                child: scrollable
-                    ? SingleChildScrollView(child: content)
-                    : content,
-              ),
+              SingleChildScrollView(child: content),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
             ]));
   }
@@ -68,8 +64,18 @@ void openExplanationModal(
   showModalBottomSheet<void>(
       backgroundColor: medstyles.Style.of(context).colors.accent,
       context: context,
+      isScrollControlled: true,
       builder: (context) {
-        return _content();
+        return Container(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+                ),
+                child: Wrap(children: [_content()])),
+          ],
+        ));
       });
-  ;
 }

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:io';
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
@@ -34,6 +35,7 @@ class FlashCardSwipe extends StatefulWidget {
   final logEvent logEvents;
   final updateEmoji emojiMe;
   final String progress;
+  final int cardIndex;
 
   final double wCard;
   final double hCard;
@@ -47,6 +49,7 @@ class FlashCardSwipe extends StatefulWidget {
       this.progress,
       this.emojiMe,
       this.flashCard,
+      this.cardIndex,
       Key key})
       : super(key: key);
 
@@ -79,12 +82,14 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   DragStartDetails startPosition;
   int lastCard;
   bool _cardInPosition;
+  bool _isUndoing;
   @override
   void initState() {
     topColor = Color.fromRGBO(0, 0, 0, 0.0);
     topText = "";
     super.initState();
     _flashcardStatus = widget.flashCard.status;
+    _isUndoing = false;
     _setupAnimations();
     _showFrontSide = true;
     _hideCard = true;
@@ -95,11 +100,9 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   @override
   Widget build(BuildContext context) {
     if (lastCard == null)
-      lastCard = widget.flashCard.order;
-    else if (lastCard > widget.flashCard.order) {
-      //trigger fly from left
-    }
-    lastCard = widget.flashCard.order;
+      lastCard = widget.cardIndex;
+    else if (lastCard > widget.cardIndex) {}
+    lastCard = widget.cardIndex;
 
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
@@ -112,23 +115,28 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     return Container(
         child: Center(
             child: AnimatedOpacity(
-                opacity: _hideCard ? 0 : 1,
+                opacity: _hideCard && !_isUndoing ? 0 : 1,
                 duration: Duration(
                     milliseconds: FlashCardWidget.animationDurationValue),
-                child: _hideCard
+                child: _hideCard && !_isUndoing
                     ? Container()
-                    : Swipable(
-                        onSwipeRight: positiveConfidence,
-                        onSwipeLeft: negativeConfidence,
-                        onSwipeDown: neutralConfidence,
-                        onSwipeStart: startDrag,
-                        onSwipeCancel: endDrag,
-                        onPositionChanged: confidenceDrag,
-                        swipe: _controller.stream,
-                        child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(top: 20),
-                            child: _buildFlipAnimation())))));
+                    : AnimatedOpacity(
+                        opacity: _isUndoing ? 0 : 1,
+                        duration: Duration(
+                            milliseconds:
+                                FlashCardWidget.animationDurationValue),
+                        child: Swipable(
+                            onSwipeRight: positiveConfidence,
+                            onSwipeLeft: negativeConfidence,
+                            onSwipeDown: neutralConfidence,
+                            onSwipeStart: startDrag,
+                            onSwipeCancel: endDrag,
+                            onPositionChanged: confidenceDrag,
+                            swipe: _controller.stream,
+                            child: Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.only(top: 20),
+                                child: _buildFlipAnimation()))))));
   }
 
   Widget _buildCardRear() {
@@ -203,16 +211,26 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void undo() {
-    //hide card
-    setState(() {
-      _hideCard = true;
-      _showFrontSide = true;
-      _cardInPosition = false;
-    });
-    Future.delayed(Duration(milliseconds: 300), () {
+    if (_isUndoing)
+      return;
+    else
+      _isUndoing = true;
+    //animate top
+    _flashcardtop.currentState.undoTab();
+
+    //triggered after top bar shown
+    Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
-        _hideCard = false;
+        _hideCard = true;
+        _showFrontSide = true;
         _cardInPosition = false;
+      });
+      Future.delayed(Duration(milliseconds: 300), () {
+        setState(() {
+          _hideCard = false;
+          _cardInPosition = false;
+          _isUndoing = false;
+        });
       });
     });
   }
@@ -263,7 +281,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
           child: GestureDetector(
               onTap: _switchCard,
               child: AnimatedSwitcher(
-                duration: Duration(milliseconds: _hideCard ? 0 : 300),
+                duration: Duration(milliseconds: _hideCard ? 0 : 200),
                 transitionBuilder: __transitionBuilder,
                 layoutBuilder: (widget, list) =>
                     Stack(children: [widget, ...list]),
@@ -292,8 +310,8 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
       animation: rotateAnim,
       child: widget,
       builder: (context, widget) {
-        final isUnder = (ValueKey(_showFrontSide) != true);
-        var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
+        final isUnder = ValueKey(_showFrontSide) != true;
+        var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.001;
         tilt *= isUnder ? -1.0 : 1.0;
         final value =
             isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
