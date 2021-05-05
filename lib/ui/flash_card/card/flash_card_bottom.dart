@@ -179,8 +179,8 @@ class FlashCardBottomState extends State<FlashCardBottom>
               SizedBox(
                 height: whenDevice(
                   context,
-                  large: 5,
-                  tablet: 15,
+                  large: 15,
+                  tablet: 30,
                 ),
               ),
               Row(
@@ -277,7 +277,11 @@ class FlashCardBottomState extends State<FlashCardBottom>
         opacity: opacityValue,
         child: SvgPicture.asset(
           asset,
-          fit: BoxFit.fitHeight,
+          height: whenDevice(
+            context,
+            large: 15,
+            tablet: 30,
+          ),
           color: selectedEmoji == type
               ? selectedEmoji == EmojiType.Neutral
                   ? Color(0xFFFFB84A)

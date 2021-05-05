@@ -71,7 +71,7 @@ class FlashCardsStack extends StatelessWidget {
                   angle: -math.pi / 32,
                   child: Container(
                     width: width * FlashCardWidget.flashCardWidthFactor,
-                    height: height * FlashCardWidget.flashCardHeightFactor,
+                    height: height * FlashCardWidget.flashCardHeightFactor - 30,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Style.of(context).colors.background,

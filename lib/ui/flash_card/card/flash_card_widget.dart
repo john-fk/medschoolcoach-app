@@ -94,7 +94,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
     double wCard = widget.cardArea.width * FlashCardWidget.flashCardWidthFactor;
     double hCard =
-        widget.cardArea.height * FlashCardWidget.flashCardHeightFactor;
+        widget.cardArea.height * FlashCardWidget.flashCardHeightFactor - 30;
 
     return Container(
         width: widget.cardArea.width,
