@@ -88,9 +88,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           color: Colors.transparent,
           padding: EdgeInsets.fromLTRB(
             10,
-            MediaQuery.of(context).orientation == Orientation.portrait
-                ? MediaQuery.of(context).padding.top
-                : 10,
+            MediaQuery.of(context).padding.top,
             10,
             10,
           ),

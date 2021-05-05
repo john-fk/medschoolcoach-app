@@ -106,9 +106,9 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
             whenDevice(context,
                 large: isPortrait(context) ? 35 : 15,
                 tablet: isPortrait(context) ? 65 : 30);
-    double wCard =
-        (isPortrait(context) ? widget.cardArea.width : widget.cardArea.height) *
-            FlashCardWidget.flashCardWidthFactor;
+    double wCard = widget.cardArea.width /
+        (isPortrait(context) ? 1 : 2) *
+        FlashCardWidget.flashCardWidthFactor;
     return Container(
         width: widget.cardArea.width,
         child: Stack(children: [

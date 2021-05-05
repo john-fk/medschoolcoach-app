@@ -32,16 +32,16 @@ class FlashCardFront extends StatelessWidget {
       multiLine: true,
     ).hasMatch(text);
   }
-  String reformatText(String text){
 
+  String reformatText(String text) {
     return text
         .replaceAll("<sup>", "&#8288<sup>")
         .replaceAll("<sub>", "&#8288<sub>");
-
   }
+
   @override
   Widget build(BuildContext context) {
-    double cWidth = isPortrait(context) ? width : height;
+    double cWidth = width / (isPortrait(context) ? 1 : 2);
 
     TextStyle txtStyle =
         medstyles.Style.of(context).font.bold.copyWith(fontSize: cWidth * 0.1);
