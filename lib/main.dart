@@ -38,7 +38,7 @@ Future<void> main() async {
   await CrashReporting.initialize();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
-  var enableDevicePreview = true;
+  var enableDevicePreview = false;
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(

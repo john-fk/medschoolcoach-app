@@ -215,22 +215,20 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
       return;
     else
       _isUndoing = true;
-    //animate top
-    _flashcardtop.currentState.undoTab();
 
     //triggered after top bar shown
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    setState(() {
+      _hideCard = true;
+      _showFrontSide = true;
+      _cardInPosition = false;
+    });
+    Future.delayed(Duration(milliseconds: 300), () {
+      //animate top
+      _flashcardtop.currentState.undoTab();
       setState(() {
-        _hideCard = true;
-        _showFrontSide = true;
+        _hideCard = false;
         _cardInPosition = false;
-      });
-      Future.delayed(Duration(milliseconds: 300), () {
-        setState(() {
-          _hideCard = false;
-          _cardInPosition = false;
-          _isUndoing = false;
-        });
+        _isUndoing = false;
       });
     });
   }
@@ -410,17 +408,20 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
       case "left":
         widget.emojiMe("left", opacity);
         _flashcardtop.currentState.updateTab(
-            Color(0xFFFFAEA6).withOpacity(opacity), "Negative Confidence");
+            Color(0xFFFFAEA6).withOpacity(opacity),
+            FlutterI18n.translate(context, "flashcards_tips.negative"));
         break;
       case "right":
         widget.emojiMe("right", opacity);
         _flashcardtop.currentState.updateTab(
-            Color(0xFF009D7A).withOpacity(opacity), "Positive Confidence");
+            Color(0xFF009D7A).withOpacity(opacity),
+            FlutterI18n.translate(context, "flashcards_tips.positive"));
         break;
       case "bottom":
         widget.emojiMe("bottom", opacity);
         _flashcardtop.currentState.updateTab(
-            Color(0xFFFFB84A).withOpacity(opacity), "Neutral Confidence");
+            Color(0xFFFFB84A).withOpacity(opacity),
+            FlutterI18n.translate(context, "flashcards_tips.neutral"));
         break;
       case "top":
         widget.emojiMe("reset", 1);

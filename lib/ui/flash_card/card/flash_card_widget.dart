@@ -72,7 +72,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       detector = ShakeDetector.autoStart(onPhoneShake: () {
         if (_flashCardSwipe != null && widget.cardIndex > 1) {
           _flashCardSwipe.currentState.undo();
-          Future.delayed(Duration(milliseconds: 1200), () {
+          Future.delayed(Duration(milliseconds: 300), () {
             widget.changeCardIndex(increase: false);
           });
         }

@@ -295,6 +295,10 @@ flashcards_tips:
   tips4_subtitle: Indicate positive confidence
   tips5_title : Shake to undo
   tips5_subtitle: Return to previous card
+  positive : Positive Confidence
+  negative : Negative Confidence
+  neutral : Neutral Confidence
+  return : Returned To Previous Card
 flashcards_how_to:
   welcome: Welcome to Flashcards
   flip: Tap on the card to flip it
