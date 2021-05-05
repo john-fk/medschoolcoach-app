@@ -187,7 +187,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   void openModal() {
     openExplanationModal(
       context: context,
-      scrollable: true,
+      fitHeight: true,
       title: FlutterI18n.translate(context, "flashcards_tips.welcome"),
       content: _explanationContent(),
     );

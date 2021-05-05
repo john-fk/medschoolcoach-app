@@ -4,6 +4,7 @@ import 'package:Medschoolcoach/ui/flash_card/card/flash_card_widget.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_more_flashcards.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:flutter/material.dart';
 import 'flash_card_screen.dart';
 
@@ -61,7 +62,11 @@ class FlashCardsStack extends StatelessWidget {
 
     return Positioned.fill(
       child: Container(
-        margin: EdgeInsets.only(top: 20),
+        margin: EdgeInsets.only(
+          top: height * 0.03 +
+              whenDevice(context, small: 5, medium: 8, large: 10, tablet: 15)
+                  .toDouble(),
+        ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           AnimatedOpacity(
               opacity:
@@ -71,7 +76,14 @@ class FlashCardsStack extends StatelessWidget {
                   angle: -math.pi / 32,
                   child: Container(
                     width: width * FlashCardWidget.flashCardWidthFactor,
-                    height: height * FlashCardWidget.flashCardHeightFactor - 30,
+                    height: height * FlashCardWidget.flashCardHeightFactor -
+                        whenDevice(
+                          context,
+                          large: 35,
+                          tablet: 65,
+                        ) -
+                        whenDevice(context,
+                            small: 5, medium: 8, large: 10, tablet: 15),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Style.of(context).colors.background,

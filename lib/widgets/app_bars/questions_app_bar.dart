@@ -95,7 +95,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           child: Padding(
             padding: EdgeInsets.only(
               top: whenDevice(context,
-                  small: 10, medium: 15, large: 20, tablet: 25),
+                  small: 5, medium: 8, large: 10, tablet: 15),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,7 +202,10 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
                         small: 5, medium: 6, large: 8, tablet: 10)))
                 : Container()),
         widget.isFlashCard
-            ? Container()
+            ? Container(
+                height: whenDevice(context,
+                    small: 8, medium: 12, large: 16, tablet: 32),
+              )
             : Padding(
                 padding: EdgeInsets.fromLTRB(
                     16,

@@ -10,7 +10,7 @@ void openExplanationModal(
     {@required BuildContext context,
     @required Widget content,
     @required String title,
-    bool scrollable = true}) {
+    bool fitHeight = true}) {
   final width = MediaQuery.of(context).size.width;
 
   Widget _content() {
@@ -54,7 +54,9 @@ void openExplanationModal(
               const SizedBox(
                 height: 10,
               ),
-              SingleChildScrollView(child: content),
+              !fitHeight
+                  ? Expanded(child: SingleChildScrollView(child: content))
+                  : content,
               const SizedBox(
                 height: 10,
               ),
@@ -64,18 +66,21 @@ void openExplanationModal(
   showModalBottomSheet<void>(
       backgroundColor: medstyles.Style.of(context).colors.accent,
       context: context,
-      isScrollControlled: true,
+      isScrollControlled: fitHeight,
       builder: (context) {
-        return Container(
-            child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
-                ),
-                child: Wrap(children: [_content()])),
-          ],
-        ));
+        return fitHeight
+            ? Container(
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight:
+                            MediaQuery.of(context).size.height / 4.0 * 3.0,
+                      ),
+                      child: Wrap(children: [_content()])),
+                ],
+              ))
+            : _content();
       });
 }

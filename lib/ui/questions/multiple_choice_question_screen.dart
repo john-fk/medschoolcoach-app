@@ -321,6 +321,7 @@ class _MultipleChoiceQuestionScreenState
         _logQuestionEvent(AnalyticsConstants.tapViewExplanation);
         openExplanationModal(
           context: context,
+          fitHeight: false,
           title: FlutterI18n.translate(context, "question_screen.explanation"),
           content:
               explanation(_questionsList[_currentQuestionIndex].explanation),

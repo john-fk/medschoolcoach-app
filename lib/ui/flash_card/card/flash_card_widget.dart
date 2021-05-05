@@ -85,6 +85,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     super.dispose();
   }
 
+  double cardHeight;
   @override
   Widget build(BuildContext context) {
     if (MediaQuery.of(context).orientation != _currentOrientation) {
@@ -94,7 +95,14 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
     double wCard = widget.cardArea.width * FlashCardWidget.flashCardWidthFactor;
     double hCard =
-        widget.cardArea.height * FlashCardWidget.flashCardHeightFactor - 30;
+        widget.cardArea.height * FlashCardWidget.flashCardHeightFactor -
+            whenDevice(context, small: 5, medium: 8, large: 10, tablet: 15)
+                .toDouble() -
+            whenDevice(
+              context,
+              large: 35,
+              tablet: 65,
+            );
 
     return Container(
         width: widget.cardArea.width,

@@ -169,9 +169,9 @@ class FlashCardBottomState extends State<FlashCardBottom>
                 style: medstyles.Style.of(context).font.medium.copyWith(
                     fontSize: whenDevice(
                       context,
-                      small: 10,
-                      large: 13,
-                      tablet: 20,
+                      small: 13,
+                      large: 15,
+                      tablet: 25,
                     ),
                     color: Color(0x7AFFFFFF)),
                 textAlign: TextAlign.start,
@@ -194,7 +194,11 @@ class FlashCardBottomState extends State<FlashCardBottom>
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: whenDevice(
+                  context,
+                  large: 15,
+                  tablet: 30,
+                ),
               ),
             ],
           ),
@@ -279,8 +283,8 @@ class FlashCardBottomState extends State<FlashCardBottom>
           asset,
           height: whenDevice(
             context,
-            large: 15,
-            tablet: 30,
+            large: 30,
+            tablet: 60,
           ),
           color: selectedEmoji == type
               ? selectedEmoji == EmojiType.Neutral
