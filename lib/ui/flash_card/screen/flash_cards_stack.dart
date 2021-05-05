@@ -77,13 +77,12 @@ class FlashCardsStack extends StatelessWidget {
                   child: Container(
                     width: width * FlashCardWidget.flashCardWidthFactor,
                     height: height * FlashCardWidget.flashCardHeightFactor -
-                        whenDevice(
-                          context,
-                          large: 35,
-                          tablet: 65,
-                        ) -
                         whenDevice(context,
-                            small: 5, medium: 8, large: 10, tablet: 15),
+                                small: 5, medium: 8, large: 10, tablet: 15)
+                            .toDouble() -
+                        whenDevice(context,
+                            large: isPortrait(context) ? 35 : 15,
+                            tablet: isPortrait(context) ? 65 : 30),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Style.of(context).colors.background,

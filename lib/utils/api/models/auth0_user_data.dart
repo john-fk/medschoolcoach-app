@@ -19,12 +19,12 @@ class Auth0UserData {
   });
 
   factory Auth0UserData.fromJson(Map<String, dynamic> json) => Auth0UserData(
-        id: json["id"] == null ? null : json["id"],
-        name: json["first_name"] == null ? null : 
-        "${json['first_name']} ${json['last_name']}",
-        picture: json["picture"] == null ? null : json["picture"],
-        email: json["email"] == null ? null : json["email"]
-      );
+      id: json["id"] == null ? null : json["id"],
+      name: json["first_name"] == null
+          ? null
+          : "${json['first_name']} ${json['last_name']}",
+      picture: json["picture"] == null ? null : json["picture"],
+      email: json["email"] == null ? null : json["email"]);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id == null ? null : id,

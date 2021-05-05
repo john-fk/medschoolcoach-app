@@ -155,57 +155,56 @@ class FlashCardBottomState extends State<FlashCardBottom>
           selectedEmoji = null;
       }
     }
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Text(
-                FlutterI18n.translate(
-                  context,
-                  "flashcard_screen.confidence_interval",
-                ),
-                style: medstyles.Style.of(context).font.medium.copyWith(
-                    fontSize: whenDevice(
-                      context,
-                      small: 13,
-                      large: 15,
-                      tablet: 25,
-                    ),
-                    color: Color(0x7AFFFFFF)),
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(
-                height: whenDevice(
-                  context,
-                  large: 15,
-                  tablet: 30,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return SafeArea(
+        minimum: EdgeInsets.all(whenDevice(
+          context,
+          large: 15,
+          tablet: 30,
+        )),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  _emoji(EmojiType.Negative, context),
-                  SizedBox(width: MediaQuery.of(context).size.width / 15),
-                  _emoji(EmojiType.Neutral, context),
-                  SizedBox(width: MediaQuery.of(context).size.width / 15),
-                  _emoji(EmojiType.Positive, context),
+                  Text(
+                    FlutterI18n.translate(
+                      context,
+                      "flashcard_screen.confidence_interval",
+                    ),
+                    style: medstyles.Style.of(context).font.medium.copyWith(
+                        fontSize: whenDevice(
+                          context,
+                          small: 13,
+                          large: 15,
+                          tablet: 25,
+                        ),
+                        color: Color(0x7AFFFFFF)),
+                    textAlign: TextAlign.start,
+                  ),
+                  SizedBox(
+                    height: whenDevice(
+                      context,
+                      large: 15,
+                      tablet: 30,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _emoji(EmojiType.Negative, context),
+                      SizedBox(width: MediaQuery.of(context).size.width / 15),
+                      _emoji(EmojiType.Neutral, context),
+                      SizedBox(width: MediaQuery.of(context).size.width / 15),
+                      _emoji(EmojiType.Positive, context),
+                    ],
+                  ),
                 ],
               ),
-              SizedBox(
-                height: whenDevice(
-                  context,
-                  large: 15,
-                  tablet: 30,
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+            )
+          ],
+        ));
   }
 
   void cancelUpdate() {

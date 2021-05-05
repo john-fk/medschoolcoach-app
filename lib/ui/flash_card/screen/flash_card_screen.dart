@@ -169,7 +169,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       return FlashCardsStack(
         changeCardIndex: _changeCardIndex,
         cardArea: cardArea,
-        cardIndex: _cardIndex + 1,
+        cardIndex: _cardIndex,
         front: _front,
         flashcardsStackModel: flashcardsStack,
         setFront: setFront,
