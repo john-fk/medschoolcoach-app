@@ -277,7 +277,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
           child: GestureDetector(
               onTap: _switchCard,
               child: AnimatedSwitcher(
-                duration: Duration(milliseconds: _hideCard ? 0 : 200),
+                duration: Duration(milliseconds: _hideCard ? 0 : 375),
                 transitionBuilder: __transitionBuilder,
                 layoutBuilder: (widget, list) =>
                     Stack(children: [widget, ...list]),
