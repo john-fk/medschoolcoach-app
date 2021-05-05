@@ -398,15 +398,14 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     double moveX = position.globalPosition.dx - startPosition.globalPosition.dx;
     double moveY = position.globalPosition.dy - startPosition.globalPosition.dy;
     if (moveY < 0) {
-      if (moveY.abs() > moveX.abs()) {
+      if (moveY.abs() > moveX.abs() * 2) {
         setConfidenceHelper(
             calculateOpacity(moveY.abs(), _topVerticalDrag), "top");
       } else if (moveX > 0) {
-        setConfidenceHelper(
-            calculateOpacity(moveX * 2, _horizontalDrag), "right");
+        setConfidenceHelper(calculateOpacity(moveX, _horizontalDrag), "right");
       } else {
         setConfidenceHelper(
-            calculateOpacity(moveX.abs() * 2, _horizontalDrag), "left");
+            calculateOpacity(moveX.abs(), _horizontalDrag), "left");
       }
     } else if (moveY > moveX.abs()) {
       setConfidenceHelper(
