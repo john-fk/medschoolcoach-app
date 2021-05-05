@@ -176,11 +176,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     _updateFlashcardStatus(flashcardStatus: cardstatus, source: trigger);
 
     bool isSwiped = trigger == "swipe";
-    if (isSwiped) {
-      _flashCardBottom.currentState.swipeEmoji(cardstatus);
-    } else {
+    if (!isSwiped)
       _flashCardSwipe.currentState.animateSwipe(swipeDirection(cardstatus));
-    }
 
     _flashcardStatus = getFlashcardStatusEnum(cardstatus);
     _flashCardSwipe.currentState.returnToFront();
@@ -191,6 +188,9 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     Future.delayed(Duration(milliseconds: isSwiped ? 100 : 400), () {
       widget.changeCardIndex(increase: increase);
       _flashCardSwipe.currentState.hideCard(hide: false);
+      Future.delayed(Duration(milliseconds: 300), () {
+        _flashCardBottom.currentState.preventClick = false;
+      });
     });
   }
 

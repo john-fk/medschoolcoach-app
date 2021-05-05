@@ -62,6 +62,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
   bool _externalUpdate;
   double _externalOpacity;
   String _externalEmoji;
+  bool preventClick = false;
 
   @override
   void initState() {
@@ -230,11 +231,9 @@ class FlashCardBottomState extends State<FlashCardBottom>
     });
   }
 
-  void swipeEmoji(String status) {
-    //_tapEmoji(EnumToString.fromString(EmojiType.values, status),false);
-  }
-
-  void _tapEmoji(EmojiType type, bool isTap) {
+  void _tapEmoji(EmojiType type) {
+    if (preventClick) return;
+    preventClick = true;
     setState(() {
       selectedEmoji = type;
       _updatedOption = true;
@@ -275,7 +274,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
         break;
     }
     return GestureDetector(
-      onTap: () => _tapEmoji(type, true),
+      onTap: () => _tapEmoji(type),
       key: Key(type.toString()),
       child: Opacity(
         opacity: opacityValue,
