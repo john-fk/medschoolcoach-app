@@ -69,6 +69,9 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   bool _showFrontSide;
   int _flipBack = 0;
   bool _hideCard;
+  double _horizontalDrag;
+  double _topVerticalDrag;
+  double _bottomVerticalDrag;
   String _currentConfidence;
   AnimationController _changeAnimationController;
   Animation<double> _fadeAnimation;
@@ -352,6 +355,28 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
 
   void startDrag(DragStartDetails details) {
     startPosition = details;
+    _horizontalDrag = widget.wCard * .33;
+    _topVerticalDrag = (details.globalPosition.dy - widget.hCard / 2) * .33;
+
+    _horizontalDrag = whenDevice(
+      context,
+      small: _horizontalDrag > 80 ? 80 : _horizontalDrag,
+      large: _horizontalDrag > 120 ? 120 : _horizontalDrag,
+      tablet: _horizontalDrag > 80
+          ? isPortrait(context)
+              ? 60
+              : 50
+          : _horizontalDrag,
+    );
+
+    _bottomVerticalDrag = _horizontalDrag;
+
+    _topVerticalDrag = whenDevice(
+      context,
+      small: _horizontalDrag > 80 ? 80 : _horizontalDrag,
+      tablet: _horizontalDrag > 80 ? 80 : _horizontalDrag,
+      large: _horizontalDrag > 120 ? 120 : _horizontalDrag,
+    );
   }
 
   void endDrag(Offset position, DragEndDetails details) {
@@ -372,32 +397,25 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   void confidenceDrag(DragUpdateDetails position) {
     double moveX = position.globalPosition.dx - startPosition.globalPosition.dx;
     double moveY = position.globalPosition.dy - startPosition.globalPosition.dy;
-    double lowerVerticalSpace =
-        (screenHeight - (startPosition.localPosition.dy + widget.hCard / 2)) /
-            4;
-    double topVerticalSpace =
-        (startPosition.globalPosition.dy - widget.hCard / 2) / 2;
-
-    double horizontalSpace = (screenWidth - widget.wCard) / 2;
     if (moveY < 0) {
       if (moveY.abs() > moveX.abs()) {
         setConfidenceHelper(
-            calculateOpacity(moveY.abs(), topVerticalSpace), "top");
+            calculateOpacity(moveY.abs(), _topVerticalDrag), "top");
       } else if (moveX > 0) {
         setConfidenceHelper(
-            calculateOpacity(moveX * 2, horizontalSpace), "right");
+            calculateOpacity(moveX * 2, _horizontalDrag), "right");
       } else {
         setConfidenceHelper(
-            calculateOpacity(moveX.abs() * 2, horizontalSpace), "left");
+            calculateOpacity(moveX.abs() * 2, _horizontalDrag), "left");
       }
     } else if (moveY > moveX.abs()) {
       setConfidenceHelper(
-          calculateOpacity(moveY, lowerVerticalSpace), "bottom");
+          calculateOpacity(moveY, _bottomVerticalDrag), "bottom");
     } else if (moveX > 0) {
-      setConfidenceHelper(calculateOpacity(moveX, horizontalSpace), "right");
+      setConfidenceHelper(calculateOpacity(moveX, _horizontalDrag), "right");
     } else {
       setConfidenceHelper(
-          calculateOpacity(moveX.abs(), horizontalSpace), "left");
+          calculateOpacity(moveX.abs(), _horizontalDrag), "left");
     }
   }
 
