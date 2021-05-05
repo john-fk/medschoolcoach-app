@@ -160,7 +160,7 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
           legendStyle: biggerResponsiveFont(
             context,
             fontColor: FontColor.Content2,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ).copyWith(height: 1.5),
           legendPosition: LegendPosition.top,
           chartLegendSpacing: 24,

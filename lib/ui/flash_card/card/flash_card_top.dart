@@ -68,7 +68,7 @@ class FlashCardTopState extends State<FlashCardTop> {
       _currentText = _returnText;
     });
 
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       setState(() {
         _undoCard = false;
       });

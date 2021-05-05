@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:Medschoolcoach/ui/flash_card/card/flash_card_swipe.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:rxdart/subjects.dart' as _rxsub;
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
@@ -72,8 +73,13 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       detector = ShakeDetector.autoStart(onPhoneShake: () {
         if (_flashCardSwipe != null && widget.cardIndex > 1) {
           _flashCardSwipe.currentState.undo();
+          _flashCardBottom.currentState.cancelUpdate();
           Future.delayed(Duration(milliseconds: 300), () {
             widget.changeCardIndex(increase: false);
+          });
+
+          _logEvents(AnalyticsConstants.swipeFlashcard, additionalParams: {
+            AnalyticsConstants.keyDirection: AnalyticsConstants.keyLeftSwipe
           });
         }
       });
@@ -93,17 +99,16 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       setState(() {});
     }
 
-    double wCard = widget.cardArea.width * FlashCardWidget.flashCardWidthFactor;
     double hCard =
         widget.cardArea.height * FlashCardWidget.flashCardHeightFactor -
             whenDevice(context, small: 5, medium: 8, large: 10, tablet: 15)
                 .toDouble() -
-            whenDevice(
-              context,
-              large: 35,
-              tablet: 65,
-            );
-
+            whenDevice(context,
+                large: isPortrait(context) ? 35 : 15,
+                tablet: isPortrait(context) ? 65 : 30);
+    double wCard =
+        (isPortrait(context) ? widget.cardArea.width : widget.cardArea.height) *
+            FlashCardWidget.flashCardWidthFactor;
     return Container(
         width: widget.cardArea.width,
         child: Stack(children: [
@@ -170,17 +175,6 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       String cardstatus = "seen"}) async {
     _updateFlashcardStatus(flashcardStatus: cardstatus, source: trigger);
 
-    /*
-    _logEvents(
-        _swipeDismiss
-            ? AnalyticsConstants.swipeFlashcard
-            : AnalyticsConstants.tapNextFlashcard,
-        additionalParams: {
-          AnalyticsConstants.keyDirection: increase
-              ? AnalyticsConstants.keyLeftSwipe
-              : AnalyticsConstants.keyRightSwipe
-        });
-    */
     bool isSwiped = trigger == "swipe";
     if (isSwiped) {
       _flashCardBottom.currentState.swipeEmoji(cardstatus);

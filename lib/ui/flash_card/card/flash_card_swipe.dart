@@ -76,6 +76,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   bool emojiClick;
   Color topColor;
   String topText;
+  String _confidence;
 
   double screenWidth;
   double screenHeight;
@@ -106,7 +107,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
 
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-    if (_hideCard) {
+    if (_hideCard && !_isUndoing) {
       _controller = StreamController<double>();
     } else {
       emojiClick = false;
@@ -215,9 +216,9 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
       return;
     else
       _isUndoing = true;
-
     //triggered after top bar shown
     setState(() {
+      _confidence = "";
       _hideCard = true;
       _showFrontSide = true;
       _cardInPosition = false;
@@ -251,12 +252,6 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
         });
       });
     }
-  }
-
-  void swipeAction(String confidence) {
-    widget.nextCard(
-      cardstatus: confidence,
-    );
   }
 
   Widget _buildFlipAnimation() {
@@ -340,8 +335,8 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
           });
   }
 
-  void animateSwipe(String action) {
-    emojiClick = true;
+  void animateSwipe(String action, [bool isClick = false]) {
+    emojiClick = isClick;
     switch (action) {
       case "right":
         _controller.add(pi / 4);
@@ -360,9 +355,13 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void endDrag(Offset position, DragEndDetails details) {
-    _flashcardtop.currentState.updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
-    widget.emojiMe("reset", 1);
-    return;
+    if (_confidence.isEmpty) {
+      _flashcardtop.currentState
+          .updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
+      widget.emojiMe("reset", 1);
+    } else {
+      animateSwipe(_confidence, false);
+    }
   }
 
   double calculateOpacity(double X, double space) {
@@ -403,6 +402,11 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void setConfidenceHelper(double opacity, String type) {
+    if (opacity == 1 && type != "top") {
+      _confidence = type;
+    } else {
+      _confidence = "";
+    }
     //update opacity & text for top banner
     switch (type) {
       case "left":

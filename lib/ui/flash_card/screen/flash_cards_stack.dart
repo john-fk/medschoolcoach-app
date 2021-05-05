@@ -58,7 +58,7 @@ class FlashCardsStack extends StatelessWidget {
 
   Widget _buildBackgroundFlashCard(BuildContext context) {
     final height = cardArea.height;
-    final width = cardArea.width;
+    final width = isPortrait(context) ? cardArea.width : cardArea.height;
 
     return Positioned.fill(
       child: Container(

@@ -88,74 +88,81 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           color: Colors.transparent,
           padding: EdgeInsets.fromLTRB(
             10,
-            MediaQuery.of(context).padding.top,
+            MediaQuery.of(context).orientation == Orientation.portrait
+                ? MediaQuery.of(context).padding.top
+                : 10,
             10,
             10,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              InkWell(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: PopBackQuestions(),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
+          child: Padding(
+              padding: EdgeInsets.only(
+                top: whenDevice(context,
+                    small: 5, medium: 8, large: 15, tablet: 30),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      widget.summary
-                          ? "Questions"
-                          : (widget.category ?? "Questions of the Day"),
-                      style: greatResponsiveFont(
-                        context,
-                        fontColor: FontColor.Content2,
-                        fontWeight: FontWeight.bold,
-                      ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: PopBackQuestions(),
                     ),
-                  ],
-                ),
-              ),
-              !widget.isFlashCard
-                  ? Container()
-                  : ClipOval(
-                      child: Material(
-                        color: Colors.white60, // button color
-                        child: InkWell(
-                          splashColor: Colors.white, // inkwell color
-                          child: SizedBox(
-                              height: whenDevice(context,
-                                  small: 16.5,
-                                  medium: 19.5,
-                                  large: 23.25,
-                                  tablet: 25.5),
-                              width: whenDevice(context,
-                                  small: 16.5,
-                                  medium: 19.5,
-                                  large: 23.25,
-                                  tablet: 25.5),
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  child: Text("?",
-                                      style: mediumResponsiveFont(
-                                        context,
-                                        fontColor: FontColor.Accent,
-                                        fontWeight: FontWeight.bold,
-                                      )))),
-                          onTap: widget.onHowtoTap,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.summary
+                              ? "Questions"
+                              : (widget.category ?? "Questions of the Day"),
+                          style: greatResponsiveFont(
+                            context,
+                            fontColor: FontColor.Content2,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-              widget.isFlashCard ? const SizedBox(width: 20) : Container(),
-            ],
-          ),
+                  ),
+                  !widget.isFlashCard
+                      ? Container()
+                      : ClipOval(
+                          child: Material(
+                            color: Colors.white60, // button color
+                            child: InkWell(
+                              splashColor: Colors.white, // inkwell color
+                              child: SizedBox(
+                                  height: whenDevice(context,
+                                      small: 16.5,
+                                      medium: 19.5,
+                                      large: 23.25,
+                                      tablet: 25.5),
+                                  width: whenDevice(context,
+                                      small: 16.5,
+                                      medium: 19.5,
+                                      large: 23.25,
+                                      tablet: 25.5),
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text("?",
+                                          style: mediumResponsiveFont(
+                                            context,
+                                            fontColor: FontColor.Accent,
+                                            fontWeight: FontWeight.bold,
+                                          )))),
+                              onTap: widget.onHowtoTap,
+                            ),
+                          ),
+                        ),
+                  widget.isFlashCard ? const SizedBox(width: 20) : Container(),
+                ],
+              )),
         ),
         Container(
           alignment: widget.summary ? Alignment.centerLeft : Alignment.center,

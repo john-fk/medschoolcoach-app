@@ -127,18 +127,20 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void updateHeader(Size header) {
+    bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     double bottomHeight = (MediaQuery.of(context).size.width / 15) +
         50 +
         whenDevice(
           context,
-          large: 5,
-          tablet: 15,
+          large: isPortrait ? 5 : 0,
+          tablet: isPortrait ? 15 : 0,
         ) +
         whenDevice(
           context,
-          large: 20,
-          small: 15,
-          tablet: 30,
+          large: isPortrait ? 20 : 0,
+          small: isPortrait ? 15 : 0,
+          tablet: isPortrait ? 30 : 0,
         );
     setState(() {
       cardArea = Size(MediaQuery.of(context).size.width,
@@ -185,6 +187,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void openModal() {
+    _analyticsProvider.logEvent("tap_flashcard_tutorial");
     openExplanationModal(
       context: context,
       fitHeight: true,
