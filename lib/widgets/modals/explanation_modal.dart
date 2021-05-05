@@ -80,7 +80,7 @@ void openExplanationModal(
                       ),
                       child: Wrap(children: [_content()])),
                 ],
-              ))
+              ))  
             : _content();
       });
 }

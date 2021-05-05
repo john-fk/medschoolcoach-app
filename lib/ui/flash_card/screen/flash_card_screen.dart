@@ -190,7 +190,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     _analyticsProvider.logEvent("tap_flashcard_tutorial");
     openExplanationModal(
       context: context,
-      fitHeight: true,
+      fitHeight: isPortrait(context) ? true : false,
       title: FlutterI18n.translate(context, "flashcards_tips.welcome"),
       content: _explanationContent(),
     );
@@ -224,12 +224,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                           ".svg",
                     ))),
             SizedBox(
-                width: whenDevice(
-              context,
-              medium: 25,
-              large: 45,
-              tablet: 90,
-            )),
+                width: whenDevice(context, medium: 15, large: 20, tablet: 32)),
             SizedBox(
                 width: whenDevice(
                   context,
