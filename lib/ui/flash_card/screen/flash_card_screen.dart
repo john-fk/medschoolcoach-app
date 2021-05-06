@@ -12,6 +12,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:Medschoolcoach/ui/flash_card/card/flash_card_bottom.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +45,8 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   int _cardIndex = 0;
   bool _front = true;
   Size cardArea;
-
+  String _howToSeen = "seen";
+  String _howToFlashcard = "Flashcard_tutorial";
   @override
   void initState() {
     super.initState();
@@ -74,6 +76,22 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       _result = result;
       _loading = false;
     });
+
+    if (_result is RepositorySuccessResult<FlashcardsStackModel> &&
+        (_result as RepositorySuccessResult<FlashcardsStackModel>)
+                .data
+                .items
+                .length !=
+            0) _showFlashcardsHowTo();
+  }
+
+  void _showFlashcardsHowTo() async {
+    final storage = FlutterSecureStorage();
+    final _seenHowTo = await storage.read(key: _howToFlashcard);
+    if (_seenHowTo == null) {
+      openModal();
+      await storage.write(key: _howToFlashcard, value: _howToSeen);
+    }
   }
 
   void _changeCardIndex({bool increase = true}) {
