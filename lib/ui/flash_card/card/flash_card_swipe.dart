@@ -385,7 +385,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
           .updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
       widget.emojiMe("reset", 1);
     } else {
-      animateSwipe(_confidence, false);
+      animateSwipe(_confidence);
     }
   }
 

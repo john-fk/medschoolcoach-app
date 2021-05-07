@@ -71,7 +71,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     super.initState();
     if (detector == null)
       detector = ShakeDetector.autoStart(onPhoneShake: () {
-        if (_flashCardSwipe != null && widget.cardIndex > 1) {
+        if (_flashCardSwipe != null && widget.cardIndex > 0) {
           _flashCardSwipe.currentState.undo();
           _flashCardBottom.currentState.cancelUpdate();
           Future.delayed(Duration(milliseconds: 300), () {
@@ -177,7 +177,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
 
     bool isSwiped = trigger == "swipe";
     if (!isSwiped)
-      _flashCardSwipe.currentState.animateSwipe(swipeDirection(cardstatus));
+      _flashCardSwipe.currentState
+          .animateSwipe(swipeDirection(cardstatus), true);
 
     _flashcardStatus = getFlashcardStatusEnum(cardstatus);
     _flashCardSwipe.currentState.returnToFront();
@@ -186,7 +187,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     });
 
     Future.delayed(Duration(milliseconds: isSwiped ? 100 : 400), () {
-      widget.changeCardIndex(increase: increase);
+      widget.changeCardIndex(increase: increase, cardstatus: cardstatus);
       _flashCardSwipe.currentState.hideCard(hide: false);
       Future.delayed(Duration(milliseconds: 300), () {
         _flashCardBottom.currentState.preventClick = false;
@@ -210,8 +211,6 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
           flashcardId: widget.flashCard.id,
           status: _flashcardStatus,
         );
-
-    Injector.appInstance.getDependency<FlashcardRepository>().clearCache();
 
     if (result is ErrorResponse) print(result.toString());
   }

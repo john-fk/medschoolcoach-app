@@ -10,6 +10,7 @@ import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/ui/flash_card/card/flash_card_bottom.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -22,7 +23,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
 import 'flash_cards_stack.dart';
 
-typedef ChangeCardIndex({bool increase});
+typedef ChangeCardIndex({bool increase, String cardstatus});
 
 class FlashCardScreen extends StatefulWidget {
   final FlashcardsStackArguments arguments;
@@ -39,14 +40,15 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       Injector.appInstance.getDependency<FlashcardRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
+  final String _howToSeen = "seen";
+  final String _howToFlashcard = "Flashcard_tutorial";
 
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
   int _cardIndex = 0;
   bool _front = true;
   Size cardArea;
-  String _howToSeen = "seen";
-  String _howToFlashcard = "Flashcard_tutorial";
+  int _totalCards = 0;
   @override
   void initState() {
     super.initState();
@@ -77,12 +79,18 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       _loading = false;
     });
 
-    if (_result is RepositorySuccessResult<FlashcardsStackModel> &&
-        (_result as RepositorySuccessResult<FlashcardsStackModel>)
-                .data
-                .items
-                .length !=
-            0) _showFlashcardsHowTo();
+    if (_result is RepositorySuccessResult<FlashcardsStackModel>) {
+      _totalCards = (_result as RepositorySuccessResult<FlashcardsStackModel>)
+          .data
+          .items
+          .length;
+      if (_totalCards > 0) {
+        _cardIndex = (_result as RepositorySuccessResult<FlashcardsStackModel>)
+            .data
+            .position;
+        _showFlashcardsHowTo();
+      }
+    }
   }
 
   void _showFlashcardsHowTo() async {
@@ -94,13 +102,33 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     }
   }
 
-  void _changeCardIndex({bool increase = true}) {
+  void _changeCardIndex({bool increase = true, String cardstatus = "seen"}) {
     if (!increase && _cardIndex == 0) return;
 
-    if (increase)
+    if (increase) {
+      //save current emoji
+      (_result as RepositorySuccessResult<FlashcardsStackModel>)
+          .data
+          .items[_cardIndex]
+          .status = getFlashcardStatusEnum(cardstatus);
+
       _cardIndex++;
-    else
+    } else
       _cardIndex--;
+
+    if (_cardIndex + 1 == _totalCards) {
+      //only applied at the end of the card -- finished
+      _totalCards = 0;
+      _flashcardsRepository.clearCacheKey(widget.arguments);
+    } else {
+      (_result as RepositorySuccessResult<FlashcardsStackModel>).data.position =
+          _cardIndex;
+    }
+
+    //updates the cache
+    _flashcardsRepository.updateCard(widget.arguments,
+        (_result as RepositorySuccessResult<FlashcardsStackModel>).data);
+
     setState(() {});
   }
 
@@ -127,12 +155,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                 category: widget.arguments.subjectName ??
                     widget.arguments.status.toString().split(".")[1],
                 currentQuestion: _cardIndex + 1,
-                questionsSize: _result != null
-                    ? (_result as RepositorySuccessResult<FlashcardsStackModel>)
-                        .data
-                        .items
-                        .length
-                    : 0,
+                questionsSize: _result != null ? _totalCards : 0,
               ),
               Expanded(
                 child: _buildContent(),
@@ -179,7 +202,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     if (_result is RepositorySuccessResult<FlashcardsStackModel>) {
       final flashcardsStack =
           (_result as RepositorySuccessResult<FlashcardsStackModel>).data;
-      if (flashcardsStack.items.length == 0) {
+      if (_totalCards == 0) {
         _analyticsProvider.logScreenView(AnalyticsConstants.screenNoFlashcard,
             AnalyticsConstants.screenFlashcards);
         return NoFlashcardsWidget(widget.arguments);

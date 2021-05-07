@@ -21,8 +21,20 @@ class QuestionList {
   int limit;
   int offset;
   int total;
+  int position;
+  int correctAnswers;
+  int wrongAnswers;
+  List<String> answeredQuestionsIds = [];
 
-  QuestionList({this.items, this.limit, this.offset, this.total});
+  QuestionList(
+      {this.items,
+      this.limit,
+      this.offset,
+      this.total,
+      this.answeredQuestionsIds,
+      this.correctAnswers = 0,
+      this.wrongAnswers = 0,
+      this.position = 0});
 
   factory QuestionList.fromJson(Map<String, dynamic> json) => QuestionList(
         items: json["items"] == null

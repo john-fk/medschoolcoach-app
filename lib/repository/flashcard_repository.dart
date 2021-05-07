@@ -18,15 +18,16 @@ class FlashcardsStackArguments {
   final String subjectName;
   final FlashcardStatus status;
   final String source;
+  final int position;
 
-  FlashcardsStackArguments({
-    this.videoId,
-    this.topicId,
-    this.subjectId,
-    this.subjectName,
-    this.status,
-    this.source
-  });
+  FlashcardsStackArguments(
+      {this.videoId,
+      this.topicId,
+      this.subjectId,
+      this.subjectName,
+      this.status,
+      this.source,
+      this.position = 0});
 }
 
 class FlashcardRepository implements Repository {
@@ -45,8 +46,11 @@ class FlashcardRepository implements Repository {
     final key = _getStackKey(arguments);
 
     final shouldFetch = _rateLimiter.shouldFetch(key);
+    
+    //get result if exists so we can continue instead of refetching
+    var _result = RepositorySuccessResult(await _cache.get(key));
 
-    if (shouldFetch || forceApiRequest) {
+    if ( shouldFetch || forceApiRequest || _result == null) {
       final response = await _apiServices.getFlashcardsStack(arguments);
       if (response is SuccessResponse<FlashcardsStackModel>) {
         _cache.set(key, response.body);
@@ -56,9 +60,7 @@ class FlashcardRepository implements Repository {
         return RepositoryUtils.handleRepositoryError(response);
       }
     } else {
-      return RepositorySuccessResult(
-        await _cache.get(key),
-      );
+      return _result;
     }
 
     return RepositoryErrorResult(
@@ -76,7 +78,15 @@ class FlashcardRepository implements Repository {
 
   @override
   void clearCache() {
-    _rateLimiter.resetAll();
     _cache.invalidateAll();
+  }
+
+  void updateCard(
+      FlashcardsStackArguments arguments, FlashcardsStackModel stacks) {
+    _cache.set(_getStackKey(arguments), stacks);
+  }
+
+  void clearCacheKey(FlashcardsStackArguments arguments) {
+    _cache.invalidate(_getStackKey(arguments));
   }
 }

@@ -27,8 +27,10 @@ class QuestionsRepository implements Repository {
     final key = "$subjectId$videoId";
 
     final shouldFetch = _rateLimiter.shouldFetch(key);
+    //get result if exists so we can continue instead of refetching
+    var _result = RepositorySuccessResult(await _cache.get(key));
 
-    if (shouldFetch || forceApiRequest) {
+    if (shouldFetch || forceApiRequest || _result == null) {
       final response = await _apiServices.getQuestions(
         subjectId: subjectId,
         videoId: videoId,
@@ -43,9 +45,7 @@ class QuestionsRepository implements Repository {
         );
       }
     } else {
-      return RepositorySuccessResult(
-        await _cache.get(key),
-      );
+      return _result;
     }
 
     return RepositoryErrorResult(
@@ -129,4 +129,15 @@ class QuestionsRepository implements Repository {
     _cache.invalidateAll();
     _rateLimiter.resetAll();
   }
+
+  void updateQuestions(
+      {String subjectId, String videoId, QuestionList questionList}) {
+    _cache.set("$subjectId$videoId", questionList);
+  }
+
+  void clearCacheKey({String subjectId, String videoId}) {
+    _cache.invalidate("$subjectId$videoId");
+  }
+
+  void updateAnswer({String subjectId, String videoId, int index}) {}
 }

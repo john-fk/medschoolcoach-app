@@ -76,7 +76,6 @@ class _MultipleChoiceQuestionScreenState
       Injector.appInstance.getDependency<QuestionsDayRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
-
   final _listKey = GlobalKey<AnimatedListState>();
   final _animationDuration = Duration(
     milliseconds: 200,
@@ -93,6 +92,7 @@ class _MultipleChoiceQuestionScreenState
   bool _favourite;
   int _selectedIndex;
   RepositoryResult<QuestionList> _error;
+  RepositoryResult<QuestionList> _repoQuestion;
   bool _firstPressed = true;
   bool isQOTD = false;
   @override
@@ -517,6 +517,27 @@ class _MultipleChoiceQuestionScreenState
                     wrongAnswers = wrongAnswers + 1;
                     SuperStateful.of(context).wrongAnswers++;
                   }
+
+                  if (!isQOTD) {
+                    //QB as general
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .correctAnswers = correctAnswers;
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .wrongAnswers = wrongAnswers;
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .position = _currentQuestionIndex + 1;
+                    //Current question answer
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .items[_currentQuestionIndex]
+                        .yourAnswer = _getAnswer(index);
+                  }
+
+                  updateRepo();
+
                   _showAnswers(index);
                 }
               },
@@ -536,6 +557,15 @@ class _MultipleChoiceQuestionScreenState
     } else {}
   }
 
+  void updateRepo() {
+    _questionsRepository.updateQuestions(
+      subjectId: widget.arguments.subjectId,
+      videoId: widget.arguments.videoId,
+      questionList:
+          (_repoQuestion as RepositorySuccessResult<QuestionList>).data,
+    );
+  }
+
   void _showAnswers(int index) {
     _updateState(() {
       _previousQuestionIndex = _currentQuestionIndex;
@@ -553,7 +583,17 @@ class _MultipleChoiceQuestionScreenState
       SuperStateful.of(context)
           .answeredQuestionsIds
           .add(_questionsList[_currentQuestionIndex].id);
+
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
+
+    if (!isQOTD) {
+      (_repoQuestion as RepositorySuccessResult<QuestionList>)
+          .data
+          .answeredQuestionsIds = _answeredQuestionsIds;
+      (_repoQuestion as RepositorySuccessResult<QuestionList>).data.position =
+          _currentQuestionIndex;
+      updateRepo();
+    }
 
     if (widget.arguments.status == QuestionStatusType.qotd) {
       //clear cache at summarize instead
@@ -610,6 +650,10 @@ class _MultipleChoiceQuestionScreenState
         _questionsDayRepository.clearCache();
         SuperStateful.of(context).currentQOTDIndex = 0;
       });
+    } else {
+      _questionsRepository.clearCacheKey(
+          subjectId: widget.arguments.subjectId,
+          videoId: widget.arguments.videoId);
     }
     Navigator.pushReplacementNamed(
       context,
@@ -697,20 +741,36 @@ class _MultipleChoiceQuestionScreenState
     );
 
     if (result is RepositorySuccessResult<QuestionList>) {
-      _updateState(() {
-        _questionsList = result.data.items
-          ..sort(
-            (a, b) => a.order.compareTo(b.order),
-          );
+      _repoQuestion = result;
 
-        if (widget.arguments.status != null) {
-          _filterQuestionsByStatus();
+      _updateState(() {
+        if (result.data.position == 0) {
+          _questionsList = result.data.items
+            ..sort(
+              (a, b) => a.order.compareTo(b.order),
+            );
+
+          if (widget.arguments.status != null) {
+            _filterQuestionsByStatus();
+          }
+          if (widget.arguments.subjectId != null) {
+            _questionsList = _questionsList
+                .where((question) => question.isCorrect == null)
+                .toList();
+          }
+          //update question list to repository
+
+        } else {
+          //if proceeding, we need to grab current progress
+          correctAnswers = result.data.correctAnswers;
+          wrongAnswers = result.data.wrongAnswers;
+          _answeredQuestionsIds.addAll(result.data.answeredQuestionsIds);
+          _currentQuestionIndex = result.data.position;
         }
-        if (widget.arguments.subjectId != null) {
-          _questionsList = _questionsList
-              .where((question) => question.isCorrect == null)
-              .toList();
-        }
+        result.data.items = _questionsList;
+
+        _repoQuestion = result;
+        updateRepo();
 
         _loading = false;
       });
