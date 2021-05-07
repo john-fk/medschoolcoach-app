@@ -46,11 +46,11 @@ class FlashcardRepository implements Repository {
     final key = _getStackKey(arguments);
 
     final shouldFetch = _rateLimiter.shouldFetch(key);
-    
+
     //get result if exists so we can continue instead of refetching
     var _result = RepositorySuccessResult(await _cache.get(key));
 
-    if ( shouldFetch || forceApiRequest || _result == null) {
+    if ((shouldFetch || forceApiRequest) && _result == null) {
       final response = await _apiServices.getFlashcardsStack(arguments);
       if (response is SuccessResponse<FlashcardsStackModel>) {
         _cache.set(key, response.body);

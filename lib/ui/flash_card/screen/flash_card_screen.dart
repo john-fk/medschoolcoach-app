@@ -116,18 +116,16 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     } else
       _cardIndex--;
 
-    if (_cardIndex + 1 == _totalCards) {
-      //only applied at the end of the card -- finished
+    if (_cardIndex + 1 > _totalCards) {
       _totalCards = 0;
       _flashcardsRepository.clearCacheKey(widget.arguments);
     } else {
       (_result as RepositorySuccessResult<FlashcardsStackModel>).data.position =
           _cardIndex;
+      //updates the cache
+      _flashcardsRepository.updateCard(widget.arguments,
+          (_result as RepositorySuccessResult<FlashcardsStackModel>).data);
     }
-
-    //updates the cache
-    _flashcardsRepository.updateCard(widget.arguments,
-        (_result as RepositorySuccessResult<FlashcardsStackModel>).data);
 
     setState(() {});
   }
