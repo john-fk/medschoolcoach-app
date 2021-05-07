@@ -100,7 +100,7 @@ class _MultipleChoiceQuestionScreenState
     super.initState();
     _logScreenViewAnalytics();
     _fetchQuestions(
-      forceApiRequest: true,
+      forceApiRequest: false,
     );
   }
 
@@ -526,17 +526,12 @@ class _MultipleChoiceQuestionScreenState
                     (_repoQuestion as RepositorySuccessResult<QuestionList>)
                         .data
                         .wrongAnswers = wrongAnswers;
-                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
-                        .data
-                        .position = _currentQuestionIndex + 1;
                     //Current question answer
                     (_repoQuestion as RepositorySuccessResult<QuestionList>)
                         .data
                         .items[_currentQuestionIndex]
                         .yourAnswer = _getAnswer(index);
                   }
-
-                  updateRepo();
 
                   _showAnswers(index);
                 }
@@ -557,15 +552,6 @@ class _MultipleChoiceQuestionScreenState
     } else {}
   }
 
-  void updateRepo() {
-    _questionsRepository.updateQuestions(
-      subjectId: widget.arguments.subjectId,
-      videoId: widget.arguments.videoId,
-      questionList:
-          (_repoQuestion as RepositorySuccessResult<QuestionList>).data,
-    );
-  }
-
   void _showAnswers(int index) {
     _updateState(() {
       _previousQuestionIndex = _currentQuestionIndex;
@@ -579,24 +565,22 @@ class _MultipleChoiceQuestionScreenState
     );
 
     _logShowAnswersEvent(index);
+
+    _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
+
     if (isQOTD)
       SuperStateful.of(context)
           .answeredQuestionsIds
           .add(_questionsList[_currentQuestionIndex].id);
-
-    _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
-
-    if (!isQOTD) {
+    else {
       (_repoQuestion as RepositorySuccessResult<QuestionList>)
           .data
           .answeredQuestionsIds = _answeredQuestionsIds;
       (_repoQuestion as RepositorySuccessResult<QuestionList>).data.position =
-          _currentQuestionIndex;
-      updateRepo();
+          _currentQuestionIndex + 1;
     }
 
     if (widget.arguments.status == QuestionStatusType.qotd) {
-      //clear cache at summarize instead
       setState(() {
         SuperStateful.of(context).currentQOTDIndex = _currentQuestionIndex + 1;
       });
@@ -758,19 +742,15 @@ class _MultipleChoiceQuestionScreenState
                 .where((question) => question.isCorrect == null)
                 .toList();
           }
-          //update question list to repository
-
+          result.data.items = _questionsList;
         } else {
           //if proceeding, we need to grab current progress
           correctAnswers = result.data.correctAnswers;
           wrongAnswers = result.data.wrongAnswers;
           _answeredQuestionsIds.addAll(result.data.answeredQuestionsIds);
           _currentQuestionIndex = result.data.position;
+          _questionsList = result.data.items;
         }
-        result.data.items = _questionsList;
-
-        _repoQuestion = result;
-        updateRepo();
 
         _loading = false;
       });

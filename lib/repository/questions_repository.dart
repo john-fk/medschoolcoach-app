@@ -26,11 +26,9 @@ class QuestionsRepository implements Repository {
   }) async {
     final key = "$subjectId$videoId";
 
-    final shouldFetch = _rateLimiter.shouldFetch(key);
-    //get result if exists so we can continue instead of refetching
-    var _result = RepositorySuccessResult(await _cache.get(key));
+    var _result = await _cache.get(key);
 
-    if ((shouldFetch || forceApiRequest) && _result == null) {
+    if (forceApiRequest || _result == null) {
       final response = await _apiServices.getQuestions(
         subjectId: subjectId,
         videoId: videoId,
@@ -45,7 +43,7 @@ class QuestionsRepository implements Repository {
         );
       }
     } else {
-      return _result;
+      return RepositorySuccessResult(_result);
     }
 
     return RepositoryErrorResult(
