@@ -8,6 +8,7 @@ import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/question.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
+import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 class QuestionsRepository implements Repository {
@@ -19,12 +20,12 @@ class QuestionsRepository implements Repository {
 
   final RateLimiter _rateLimiter = RateLimiter();
 
-  Future<RepositoryResult<QuestionList>> fetchQuestions({
-    String subjectId,
-    String videoId,
-    bool forceApiRequest = false,
-  }) async {
-    final key = "$subjectId$videoId";
+  Future<RepositoryResult<QuestionList>> fetchQuestions(
+      {String subjectId,
+      String videoId,
+      bool forceApiRequest = false,
+      QuestionStatusType status = QuestionStatusType.all}) async {
+    final key = "$subjectId$videoId${enumToString(status)}";
 
     var _result = await _cache.get(key);
 
@@ -135,6 +136,31 @@ class QuestionsRepository implements Repository {
 
   void clearCacheKey({String subjectId, String videoId}) {
     _cache.invalidate("$subjectId$videoId");
+  }
+
+  String enumToString(QuestionStatusType status) {
+    switch (status) {
+      case QuestionStatusType.all:
+        return "all";
+        break;
+      case QuestionStatusType.correct:
+        return "correct";
+        break;
+      case QuestionStatusType.incorrect:
+        return "incorrect";
+        break;
+      case QuestionStatusType.flagged:
+        return "flagged";
+        break;
+      case QuestionStatusType.newQuestions:
+        return "newquestions";
+        break;
+      case QuestionStatusType.qotd:
+        return "qotd";
+        break;
+      default:
+        return "";
+    }
   }
 
   void updateAnswer({String subjectId, String videoId, int index}) {}

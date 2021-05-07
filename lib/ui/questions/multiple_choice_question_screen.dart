@@ -25,7 +25,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 
-enum QuestionStatusType { newQuestions, incorrect, correct, flagged, qotd }
+enum QuestionStatusType { newQuestions, incorrect, correct, flagged, qotd, all }
 
 class MultipleChoiceQuestionScreenArguments {
   final String screenName;
@@ -123,7 +123,10 @@ class _MultipleChoiceQuestionScreenState
   @override
   Widget build(BuildContext context) {
     isQOTD = widget.arguments.status == QuestionStatusType.qotd;
-    if (isQOTD && _currentQuestionIndex == 5) return Container();
+    if ((_questionsList.length > 0) &&
+        ((isQOTD && _currentQuestionIndex == 5) ||
+            (!isQOTD && _currentQuestionIndex >= _questionsList.length)))
+      return Container();
     final size = MediaQuery.of(context).size;
     bool shouldAdd = _answers.isEmpty;
     return Scaffold(
@@ -518,7 +521,7 @@ class _MultipleChoiceQuestionScreenState
                     SuperStateful.of(context).wrongAnswers++;
                   }
 
-                  if (!isQOTD) {
+                  if (!isQOTD && _repoQuestion != null) {
                     //QB as general
                     (_repoQuestion as RepositorySuccessResult<QuestionList>)
                         .data
@@ -572,7 +575,7 @@ class _MultipleChoiceQuestionScreenState
       SuperStateful.of(context)
           .answeredQuestionsIds
           .add(_questionsList[_currentQuestionIndex].id);
-    else {
+    else if (_repoQuestion != null) {
       (_repoQuestion as RepositorySuccessResult<QuestionList>)
           .data
           .answeredQuestionsIds = _answeredQuestionsIds;
@@ -719,10 +722,11 @@ class _MultipleChoiceQuestionScreenState
 
   Future _fetchNormalQuestions(bool forceApiRequest) async {
     final result = await _questionsRepository.fetchQuestions(
-      subjectId: widget.arguments.subjectId,
-      videoId: widget.arguments.videoId,
-      forceApiRequest: forceApiRequest,
-    );
+        subjectId: widget.arguments.subjectId,
+        videoId: widget.arguments.videoId,
+        forceApiRequest:
+            widget.arguments.status == null ? forceApiRequest : true,
+        status: widget.arguments.status ?? QuestionStatusType.all);
 
     if (result is RepositorySuccessResult<QuestionList>) {
       _repoQuestion = result;
@@ -753,6 +757,7 @@ class _MultipleChoiceQuestionScreenState
         }
 
         _loading = false;
+        if (_currentQuestionIndex >= _questionsList.length) _goToSummarize();
       });
     } else {
       _error = result;
