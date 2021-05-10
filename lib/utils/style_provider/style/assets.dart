@@ -57,6 +57,19 @@ class _AppPngAssets {
 
   //question bank
   final questionExplanation = "assets/png/button_explanation.png";
+  final questionArrowNext = "assets/png/question_arrow_next.png";
+  final qbCorrect = "assets/png/qbCorrect.png";
+  final qbIncorrect = "assets/png/qbIncorrect.png";
+  final bookmarkQB = "assets/png/bookmark_0.png";
+  final bookmarkedQB = "assets/png/bookmark_1.png";
+  final qbCorrectFlip = "assets/png/qbCorrectFlip.png";
+  final qbIncorrectFlip = "assets/png/qbIncorrectFlip.png";
+
+  //flash card
+  final ePositive = "assets/png/e_positive.png";
+  final eNeutral = "assets/png/e_neutral.png";
+  final eNegative = "assets/png/e_negative.png";
+  final flipTips = "assets/png/flip_tips";
 }
 
 class _AppSvgAssets {
@@ -66,21 +79,7 @@ class _AppSvgAssets {
   final backArrowDark = "assets/svg/back_arrow_dark.svg";
   final close = "assets/svg/close.svg";
   final questionsBackground = "assets/svg/question_background.svg";
-  final questionExplanation = "assets/svg/button_explanation.svg";
-  final questionArrowNext = "assets/svg/question_arrow_next.svg";
   final pickSchedule = "assets/svg/pick_schedule.svg";
-
-  //question banks
-  final qbCorrect = "assets/svg/qbCorrect.svg";
-  final bookmarkQB = "assets/svg/qbBookmark.svg";
-  final bookmarkedQB = "assets/svg/qbBookmarked.svg";
-  final qbIncorrect = "assets/svg/qbIncorrect.svg";
-  final qbCorrectFlip = "assets/svg/qbCorrectFlip.svg";
-  final qbIncorrectFlip = "assets/svg/qbIncorrectFlip.svg";
-
-  //how to in flashcards
-  final flipTips = "assets/svg/flip_tips";
-  final flipTips4 = "assets/svg/flip_tips1.svg";
 
   final searchActive = "assets/svg/search_active.svg";
   final search = "assets/svg/search.svg";

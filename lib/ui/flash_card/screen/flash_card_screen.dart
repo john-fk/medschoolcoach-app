@@ -257,10 +257,10 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                 ),
                 child: Container(
                     alignment: Alignment.center,
-                    child: SvgPicture.asset(
-                      Style.of(context).svgAsset.flipTips +
+                    child: Image(
+                      image: AssetImage(Style.of(context).pngAsset.flipTips +
                           tipsNumber.toString() +
-                          ".svg",
+                          ".png"),
                     ))),
             SizedBox(
                 width: whenDevice(context, medium: 15, large: 20, tablet: 32)),

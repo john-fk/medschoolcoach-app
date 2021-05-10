@@ -254,19 +254,19 @@ class FlashCardBottomState extends State<FlashCardBottom>
     double opacityValue = 0;
     switch (type) {
       case EmojiType.Neutral:
-        asset = medstyles.Style.of(context).svgAsset.neutral;
+        asset = medstyles.Style.of(context).pngAsset.eNeutral;
         opacityValue = _externalUpdate
             ? (selectedEmoji == type ? _externalOpacity : 0.3)
             : _neutralAnimation.value;
         break;
       case EmojiType.Positive:
-        asset = medstyles.Style.of(context).svgAsset.positive;
+        asset = medstyles.Style.of(context).pngAsset.ePositive;
         opacityValue = _externalUpdate
             ? (selectedEmoji == type ? _externalOpacity : 0.3)
             : _positiveAnimation.value;
         break;
       case EmojiType.Negative:
-        asset = medstyles.Style.of(context).svgAsset.negative;
+        asset = medstyles.Style.of(context).pngAsset.eNegative;
         opacityValue = _externalUpdate
             ? (selectedEmoji == type ? _externalOpacity : 0.3)
             : _negativeAnimation.value;
@@ -277,8 +277,8 @@ class FlashCardBottomState extends State<FlashCardBottom>
       key: Key(type.toString()),
       child: Opacity(
         opacity: opacityValue,
-        child: SvgPicture.asset(
-          asset,
+        child: Image(
+          image: AssetImage(asset),
           height: whenDevice(
             context,
             large: 30,

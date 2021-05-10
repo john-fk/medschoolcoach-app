@@ -67,12 +67,11 @@ class QuestionButton extends StatelessWidget {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.077,
                             ),
-                            SvgPicture.asset(
-                              medstyles.Style.of(context)
-                                  .svgAsset
-                                  .questionArrowNext,
-                              height: _getTextStyle(context).fontSize * 0.8,
-                            )
+                            Image(
+                                image: AssetImage(medstyles.Style.of(context)
+                                    .pngAsset
+                                    .questionArrowNext),
+                                height: _getTextStyle(context).fontSize * 0.8)
                           ]))
                     : Center(
                         child: Html(

@@ -22,19 +22,19 @@ class ReviewByStatusWidget extends StatelessWidget {
         _emojiButton(
           onPressed: () => onPress(FlashcardStatus.Positive, context),
           context: context,
-          asset: Style.of(context).svgAsset.positive,
+          asset: Style.of(context).pngAsset.ePositive,
           color: Style.of(context).colors.accent2,
         ),
         _emojiButton(
           onPressed: () => onPress(FlashcardStatus.Neutral, context),
           context: context,
-          asset: Style.of(context).svgAsset.neutral,
+          asset: Style.of(context).pngAsset.eNeutral,
           color: Style.of(context).colors.premium,
         ),
         _emojiButton(
           onPressed: () => onPress(FlashcardStatus.Negative, context),
           context: context,
-          asset: Style.of(context).svgAsset.negative,
+          asset: Style.of(context).pngAsset.eNegative,
           color: Style.of(context).colors.questions,
         ),
       ],

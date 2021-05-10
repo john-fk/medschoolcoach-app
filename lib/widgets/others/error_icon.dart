@@ -20,10 +20,10 @@ class ErrorIcon extends StatelessWidget {
     );
 
     return Container(
-        child: SvgPicture.asset(
-      !flipColor
-          ? Style.of(context).svgAsset.qbIncorrect
-          : Style.of(context).svgAsset.qbIncorrectFlip,
+        child: Image(
+      image: AssetImage(!flipColor
+          ? Style.of(context).pngAsset.qbIncorrect
+          : Style.of(context).pngAsset.qbIncorrectFlip),
       height: size,
       width: size,
     ));

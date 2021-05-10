@@ -22,10 +22,10 @@ class TickIcon extends StatelessWidget {
         : customSize;
 
     return Container(
-        child: SvgPicture.asset(
-      !flipColor
-          ? Style.of(context).svgAsset.qbCorrect
-          : Style.of(context).svgAsset.qbCorrectFlip,
+        child: Image(
+      image: AssetImage(!flipColor
+          ? Style.of(context).pngAsset.qbCorrect
+          : Style.of(context).pngAsset.qbCorrectFlip),
       height: size,
       width: size,
     ));

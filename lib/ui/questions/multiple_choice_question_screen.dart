@@ -262,12 +262,12 @@ class _MultipleChoiceQuestionScreenState
 
   var unbooked = Container(
     key: ValueKey("unbooked"),
-    child: SvgPicture.asset("assets/svg/qbBookmark.svg"),
+    child: Image(image: AssetImage("assets/png/bookmark_0.png")),
   );
 
   var booked = Container(
     key: ValueKey("booked"),
-    child: SvgPicture.asset("assets/svg/qbBookmarked.svg"),
+    child: Image(image: AssetImage("assets/png/bookmark_1.png")),
   );
 
   Future<void> _onTap() async {
