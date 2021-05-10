@@ -162,6 +162,4 @@ class QuestionsRepository implements Repository {
         return "";
     }
   }
-
-  void updateAnswer({String subjectId, String videoId, int index}) {}
 }

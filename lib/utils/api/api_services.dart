@@ -31,6 +31,7 @@ import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';

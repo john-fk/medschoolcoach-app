@@ -13,17 +13,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'dart:async';
-
-enum EmojiType {
-  Neutral,
-  Positive,
-  Negative,
-}
-
-typedef nextFlashCard({bool increase, String trigger, String cardstatus});
+import 'flash.dart';
 
 class FlashCardBottom extends StatefulWidget {
-  final String status;
+  final EmojiType status;
   final nextFlashCard nextCard;
   final VoidCallback animateCard;
   final bool updatedOption;
@@ -50,7 +43,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
   Animation<double> _negativeAnimation;
   Animation<double> _neutralAnimation;
   Animation<double> _positiveAnimation;
-  final animationDuration = const Duration(milliseconds: 300);
+  final animationDuration = Duration(milliseconds: Durations.emojiFade);
   String definition = "";
   String example = "";
   String front = "";
@@ -61,7 +54,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
   EmojiType selectedEmoji;
   bool _externalUpdate;
   double _externalOpacity;
-  String _externalEmoji;
+  EmojiType _externalEmoji;
   bool preventClick = false;
 
   @override
@@ -129,25 +122,24 @@ class FlashCardBottomState extends State<FlashCardBottom>
       _neutralAnimationController.reverse();
       _positiveAnimationController.reverse();
       _negativeAnimationController.reverse();
-      String confidence = widget.status;
+      EmojiType confidence = widget.status;
       if (_externalUpdate)
         confidence = _externalEmoji;
       else if (_updatedOption && selectedEmoji != null)
-        confidence = selectedEmoji.toString().split(".")[1];
+        confidence = selectedEmoji;
 
-      switch (confidence) {
-        case "Negative":
-          selectedEmoji = EmojiType.Negative;
+      selectedEmoji = confidence;
+
+      switch (selectedEmoji) {
+        case EmojiType.Negative:
           _positiveAnimationController.forward();
           _neutralAnimationController.forward();
           break;
-        case "Positive":
-          selectedEmoji = EmojiType.Positive;
+        case EmojiType.Positive:
           _neutralAnimationController.forward();
           _negativeAnimationController.forward();
           break;
-        case "Neutral":
-          selectedEmoji = EmojiType.Neutral;
+        case EmojiType.Neutral:
           _positiveAnimationController.forward();
           _negativeAnimationController.forward();
           break;
@@ -211,7 +203,7 @@ class FlashCardBottomState extends State<FlashCardBottom>
     setState(() {
       _externalUpdate = false;
       _externalOpacity = 1;
-      _externalEmoji = "";
+      _externalEmoji = null;
       selectedEmoji = null;
       _updatedOption = true;
     });
@@ -222,11 +214,11 @@ class FlashCardBottomState extends State<FlashCardBottom>
     selectedEmoji = null;
   }
 
-  void externalUpdate(String text, double opacity) {
+  void externalUpdate(EmojiType emoji, double opacity) {
     setState(() {
       _externalUpdate = true;
       _externalOpacity = opacity;
-      _externalEmoji = text;
+      _externalEmoji = emoji;
     });
   }
 
@@ -245,7 +237,8 @@ class FlashCardBottomState extends State<FlashCardBottom>
       widget.nextCard(
           increase: true,
           trigger: "bottom_navigation",
-          cardstatus: type.toString().substring(10));
+          cardstatus: getFlashcardStatusEnum(
+              EnumToString.convertToString(selectedEmoji)));
     });
   }
 

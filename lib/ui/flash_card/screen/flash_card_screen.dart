@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -23,7 +24,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
 import 'flash_cards_stack.dart';
 
-typedef ChangeCardIndex({bool increase, String cardstatus});
+typedef ChangeCardIndex({bool increase, FlashcardStatus cardstatus});
 
 class FlashCardScreen extends StatefulWidget {
   final FlashcardsStackArguments arguments;
@@ -102,7 +103,9 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     }
   }
 
-  void _changeCardIndex({bool increase = true, String cardstatus = "seen"}) {
+  void _changeCardIndex(
+      {bool increase = true,
+      FlashcardStatus cardstatus = FlashcardStatus.Seen}) {
     if (!increase && _cardIndex == 0) return;
 
     if (increase) {
@@ -110,7 +113,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       (_result as RepositorySuccessResult<FlashcardsStackModel>)
           .data
           .items[_cardIndex]
-          .status = getFlashcardStatusEnum(cardstatus);
+          .status = cardstatus;
 
       _cardIndex++;
     } else

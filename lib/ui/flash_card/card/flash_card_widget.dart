@@ -1,30 +1,19 @@
-import 'dart:math';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:Medschoolcoach/ui/flash_card/card/flash_card_swipe.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:rxdart/subjects.dart' as _rxsub;
-
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/ui/flash_card/screen/flash_card_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'package:shake/shake.dart';
-
 import 'flash_card_bottom.dart';
+import 'flash.dart';
 
 typedef SetFront({@required bool front});
-
-enum EmojiType {
-  Neutral,
-  Positive,
-  Negative,
-}
 
 class FlashCardWidget extends StatefulWidget {
   final FlashcardModel flashCard;
@@ -38,7 +27,6 @@ class FlashCardWidget extends StatefulWidget {
   static const flashCardWidthFactor = 0.75;
   static const flashCardHeightFactor = 1;
   static const flashCardBottomMarginFactor = 0.1;
-  static const animationDurationValue = 200;
 
   const FlashCardWidget(
       {Key key,
@@ -74,7 +62,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
         if (_flashCardSwipe != null && widget.cardIndex > 0) {
           _flashCardSwipe.currentState.undo();
           _flashCardBottom.currentState.cancelUpdate();
-          Future.delayed(Duration(milliseconds: 300), () {
+          Future.delayed(Duration(milliseconds: Durations.cardFadeGap), () {
             widget.changeCardIndex(increase: false);
           });
 
@@ -126,26 +114,31 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
               key: _flashCardBottom,
               nextCard: _nextFlashcard,
               updatedOption: false,
-              status: widget.flashCard.status.toString().split(".")[1]),
+              status: enumFlashcardStatusToEmoji(widget.flashCard.status)),
         ]));
   }
 
-  void updateEmoji(String event, double opacity) {
-    switch (event) {
-      case "success":
+  void updateEmoji(CardAction action, double opacity) {
+    switch (action) {
+      case CardAction.Success:
         _flashCardBottom.currentState.cancelExternal();
         break;
-      case "reset":
+      case CardAction.Reset:
         _flashCardBottom.currentState.cancelUpdate();
         break;
-      case "left":
-        _flashCardBottom.currentState.externalUpdate("Negative", opacity);
+      case CardAction.Left:
+        _flashCardBottom.currentState
+            .externalUpdate(EmojiType.Negative, opacity);
         break;
-      case "right":
-        _flashCardBottom.currentState.externalUpdate("Positive", opacity);
+      case CardAction.Right:
+        _flashCardBottom.currentState
+            .externalUpdate(EmojiType.Positive, opacity);
         break;
-      case "bottom":
-        _flashCardBottom.currentState.externalUpdate("Neutral", opacity);
+      case CardAction.Down:
+        _flashCardBottom.currentState
+            .externalUpdate(EmojiType.Neutral, opacity);
+        break;
+      case CardAction.Up:
         break;
     }
   }
@@ -156,13 +149,13 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     });
   }
 
-  String swipeDirection(String confidence) {
+  String swipeDirection(FlashcardStatus confidence) {
     switch (confidence) {
-      case "Neutral":
+      case FlashcardStatus.Neutral:
         return "bottom";
-      case "Positive":
+      case FlashcardStatus.Positive:
         return "right";
-      case "Negative":
+      case FlashcardStatus.Negative:
         return "left";
       default:
         return "";
@@ -172,7 +165,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   void _nextFlashcard(
       {bool increase = true,
       String trigger = "swipe",
-      String cardstatus = "seen"}) async {
+      FlashcardStatus cardstatus = FlashcardStatus.Seen}) async {
     _updateFlashcardStatus(flashcardStatus: cardstatus, source: trigger);
 
     bool isSwiped = trigger == "swipe";
@@ -180,29 +173,35 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       _flashCardSwipe.currentState
           .animateSwipe(swipeDirection(cardstatus), true);
 
-    _flashcardStatus = getFlashcardStatusEnum(cardstatus);
+    _flashcardStatus = cardstatus;
     _flashCardSwipe.currentState.returnToFront();
-    Future.delayed(Duration(milliseconds: isSwiped ? 0 : 200), () {
+    Future.delayed(Duration(milliseconds: isSwiped ? 0 : Durations.emojiFade),
+        () {
       _flashCardSwipe.currentState.hideCard();
     });
 
-    Future.delayed(Duration(milliseconds: isSwiped ? 100 : 400), () {
+    Future.delayed(
+        Duration(
+            milliseconds: isSwiped
+                ? Durations.cardSwipeGone
+                : Durations.emojiFadeGap), () {
       widget.changeCardIndex(increase: increase, cardstatus: cardstatus);
       _flashCardSwipe.currentState.hideCard(hide: false);
-      Future.delayed(Duration(milliseconds: 300), () {
+      Future.delayed(Duration(milliseconds: Durations.cardFadeGap), () {
         _flashCardBottom.currentState.preventClick = false;
       });
     });
   }
 
-  void _updateFlashcardStatus({String flashcardStatus, String source}) async {
+  void _updateFlashcardStatus(
+      {FlashcardStatus flashcardStatus, String source}) async {
     //log if confidence level changed
     if (isConfidence(flashcardStatus)) {
-      logAnalyticsEvent(flashcardStatus, source);
+      logAnalyticsEvent(EnumToString.convertToString(flashcardStatus), source);
     }
 
     if (flashcardStatus != null) {
-      _flashcardStatus = getFlashcardStatusEnum(flashcardStatus);
+      _flashcardStatus = flashcardStatus;
     }
 
     final result = await Injector.appInstance
@@ -215,8 +214,12 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     if (result is ErrorResponse) print(result.toString());
   }
 
-  bool isConfidence(String emojitype) {
-    return ["positive", "neutral", "negative"].contains(emojitype);
+  bool isConfidence(FlashcardStatus emojitype) {
+    return [
+      FlashcardStatus.Positive,
+      FlashcardStatus.Negative,
+      FlashcardStatus.Neutral
+    ].contains(emojitype);
   }
 
   void logAnalyticsEvent(String type, String action) {

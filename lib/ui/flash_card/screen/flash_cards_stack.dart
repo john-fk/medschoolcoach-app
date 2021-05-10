@@ -7,6 +7,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:flutter/material.dart';
 import 'flash_card_screen.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 class FlashCardsStack extends StatelessWidget {
   final FlashcardsStackModel flashcardsStackModel;
@@ -34,7 +35,7 @@ class FlashCardsStack extends StatelessWidget {
         Positioned.fill(
           child: AnimatedOpacity(
             opacity: cardIndex == flashcardsStackModel.items.length ? 1 : 0,
-            duration: const Duration(milliseconds: 250),
+            duration: Duration(milliseconds: Durations.cardFade),
             child: NoMoreFlashcardsWidget(
                 analyticsProvider: analyticsProvider,
                 isVisible: cardIndex == flashcardsStackModel.items.length),

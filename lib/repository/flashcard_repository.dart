@@ -10,6 +10,7 @@ import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:flutter/material.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 class FlashcardsStackArguments {
   final String videoId;

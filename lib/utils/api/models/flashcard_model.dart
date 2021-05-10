@@ -1,14 +1,7 @@
 import 'dart:convert';
 
 import 'package:Medschoolcoach/utils/api/models/section.dart';
-
-enum FlashcardStatus {
-  New,
-  Seen,
-  Positive,
-  Neutral,
-  Negative,
-}
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 String flashcardStatusToString(FlashcardStatus status) {
   return status.toString().substring(16).toLowerCase();

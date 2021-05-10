@@ -784,6 +784,7 @@ class _MultipleChoiceQuestionScreenState
         break;
       case QuestionStatusType.flagged:
       case QuestionStatusType.qotd:
+      case QuestionStatusType.all:
         break;
     }
   }

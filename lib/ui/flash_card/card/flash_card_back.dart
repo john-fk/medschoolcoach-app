@@ -28,10 +28,6 @@ class FlashCardBack extends StatefulWidget {
 
 class _FlashCardBackState extends State<FlashCardBack>
     with TickerProviderStateMixin {
-  final AnalyticsProvider _analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
-
-  final animationDuration = const Duration(milliseconds: 300);
   String _anHtml = "";
   String _anHtmlDefinition = "";
   String _anHtmlExample = "";

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:io';
+import 'package:enum_to_string/enum_to_string.dart';
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
@@ -19,16 +20,7 @@ import 'flash_card_front.dart';
 import 'flash_card_top.dart';
 
 import 'swipable.dart';
-
-enum EmojiType {
-  Neutral,
-  Positive,
-  Negative,
-}
-
-typedef nextFlashCard({bool increase, String trigger, String cardstatus});
-typedef updateEmoji(String event, double opacity);
-typedef logEvent(String event, {dynamic additionalParams});
+import 'flash.dart';
 
 class FlashCardSwipe extends StatefulWidget {
   final nextFlashCard nextCard;
@@ -59,9 +51,6 @@ class FlashCardSwipe extends StatefulWidget {
 
 class FlashCardSwipeState extends State<FlashCardSwipe>
     with TickerProviderStateMixin {
-  final AnalyticsProvider _analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
-
   StreamController<double> _controller = StreamController<double>();
   final GlobalKey<FlashCardTopState> _flashcardtop =
       GlobalKey<FlashCardTopState>();
@@ -120,15 +109,12 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
         child: Center(
             child: AnimatedOpacity(
                 opacity: _hideCard && !_isUndoing ? 0 : 1,
-                duration: Duration(
-                    milliseconds: FlashCardWidget.animationDurationValue),
+                duration: Duration(milliseconds: Durations.cardFade),
                 child: _hideCard && !_isUndoing
                     ? Container()
                     : AnimatedOpacity(
                         opacity: _isUndoing ? 0 : 1,
-                        duration: Duration(
-                            milliseconds:
-                                FlashCardWidget.animationDurationValue),
+                        duration: Duration(milliseconds: Durations.cardFade),
                         child: Swipable(
                             onSwipeRight: positiveConfidence,
                             onSwipeLeft: negativeConfidence,
@@ -323,8 +309,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   void _setupAnimations() {
     _changeAnimationController = AnimationController(
       vsync: this,
-      duration:
-          const Duration(milliseconds: FlashCardWidget.animationDurationValue),
+      duration: const Duration(milliseconds: Durations.cardFade),
     );
 
     _fadeAnimation =
@@ -383,7 +368,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     if (_confidence.isEmpty) {
       _flashcardtop.currentState
           .updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
-      widget.emojiMe("reset", 1);
+      widget.emojiMe(CardAction.Reset, 1);
     } else {
       animateSwipe(_confidence);
     }
@@ -400,54 +385,59 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     if (moveY < 0) {
       if (moveY.abs() > moveX.abs() * 2) {
         setConfidenceHelper(
-            calculateOpacity(moveY.abs(), _topVerticalDrag), "top");
+            calculateOpacity(moveY.abs(), _topVerticalDrag), CardAction.Up);
       } else if (moveX > 0) {
-        setConfidenceHelper(calculateOpacity(moveX, _horizontalDrag), "right");
+        setConfidenceHelper(
+            calculateOpacity(moveX, _horizontalDrag), CardAction.Right);
       } else {
         setConfidenceHelper(
-            calculateOpacity(moveX.abs(), _horizontalDrag), "left");
+            calculateOpacity(moveX.abs(), _horizontalDrag), CardAction.Left);
       }
     } else if (moveY > moveX.abs()) {
       setConfidenceHelper(
-          calculateOpacity(moveY, _bottomVerticalDrag), "bottom");
+          calculateOpacity(moveY, _bottomVerticalDrag), CardAction.Down);
     } else if (moveX > 0) {
-      setConfidenceHelper(calculateOpacity(moveX, _horizontalDrag), "right");
+      setConfidenceHelper(
+          calculateOpacity(moveX, _horizontalDrag), CardAction.Right);
     } else {
       setConfidenceHelper(
-          calculateOpacity(moveX.abs(), _horizontalDrag), "left");
+          calculateOpacity(moveX.abs(), _horizontalDrag), CardAction.Left);
     }
   }
 
-  void setConfidenceHelper(double opacity, String type) {
-    if (opacity == 1 && type != "top") {
-      _confidence = type;
+  void setConfidenceHelper(double opacity, CardAction type) {
+    if (opacity == 1 && type != CardAction.Up) {
+      _confidence = EnumToString.convertToString(type);
     } else {
       _confidence = "";
     }
     //update opacity & text for top banner
     switch (type) {
-      case "left":
-        widget.emojiMe("left", opacity);
+      case CardAction.Left:
+        widget.emojiMe(type, opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFFFFAEA6).withOpacity(opacity),
             FlutterI18n.translate(context, "flashcards_tips.negative"));
         break;
-      case "right":
-        widget.emojiMe("right", opacity);
+      case CardAction.Right:
+        widget.emojiMe(type, opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFF009D7A).withOpacity(opacity),
             FlutterI18n.translate(context, "flashcards_tips.positive"));
         break;
-      case "bottom":
-        widget.emojiMe("bottom", opacity);
+      case CardAction.Down:
+        widget.emojiMe(type, opacity);
         _flashcardtop.currentState.updateTab(
             Color(0xFFFFB84A).withOpacity(opacity),
             FlutterI18n.translate(context, "flashcards_tips.neutral"));
         break;
-      case "top":
-        widget.emojiMe("reset", 1);
+      case CardAction.Up:
+        widget.emojiMe(type, 1);
         _flashcardtop.currentState
             .updateTab(Color(0xFFFFFFFF).withOpacity(opacity), "");
+        break;
+      case CardAction.Success:
+      case CardAction.Reset:
         break;
     }
     //update opacity for bottom icon
@@ -455,15 +445,15 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void negativeConfidence(Offset offset) {
-    triggerConfidence("negative");
+    triggerConfidence(FlashcardStatus.Negative);
   }
 
   void neutralConfidence(Offset offset) {
-    triggerConfidence("neutral");
+    triggerConfidence(FlashcardStatus.Neutral);
   }
 
   void positiveConfidence(Offset offset) {
-    triggerConfidence("positive");
+    triggerConfidence(FlashcardStatus.Positive);
   }
 
   void hideCard({bool hide = true}) {
@@ -472,9 +462,9 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
     });
   }
 
-  void triggerConfidence(String cardstatus) {
+  void triggerConfidence(FlashcardStatus cardstatus) {
     if (!emojiClick) {
-      widget.emojiMe("success", 1);
+      widget.emojiMe(CardAction.Success, 1);
       widget.nextCard(increase: true, trigger: "swipe", cardstatus: cardstatus);
     }
   }

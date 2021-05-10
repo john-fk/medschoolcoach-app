@@ -3,6 +3,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 class FlashCardStatusWidget extends StatelessWidget {
   final FlashcardStatus status;
