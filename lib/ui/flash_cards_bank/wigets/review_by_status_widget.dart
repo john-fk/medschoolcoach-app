@@ -70,8 +70,8 @@ class ReviewByStatusWidget extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(2.0),
-            child: SvgPicture.asset(
-              asset,
+            child: Image(
+              image: AssetImage(asset),
               width: whenDevice(context, large: 30, tablet: 60),
               color: Style.of(context).colors.content2,
             ),

@@ -80,6 +80,8 @@ class _MultipleChoiceQuestionScreenState
   final _animationDuration = Duration(
     milliseconds: 200,
   );
+  static const int scrollDuration = 500;
+  final _scrollController = ScrollController();
 
   int correctAnswers = 0;
   int wrongAnswers = 0;
@@ -95,6 +97,7 @@ class _MultipleChoiceQuestionScreenState
   RepositoryResult<QuestionList> _repoQuestion;
   bool _firstPressed = true;
   bool isQOTD = false;
+
   @override
   void initState() {
     super.initState();
@@ -389,6 +392,7 @@ class _MultipleChoiceQuestionScreenState
           )
         : _questionsList.isNotEmpty
             ? ListView(
+                controller: _scrollController,
                 shrinkWrap: true,
                 children: <Widget>[
                   Padding(
@@ -589,6 +593,11 @@ class _MultipleChoiceQuestionScreenState
       });
     }
     _previousQuestionIndex = _currentQuestionIndex;
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: scrollDuration),
+      curve: Curves.linear,
+    );
   }
 
   void _logShowAnswersEvent(int index) {
@@ -757,7 +766,8 @@ class _MultipleChoiceQuestionScreenState
         }
 
         _loading = false;
-        if (_currentQuestionIndex >= _questionsList.length) _goToSummarize();
+        if (_questionsList.length > 0 &&
+            _currentQuestionIndex >= _questionsList.length) _goToSummarize();
       });
     } else {
       _error = result;

@@ -232,13 +232,13 @@ class FlashCardBottomState extends State<FlashCardBottom>
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
-      selectedEmoji = null;
       _updatedOption = false;
       widget.nextCard(
           increase: true,
           trigger: "bottom_navigation",
           cardstatus: getFlashcardStatusEnum(
               EnumToString.convertToString(selectedEmoji)));
+      selectedEmoji = null;
     });
   }
 
@@ -279,10 +279,10 @@ class FlashCardBottomState extends State<FlashCardBottom>
           ),
           color: selectedEmoji == type
               ? selectedEmoji == EmojiType.Neutral
-                  ? Color(0xFFFFB84A)
+                  ? EmojiColors.neutral
                   : selectedEmoji == EmojiType.Positive
-                      ? Color(0xFF0AD1A5)
-                      : Color(0xFFFF8131)
+                      ? EmojiColors.positive
+                      : EmojiColors.negative
               : Colors.white,
         ),
       ),

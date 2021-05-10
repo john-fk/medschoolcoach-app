@@ -351,7 +351,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   void updateSubject(Subject subject, bool isQB) {
-    _analyticsProvider.logEvent("filter_question_subject",
+    _analyticsProvider.logEvent(
+        isQB ? "filter_flashcard_subject" : "filter_question_subject",
         params: {"subject_name": subject.name});
 
     if (isQB)

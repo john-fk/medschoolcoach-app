@@ -262,7 +262,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                     params: null);
                 Navigator.pop(context);
 
-                dateController.selectedDate = null; //Add this in your Code.
+                dateController.selectedDate = null;
                 setState(() {
                   scheduleDate = null;
                   userManager.removeTestDate();

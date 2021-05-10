@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum EmojiType {
   Neutral,
   Positive,
@@ -25,6 +27,28 @@ EmojiType enumFlashcardStatusToEmoji(FlashcardStatus status) {
     default:
       return null;
   }
+}
+
+CardAction enumFlashcardStatusToCardAction(FlashcardStatus status) {
+  switch (status) {
+    case FlashcardStatus.Negative:
+      return CardAction.Left;
+    case FlashcardStatus.Positive:
+      return CardAction.Right;
+    case FlashcardStatus.Neutral:
+      return CardAction.Down;
+    case FlashcardStatus.Seen:
+    case FlashcardStatus.New:
+    default:
+      return null;
+  }
+}
+
+class EmojiColors {
+  static Color none = Color(0xFFFFB84A);
+  static Color neutral = Color(0xFFFFB84A);
+  static Color positive = Color(0xFF0AD1A5);
+  static Color negative = Color(0xFFFF8131);
 }
 
 class Durations {

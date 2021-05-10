@@ -72,7 +72,7 @@ class FlashCardsStack extends StatelessWidget {
           AnimatedOpacity(
               opacity:
                   cardIndex < flashcardsStackModel.items.length - 1 ? 1 : 0,
-              duration: const Duration(milliseconds: 250),
+              duration: Duration(milliseconds: Durations.cardFade),
               child: Transform.rotate(
                   angle: -math.pi / 32,
                   child: Container(

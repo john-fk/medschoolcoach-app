@@ -68,7 +68,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   bool emojiClick;
   Color topColor;
   String topText;
-  String _confidence;
+  CardAction _confidence;
 
   double screenWidth;
   double screenHeight;
@@ -207,12 +207,12 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
       _isUndoing = true;
     //triggered after top bar shown
     setState(() {
-      _confidence = "";
+      _confidence = null;
       _hideCard = true;
       _showFrontSide = true;
       _cardInPosition = false;
     });
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(Duration(milliseconds: Durations.cardFadeGap), () {
       //animate top
       _flashcardtop.currentState.undoTab();
       setState(() {
@@ -323,17 +323,21 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
           });
   }
 
-  void animateSwipe(String action, [bool isClick = false]) {
+  void animateSwipe(CardAction action, [bool isClick = false]) {
     emojiClick = isClick;
     switch (action) {
-      case "right":
+      case CardAction.Right:
         _controller.add(pi / 4);
         break;
-      case "bottom":
+      case CardAction.Down:
         _controller.add(3 * pi / 4);
         break;
-      case "left":
+      case CardAction.Left:
         _controller.add(pi);
+        break;
+      case CardAction.Up:
+      case CardAction.Reset:
+      case CardAction.Success:
         break;
     }
   }
@@ -365,7 +369,7 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
   }
 
   void endDrag(Offset position, DragEndDetails details) {
-    if (_confidence.isEmpty) {
+    if (_confidence == null) {
       _flashcardtop.currentState
           .updateTab(Color(0xFFFFFFFF).withOpacity(0), "");
       widget.emojiMe(CardAction.Reset, 1);
@@ -407,9 +411,9 @@ class FlashCardSwipeState extends State<FlashCardSwipe>
 
   void setConfidenceHelper(double opacity, CardAction type) {
     if (opacity == 1 && type != CardAction.Up) {
-      _confidence = EnumToString.convertToString(type);
+      _confidence = type;
     } else {
-      _confidence = "";
+      _confidence = null;
     }
     //update opacity & text for top banner
     switch (type) {

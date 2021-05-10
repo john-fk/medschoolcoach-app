@@ -44,6 +44,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
 
   var widgetKey = GlobalKey();
   Size oldSize;
+  final int FadeDuration = 350;
 
   void postFrameCallback() {
     var context = widgetKey.currentContext;
@@ -61,7 +62,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
     SchedulerBinding.instance.addPostFrameCallback((_) => postFrameCallback());
 
     if (!widget.isVisible) {
-      Future.delayed(Duration(milliseconds: 200), () {
+      Future.delayed(Duration(milliseconds: FadeDuration), () {
         if (this.mounted) {
           setState(() {
             widget.isVisible = true;
@@ -172,7 +173,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           ),
           child: AnimatedOpacity(
               opacity: widget.isVisible ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 200),
+              duration: Duration(milliseconds: FadeDuration),
               child: Text(
                 userAnswer,
                 style:
