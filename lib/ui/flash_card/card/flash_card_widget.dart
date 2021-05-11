@@ -210,8 +210,14 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
   }
 
   void logAnalyticsEvent(String type, String action) {
-    _logEvents(AnalyticsConstants.tapFlashcardConfidence,
-        additionalParams: {"confidence": type.toLowerCase(), "action": action});
+    _logEvents(AnalyticsConstants.swipeFlashcard, additionalParams: {
+      AnalyticsConstants.keyDirection: AnalyticsConstants.keyRightSwipe
+    });
+    _logEvents(
+        action == "swipe"
+            ? AnalyticsConstants.swipeFlashcardConfidence
+            : AnalyticsConstants.tapFlashcardConfidence,
+        additionalParams: {"confidence": type.toLowerCase()});
   }
 
   void _logEvents(String event, {dynamic additionalParams}) {

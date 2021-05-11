@@ -78,6 +78,7 @@ abstract class AnalyticsConstants {
   //Taps
   static const signUp = "sign_up";
   static const signIn = "sign_in";
+  static const swipeFlashcardConfidence = "swipe_flashcard_confidence";
   static const tapSignUp = "tap_sign_up";
   static const tapSignIn = "tap_sign_in";
   static const tapSignOut = "tap_sign_out";
