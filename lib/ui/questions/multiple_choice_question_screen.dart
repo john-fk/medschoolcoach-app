@@ -80,8 +80,6 @@ class _MultipleChoiceQuestionScreenState
   final _animationDuration = Duration(
     milliseconds: 200,
   );
-  static const int scrollDuration = 500;
-  final _scrollController = ScrollController();
 
   int correctAnswers = 0;
   int wrongAnswers = 0;
@@ -392,7 +390,6 @@ class _MultipleChoiceQuestionScreenState
           )
         : _questionsList.isNotEmpty
             ? ListView(
-                controller: _scrollController,
                 shrinkWrap: true,
                 children: <Widget>[
                   Padding(
@@ -593,11 +590,6 @@ class _MultipleChoiceQuestionScreenState
       });
     }
     _previousQuestionIndex = _currentQuestionIndex;
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: scrollDuration),
-      curve: Curves.linear,
-    );
   }
 
   void _logShowAnswersEvent(int index) {
