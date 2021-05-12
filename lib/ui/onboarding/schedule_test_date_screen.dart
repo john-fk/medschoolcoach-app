@@ -146,17 +146,6 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 dateController: dateController,
                 onDateConfirm: () {
                   _updateTestDate();
-                  _analyticsProvider.logEvent(
-                      isEditingTestDate
-                          ? "tap_test_date_update"
-                          : "tap_test_date_confirm",
-                      params: null);
-                  if (widget.source != Routes.profile_screen) {
-                    Navigator.pushNamed(context, Routes.timePerDay,
-                        arguments: Routes.onboarding);
-                  } else {
-                    Navigator.pop(context);
-                  }
                 },
               ),
             ));
@@ -173,11 +162,20 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
 
     if (result is ErrorResponse) {
       showToast(
-          text: "Something went wrong, please try again",
+          text: FlutterI18n.translate(context, "general.net_error"),
           context: context,
           color: Style.of(context).colors.error);
     } else {
       scheduleDate = dateController.selectedDate;
+      _analyticsProvider.logEvent(
+          isEditingTestDate ? "tap_test_date_update" : "tap_test_date_confirm",
+          params: null);
+      if (widget.source != Routes.profile_screen) {
+        Navigator.pushNamed(context, Routes.timePerDay,
+            arguments: Routes.onboarding);
+      } else {
+        Navigator.pop(context);
+      }
     }
     setState(() {
       isLoading = false;

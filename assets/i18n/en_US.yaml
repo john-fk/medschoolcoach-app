@@ -10,6 +10,7 @@ general:
   save: Save
   next: Next
   remove: Remove
+  net_error : Something went wrong, please try again and make sure your internet is active
 common:
   tutoring: Tutoring
   premium: Premium

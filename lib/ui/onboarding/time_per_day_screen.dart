@@ -148,9 +148,12 @@ class _TimePerDayState extends State<TimePerDay> {
     final result = await apiServices.setTimePerDay(timePerDay);
     if (result is ErrorResponse) {
       showToast(
-          text: "Something went wrong, please try again",
+          text: FlutterI18n.translate(context, "general.net_error"),
           context: context,
           color: Style.of(context).colors.error);
+      setState(() {
+        loading = false;
+      });
     } else {
       _analyticsProvider.logEvent("tap_confirm_study_time",
           params: {"hours_per_day": timePerDay.toString()});
