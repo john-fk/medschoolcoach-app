@@ -9,6 +9,7 @@ import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/question.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/cupertino.dart';
 
 class QuestionsRepository implements Repository {
@@ -25,11 +26,11 @@ class QuestionsRepository implements Repository {
       String videoId,
       bool forceApiRequest = false,
       QuestionStatusType status = QuestionStatusType.all}) async {
-    final key = "$subjectId$videoId${enumToString(status)}";
+    final key = "$subjectId$videoId" + EnumToString.convertToString(status);
 
     var _result = await _cache.get(key);
 
-    if (forceApiRequest || _result == null) {
+    if (forceApiRequest || _result == null || _result.items.length == 0) {
       final response = await _apiServices.getQuestions(
         subjectId: subjectId,
         videoId: videoId,
@@ -134,8 +135,12 @@ class QuestionsRepository implements Repository {
     _cache.set("$subjectId$videoId", questionList);
   }
 
-  void clearCacheKey({String subjectId, String videoId}) {
-    _cache.invalidate("$subjectId$videoId");
+  void clearCacheKey(
+      {String subjectId,
+      String videoId,
+      QuestionStatusType status = QuestionStatusType.all}) {
+    final key = "$subjectId$videoId" + EnumToString.convertToString(status);
+    _cache.invalidate(key);
   }
 
   String enumToString(QuestionStatusType status) {

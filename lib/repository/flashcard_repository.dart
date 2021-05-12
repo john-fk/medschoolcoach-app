@@ -49,7 +49,7 @@ class FlashcardRepository implements Repository {
     //get result if exists so we can continue instead of refetching
     var _result = await _cache.get(key);
 
-    if (forceApiRequest || _result == null) {
+    if (arguments.status != null || forceApiRequest || _result == null || _result.items.length == 0) {
       final response = await _apiServices.getFlashcardsStack(arguments);
       if (response is SuccessResponse<FlashcardsStackModel>) {
         _cache.set(key, response.body);

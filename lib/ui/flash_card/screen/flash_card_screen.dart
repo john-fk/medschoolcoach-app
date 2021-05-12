@@ -47,6 +47,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
   int _cardIndex = 0;
+  bool _increase;
   bool _front = true;
   Size cardArea;
   int _totalCards = 0;
@@ -54,6 +55,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   void initState() {
     super.initState();
     _fetchFlashcards();
+    _increase = true;
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -107,6 +109,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       {bool increase = true,
       FlashcardStatus cardstatus = FlashcardStatus.Seen}) {
     if (!increase && _cardIndex == 0) return;
+    _increase = increase;
 
     if (increase) {
       //save current emoji
@@ -156,6 +159,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
                 category: widget.arguments.subjectName ??
                     widget.arguments.status.toString().split(".")[1],
                 currentQuestion: _cardIndex + 1,
+                isIncrease: _increase,
                 questionsSize: _result != null ? _totalCards : 0,
               ),
               Expanded(

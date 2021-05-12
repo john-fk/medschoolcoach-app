@@ -15,6 +15,7 @@ class QuestionAppBar extends StatefulWidget {
   final String stem;
   final bool summary;
   final bool isFlashCard;
+  final bool isIncrease;
   bool isVisible;
   VoidCallback onHowtoTap;
 
@@ -29,6 +30,7 @@ class QuestionAppBar extends StatefulWidget {
       this.summary = false,
       this.isFlashCard = false,
       this.onHowtoTap,
+      this.isIncrease = true,
       this.isVisible = false})
       : super(key: key);
 
@@ -79,7 +81,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
     } else {
       userAnswer = widget.questionsSize > 0 &&
               !(!widget.isVisible && widget.currentQuestion == 1)
-          ? "${widget.currentQuestion - (widget.isVisible ? 0 : 1)}/${widget.questionsSize}"
+          ? "${widget.currentQuestion + (widget.isVisible ? 0 : (widget.isIncrease ? -1 : 1))}/${widget.questionsSize}"
           : "";
     }
     return Column(

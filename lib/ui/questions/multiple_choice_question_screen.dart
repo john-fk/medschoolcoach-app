@@ -641,7 +641,8 @@ class _MultipleChoiceQuestionScreenState
     } else {
       _questionsRepository.clearCacheKey(
           subjectId: widget.arguments.subjectId,
-          videoId: widget.arguments.videoId);
+          videoId: widget.arguments.videoId,
+          status: widget.arguments.status ?? QuestionStatusType.all);
     }
     Navigator.pushReplacementNamed(
       context,
