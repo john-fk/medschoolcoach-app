@@ -72,7 +72,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
           brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           centerTitle: false,
-          titleSpacing: 12,
+          titleSp acing: 12,
           automaticallyImplyLeading: false,
         ),
         body: SafeArea(
@@ -178,12 +178,13 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                         context,
                         "bookmarks.title",
                       ),
-                      onTap: () async {
+                      onTap: () async { 
                         await Navigator.pushNamed(context, Routes.bookmarks);
                         setState(() {});
                       }),
                   MorePageListCell(
-                    iconAssetName: Style.of(context).svgAsset.support,
+                    svgAsset: false,
+                    iconAssetName: Style.of(context).pngAsset.support,
                     cellText: FlutterI18n.translate(
                       context,
                       "more_screen.support",

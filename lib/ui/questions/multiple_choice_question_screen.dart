@@ -153,8 +153,7 @@ class _MultipleChoiceQuestionScreenState
                       : "",
                   stem: _questionsList.isNotEmpty
                       ? _questionsList[_currentQuestionIndex].stem
-                      : "",
-                  isVisible: _previousQuestionIndex == _currentQuestionIndex),
+                      : ""),
               Expanded(
                 child: _loading
                     ? Center(

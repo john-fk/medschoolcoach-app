@@ -63,11 +63,13 @@ class _TimePerDayState extends State<TimePerDay> {
   @override
   Widget build(BuildContext context) {
     var fromOnboarding = widget.source == Routes.onboarding;
-      return Scaffold(
+    return Scaffold(
         appBar: TransparentAppBar(
-          leading: fromOnboarding ? Container() : BackButton(
-            color: Colors.black,
-          ),
+          leading: fromOnboarding
+              ? Container()
+              : BackButton(
+                  color: Colors.black,
+                ),
         ),
         body: SafeArea(child: _buildBody()));
   }

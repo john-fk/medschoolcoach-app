@@ -70,6 +70,9 @@ class _AppPngAssets {
   final eNeutral = "assets/png/e_neutral.png";
   final eNegative = "assets/png/e_negative.png";
   final flipTips = "assets/png/flip_tips";
+
+  //profile screen
+  final support ="assets/png/support.png";
 }
 
 class _AppSvgAssets {

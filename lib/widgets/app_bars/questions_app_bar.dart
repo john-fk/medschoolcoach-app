@@ -15,8 +15,6 @@ class QuestionAppBar extends StatefulWidget {
   final String stem;
   final bool summary;
   final bool isFlashCard;
-  final bool isIncrease;
-  bool isVisible;
   VoidCallback onHowtoTap;
 
   QuestionAppBar(
@@ -29,9 +27,7 @@ class QuestionAppBar extends StatefulWidget {
       this.questionId,
       this.summary = false,
       this.isFlashCard = false,
-      this.onHowtoTap,
-      this.isIncrease = true,
-      this.isVisible = false})
+      this.onHowtoTap})
       : super(key: key);
 
   @override
@@ -46,7 +42,6 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
 
   var widgetKey = GlobalKey();
   Size oldSize;
-  final int FadeDuration = 350;
 
   void postFrameCallback() {
     var context = widgetKey.currentContext;
@@ -63,25 +58,14 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((_) => postFrameCallback());
 
-    if (!widget.isVisible) {
-      Future.delayed(Duration(milliseconds: FadeDuration), () {
-        if (this.mounted) {
-          setState(() {
-            widget.isVisible = true;
-          });
-        }
-      });
-    }
-
     String userAnswer = "";
     if (widget.summary) {
       userAnswer = widget.category ?? "Questions of the Day";
     } else if (widget.currentQuestion > widget.questionsSize) {
       userAnswer = "";
     } else {
-      userAnswer = widget.questionsSize > 0 &&
-              !(!widget.isVisible && widget.currentQuestion == 1)
-          ? "${widget.currentQuestion + (widget.isVisible ? 0 : (widget.isIncrease ? -1 : 1))}/${widget.questionsSize}"
+      userAnswer = widget.questionsSize > 0
+          ? "${widget.currentQuestion} /${widget.questionsSize}"
           : "";
     }
     return Column(
@@ -173,14 +157,11 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
           padding: EdgeInsets.symmetric(
             horizontal: widget.summary ? 30.0 : 0,
           ),
-          child: AnimatedOpacity(
-              opacity: widget.isVisible ? 1.0 : 0.0,
-              duration: Duration(milliseconds: FadeDuration),
-              child: Text(
+          child: Text(
                 userAnswer,
                 style:
                     smallResponsiveFont(context, fontColor: FontColor.Content2),
-              )),
+              ),
         ),
         Container(
             alignment: Alignment.center,
