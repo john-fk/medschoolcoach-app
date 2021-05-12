@@ -744,9 +744,14 @@ class _MultipleChoiceQuestionScreenState
             _filterQuestionsByStatus();
           }
           if (widget.arguments.subjectId != null) {
-            _questionsList = _questionsList
-                .where((question) => question.isCorrect == null)
-                .toList();
+            if (!_questionsList.any((question) => question.isCorrect == null)) {
+              //if there's a question but all answered, then shuffle
+              _questionsList.shuffle();
+            } else {
+              _questionsList = _questionsList
+                  .where((question) => question.isCorrect == null)
+                  .toList();
+            }
           }
           result.data.items = _questionsList;
         } else {
