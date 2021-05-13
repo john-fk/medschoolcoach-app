@@ -178,12 +178,17 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                         context,
                         "bookmarks.title",
                       ),
-                      onTap: () async { 
+                      onTap: () async {
                         await Navigator.pushNamed(context, Routes.bookmarks);
                         setState(() {});
                       }),
                   MorePageListCell(
                     svgAsset: false,
+                    iconSize: whenDevice(
+                      context,
+                      large: 28.0,
+                      tablet: 34.0,
+                    ),
                     iconAssetName: Style.of(context).pngAsset.support,
                     cellText: FlutterI18n.translate(
                       context,
