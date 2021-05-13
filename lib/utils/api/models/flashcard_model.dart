@@ -1,21 +1,14 @@
 import 'dart:convert';
 
 import 'package:Medschoolcoach/utils/api/models/section.dart';
-
-enum FlashcardStatus {
-  New,
-  Seen,
-  Positive,
-  Neutral,
-  Negative,
-}
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 String flashcardStatusToString(FlashcardStatus status) {
   return status.toString().substring(16).toLowerCase();
 }
 
-FlashcardStatus getFlahcardStatusEnum(String status) {
-  switch (status) {
+FlashcardStatus getFlashcardStatusEnum(String status) {
+  switch (status.toLowerCase()) {
     case "new":
       return FlashcardStatus.New;
     case "seen":
@@ -97,7 +90,7 @@ class FlashcardModel {
             : DateTime.parse(json["updated_at"]),
         status: json["status"] == null
             ? null
-            : getFlahcardStatusEnum(json["status"]),
+            : getFlashcardStatusEnum(json["status"]),
         section:
             json["section"] == null ? null : Section.fromJson(json["section"]),
       );

@@ -12,30 +12,32 @@ part './style/shadows.dart';
 
 /// Provides colors that are used to create app style by style provider
 class AppColors {
-  const AppColors({
-    @required this.accent2,
-    @required this.accent3,
-    @required this.accent4,
-    @required this.content2,
-    @required this.content4,
-    @required this.inputBackground,
-    @required this.shadow2,
-    @required this.accent,
-    @required this.content,
-    @required this.content3,
-    @required this.background,
-    @required this.background2,
-    @required this.background3,
-    @required this.shadow,
-    @required this.brightShadow,
-    @required this.error,
-    @required this.premium,
-    @required this.separator,
-    @required this.questions,
-    @required this.divider,
-    @required this.qualifyingText,
-    @required this.border,
-  });
+  const AppColors(
+      {@required this.accent2,
+      @required this.accent3,
+      @required this.accent4,
+      @required this.content2,
+      @required this.content4,
+      @required this.inputBackground,
+      @required this.shadow2,
+      @required this.accent,
+      @required this.content,
+      @required this.content3,
+      @required this.background,
+      @required this.background2,
+      @required this.background3,
+      @required this.shadow,
+      @required this.brightShadow,
+      @required this.error,
+      @required this.premium,
+      @required this.separator,
+      @required this.questions,
+      @required this.divider,
+      @required this.qualifyingText,
+      @required this.border,
+      @required this.qbCorrect,
+      @required this.qbIncorrect,
+      @required this.bottomSlider});
 
   final Color accent;
   final Color accent2;
@@ -66,6 +68,10 @@ class AppColors {
   final Color qualifyingText;
   final Color border;
 
+  final Color qbCorrect;
+  final Color qbIncorrect;
+  final Color bottomSlider;
+
   /// Creates a copy of this [AppColors] but with the given
   /// fields replaced with the new values.
   AppColors copyWith(
@@ -89,6 +95,9 @@ class AppColors {
           Color separator,
           Color questions,
           Color divider,
+          Color qbCorrect,
+          Color qbIncorrect,
+          Color bottomSlider,
           Color qualifyingText) =>
       AppColors(
           accent: accent ?? this.accent,
@@ -112,6 +121,9 @@ class AppColors {
           divider: divider ?? this.divider,
           questions: questions ?? this.questions,
           qualifyingText: qualifyingText ?? this.qualifyingText,
+          qbIncorrect: qbIncorrect ?? this.qbIncorrect,
+          qbCorrect: qbIncorrect ?? this.qbIncorrect,
+          bottomSlider: bottomSlider ?? this.bottomSlider,
           border: border ?? this.border);
 }
 

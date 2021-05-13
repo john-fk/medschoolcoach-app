@@ -7,13 +7,10 @@ class FlashcardsStackModel {
   int limit;
   int offset;
   int total;
+  int position;
 
-  FlashcardsStackModel({
-    this.items,
-    this.limit,
-    this.offset,
-    this.total,
-  });
+  FlashcardsStackModel(
+      {this.items, this.limit, this.offset, this.total, this.position = 0});
 
   factory FlashcardsStackModel.fromRawJson(String str) =>
       FlashcardsStackModel.fromJson(json.decode(str));

@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/repository/questions_day_repository.dart';
 import 'package:Medschoolcoach/repository/questions_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
@@ -10,10 +11,12 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/question_button.dart';
-import 'package:Medschoolcoach/widgets/buttons/white_border_button.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -22,12 +25,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 
-enum QuestionStatusType {
-  newQuestions,
-  incorrect,
-  correct,
-  flagged,
-}
+enum QuestionStatusType { newQuestions, incorrect, correct, flagged, qotd, all }
 
 class MultipleChoiceQuestionScreenArguments {
   final String screenName;
@@ -71,12 +69,13 @@ class MultipleChoiceQuestionScreen extends StatefulWidget {
 }
 
 class _MultipleChoiceQuestionScreenState
-    extends State<MultipleChoiceQuestionScreen> {
+    extends State<MultipleChoiceQuestionScreen> with TickerProviderStateMixin {
   final _questionsRepository =
       Injector.appInstance.getDependency<QuestionsRepository>();
+  final _questionsDayRepository =
+      Injector.appInstance.getDependency<QuestionsDayRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
-
   final _listKey = GlobalKey<AnimatedListState>();
   final _animationDuration = Duration(
     milliseconds: 200,
@@ -86,41 +85,54 @@ class _MultipleChoiceQuestionScreenState
   int wrongAnswers = 0;
   final List<String> _answeredQuestionsIds = [];
   int _currentQuestionIndex = 0;
+  int _previousQuestionIndex;
   List<Question> _questionsList = [];
   List<Answer> _answers = [];
   bool _loading = false;
   bool _favourite;
   int _selectedIndex;
   RepositoryResult<QuestionList> _error;
+  RepositoryResult<QuestionList> _repoQuestion;
   bool _firstPressed = true;
+  bool isQOTD = false;
 
   @override
   void initState() {
     super.initState();
     _logScreenViewAnalytics();
     _fetchQuestions(
-      forceApiRequest: true,
+      forceApiRequest: false,
     );
   }
 
   void _logScreenViewAnalytics() {
     Map<String, String> param;
-    if (widget.arguments.subjectId == null) {
-      param = {AnalyticsConstants.keyType: widget.arguments.screenName};
+    if (!isQOTD) {
+      if (widget.arguments.subjectId == null) {
+        param = {AnalyticsConstants.keyType: widget.arguments.screenName};
+      } else {
+        param = {
+          AnalyticsConstants.keySubjectId: widget.arguments.subjectId,
+          AnalyticsConstants.keySubjectName: widget.arguments.screenName
+        };
+      }
+      _analyticsProvider.logScreenView(
+          AnalyticsConstants.screenMultipleChoiceQuestion,
+          widget.arguments.source,
+          params: param);
     } else {
-      param = {
-        AnalyticsConstants.keySubjectId: widget.arguments.subjectId,
-        AnalyticsConstants.keySubjectName: widget.arguments.screenName
-      };
+      _analyticsProvider.logScreenView(
+          AnalyticsConstants.screenQuestionsOfTheDay, widget.arguments.source);
     }
-    _analyticsProvider.logScreenView(
-        AnalyticsConstants.screenMultipleChoiceQuestion,
-        widget.arguments.source,
-        params: param);
   }
 
   @override
   Widget build(BuildContext context) {
+    isQOTD = widget.arguments.status == QuestionStatusType.qotd;
+    if ((_questionsList.length > 0) &&
+        ((isQOTD && _currentQuestionIndex == 5) ||
+            (!isQOTD && _currentQuestionIndex >= _questionsList.length)))
+      return Container();
     final size = MediaQuery.of(context).size;
     bool shouldAdd = _answers.isEmpty;
     return Scaffold(
@@ -138,24 +150,15 @@ class _MultipleChoiceQuestionScreenState
           Column(
             children: <Widget>[
               QuestionAppBar(
-                title: FlutterI18n.translate(
-                  context,
-                  "question_screen.title",
-                ),
-                subTitle: widget.arguments.screenName,
-                currentQuestion: _currentQuestionIndex + 1,
-                questionsSize: _questionsList.length,
-                questionId: _questionsList.isNotEmpty
-                    ? _questionsList[_currentQuestionIndex].id
-                    : "",
-                stem: _questionsList.isNotEmpty
-                    ? _questionsList[_currentQuestionIndex].stem
-                    : "",
-                isBookmarked: _favourite != null ? _favourite : _getFavourite(),
-                onBookmarkTap: () {
-                  _favourite = !_favourite;
-                },
-              ),
+                  category: widget.arguments.screenName,
+                  currentQuestion: _currentQuestionIndex + 1,
+                  questionsSize: _questionsList.length,
+                  questionId: _questionsList.isNotEmpty
+                      ? _questionsList[_currentQuestionIndex].id
+                      : "",
+                  stem: _questionsList.isNotEmpty
+                      ? _questionsList[_currentQuestionIndex].stem
+                      : ""),
               Expanded(
                 child: _loading
                     ? Center(
@@ -163,75 +166,188 @@ class _MultipleChoiceQuestionScreenState
                       )
                     : _buildListViewContent(context, shouldAdd),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: AnimatedContainer(
-                  duration: const Duration(
-                    milliseconds: 300,
-                  ),
-                  height: _selectedIndex != null
-                      ? whenDevice(
-                          context,
-                          large: 168,
-                          tablet: 230,
-                        )
-                      : 0,
-                  child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 1,
-                          color: Colors.white.withOpacity(0.2),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        QuestionButton(
-                          text:
-                              _currentQuestionIndex != _questionsList.length - 1
-                                  ? FlutterI18n.translate(
-                                      context,
-                                      "question_screen.next_question",
-                                    )
-                                  : FlutterI18n.translate(
-                                      context,
-                                      "question_screen.summerize",
-                                    ),
-                          onPressed:
-                              _currentQuestionIndex != _questionsList.length - 1
-                                  ? _goToNextQuestion
-                                  : _goToSummarize,
-                          nextQuestion: true,
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        WhiteBorderButton(
-                          text: FlutterI18n.translate(
+              Container(
+                  color: Color.fromRGBO(12, 83, 199, 1),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Container(
+                    child: AnimatedContainer(
+                      duration: const Duration(
+                        milliseconds: 300,
+                      ),
+                      height: _selectedIndex != null
+                          ? whenDevice(
+                              context,
+                              large: 168,
+                              tablet: 230,
+                            )
+                          : 0,
+                      child: Container(
+                          margin: EdgeInsets.only(
+                              top: whenDevice(
                             context,
-                            "question_screen.view_explanation",
-                          ),
-                          onPressed: () {
-                            _logQuestionEvent(
-                                AnalyticsConstants.tapViewExplanation);
-                            openExplanationModal(
-                              context: context,
-                              explanationText:
-                                  _questionsList[_currentQuestionIndex]
-                                      .explanation,
-                            );
-                          },
-                        )
-                      ],
+                            large: 32,
+                            tablet: 40,
+                          )),
+                          child: SingleChildScrollView(
+                            physics: NeverScrollableScrollPhysics(),
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                      width: size.width,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          _drawBookmark(),
+                                          SizedBox(
+                                            width: 24,
+                                          ),
+                                          _drawExplanation()
+                                        ],
+                                      )),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  QuestionButton(
+                                    text: _currentQuestionIndex !=
+                                            _questionsList.length - 1
+                                        ? FlutterI18n.translate(
+                                            context,
+                                            "question_screen.next_question",
+                                          )
+                                        : FlutterI18n.translate(
+                                            context,
+                                            "question_screen.summerize",
+                                          ),
+                                    onPressed: _currentQuestionIndex !=
+                                            _questionsList.length - 1
+                                        ? _goToNextQuestion
+                                        : _goToSummarize,
+                                    nextQuestion: true,
+                                  )
+                                ],
+                              ),
+                            ),
+                          )),
                     ),
-                  ),
-                ),
-              )
+                  ))
             ],
           )
         ],
       ),
+    );
+  }
+
+  InkWell _drawBookmark() {
+    final size = whenDevice(context, large: 25.0, tablet: 40.0);
+    bool isBookmarked = _favourite != null ? _favourite : _getFavourite();
+    return InkWell(
+      child: Column(children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 8),
+          child: AnimatedSizeAndFade(
+              vsync: this,
+              fadeDuration: const Duration(milliseconds: 1000),
+              child: Container(
+                key: isBookmarked ? ValueKey("booked") : ValueKey("unbooked"),
+                height: size,
+                child: Image(
+                    image: AssetImage("assets/png/bookmark_" +
+                        (isBookmarked ? "1" : "0") +
+                        ".png")),
+              )),
+        ),
+        Text("Save",
+            style: smallerResponsiveFont(context,
+                fontColor: FontColor.White, opacity: 0.5))
+      ]),
+      onTap: _onTap,
+    );
+  }
+
+  InkWell _drawExplanation() {
+    final size = whenDevice(context, large: 25.0, tablet: 40.0);
+    return InkWell(
+      child: Column(children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 8),
+          child: Image(
+              image: AssetImage(
+                  medstyles.Style.of(context).pngAsset.questionExplanation),
+              height: size,
+              fit: BoxFit.fitHeight),
+        ),
+        Text("Explanation",
+            style: smallerResponsiveFont(context,
+                fontColor: FontColor.White, opacity: 0.5))
+      ]),
+      onTap: () {
+        _logQuestionEvent(AnalyticsConstants.tapViewExplanation);
+        openExplanationModal(
+          context: context,
+          fitHeight: false,
+          title: FlutterI18n.translate(context, "question_screen.explanation"),
+          content:
+              explanation(_questionsList[_currentQuestionIndex].explanation),
+        );
+      },
+    );
+  }
+
+  Future<void> _onTap() async {
+    bool initialValue = _favourite;
+
+    setState(() {
+      _favourite = !_favourite;
+    });
+
+    RepositoryResult response;
+    if (initialValue) {
+      response = await _questionsRepository.deleteFavouriteQuestion(
+        questionId: _questionsList[_currentQuestionIndex].id,
+      );
+    } else {
+      response = await _questionsRepository.addFavouriteQuestion(
+          questionId: _questionsList[_currentQuestionIndex].id);
+    }
+
+    if (response is RepositoryErrorResult) {
+      setState(() {
+        _favourite = initialValue;
+      });
+    }
+
+    _analyticsProvider.logEvent(
+        initialValue
+            ? AnalyticsConstants.tapQuestionBookmarkRemove
+            : AnalyticsConstants.tapQuestionBookmarkAdd,
+        params: {
+          AnalyticsConstants.keyType: widget.arguments.screenName,
+          AnalyticsConstants.keyQuestionId:
+              _questionsList[_currentQuestionIndex].id,
+          AnalyticsConstants.keyStem: _questionsList[_currentQuestionIndex].stem
+        });
+  }
+
+  Widget explanation(String explanationText) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+              Html(data: explanationText, style: {
+                "html": Style.fromTextStyle(
+                  normalResponsiveFont(context, fontColor: FontColor.Content2),
+                )
+              })
+            ]))
+      ],
     );
   }
 
@@ -280,24 +396,19 @@ class _MultipleChoiceQuestionScreenState
                     ),
                     child: Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16.0,
-                          ),
-                          child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
-                              child: Html(
-                                  data: _questionsList[_currentQuestionIndex]
-                                      .stem,
-                                  style: {
-                                    "html": Style.fromTextStyle(
-                                        biggerResponsiveFont(
-                                      context,
-                                      fontColor: FontColor.Content2,
-                                      fontWeight: FontWeight.bold,
-                                    ))
-                                  })),
-                        ),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
+                            child: Html(
+                                data:
+                                    _questionsList[_currentQuestionIndex].stem,
+                                style: {
+                                  "html":
+                                      Style.fromTextStyle(biggerResponsiveFont(
+                                    context,
+                                    fontColor: FontColor.Content2,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+                                })),
                         AnimatedList(
                           key: _listKey,
                           shrinkWrap: true,
@@ -396,22 +507,40 @@ class _MultipleChoiceQuestionScreenState
             vertical: 8.0,
           ),
           child: QuestionButton(
-            key: Key("ans$index"),
-            text: answer.text,
-            optionLetter: answer.optionLetter,
-            onPressed: () async {
-              if (_selectedIndex == null) {
-                if (answer.isCorrect) {
-                  correctAnswers = correctAnswers + 1;
-                } else {
-                  wrongAnswers = wrongAnswers + 1;
+              key: Key("ans$index"),
+              text: answer.text,
+              optionLetter: answer.optionLetter,
+              onPressed: () async {
+                if (_selectedIndex == null) {
+                  if (answer.isCorrect) {
+                    correctAnswers = correctAnswers + 1;
+                    SuperStateful.of(context).correctAnswers++;
+                  } else {
+                    wrongAnswers = wrongAnswers + 1;
+                    SuperStateful.of(context).wrongAnswers++;
+                  }
+
+                  if (!isQOTD && _repoQuestion != null) {
+                    //QB as general
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .correctAnswers = correctAnswers;
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .wrongAnswers = wrongAnswers;
+                    //Current question answer
+                    (_repoQuestion as RepositorySuccessResult<QuestionList>)
+                        .data
+                        .items[_currentQuestionIndex]
+                        .yourAnswer = _getAnswer(index);
+                  }
+
+                  _showAnswers(index);
                 }
-                _showAnswers(index);
-              }
-            },
-            showAnswer: _selectedIndex != null,
-            isCorrect: answer.isCorrect,
-          ),
+              },
+              showAnswer: _selectedIndex != null,
+              isCorrect: answer.isCorrect,
+              pressed: _getOptionLetter(_selectedIndex)),
         ),
       ),
     );
@@ -427,9 +556,11 @@ class _MultipleChoiceQuestionScreenState
 
   void _showAnswers(int index) {
     _updateState(() {
+      _previousQuestionIndex = _currentQuestionIndex;
       _selectedIndex = index;
       _firstPressed = true;
     });
+
     _questionsRepository.sendQuestionAnswer(
       questionId: _questionsList[_currentQuestionIndex].id,
       answer: _getAnswer(index),
@@ -438,28 +569,25 @@ class _MultipleChoiceQuestionScreenState
     _logShowAnswersEvent(index);
 
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
-    int answersLength = _answers.length - 1;
-    for (int i = answersLength; i >= 0; i--) {
-      if (!_answers[i].isCorrect && index != i) {
-        Answer removedItem = _answers.removeAt(i);
-        builder(
-          BuildContext context,
-          Animation animation,
-        ) {
-          return _buildListItem(
-            removedItem,
-            animation,
-            i,
-          );
-        }
 
-        _listKey.currentState.removeItem(
-          i,
-          builder,
-          duration: _animationDuration,
-        );
-      }
+    if (isQOTD)
+      SuperStateful.of(context)
+          .answeredQuestionsIds
+          .add(_questionsList[_currentQuestionIndex].id);
+    else if (_repoQuestion != null) {
+      (_repoQuestion as RepositorySuccessResult<QuestionList>)
+          .data
+          .answeredQuestionsIds = _answeredQuestionsIds;
+      (_repoQuestion as RepositorySuccessResult<QuestionList>).data.position =
+          _currentQuestionIndex + 1;
     }
+
+    if (widget.arguments.status == QuestionStatusType.qotd) {
+      setState(() {
+        SuperStateful.of(context).currentQOTDIndex = _currentQuestionIndex + 1;
+      });
+    }
+    _previousQuestionIndex = _currentQuestionIndex;
   }
 
   void _logShowAnswersEvent(int index) {
@@ -503,17 +631,30 @@ class _MultipleChoiceQuestionScreenState
   }
 
   void _goToSummarize() {
+    if (isQOTD) {
+      setState(() {
+        _questionsDayRepository.clearCache();
+        SuperStateful.of(context).currentQOTDIndex = 0;
+      });
+    } else {
+      _questionsRepository.clearCacheKey(
+          subjectId: widget.arguments.subjectId,
+          videoId: widget.arguments.videoId,
+          status: widget.arguments.status ?? QuestionStatusType.all);
+    }
     Navigator.pushReplacementNamed(
       context,
       Routes.questionsSummary,
       arguments: QuestionSummaryScreenArguments(
-        screenName: widget.arguments.screenName,
-        subjectId: widget.arguments.subjectId,
-        videoId: widget.arguments.videoId,
-        answeredQuestionsIds: _answeredQuestionsIds,
-        correctAnswers: correctAnswers,
-        wrongAnswers: wrongAnswers,
-      ),
+          screenName: widget.arguments.screenName,
+          subjectId: widget.arguments.subjectId,
+          videoId: widget.arguments.videoId,
+          answeredQuestionsIds: _answeredQuestionsIds,
+          correctAnswers: isQOTD
+              ? SuperStateful.of(context).correctAnswers
+              : correctAnswers,
+          wrongAnswers:
+              isQOTD ? SuperStateful.of(context).wrongAnswers : wrongAnswers),
     );
     _logQuestionEvent(AnalyticsConstants.tapSummarize);
   }
@@ -524,12 +665,41 @@ class _MultipleChoiceQuestionScreenState
     _updateState(() {
       _loading = true;
     });
-    if (widget.arguments.status != null &&
-        widget.arguments.status == QuestionStatusType.flagged) {
-      await _fetchFavouriteQuestions();
-    } else {
-      await _fetchNormalQuestions(forceApiRequest);
+    _previousQuestionIndex = -1;
+    switch (widget.arguments.status) {
+      case QuestionStatusType.flagged:
+        await _fetchFavouriteQuestions();
+        break;
+      case QuestionStatusType.qotd:
+        await _fetchQOTD();
+        break;
+      default:
+        await _fetchNormalQuestions(forceApiRequest);
     }
+  }
+
+  Future _fetchQOTD() async {
+    final result = await _questionsDayRepository.fetchQuestionOfTheDay();
+
+    if (result is RepositorySuccessResult<List<Question>>) {
+      SuperStateful.of(context).questionsOfTheDay = result.data;
+    }
+
+    _questionsList = SuperStateful.of(context).questionsOfTheDay;
+    _currentQuestionIndex = SuperStateful.of(context).currentQOTDIndex;
+    _answeredQuestionsIds.clear();
+    if (_currentQuestionIndex == 0) {
+      SuperStateful.of(context).answeredQuestionsIds.clear();
+      SuperStateful.of(context).correctAnswers = 0;
+      SuperStateful.of(context).wrongAnswers = 0;
+    }
+    _answeredQuestionsIds
+        .addAll(SuperStateful.of(context).answeredQuestionsIds);
+    _loading = false;
+    if (SuperStateful.of(context).currentQOTDIndex == 5)
+      return _goToSummarize();
+    else
+      _updateState(() {});
   }
 
   Future _fetchFavouriteQuestions() async {
@@ -552,28 +722,48 @@ class _MultipleChoiceQuestionScreenState
 
   Future _fetchNormalQuestions(bool forceApiRequest) async {
     final result = await _questionsRepository.fetchQuestions(
-      subjectId: widget.arguments.subjectId,
-      videoId: widget.arguments.videoId,
-      forceApiRequest: forceApiRequest,
-    );
+        subjectId: widget.arguments.subjectId,
+        videoId: widget.arguments.videoId,
+        forceApiRequest:
+            widget.arguments.status == null ? forceApiRequest : true,
+        status: widget.arguments.status ?? QuestionStatusType.all);
 
     if (result is RepositorySuccessResult<QuestionList>) {
-      _updateState(() {
-        _questionsList = result.data.items
-          ..sort(
-            (a, b) => a.order.compareTo(b.order),
-          );
+      _repoQuestion = result;
 
-        if (widget.arguments.status != null) {
-          _filterQuestionsByStatus();
-        }
-        if (widget.arguments.subjectId != null) {
-          _questionsList = _questionsList
-              .where((question) => question.isCorrect == null)
-              .toList();
+      _updateState(() {
+        if (result.data.position == 0) {
+          _questionsList = result.data.items
+            ..sort(
+              (a, b) => a.order.compareTo(b.order),
+            );
+
+          if (widget.arguments.status != null) {
+            _filterQuestionsByStatus();
+          }
+          if (widget.arguments.subjectId != null) {
+            if (!_questionsList.any((question) => question.isCorrect == null)) {
+              //if there's a question but all answered, then shuffle
+              _questionsList.shuffle();
+            } else {
+              _questionsList = _questionsList
+                  .where((question) => question.isCorrect == null)
+                  .toList();
+            }
+          }
+          result.data.items = _questionsList;
+        } else {
+          //if proceeding, we need to grab current progress
+          correctAnswers = result.data.correctAnswers;
+          wrongAnswers = result.data.wrongAnswers;
+          _answeredQuestionsIds.addAll(result.data.answeredQuestionsIds);
+          _currentQuestionIndex = result.data.position;
+          _questionsList = result.data.items;
         }
 
         _loading = false;
+        if (_questionsList.length > 0 &&
+            _currentQuestionIndex >= _questionsList.length) _goToSummarize();
       });
     } else {
       _error = result;
@@ -599,6 +789,8 @@ class _MultipleChoiceQuestionScreenState
             .toList();
         break;
       case QuestionStatusType.flagged:
+      case QuestionStatusType.qotd:
+      case QuestionStatusType.all:
         break;
     }
   }

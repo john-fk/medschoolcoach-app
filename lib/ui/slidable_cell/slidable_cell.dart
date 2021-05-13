@@ -7,6 +7,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:injector/injector.dart';
 
 typedef SuccessCallback({@required bool watched});
@@ -16,7 +17,7 @@ class SlidableCell extends StatelessWidget {
   final Video video;
   final SuccessCallback successCallback;
   final AnalyticsProvider _analyticsProvider =
-    Injector.appInstance.getDependency<AnalyticsProvider>();
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   SlidableCell({
     @required this.child,
@@ -42,7 +43,7 @@ class SlidableCell extends StatelessWidget {
             ),
             color: Style.of(context).colors.questions,
             icon: Icons.check_box_outline_blank,
-            onTap: () => _markWatchedUnwatched(false),
+            onTap: () => _markWatchedUnwatched(false, context),
           ),
         )
       ],
@@ -54,13 +55,13 @@ class SlidableCell extends StatelessWidget {
           ),
           color: Style.of(context).colors.accent2,
           icon: Icons.check_box,
-          onTap: () => _markWatchedUnwatched(true),
+          onTap: () => _markWatchedUnwatched(true, context),
         )
       ],
     );
   }
 
-  void _markWatchedUnwatched(bool watch) async {
+  void _markWatchedUnwatched(bool watch, BuildContext context) async {
     final videoRepository =
         Injector.appInstance.getDependency<VideoRepository>();
 
@@ -75,6 +76,8 @@ class SlidableCell extends StatelessWidget {
               : AnalyticsConstants.tapVideoMarkUnwatched,
           params: _analyticsProvider.getVideoParam(video.id, video.name));
       successCallback(watched: watch);
+      await SuperStateful.of(context)
+          .updateCourseProgress(forceApiRequest: true);
     }
   }
 }

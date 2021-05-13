@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Medschoolcoach/ui/onboarding/onboarding_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 

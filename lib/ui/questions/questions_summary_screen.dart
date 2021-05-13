@@ -86,11 +86,11 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
           Column(
             children: <Widget>[
               QuestionAppBar(
-                title: FlutterI18n.translate(
-                  context,
-                  "question_screen.title",
-                ),
-                subTitle: widget.arguments.screenName,
+                summary: true,
+                questionsSize: widget.arguments.correctAnswers +
+                    widget.arguments.wrongAnswers,
+                currentQuestion: widget.arguments.correctAnswers,
+                category: widget.arguments.screenName,
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -117,6 +117,8 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
                                     (BuildContext context, int index) {
                                   return Container(
                                     height: 1,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 14),
                                     color: Colors.white.withOpacity(0.2),
                                   );
                                 },
@@ -138,7 +140,7 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 80.0,
+          horizontal: 60.0,
           vertical: 16.0,
         ),
         child: PieChart(
@@ -153,13 +155,13 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
           chartValueStyle: normalResponsiveFont(
             context,
             fontColor: FontColor.Content2,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
-          legendStyle: normalResponsiveFont(
+          legendStyle: biggerResponsiveFont(
             context,
             fontColor: FontColor.Content2,
-            fontWeight: FontWeight.bold,
-          ),
+            fontWeight: FontWeight.w500,
+          ).copyWith(height: 1.5),
           legendPosition: LegendPosition.top,
           chartLegendSpacing: 24,
           colorList: [

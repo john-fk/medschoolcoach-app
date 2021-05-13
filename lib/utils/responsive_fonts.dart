@@ -17,7 +17,9 @@ enum FontColor {
   QualifyingText,
   Premium,
   Unselected,
-  BannerOrange
+  BannerOrange,
+  HalfWhite,
+  White
 }
 
 Color _getFontColor(BuildContext context, FontColor fontColor) {
@@ -50,20 +52,21 @@ Color _getFontColor(BuildContext context, FontColor fontColor) {
       return Color(0xFFFE7B5D);
     case FontColor.Unselected:
       return Color(0xff757575);
-
+    case FontColor.HalfWhite:
+      return Color(0x7AFFFFFF);
+    case FontColor.White:
+      return Color(0xFFFFFFFF);
     case FontColor.Content:
     default:
       return Style.of(context).colors.content;
   }
 }
 
-TextStyle normalResponsiveFont(
-  BuildContext context, {
-  FontWeight fontWeight = FontWeight.normal,
-  FontColor fontColor = FontColor.Content,
-      double opacity = 1,
-      TextStyle style
-}) {
+TextStyle normalResponsiveFont(BuildContext context,
+    {FontWeight fontWeight = FontWeight.normal,
+    FontColor fontColor = FontColor.Content,
+    double opacity = 1,
+    TextStyle style}) {
   assert(opacity >= 0 && opacity <= 1);
   var textStyle = TextStyle(
     color: _getFontColor(context, fontColor).withOpacity(opacity),
@@ -129,15 +132,15 @@ TextStyle bigResponsiveFont(
 }
 
 TextStyle biggerResponsiveFont(
-    BuildContext context, {
-    FontWeight fontWeight = FontWeight.normal,
-    FontColor fontColor = FontColor.Content,
-      double opacity = 1,
-    }) {
+  BuildContext context, {
+  FontWeight fontWeight = FontWeight.normal,
+  FontColor fontColor = FontColor.Content,
+  double opacity = 1,
+}) {
   return TextStyle(
     color: _getFontColor(context, fontColor).withOpacity(opacity),
     fontWeight: fontWeight,
-    fontSize: whenDevice(context, large: 20, tablet: 32),
+    fontSize: whenDevice(context, medium: 15, large: 20, tablet: 32),
   );
 }
 
@@ -145,8 +148,8 @@ TextStyle greatResponsiveFont(
   BuildContext context, {
   FontWeight fontWeight = FontWeight.normal,
   FontColor fontColor = FontColor.Content,
-      double opacity = 1,
-    }) {
+  double opacity = 1,
+}) {
   return TextStyle(
     color: _getFontColor(context, fontColor).withOpacity(opacity),
     fontWeight: fontWeight,

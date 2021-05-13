@@ -3,15 +3,12 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 class FlashCardStatusWidget extends StatelessWidget {
   final FlashcardStatus status;
-  final String progress;
 
-  const FlashCardStatusWidget({
-    @required this.status,
-    @required this.progress,
-  });
+  const FlashCardStatusWidget({@required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +24,7 @@ class FlashCardStatusWidget extends StatelessWidget {
               ? Style.of(context).colors.accent2
               : Style.of(context).colors.questions,
           context,
-        ),
-        SizedBox(width: 5),
-        _buildElement(progress, Style.of(context).colors.content, context)
+        )
       ],
     );
   }

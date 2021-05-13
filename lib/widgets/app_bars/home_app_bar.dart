@@ -58,7 +58,8 @@ class _HomeAppBarState extends State<HomeAppBar> {
                 context,
                 "home_screen.user_header",
                 {
-                  "user": userData != null ? userData.name : storedName,
+                  "user": userData != null ? 
+                  userData.name : storedName,
                 },
               ),
               style: biggerResponsiveFont(context, fontWeight: FontWeight.bold),

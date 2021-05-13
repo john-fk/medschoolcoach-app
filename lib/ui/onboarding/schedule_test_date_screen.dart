@@ -136,6 +136,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   }
 
   void showCustomDatePicker() {
+    if (scheduleDate != null) dateController.selectedDate = scheduleDate;
     showDialog<Dialog>(
         context: context,
         builder: (_) => Dialog(
@@ -145,17 +146,6 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 dateController: dateController,
                 onDateConfirm: () {
                   _updateTestDate();
-                  _analyticsProvider.logEvent(
-                      isEditingTestDate
-                          ? "tap_test_date_update"
-                          : "tap_test_date_confirm",
-                      params: null);
-                  if (widget.source != Routes.profile_screen) {
-                    Navigator.pushNamed(context, Routes.timePerDay,
-                        arguments: Routes.onboarding);
-                  } else {
-                    Navigator.pop(context);
-                  }
                 },
               ),
             ));
@@ -172,11 +162,20 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
 
     if (result is ErrorResponse) {
       showToast(
-          text: "Something went wrong, please try again",
+          text: FlutterI18n.translate(context, "general.net_error"),
           context: context,
           color: Style.of(context).colors.error);
     } else {
       scheduleDate = dateController.selectedDate;
+      _analyticsProvider.logEvent(
+          isEditingTestDate ? "tap_test_date_update" : "tap_test_date_confirm",
+          params: null);
+      if (widget.source != Routes.profile_screen) {
+        Navigator.pushNamed(context, Routes.timePerDay,
+            arguments: Routes.onboarding);
+      } else {
+        Navigator.pop(context);
+      }
     }
     setState(() {
       isLoading = false;
@@ -244,14 +243,13 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
           ),
           actions: <DialogActionData>[
             DialogActionData(
-              text: FlutterI18n.translate(
-                context,
-                "general.cancel",
-              ),
-              onTap: () => {
-                Navigator.pop(context),
-              },
-            ),
+                text: FlutterI18n.translate(
+                  context,
+                  "general.cancel",
+                ),
+                onTap: () => {
+                      Navigator.pop(context),
+                    }),
             DialogActionData(
               text: FlutterI18n.translate(
                 context,
@@ -261,6 +259,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 _analyticsProvider.logEvent("tap_test_date_remove",
                     params: null);
                 Navigator.pop(context);
+
+                dateController.selectedDate = null;
                 setState(() {
                   scheduleDate = null;
                   userManager.removeTestDate();

@@ -1,52 +1,75 @@
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
-import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/repository/questions_repository.dart';
-import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/widgets/buttons/pop_back_button.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
+import 'package:Medschoolcoach/widgets/buttons/pop_back_questions.dart';
 import 'package:flutter/material.dart';
-import 'package:injector/injector.dart';
 
 // ignore: must_be_immutable
 class QuestionAppBar extends StatefulWidget {
-  final String title;
-  final String subTitle;
+  final Function onChange;
+  final String category;
   final int currentQuestion;
   final int questionsSize;
   final String questionId;
   final String stem;
-  bool isBookmarked;
-  VoidCallback onBookmarkTap;
-  bool showBookmark;
+  final bool summary;
+  final bool isFlashCard;
+  VoidCallback onHowtoTap;
 
-  QuestionAppBar({
-    @required this.title,
-    Key key,
-    this.subTitle,
-    this.currentQuestion,
-    this.stem,
-    this.questionsSize,
-    this.questionId,
-    this.isBookmarked,
-    this.onBookmarkTap,
-    this.showBookmark = true
-  }) : super(key: key);
+  QuestionAppBar(
+      {Key key,
+      @required this.category,
+      this.onChange,
+      this.currentQuestion,
+      this.stem,
+      this.questionsSize,
+      this.questionId,
+      this.summary = false,
+      this.isFlashCard = false,
+      this.onHowtoTap})
+      : super(key: key);
 
   @override
   _QuestionAppBarState createState() => _QuestionAppBarState();
 }
 
 class _QuestionAppBarState extends State<QuestionAppBar> {
-  final QuestionsRepository _questionsRepository =
-      Injector.appInstance.getDependency<QuestionsRepository>();
-  final AnalyticsProvider _analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  var widgetKey = GlobalKey();
+  Size oldSize;
+
+  void postFrameCallback() {
+    var context = widgetKey.currentContext;
+    if (context == null) return;
+
+    var newSize = context.size;
+    if (oldSize == newSize) return;
+
+    oldSize = newSize;
+    if (widget.onChange != null) widget.onChange(newSize);
+  }
 
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) => postFrameCallback());
+
+    String userAnswer = "";
+    if (widget.summary) {
+      userAnswer = widget.category ?? "Questions of the Day";
+    } else if (widget.currentQuestion > widget.questionsSize) {
+      userAnswer = "";
+    } else {
+      userAnswer = widget.questionsSize > 0
+          ? "${widget.currentQuestion}/${widget.questionsSize}"
+          : "";
+    }
     return Column(
+      key: widgetKey,
       children: <Widget>[
         Container(
           color: Colors.transparent,
@@ -57,151 +80,128 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
             10,
           ),
           child: Padding(
-            padding: EdgeInsets.only(
-              top: 30,
-              bottom: 16,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: PopBackButton(),
+              padding: EdgeInsets.only(
+                top: whenDevice(context,
+                    small: 5, medium: 8, large: 15, tablet: 30),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: PopBackQuestions(),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        widget.title ?? "",
-                        style: greatResponsiveFont(
-                          context,
-                          fontColor: FontColor.Content2,
-                          fontWeight: FontWeight.bold,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.summary
+                              ? "Questions"
+                              : (widget.category ?? "Questions of the Day"),
+                          style: greatResponsiveFont(
+                            context,
+                            fontColor: FontColor.Content2,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      if (widget.subTitle != null)
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            widget.subTitle,
-                            style: normalResponsiveFont(
-                              context,
-                              fontColor: FontColor.Content2,
+                      ],
+                    ),
+                  ),
+                  !widget.isFlashCard
+                      ? Container()
+                      : ClipOval(
+                          child: Material(
+                            color: Colors.white60, // button color
+                            child: InkWell(
+                              splashColor: Colors.white, // inkwell color
+                              child: SizedBox(
+                                  height: whenDevice(context,
+                                      small: 16.5,
+                                      medium: 19.5,
+                                      large: 23.25,
+                                      tablet: 25.5),
+                                  width: whenDevice(context,
+                                      small: 16.5,
+                                      medium: 19.5,
+                                      large: 23.25,
+                                      tablet: 25.5),
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text("?",
+                                          style: mediumResponsiveFont(
+                                            context,
+                                            fontColor: FontColor.Accent,
+                                            fontWeight: FontWeight.bold,
+                                          )))),
+                              onTap: widget.onHowtoTap,
                             ),
                           ),
-                        )
-                    ],
-                  ),
-                ),
-                widget.currentQuestion != null &&
-                        widget.questionsSize != null &&
-                        widget.questionsSize != 0
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Style.of(context).colors.content2,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 10,
-                                ),
-                                child: Text(
-                                  "${widget.currentQuestion}/${widget.questionsSize}",
-                                  style: smallResponsiveFont(
-                                    context,
-                                    fontWeight: FontWeight.w500,
-                                    fontColor: FontColor.Accent,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            if (widget.showBookmark)
-                            _drawBookmark()
-                          ],
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
-          ),
+                  widget.isFlashCard ? const SizedBox(width: 20) : Container(),
+                ],
+              )),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Container(
-            height: 1,
-            color: Colors.white.withOpacity(0.2),
+        Container(
+          alignment: widget.summary ? Alignment.centerLeft : Alignment.center,
+          margin: EdgeInsets.only(
+            top: 0,
           ),
-        )
+          padding: EdgeInsets.symmetric(
+            horizontal: widget.summary ? 30.0 : 0,
+          ),
+          child: Text(
+                userAnswer,
+                style:
+                    smallResponsiveFont(context, fontColor: FontColor.Content2),
+              ),
+        ),
+        Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(
+                horizontal: 30.0,
+                vertical: whenDevice(context,
+                    small: 5, medium: 6, large: 8, tablet: 10)),
+            child: !widget.summary &&
+                    widget.questionsSize > 0 &&
+                    widget.currentQuestion <= widget.questionsSize
+                ? (FAProgressBar(
+                    currentValue: ((widget.questionsSize > 0 &&
+                                widget.currentQuestion > 1) ||
+                            widget.summary)
+                        ? (widget.currentQuestion * 100 / widget.questionsSize)
+                            .floor()
+                        : 0,
+                    backgroundColor: Color(0x4BFFFFFF),
+                    progressColor: Color(0xFFFFFFFF),
+                    size: whenDevice(context,
+                        small: 5, medium: 6, large: 8, tablet: 10)))
+                : Container()),
+        widget.isFlashCard
+            ? Container(
+                height: whenDevice(context,
+                    small: 8, medium: 12, large: 16, tablet: 32),
+              )
+            : Padding(
+                padding: EdgeInsets.fromLTRB(
+                    16,
+                    whenDevice(context,
+                        small: 8, medium: 12, large: 16, tablet: 32),
+                    16,
+                    16),
+                child: Container(
+                  height: 1,
+                  color: Colors.white.withOpacity(0.2),
+                ),
+              )
       ],
     );
-  }
-
-  InkWell _drawBookmark() {
-    final size = whenDevice(context, large: 25.0, tablet: 40.0);
-    return InkWell(
-      child: widget.isBookmarked
-          ? Icon(
-              Icons.bookmark,
-              color: Colors.white,
-              size: size,
-            )
-          : Icon(
-              Icons.bookmark_border,
-              color: Colors.white,
-              size: size,
-            ),
-      onTap: _onTap,
-    );
-  }
-
-  Future<void> _onTap() async {
-    bool initialValue = widget.isBookmarked;
-
-    setState(() {
-      widget.isBookmarked = !initialValue;
-    });
-
-    RepositoryResult response;
-    if (initialValue) {
-      response = await _questionsRepository.deleteFavouriteQuestion(
-        questionId: widget.questionId,
-      );
-    } else {
-      response = await _questionsRepository.addFavouriteQuestion(
-          questionId: widget.questionId);
-    }
-    if (response is RepositoryErrorResult) {
-      setState(() {
-        widget.isBookmarked = initialValue;
-      });
-    } else {
-      widget.onBookmarkTap();
-    }
-    _analyticsProvider.logEvent(initialValue
-        ? AnalyticsConstants.tapQuestionBookmarkRemove
-        : AnalyticsConstants.tapQuestionBookmarkAdd,
-        params: {
-          AnalyticsConstants.keyQuestionId: widget.questionId,
-          AnalyticsConstants.keyStem: widget.stem
-        });
   }
 }
