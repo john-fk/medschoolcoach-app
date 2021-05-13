@@ -65,6 +65,7 @@ abstract class AnalyticsConstants {
   static const screenFullScreenVideo = "screen_full_screen_video";
   static const screenFeedback = "screen_feedback";
   static const screenMultipleChoiceQuestion = "screen_multiple_choice_question";
+  static const screenQuestionsOfTheDay = "screen_questions_of_the_day";
   static const screenQuestionBank = "screen_question_bank";
   static const screenFlashcardsBank = "screen_flashcards_bank";
   static const screenFlashcards = "screen_flashcards";
@@ -84,6 +85,7 @@ abstract class AnalyticsConstants {
   static const tapSignOut = "tap_sign_out";
   static const tapPodcast = "tap_podcast";
   static const tapForgotPassword = "tap_forgot_password";
+  static const tapPracticeSubject = "select_subject";
   static const tapPreviousVideo = "tap_previous_video";
   static const tapNextVideo = "tap_next_video";
   static const tapUpdateProfile = "tap_update_profile";

@@ -107,18 +107,23 @@ class _MultipleChoiceQuestionScreenState
 
   void _logScreenViewAnalytics() {
     Map<String, String> param;
-    if (widget.arguments.subjectId == null) {
-      param = {AnalyticsConstants.keyType: widget.arguments.screenName};
+    if (!isQOTD) {
+      if (widget.arguments.subjectId == null) {
+        param = {AnalyticsConstants.keyType: widget.arguments.screenName};
+      } else {
+        param = {
+          AnalyticsConstants.keySubjectId: widget.arguments.subjectId,
+          AnalyticsConstants.keySubjectName: widget.arguments.screenName
+        };
+      }
+      _analyticsProvider.logScreenView(
+          AnalyticsConstants.screenMultipleChoiceQuestion,
+          widget.arguments.source,
+          params: param);
     } else {
-      param = {
-        AnalyticsConstants.keySubjectId: widget.arguments.subjectId,
-        AnalyticsConstants.keySubjectName: widget.arguments.screenName
-      };
+      _analyticsProvider.logScreenView(
+          AnalyticsConstants.screenQuestionsOfTheDay, widget.arguments.source);
     }
-    _analyticsProvider.logScreenView(
-        AnalyticsConstants.screenMultipleChoiceQuestion,
-        widget.arguments.source,
-        params: param);
   }
 
   @override
@@ -238,70 +243,29 @@ class _MultipleChoiceQuestionScreenState
 
   InkWell _drawBookmark() {
     final size = whenDevice(context, large: 25.0, tablet: 40.0);
+    bool isBookmarked = _favourite != null ? _favourite : _getFavourite();
     return InkWell(
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      child: Column(children: <Widget>[
         Container(
-            height: size,
-            margin: EdgeInsets.only(bottom: 8),
-            child: FittedBox(
-              fit: BoxFit.fitHeight,
-              child: AnimatedSizeAndFade(
-                  vsync: this,
-                  fadeDuration: const Duration(milliseconds: 1000),
-                  child: (_favourite != null ? _favourite : _getFavourite())
-                      ? booked
-                      : unbooked),
-            )),
+          margin: EdgeInsets.only(bottom: 8),
+          child: AnimatedSizeAndFade(
+              vsync: this,
+              fadeDuration: const Duration(milliseconds: 1000),
+              child: Container(
+                key: isBookmarked ? ValueKey("booked") : ValueKey("unbooked"),
+                height: size,
+                child: Image(
+                    image: AssetImage("assets/png/bookmark_" +
+                        (isBookmarked ? "1" : "0") +
+                        ".png")),
+              )),
+        ),
         Text("Save",
             style: smallerResponsiveFont(context,
                 fontColor: FontColor.White, opacity: 0.5))
       ]),
       onTap: _onTap,
     );
-  }
-
-  var unbooked = Container(
-    key: ValueKey("unbooked"),
-    child: Image(image: AssetImage("assets/png/bookmark_0.png")),
-  );
-
-  var booked = Container(
-    key: ValueKey("booked"),
-    child: Image(image: AssetImage("assets/png/bookmark_1.png")),
-  );
-
-  Future<void> _onTap() async {
-    bool initialValue = _favourite;
-
-    setState(() {
-      _favourite = !_favourite;
-    });
-
-    RepositoryResult response;
-    if (initialValue) {
-      response = await _questionsRepository.deleteFavouriteQuestion(
-        questionId: _questionsList[_currentQuestionIndex].id,
-      );
-    } else {
-      response = await _questionsRepository.addFavouriteQuestion(
-          questionId: _questionsList[_currentQuestionIndex].id);
-    }
-
-    if (response is RepositoryErrorResult) {
-      setState(() {
-        _favourite = initialValue;
-      });
-    }
-
-    _analyticsProvider.logEvent(
-        initialValue
-            ? AnalyticsConstants.tapQuestionBookmarkRemove
-            : AnalyticsConstants.tapQuestionBookmarkAdd,
-        params: {
-          AnalyticsConstants.keyQuestionId:
-              _questionsList[_currentQuestionIndex].id,
-          AnalyticsConstants.keyStem: _questionsList[_currentQuestionIndex].stem
-        });
   }
 
   InkWell _drawExplanation() {
@@ -331,6 +295,41 @@ class _MultipleChoiceQuestionScreenState
         );
       },
     );
+  }
+
+  Future<void> _onTap() async {
+    bool initialValue = _favourite;
+
+    setState(() {
+      _favourite = !_favourite;
+    });
+
+    RepositoryResult response;
+    if (initialValue) {
+      response = await _questionsRepository.deleteFavouriteQuestion(
+        questionId: _questionsList[_currentQuestionIndex].id,
+      );
+    } else {
+      response = await _questionsRepository.addFavouriteQuestion(
+          questionId: _questionsList[_currentQuestionIndex].id);
+    }
+
+    if (response is RepositoryErrorResult) {
+      setState(() {
+        _favourite = initialValue;
+      });
+    }
+
+    _analyticsProvider.logEvent(
+        initialValue
+            ? AnalyticsConstants.tapQuestionBookmarkRemove
+            : AnalyticsConstants.tapQuestionBookmarkAdd,
+        params: {
+          AnalyticsConstants.keyType: widget.arguments.screenName,
+          AnalyticsConstants.keyQuestionId:
+              _questionsList[_currentQuestionIndex].id,
+          AnalyticsConstants.keyStem: _questionsList[_currentQuestionIndex].stem
+        });
   }
 
   Widget explanation(String explanationText) {

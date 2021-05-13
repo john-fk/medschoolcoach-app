@@ -221,7 +221,6 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
       alignment: Alignment.centerLeft,
       child: FlatButton(
           onPressed: () {
-            print("tap button");
             widget.onTapFooter();
           },
           child: Row(

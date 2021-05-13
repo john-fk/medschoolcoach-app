@@ -242,6 +242,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
           setState(() {
             selectedIndex = index;
           });
+          _analyticsProvider.logEvent(AnalyticsConstants.tapPracticeSubject,
+              params: {"subject_name": allSubjects[selectedIndex].name});
         },
         child: AnimatedContainer(
           duration: Duration(milliseconds: 150),
