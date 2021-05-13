@@ -65,7 +65,7 @@ class _QuestionAppBarState extends State<QuestionAppBar> {
       userAnswer = "";
     } else {
       userAnswer = widget.questionsSize > 0
-          ? "${widget.currentQuestion} /${widget.questionsSize}"
+          ? "${widget.currentQuestion}/${widget.questionsSize}"
           : "";
     }
     return Column(

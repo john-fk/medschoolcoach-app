@@ -304,7 +304,6 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
       section = SuperStateful.of(context).questionsSections;
     }
     resetSubjects();
-    localSubjects = [Subject()..name = "All"];
     section
         .where((section) => flashcard
             ? section.amountOfFlashcards != 0
