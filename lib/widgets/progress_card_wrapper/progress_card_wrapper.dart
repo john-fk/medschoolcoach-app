@@ -60,7 +60,6 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
 
   @override
   Widget build(BuildContext context) {
-    print("update " + (widget.isFlashCard ? "flashcard" : "qb"));
     if (showLoading) return _loadingCard();
     if (localSubjects.isEmpty) localSubjects.add(Subject()..name = "All");
     if (widget.isFlashCard) {
