@@ -72,7 +72,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
           brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           centerTitle: false,
-          titleSp acing: 12,
+          titleSpacing: 12,
           automaticallyImplyLeading: false,
         ),
         body: SafeArea(

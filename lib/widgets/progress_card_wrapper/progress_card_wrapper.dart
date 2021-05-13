@@ -6,13 +6,15 @@ import 'package:Medschoolcoach/utils/api/models/flashcards_progress.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/cards/no_progress_card.dart';
 import 'package:Medschoolcoach/widgets/progress_card/progress_card.dart';
+import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 
 // ignore: must_be_immutable
 class ProgressCardWrapper extends StatefulWidget {
   String title;
-  List<Subject> allSubjects;
   String footerLinkText;
   VoidCallback onTapFooter;
   VoidCallback onTapAction;
@@ -25,38 +27,42 @@ class ProgressCardWrapper extends StatefulWidget {
       {this.title,
       this.footerLinkText,
       this.onTapFooter,
-      this.allSubjects,
       this.onSubjectChange,
       this.selectedSubject = 'All',
       this.onTapAction,
       this.isFlashCard = true,
-      this.child});
+      this.child,
+      Key key})
+      : super(key: key);
 
   @override
-  _ProgressCardWrapper createState() =>
-      _ProgressCardWrapper(this.selectedSubject);
+  ProgressCardWrapperState createState() =>
+      ProgressCardWrapperState(this.selectedSubject);
 }
 
-class _ProgressCardWrapper extends State<ProgressCardWrapper>
+class ProgressCardWrapperState extends State<ProgressCardWrapper>
     with SingleTickerProviderStateMixin {
   String selectedSubject = "All";
-
-  final List<String> subjectsList = [
-    "All",
-    "Biochemistry",
-    "General Chemistry",
-    "Psychology",
-    "Biology",
-    "Organic Chemistry",
-    "Sociology",
-    "Physics"
-  ];
+  List<Subject> localSubjects = List<Subject>();
   QuestionBankProgress questionBankProgress;
   FlashcardsProgress flashCardProgress;
-  _ProgressCardWrapper(this.selectedSubject);
+  ProgressCardWrapperState(this.selectedSubject);
+  bool showLoading = true;
+  List<Section> section;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      update(flashcard: widget.isFlashCard);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("update " + (widget.isFlashCard ? "flashcard" : "qb"));
+    if (showLoading) return _loadingCard();
+    if (localSubjects.isEmpty) localSubjects.add(Subject()..name = "All");
     if (widget.isFlashCard) {
       flashCardProgress = SuperStateful.of(context).flashcardProgress;
     } else {
@@ -188,6 +194,25 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
     );
   }
 
+  Widget _loadingCard() {
+    return Card(
+        elevation: 5,
+        shadowColor: Colors.black.withOpacity(0.1),
+        child: Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: whenDevice(
+              context,
+              medium: 100,
+              large: 100,
+              tablet: 150,
+            )),
+            child: Container(
+              child: Center(
+                child: ProgressBar(),
+              ),
+            )));
+  }
+
   Widget _footerButton() {
     if (widget.footerLinkText?.isEmpty ?? true) {
       return Container();
@@ -224,8 +249,7 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
 
   Widget _filterDropDown({Function(String) onChanged, String selectedSubject}) {
     return PopupMenuButton(
-        itemBuilder: (context) => widget.allSubjects.map((subject) {
-              // ignore: lines_longer_than_80_chars
+        itemBuilder: (context) => localSubjects.map((subject) {
               return PopupMenuItem(
                   value: subject,
                   child: CheckboxListTile(
@@ -246,5 +270,61 @@ class _ProgressCardWrapper extends State<ProgressCardWrapper>
           color: Colors.black.withOpacity(0.5),
         ),
         onSelected: (Subject val) {});
+  }
+
+  Future<void> update({bool flashcard}) async {
+    setState(() {
+      showLoading = true;
+    });
+    await upAction(flashcard: flashcard);
+    setState(() {
+      showLoading = false;
+    });
+  }
+
+  Future<void> upAction({bool flashcard}) async {
+    await fetchSubjects(flashcard: flashcard);
+    if (flashcard)
+      await SuperStateful.of(context)
+          .updateFlashcardProgress(forceApiRequest: true);
+    else
+      await SuperStateful.of(context)
+          .updateQuestionBankProgress(forceApiRequest: true);
+  }
+
+  Future<void> fetchSubjects({bool flashcard}) async {
+    if (flashcard) {
+      await SuperStateful.of(context).updateFlashcardsSectionsList(
+        forceApiRequest: false,
+      );
+      section = SuperStateful.of(context).flashcardsSections;
+    } else {
+      await SuperStateful.of(context).updateQuestionsSectionsList(
+        forceApiRequest: true,
+      );
+      section = SuperStateful.of(context).questionsSections;
+    }
+    resetSubjects();
+    localSubjects = [Subject()..name = "All"];
+    section
+        .where((section) => flashcard
+            ? section.amountOfFlashcards != 0
+            : section.amountOfQuestions != 0)
+        .forEach(
+          (section) => section.subjects
+              .where((subject) => flashcard
+                  ? section.amountOfFlashcards != 0
+                  : section.amountOfQuestions != 0)
+              .forEach(
+            (subject) {
+              localSubjects.add(subject);
+            },
+          ),
+        );
+  }
+
+  void resetSubjects() {
+    localSubjects.clear();
+    localSubjects.add(Subject()..name = "All");
   }
 }

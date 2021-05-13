@@ -3,22 +3,15 @@ import 'package:Medschoolcoach/ui/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/ui/flash_cards_bank/flash_cards_bank_screen.dart';
 import 'package:Medschoolcoach/ui/questions/question_bank_screen.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
-import 'package:Medschoolcoach/utils/api/models/flashcards_progress.dart';
 import 'package:Medschoolcoach/utils/api/models/question_bank_progress.dart';
-import 'package:Medschoolcoach/utils/api/models/schedule_stats.dart';
-import 'package:Medschoolcoach/utils/api/models/section.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:Medschoolcoach/widgets/cards/course_progress_card.dart';
-import 'package:Medschoolcoach/widgets/cards/no_progress_card.dart';
 import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
-import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
-import 'package:Medschoolcoach/widgets/progress_card/progress_card.dart';
 import 'package:Medschoolcoach/widgets/progress_card_wrapper/progress_card_wrapper.dart';
 import 'package:Medschoolcoach/widgets/upsell_banner/upsell_banner.dart';
 import 'package:flutter/material.dart';
@@ -38,78 +31,31 @@ class _ProgressScreenState extends State<ProgressScreen> {
   Future<QuestionBankProgress> getQuestionBankProgress;
   String selectedQuestionBankSubject = 'All';
   String selectedFlashcardSubject = 'All';
+  GlobalKey<CourseProgressCardState> _courseProgressKey =
+      GlobalKey<CourseProgressCardState>();
+  GlobalKey<ProgressCardWrapperState> _flashcardKey =
+      GlobalKey<ProgressCardWrapperState>();
+  GlobalKey<ProgressCardWrapperState> _questionbankKey =
+      GlobalKey<ProgressCardWrapperState>();
 
   bool showScheduleButton = false;
-  List<Section> questionsSections;
-  List<Section> flashcardsSection;
-  List<Subject> allSubjects = [];
-
-  //loaders
-  bool _courseProgressLoading = true;
-  bool _flashcardProgressLoading = true;
-  bool _questionBankProgressLoading = true;
 
   void _reload() {
-    _fetchSubjects();
     _fetchCourseProgress();
     _fetchFlashcardProgress();
     _fetchQuestionBankProgress();
-  }
-
-  Future<void> _fetchSubjects({bool forceApiRequest = false}) async {
-    await SuperStateful.of(context).updateFlashcardsSectionsList(
-      forceApiRequest: forceApiRequest,
-    );
-    resetSubjects();
-    flashcardsSection = SuperStateful.of(context).flashcardsSections;
-    allSubjects = [Subject()..name = "All"];
-    flashcardsSection
-        .where((section) => section.amountOfFlashcards != 0)
-        .forEach(
-          (section) => section.subjects
-              .where((subject) => subject.amountOfFlashcards != 0)
-              .forEach(
-            (subject) {
-              allSubjects.add(subject);
-            },
-          ),
-        );
-    setState(() {});
-  }
-
-  void resetSubjects() {
-    if (allSubjects == null) return;
-    if (allSubjects.length > 1) {
-      allSubjects.clear();
-    }
-    allSubjects.add(Subject()..name = "All");
   }
 
   @override
   void initState() {
     super.initState();
     _analyticsProvider.logScreenView(Routes.progressScreen, "navigation_bar");
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _fetchSubjects();
-      _fetchCourseProgress();
-      _fetchFlashcardProgress();
-      _fetchQuestionBankProgress();
-    });
     apiServices = Injector.appInstance.getDependency<ApiServices>();
   }
 
   Future<void> _fetchCourseProgress() async {
     if (frontStack()) {
-      var existingData = SuperStateful.of(context).courseProgress;
-      setState(() {
-        _courseProgressLoading = existingData == null ? true : false;
-      });
-
-      await SuperStateful.of(context)
-          .updateCourseProgress(forceApiRequest: true);
-      setState(() {
-        _courseProgressLoading = false;
-      });
+      await _courseProgressKey.currentState.update();
     }
   }
 
@@ -118,29 +64,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   Future<void> _fetchFlashcardProgress() async {
-    var existingData = SuperStateful.of(context).flashcardProgress;
-    setState(() {
-      _flashcardProgressLoading = existingData == null ? true : false;
-    });
-
-    await SuperStateful.of(context)
-        .updateFlashcardProgress(forceApiRequest: true);
-    setState(() {
-      _flashcardProgressLoading = false;
-    });
+    await _flashcardKey.currentState.update(flashcard: true);
   }
 
   Future<void> _fetchQuestionBankProgress() async {
-    var existingData = SuperStateful.of(context).flashcardProgress;
-    setState(() {
-      _questionBankProgressLoading = existingData == null ? true : false;
-    });
-
-    await SuperStateful.of(context)
-        .updateQuestionBankProgress(forceApiRequest: true);
-    setState(() {
-      _questionBankProgressLoading = false;
-    });
+    await _questionbankKey.currentState.update(flashcard: false);
   }
 
   @override
@@ -168,11 +96,22 @@ class _ProgressScreenState extends State<ProgressScreen> {
     );
   }
 
+  bool hasFailedLoading() {
+    return (_courseProgressKey.currentState != null &&
+            !_courseProgressKey.currentState.showLoading &&
+            _courseProgressKey.currentState.scheduleProgress == null) &&
+        (_flashcardKey.currentState != null &&
+            !_flashcardKey.currentState.showLoading &&
+            _flashcardKey.currentState.flashCardProgress == null) &&
+        (_questionbankKey.currentState != null &&
+            !_questionbankKey.currentState.showLoading &&
+            _questionbankKey.currentState.questionBankProgress == null);
+  }
+
   Widget _buildBody() {
     if (hasFailedLoading()) {
       return _emptyStateView();
     }
-
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: whenDevice(context, large: 8, medium: 4, small: 4)),
@@ -219,7 +158,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
               SizedBox(
                 height: 15,
               ),
-              // _buildQuestionBankCard(),
               _buildQuestionBankProgressCard(),
               SizedBox(
                 height: 10,
@@ -231,18 +169,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
     );
   }
 
-  bool hasFailedLoading() {
-    ScheduleStats courseProgress = SuperStateful.of(context).courseProgress;
-    FlashcardsProgress flashcardsProgress =
-        SuperStateful.of(context).flashcardProgress;
-    QuestionBankProgress questionBankProgress =
-        SuperStateful.of(context).questionBankProgress;
-
-    return (!_courseProgressLoading && courseProgress == null) &&
-        (!_flashcardProgressLoading && flashcardsProgress == null) &&
-        (!_questionBankProgressLoading && questionBankProgress == null);
-  }
-
   Widget _emptyStateView() {
     return EmptyStateView(
         title: FlutterI18n.translate(context, "empty_state.title"),
@@ -250,66 +176,21 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ctaText: FlutterI18n.translate(context, "empty_state.button"),
         image: Image.asset(Style.of(context).pngAsset.emptyState),
         onTap: () {
-          _courseProgressLoading = true;
-          _flashcardProgressLoading = true;
-          _questionBankProgressLoading = true;
           _reload();
         });
   }
 
   Widget _buildCourseProgressCard() {
-    ScheduleStats courseProgress = SuperStateful.of(context).courseProgress;
-    if (frontStack() && (_courseProgressLoading || courseProgress == null)) {
-      return Card(
-          elevation: 5,
-          shadowColor: Colors.black.withOpacity(0.1),
-          child: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: whenDevice(
-                context,
-                medium: 100,
-                large: 100,
-                tablet: 150,
-              )),
-              child: Container(
-                child: Center(
-                  child: ProgressBar(),
-                ),
-              )));
-    }
     return CourseProgressCard(
-      onRefresh: () {
-        _fetchCourseProgress();
-      },
-      scheduleProgress: courseProgress,
-    );
-  }
-
-  Widget _loadingCard() {
-    return Card(
-        elevation: 5,
-        shadowColor: Colors.black.withOpacity(0.1),
-        child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: whenDevice(
-              context,
-              medium: 100,
-              large: 100,
-              tablet: 150,
-            )),
-            child: Container(
-              child: Center(
-                child: ProgressBar(),
-              ),
-            )));
+        key: _courseProgressKey,
+        onRefresh: () {
+          _fetchCourseProgress();
+        });
   }
 
   Widget _buildFlashcardsCard() {
-    if (_flashcardProgressLoading) return _loadingCard();
-
     return ProgressCardWrapper(
-        selectedSubject: selectedFlashcardSubject,
-        allSubjects: allSubjects,
+        key: _flashcardKey,
         title: "progress_screen.flashcards",
         footerLinkText: "progress_screen.goto_flashcards",
         onTapAction: routeToFlashcards,
@@ -323,11 +204,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   Widget _buildQuestionBankProgressCard() {
-    if (_questionBankProgressLoading) return _loadingCard();
-
     return ProgressCardWrapper(
+        key: _questionbankKey,
         selectedSubject: selectedQuestionBankSubject,
-        allSubjects: allSubjects,
         title: "progress_screen.question_bank",
         isFlashCard: false,
         footerLinkText: "progress_screen.goto_question_bank",
@@ -356,9 +235,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
         params: {"subject_name": subject.name});
 
     if (isQB)
-      selectedQuestionBankSubject = subject.name;
+      _questionbankKey.currentState.selectedSubject = subject.name;
     else
-      selectedFlashcardSubject = subject.name;
+      _flashcardKey.currentState.selectedSubject = subject.name;
   }
 
   void routeToFlashcards() {
