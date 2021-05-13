@@ -85,7 +85,7 @@ abstract class AnalyticsConstants {
   static const tapSignOut = "tap_sign_out";
   static const tapPodcast = "tap_podcast";
   static const tapForgotPassword = "tap_forgot_password";
-  static const tapPracticeSubject = "select_subject";
+  static const tapPracticeSubject = "select_practice_subject";
   static const tapPreviousVideo = "tap_previous_video";
   static const tapNextVideo = "tap_next_video";
   static const tapUpdateProfile = "tap_update_profile";

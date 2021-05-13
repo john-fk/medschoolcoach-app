@@ -218,7 +218,6 @@ abstract class Routes {
         return FadeRoute(
             page: MultipleChoiceQuestionScreen(
                 arguments: MultipleChoiceQuestionScreenArguments(
-                    screenName: "Questions of the Day",
                     status: QuestionStatusType.qotd)));
       default:
         throw Exception("No route defined for \"${settings.name}\"");
