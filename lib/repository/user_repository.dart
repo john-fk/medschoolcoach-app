@@ -222,8 +222,6 @@ class UserRepository implements Repository {
     await _analyticsProvider.identify(userResponse.body.id);
     await _analyticsProvider.identifyPeople(userResponse.body.id);
     await _setEmail(userResponse);
-    // result = _mixpanel.identy...
-    // print(result + result1 + result2);
   }
 
   Future _setEmail(SuccessResponse<Auth0UserData> userResponse) async {
