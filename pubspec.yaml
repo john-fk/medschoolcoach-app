@@ -34,7 +34,7 @@ dependencies:
   webview_flutter:
   flutter_html:
   uni_links: ^0.4.0
-  native_mixpanel:
+  mixpanel_flutter: ^1.0.1
   srt_parser: ^1.1.0+5
   firebase_core:
   firebase_crashlytics:
