@@ -619,13 +619,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.7"
-  native_mixpanel:
+  mixpanel_flutter:
     dependency: "direct main"
     description:
-      name: native_mixpanel
+      name: mixpanel_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "1.0.1"
   node_interop:
     dependency: transitive
     description:

@@ -106,8 +106,8 @@ class _MultipleChoiceQuestionScreenState
   }
 
   void _logScreenViewAnalytics() {
-    Map<String, String> param;
     if (!isQOTD) {
+      Map<String, String> param;
       if (widget.arguments.subjectId == null) {
         param = {AnalyticsConstants.keyType: widget.arguments.screenName};
       } else {
