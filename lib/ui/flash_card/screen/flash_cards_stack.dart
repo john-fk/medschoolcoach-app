@@ -1,13 +1,13 @@
 import 'dart:math' as math;
-
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/flash_card/card/flash_card_widget.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_more_flashcards.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:flutter/material.dart';
-
 import 'flash_card_screen.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 class FlashCardsStack extends StatelessWidget {
   final FlashcardsStackModel flashcardsStackModel;
@@ -16,16 +16,18 @@ class FlashCardsStack extends StatelessWidget {
   final SetFront setFront;
   final bool front;
   final AnalyticsProvider analyticsProvider;
+  final Size cardArea;
 
-  const FlashCardsStack({
-    Key key,
-    @required this.flashcardsStackModel,
-    @required this.cardIndex,
-    @required this.changeCardIndex,
-    @required this.front,
-    @required this.setFront,
-    @required this.analyticsProvider
-  }) : super(key: key);
+  const FlashCardsStack(
+      {Key key,
+      @required this.flashcardsStackModel,
+      @required this.cardIndex,
+      @required this.changeCardIndex,
+      @required this.front,
+      @required this.setFront,
+      @required this.cardArea,
+      @required this.analyticsProvider})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -33,7 +35,7 @@ class FlashCardsStack extends StatelessWidget {
         Positioned.fill(
           child: AnimatedOpacity(
             opacity: cardIndex == flashcardsStackModel.items.length ? 1 : 0,
-            duration: const Duration(milliseconds: 250),
+            duration: Duration(milliseconds: Durations.cardFade),
             child: NoMoreFlashcardsWidget(
                 analyticsProvider: analyticsProvider,
                 isVisible: cardIndex == flashcardsStackModel.items.length),
@@ -41,46 +43,53 @@ class FlashCardsStack extends StatelessWidget {
         ),
         _buildBackgroundFlashCard(context),
         if (cardIndex < flashcardsStackModel.items.length)
-          Positioned.fill(
-            child: FlashCardWidget(
-              flashCard: flashcardsStackModel.items[cardIndex],
-              changeCardIndex: changeCardIndex,
-              progress: "${cardIndex + 1}/${flashcardsStackModel.items.length}",
-              front: front,
-              setFront: setFront,
-              analyticsProvider: analyticsProvider,
-            ),
+          FlashCardWidget(
+            flashCard: flashcardsStackModel.items[cardIndex],
+            cardIndex: cardIndex,
+            cardArea: cardArea,
+            changeCardIndex: changeCardIndex,
+            progress: "${cardIndex + 1}/${flashcardsStackModel.items.length}",
+            front: front,
+            setFront: setFront,
+            analyticsProvider: analyticsProvider,
           ),
       ],
     );
   }
 
   Widget _buildBackgroundFlashCard(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = cardArea.height;
+    final width = cardArea.width / (isPortrait(context) ? 1 : 2);
 
     return Positioned.fill(
       child: Container(
-        child: Center(
-          child: AnimatedOpacity(
-            opacity: cardIndex < flashcardsStackModel.items.length - 1 ? 1 : 0,
-            duration: const Duration(milliseconds: 250),
-            child: Transform.rotate(
-              angle: -math.pi / 32,
-              child: Container(
-                margin: EdgeInsets.only(
-                  bottom: height * FlashCardWidget.flashCardBottomMarginFactor,
-                ),
-                width: width * FlashCardWidget.flashCardWidthFactor,
-                height: height * FlashCardWidget.flashCardHeightFactor,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Style.of(context).colors.background,
-                ),
-              ),
-            ),
-          ),
+        margin: EdgeInsets.only(
+          top: height * 0.03 +
+              whenDevice(context, small: 5, medium: 8, large: 10, tablet: 15)
+                  .toDouble(),
         ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          AnimatedOpacity(
+              opacity:
+                  cardIndex < flashcardsStackModel.items.length - 1 ? 1 : 0,
+              duration: Duration(milliseconds: Durations.cardFade),
+              child: Transform.rotate(
+                  angle: -math.pi / 32,
+                  child: Container(
+                    width: width * FlashCardWidget.flashCardWidthFactor,
+                    height: height * FlashCardWidget.flashCardHeightFactor -
+                        whenDevice(context,
+                                small: 5, medium: 8, large: 10, tablet: 15)
+                            .toDouble() -
+                        whenDevice(context,
+                            large: isPortrait(context) ? 35 : 15,
+                            tablet: isPortrait(context) ? 65 : 30),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Style.of(context).colors.background,
+                    ),
+                  )))
+        ]),
       ),
     );
   }

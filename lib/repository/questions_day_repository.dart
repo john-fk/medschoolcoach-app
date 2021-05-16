@@ -17,12 +17,11 @@ class QuestionsDayRepository implements Repository {
   final Cache<String, List<Question>> _cache = MapCache();
 
   final RateLimiter _rateLimiter = RateLimiter();
+  final key = "question_day";
 
   Future<RepositoryResult<List<Question>>> fetchQuestionOfTheDay({
     bool forceApiRequest = false,
   }) async {
-    final key = "question_day";
-
     final shouldFetch = _rateLimiter.shouldFetch(key);
 
     if (shouldFetch || forceApiRequest) {

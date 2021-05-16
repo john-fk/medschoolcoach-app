@@ -35,6 +35,9 @@ const _appColors = const AppColors(
     separator: Color(0xFFEBEEEF),
     divider: Color(0x0D000000),
     questions: Color(0xFFFF7B5D),
+    qbIncorrect: Color(0xFFFF8131),
+    qbCorrect: Color(0xFF009D7A),
+    bottomSlider: Color(0xFF0C53C7),
     qualifyingText: Color.fromRGBO(252, 132, 81, 1),
     border: Colors.lightBlueAccent);
 
@@ -69,7 +72,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Future<void> didChangeDependencies() async {
-
     super.didChangeDependencies();
     await initNotifications(notifsPlugin, navigatorKey);
   }
@@ -118,5 +120,4 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-
 }

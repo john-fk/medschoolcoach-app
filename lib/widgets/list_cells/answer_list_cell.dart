@@ -15,14 +15,17 @@ class AnswerListCell extends StatelessWidget {
   final Question question;
   final int index;
 
-  const AnswerListCell({
+  AnswerListCell({
     Key key,
     @required this.question,
     @required this.index,
   }) : super(key: key);
 
+  BuildContext _context;
+
   @override
   Widget build(BuildContext context) {
+    _context = context;
     final width = MediaQuery.of(context).size.width;
     bool _isCorrect = question.yourAnswer == question.answer;
     return Theme(
@@ -34,14 +37,20 @@ class AnswerListCell extends StatelessWidget {
       child: CustomExpansionTile(
         title: Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 10.0,
+            vertical: 10.0,horizontal:7
           ),
           child: Row(
             children: <Widget>[
-              _isCorrect ? TickIcon() : ErrorIcon(),
+              _isCorrect
+                  ? TickIcon(
+                      flipColor: true,
+                    )
+                  : ErrorIcon(
+                      flipColor: true,
+                    ),
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 16.0,
+                  left: 8.0,
                 ),
                 child: Text(
                   FlutterI18n.translate(
@@ -92,19 +101,13 @@ class AnswerListCell extends StatelessWidget {
                         padding: const EdgeInsets.only(
                           bottom: 10.0,
                         ),
-                        child: _buildAnswerText(
-                          context,
-                          false,
-                        ),
+                        child: _buildAnswerText(false),
                       )
                     : Container(),
-                _buildAnswerText(
-                  context,
-                  true,
-                ),
+                _buildAnswerText(true),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
+                    vertical: 10.0,horizontal:7
                   ),
                   child: Text(
                     FlutterI18n.translate(
@@ -115,10 +118,9 @@ class AnswerListCell extends StatelessWidget {
                             question.stats.usersAnsweredCorrect.toString(),
                       },
                     ),
-                    style: smallResponsiveFont(
-                      context,
-                      fontColor: FontColor.Content2,
-                    ).copyWith(
+                    style: smallResponsiveFont(context,
+                            fontColor: FontColor.White, opacity: 0.5)
+                        .copyWith(
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -130,42 +132,54 @@ class AnswerListCell extends StatelessWidget {
       ),
     );
   }
-
-  Column _buildAnswerText(BuildContext context, bool isCorrect) {
+  Column _buildAnswerText(bool isCorrect) {
+    final double _titleSize = whenDevice(
+      _context,
+      large: 15,
+      tablet: 25,
+    );
+    final Color _color =isCorrect ? medstyles.Style.of(_context).colors.accent2 :  medstyles.Style.of(_context).colors.questions;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment:MainAxisAlignment.start,
+            children:[
+              Container(
+                margin: EdgeInsets.only(left:7,right:15),
+                width:  _titleSize*.75,
+                height: _titleSize*.75,
+              decoration: BoxDecoration(
+                color: _color,
+                shape: BoxShape.circle,
+              ),
+            ),
         Text(
           isCorrect
               ? FlutterI18n.translate(
-                  context,
+                  _context,
                   "question_screen.correct_answer",
                 )
               : FlutterI18n.translate(
-                  context,
+                  _context,
                   "question_screen.your_answer",
                 ),
-          style: isCorrect
-              ? medstyles.Style.of(context).font.mediumAccent2.copyWith(
-                    fontSize: whenDevice(
-                      context,
-                      large: 15,
-                      tablet: 25,
-                    ),
+          style:  medstyles.Style.of(_context).font.mediumAccent2.copyWith(
+                    fontSize:_titleSize,
+              color: _color
                   )
-              : medstyles.Style.of(context).font.mediumAccent2.copyWith(
-                    fontSize: whenDevice(
-                      context,
-                      large: 15,
-                      tablet: 25,
-                    ),
-                    color: medstyles.Style.of(context).colors.questions,
-                  ),
-        ),
+        )]),
         Html(
           data: isCorrect
               ? _getAnswer(index, question.answer)
               : _getAnswer(index, question.yourAnswer),
+          style: {
+            "html": Style.fromTextStyle(smallResponsiveFont(
+              _context,
+              fontColor: FontColor.Content2,
+            ))
+          },
         ),
       ],
     );

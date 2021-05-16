@@ -57,6 +57,6 @@ class StatisticsRepository implements Repository {
   @override
   void clearCache() {
     _rateLimiter.resetAll();
-    _cache.invalidateAll();
+    _cache.invalidate(_globalStatsKey);
   }
 }

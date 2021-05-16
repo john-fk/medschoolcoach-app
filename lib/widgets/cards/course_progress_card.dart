@@ -7,9 +7,14 @@ import 'package:Medschoolcoach/widgets/cards/no_progress_card.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:Medschoolcoach/utils/format_date.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 
 enum ProgressType {
-  Behind, // now < actual_completion_date && daysLeft + now > actual_completion_date
+  Behind,
+  /* now < actual_completion_date && daysLeft + now >
+           actual_completion_date */
   OnTrack, // daysLeft + now == actual_completion_date
   Ahead, // daysLeft + now < actual_completion_date
   FirstDay, // courseProgress == 0
@@ -19,35 +24,41 @@ enum ProgressType {
 }
 
 class CourseProgressCard extends StatefulWidget {
-  final ScheduleStats scheduleProgress;
   final VoidCallback onRefresh;
 
-  CourseProgressCard({this.scheduleProgress, this.onRefresh});
+  CourseProgressCard({this.onRefresh, Key key}) : super(key: key);
 
   @override
-  _CourseProgressCardState createState() => _CourseProgressCardState();
+  CourseProgressCardState createState() => CourseProgressCardState();
 }
 
-class _CourseProgressCardState extends State<CourseProgressCard>
+class CourseProgressCardState extends State<CourseProgressCard>
     with SingleTickerProviderStateMixin {
   double _programProgress = 0.0;
   double _scheduleProgress = 0.0;
   Color scheduleProgressColor;
   double scheduleProgressPercent;
   ProgressType track;
-
+  ScheduleStats scheduleProgress;
+  bool showLoading = true;
   @override
   void initState() {
     super.initState();
-    setProgress();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      update();
+    });
   }
 
   void setProgress() {
-    var courseProgress = widget.scheduleProgress.courseProgress;
-    int daysLeft = widget.scheduleProgress.daysLeft;
-    int totalDays = widget.scheduleProgress.totalDays;
+    if (scheduleProgress == null) {
+      track = ProgressType.NotStarted;
+      return;
+    }
+    var courseProgress = scheduleProgress.courseProgress;
+    int daysLeft = scheduleProgress.daysLeft;
+    int totalDays = scheduleProgress.totalDays;
     DateTime actualCompletionDate =
-        DateTime.parse(widget.scheduleProgress.actualCompletionDate);
+        DateTime.parse(scheduleProgress.actualCompletionDate);
     scheduleProgressPercent = (totalDays - daysLeft) / totalDays;
     DateTime currentCompletionDate =
         DateTime.now().add(Duration(days: daysLeft));
@@ -78,26 +89,31 @@ class _CourseProgressCardState extends State<CourseProgressCard>
       track = ProgressType.NotStarted;
     }
 
-    _programProgress = widget.scheduleProgress.courseProgress / 100;
+    _programProgress = scheduleProgress.courseProgress / 100;
     _scheduleProgress = scheduleProgressPercent;
   }
 
   @override
   Widget build(BuildContext context) {
+    scheduleProgress = SuperStateful.of(context).courseProgress;
+    setProgress();
+
     scheduleProgressColor = track != ProgressType.Behind
         ? Style.of(context).colors.accent4
         : Style.of(context).colors.questions;
     return Card(
       elevation: 5,
       shadowColor: Colors.black.withOpacity(0.1),
-      child: track != ProgressType.NotStarted
-          ? Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20),
-              child: _programProgress == 1
-                  ? _buildCourseCompletedCard()
-                  : _buildCourseInProgressCard())
-          : _buildCourseNotStartedCard(),
+      child: showLoading
+          ? _buildCourseLoading()
+          : (track != ProgressType.NotStarted
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 20),
+                  child: _programProgress == 1
+                      ? _buildCourseCompletedCard()
+                      : _buildCourseInProgressCard())
+              : _buildCourseNotStartedCard()),
     );
   }
 
@@ -172,7 +188,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
               Text(
                 formatDate(
                     DateTime.now()
-                        .add(Duration(days: widget.scheduleProgress.daysLeft)),
+                        .add(Duration(days: scheduleProgress.daysLeft)),
                     'MM/dd/yyyy'),
                 style:
                     smallResponsiveFont(context, fontWeight: FontWeight.w500),
@@ -189,7 +205,7 @@ class _CourseProgressCardState extends State<CourseProgressCard>
                 style: smallResponsiveFont(context, opacity: 0.6),
               ),
               Text(
-                """${widget.scheduleProgress.daysLeft} ${widget.scheduleProgress.daysLeft == 1 ? 'day' : 'days'}""",
+                """${scheduleProgress.daysLeft} ${scheduleProgress.daysLeft == 1 ? 'day' : 'days'}""",
                 style:
                     smallResponsiveFont(context, fontWeight: FontWeight.w500),
               )
@@ -215,8 +231,8 @@ class _CourseProgressCardState extends State<CourseProgressCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${widget.scheduleProgress.courseProgress}% "
-          "of video courses completed",
+          "${scheduleProgress.courseProgress}%"
+          " of video courses completed",
           style: normalResponsiveFont(context, fontWeight: FontWeight.w600),
         ),
         SizedBox(
@@ -273,6 +289,22 @@ class _CourseProgressCardState extends State<CourseProgressCard>
     );
   }
 
+  Widget _buildCourseLoading() {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: whenDevice(
+          context,
+          medium: 100,
+          large: 100,
+          tablet: 150,
+        )),
+        child: Container(
+          child: Center(
+            child: ProgressBar(),
+          ),
+        ));
+  }
+
   Widget _buildCourseNotStartedCard() {
     return Column(
       children: [
@@ -289,5 +321,15 @@ class _CourseProgressCardState extends State<CourseProgressCard>
             })
       ],
     );
+  }
+
+  Future<void> update() async {
+    setState(() {
+      showLoading = true;
+    });
+    await SuperStateful.of(context).updateCourseProgress(forceApiRequest: true);
+    setState(() {
+      showLoading = false;
+    });
   }
 }

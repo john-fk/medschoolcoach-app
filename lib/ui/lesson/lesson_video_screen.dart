@@ -76,8 +76,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
                 openFullscrenVideo: _openFullscreenVideo,
                 makeVideoPlayerVisible: _makeVideoPlayerVisible,
                 videoPlayerVisible: _videoPlayerVisible,
-                analyticsProvider: _analyticsProvider
-              ),
+                analyticsProvider: _analyticsProvider),
       ),
     );
   }
@@ -153,7 +152,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
       // topic after video favorite has been saved in schedule screen
       bool fav1 = widget.arguments.videos[widget.arguments.order].favourite;
       Video aVid = topic.videos.firstWhere((video) =>
-      video.id == widget.arguments.videos[widget.arguments.order].id);
+          video.id == widget.arguments.videos[widget.arguments.order].id);
       aVid.favourite = fav1;
     }
 
@@ -217,7 +216,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
     SuperStateful.of(context).updateSchedule(forceApiRequest: true);
     SuperStateful.of(context).updateTodaySchedule(forceApiRequest: true);
     SuperStateful.of(context).updateScheduleProgress();
-    SuperStateful.of(context).courseProgress = null;
+    SuperStateful.of(context).updateCourseProgress(forceApiRequest: true);
     SuperStateful.of(context).updateBookmarks(forceApiRequest: true);
     if (_topic != null) {
       final sectionId = _topic?.videos[0]?.sectionId;

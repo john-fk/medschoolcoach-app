@@ -50,21 +50,21 @@ class UserRepository implements Repository {
   final FirebaseAnalytics _firebaseAnalytics;
 
   UserRepository(
-      this._apiServices,
-      this._userManager,
-      this._sectionRepository,
-      this._subjectRepository,
-      this._topicRepository,
-      this._lectureNoteRepository,
-      this._videoRepository,
-      this._flashcardRepository,
-      this._scheduleRepository,
-      this._bookmarksRepository,
-      this._questionsRepository,
-      this._statisticsRepository,
-      this._analyticsProvider,
-      this._firebaseAnalytics,
-      );
+    this._apiServices,
+    this._userManager,
+    this._sectionRepository,
+    this._subjectRepository,
+    this._topicRepository,
+    this._lectureNoteRepository,
+    this._videoRepository,
+    this._flashcardRepository,
+    this._scheduleRepository,
+    this._bookmarksRepository,
+    this._questionsRepository,
+    this._statisticsRepository,
+    this._analyticsProvider,
+    this._firebaseAnalytics,
+  );
 
   final Cache<String, Auth0UserData> _userCache = MapCache();
   final Cache<String, ProfileUser> _profileUserCache = MapCache();
@@ -89,7 +89,6 @@ class UserRepository implements Repository {
     if (response is SuccessResponse<LoginResponse>) {
       _setFirebaseUserEmailProperty(userEmail);
       userLoggingEmail = userEmail;
-
 
       await updateUser(
         accessToken: response.body.accessToken,
@@ -193,7 +192,7 @@ class UserRepository implements Repository {
       if (userResponse is SuccessResponse<Auth0UserData>) {
         if (userLoggingEmail != null && userLoggingEmail.isNotEmpty) {
           await _identifyUser(userResponse);
-          FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.sub);
+          FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.id);
           FirebaseCrashlytics.instance
               .setCustomKey("email", userResponse.body.email);
           FirebaseCrashlytics.instance
@@ -220,11 +219,9 @@ class UserRepository implements Repository {
   }
 
   Future _identifyUser(SuccessResponse<Auth0UserData> userResponse) async {
-    await _analyticsProvider.identify(userResponse.body.sub);
-    await _analyticsProvider.identifyPeople(userResponse.body.sub);
+    await _analyticsProvider.identify(userResponse.body.id);
+    await _analyticsProvider.identifyPeople(userResponse.body.id);
     await _setEmail(userResponse);
-    // result = _mixpanel.identy...
-    // print(result + result1 + result2);
   }
 
   Future _setEmail(SuccessResponse<Auth0UserData> userResponse) async {
@@ -313,10 +310,9 @@ class UserRepository implements Repository {
     }
   }
 
-  void logout() async  {
-    _analyticsProvider.logEvent(AnalyticsConstants.tapSignOut, params: {
-      AnalyticsConstants.keyEmail: userLoggingEmail
-    });
+  void logout() async {
+    _analyticsProvider.logEvent(AnalyticsConstants.tapSignOut,
+        params: {AnalyticsConstants.keyEmail: userLoggingEmail});
     _subjectRepository.clearCache();
     _sectionRepository.clearCache();
     _topicRepository.clearCache();

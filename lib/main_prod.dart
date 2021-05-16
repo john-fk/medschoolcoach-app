@@ -16,12 +16,11 @@ import 'providers/analytics_constants.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final FlutterLocalNotificationsPlugin notifsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AnalyticsProvider _analyticsProvider = await AnalyticsProvider();
-
 
   await initNotifications(notifsPlugin, navigatorKey);
   await _analyticsProvider.initialize(Config.prodMixPanelToken);
@@ -41,7 +40,7 @@ Future<void> main() async {
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-        (_) {
+    (_) {
       runApp(MyApp(
         initialRoute: initialRoute,
       ));

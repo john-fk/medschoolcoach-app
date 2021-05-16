@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Medschoolcoach/ui/onboarding/onboarding_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
@@ -61,6 +62,7 @@ abstract class UserManager {
   void markOnboardingComplete();
   void markOnboardingState(OnboardingState state);
 
+  Future<String> getName();
   void updateTestDate(DateTime date);
   Future<DateTime> getTestDate();
   void updateStudyTimePerDay(int hours);
@@ -107,6 +109,7 @@ class UserManagerImpl implements UserManager {
     storage.delete(key: "test_date");
     storage.delete(key: "question_of_the_day_time");
     storage.delete(key: "study_time_per_day");
+    storage.delete(key: "name");
     storage.deleteAll();
   }
 
@@ -126,6 +129,15 @@ class UserManagerImpl implements UserManager {
     User user = await get();
 
     return update(user);
+  }
+
+  @override
+  Future<String> getName() async {
+    String name = await storage?.read(key: "name");
+    if (name?.isNotEmpty ?? false) {
+      return name;
+    }
+    return "";
   }
 
   @override

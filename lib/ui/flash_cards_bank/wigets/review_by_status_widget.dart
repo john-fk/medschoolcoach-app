@@ -8,6 +8,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 
 class ReviewByStatusWidget extends StatelessWidget {
   final AnalyticsProvider _analyticsProvider;
@@ -22,19 +23,19 @@ class ReviewByStatusWidget extends StatelessWidget {
         _emojiButton(
           onPressed: () => onPress(FlashcardStatus.Positive, context),
           context: context,
-          asset: Style.of(context).svgAsset.positive,
+          asset: Style.of(context).pngAsset.ePositive,
           color: Style.of(context).colors.accent2,
         ),
         _emojiButton(
           onPressed: () => onPress(FlashcardStatus.Neutral, context),
           context: context,
-          asset: Style.of(context).svgAsset.neutral,
+          asset: Style.of(context).pngAsset.eNeutral,
           color: Style.of(context).colors.premium,
         ),
         _emojiButton(
           onPressed: () => onPress(FlashcardStatus.Negative, context),
           context: context,
-          asset: Style.of(context).svgAsset.negative,
+          asset: Style.of(context).pngAsset.eNegative,
           color: Style.of(context).colors.questions,
         ),
       ],
@@ -69,8 +70,8 @@ class ReviewByStatusWidget extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(2.0),
-            child: SvgPicture.asset(
-              asset,
+            child: Image(
+              image: AssetImage(asset),
               width: whenDevice(context, large: 30, tablet: 60),
               color: Style.of(context).colors.content2,
             ),

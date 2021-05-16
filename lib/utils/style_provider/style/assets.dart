@@ -37,8 +37,8 @@ class _AppPngAssets {
   final learnActive = "assets/png/learn_selected.png";
   final learn = "assets/png/learn_unselected.png";
 
-  final practiceActive ="assets/png/practice_selected.png";
-  final practice ="assets/png/practice_unselected.png";
+  final practiceActive = "assets/png/practice_selected.png";
+  final practice = "assets/png/practice_unselected.png";
 
   final profileActive = "assets/png/profile_selected.png";
   final profile = "assets/png/profile_unselected.png";
@@ -49,11 +49,30 @@ class _AppPngAssets {
   final tutoringSliderThree = "assets/png/tutoring_slider_3.png";
 
   //Progress Screen
-  final upSellBannerGraphic  = "assets/png/upsell_banner_graphic.png";
+  final upSellBannerGraphic = "assets/png/upsell_banner_graphic.png";
 
-  final globalDoctors  = "assets/png/global_doctors.png";
+  final globalDoctors = "assets/png/global_doctors.png";
 
   final emptyState = "assets/png/empty_state.png";
+
+  //question bank
+  final questionExplanation = "assets/png/button_explanation.png";
+  final questionArrowNext = "assets/png/question_arrow_next.png";
+  final qbCorrect = "assets/png/qbCorrect.png";
+  final qbIncorrect = "assets/png/qbIncorrect.png";
+  final bookmarkQB = "assets/png/bookmark_0.png";
+  final bookmarkedQB = "assets/png/bookmark_1.png";
+  final qbCorrectFlip = "assets/png/qbCorrectFlip.png";
+  final qbIncorrectFlip = "assets/png/qbIncorrectFlip.png";
+
+  //flash card
+  final ePositive = "assets/png/e_positive.png";
+  final eNeutral = "assets/png/e_neutral.png";
+  final eNegative = "assets/png/e_negative.png";
+  final flipTips = "assets/png/flip_tips";
+
+  //profile screen
+  final support ="assets/png/support.png";
 }
 
 class _AppSvgAssets {
@@ -67,7 +86,8 @@ class _AppSvgAssets {
 
   final searchActive = "assets/svg/search_active.svg";
   final search = "assets/svg/search.svg";
-  final tutoringNavigationIconActive = "assets/svg/tutoring_navigation_icon_active.svg";
+  final tutoringNavigationIconActive =
+      "assets/svg/tutoring_navigation_icon_active.svg";
   final tutoringNavigationIcon = "assets/svg/tutoring_navigation_icon.svg";
 
   //Video player icons

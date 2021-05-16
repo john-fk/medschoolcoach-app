@@ -31,7 +31,7 @@ Future<void> main() async {
     auth0Url: Config.devBaseAuth0Url,
     analyticsProvider: _analyticsProvider,
   );
-  
+
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
 
@@ -42,10 +42,10 @@ Future<void> main() async {
 
   /// App supported orientations init
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) {
-      runApp(
-          _dp.DevicePreview(enabled: enableDevicePreview,
-              builder:(context) => MyApp(initialRoute: initialRoute),
+        (_) {
+      runApp(_dp.DevicePreview(
+        enabled: enableDevicePreview,
+        builder: (context) => MyApp(initialRoute: initialRoute),
       ));
     },
   );

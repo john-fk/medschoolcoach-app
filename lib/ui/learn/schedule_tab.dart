@@ -88,6 +88,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
         });
       }
     }
+
     var progress = SuperStateful.of(context).courseProgress;
     if (progress == null) {
       await SuperStateful.of(context)
@@ -154,6 +155,13 @@ class _ScheduleTabState extends State<ScheduleTab> {
 
     if (_shouldShowSchedule) {
       final videos = SuperStateful.of(context).videosScheduleList;
+      if (videos != null &&
+          videos.isNotEmpty &&
+          !videos.any(
+              (video) => video.progress.percentage != 100 && !_completed)) {
+        _completed = !_days.any((day) => !day.completed);
+      }
+
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -305,7 +313,8 @@ class _ScheduleTabState extends State<ScheduleTab> {
                     videos[index].progress.percentage = 0;
                   }
                 });
-                SuperStateful.of(context).courseProgress = null;
+                await SuperStateful.of(context)
+                    .updateCourseProgress(forceApiRequest: true);
                 await SuperStateful.of(context).updateScheduleProgress();
                 scheduleProgress = SuperStateful.of(context).scheduleProgress;
 

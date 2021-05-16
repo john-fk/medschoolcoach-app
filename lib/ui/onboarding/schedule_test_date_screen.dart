@@ -36,7 +36,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   bool isEditingTestDate = false;
   final userManager = Injector.appInstance.getDependency<UserManager>();
   final AnalyticsProvider _analyticsProvider =
-  Injector.appInstance.getDependency<AnalyticsProvider>();
+      Injector.appInstance.getDependency<AnalyticsProvider>();
 
   @override
   void initState() {
@@ -76,7 +76,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
               SizedBox(
                 height: size.height * 0.05,
               ),
-            Image(image: AssetImage("assets/png/test_date_picker.png"),
+            Image(
+              image: AssetImage("assets/png/test_date_picker.png"),
               height: size.height * 0.25,
               fit: BoxFit.contain,
             ),
@@ -95,27 +96,22 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
               onPressed: showCustomDatePicker,
               color: Style.of(context).colors.accent4,
             ),
-            if (scheduleDate == null)
-              SizedBox(
-                height: 45
-              ),
+            if (scheduleDate == null) SizedBox(height: 45),
             if (widget.source != Routes.profile_screen || scheduleDate != null)
               TextButton(
-                onPressed: _onPressSecondaryButton,
-                child: Text(
-                  FlutterI18n.translate(
-                      context,
-                      scheduleDate == null
-                          ? "onboarding_scheduling.i_dont_have_test_date"
-                          : "onboarding_scheduling.remove_test_date"),
-                  style: mediumResponsiveFont(context,
-                      fontColor: FontColor.Content4,
-                      opacity: 0.6,
-                      style:
-                          TextStyle(decoration: TextDecoration.underline)),
-                )
-              ),
-              Spacer()
+                  onPressed: _onPressSecondaryButton,
+                  child: Text(
+                    FlutterI18n.translate(
+                        context,
+                        scheduleDate == null
+                            ? "onboarding_scheduling.i_dont_have_test_date"
+                            : "onboarding_scheduling.remove_test_date"),
+                    style: mediumResponsiveFont(context,
+                        fontColor: FontColor.Content4,
+                        opacity: 0.6,
+                        style: TextStyle(decoration: TextDecoration.underline)),
+                  )),
+            Spacer()
           ],
         ),
       ),
@@ -140,27 +136,19 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   }
 
   void showCustomDatePicker() {
+    if (scheduleDate != null) dateController.selectedDate = scheduleDate;
     showDialog<Dialog>(
         context: context,
-        child: Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: DatePicker(
-            dateController: dateController,
-            onDateConfirm: () {
-              _updateTestDate();
-              _analyticsProvider.logEvent( isEditingTestDate ?
-              "tap_test_date_update" : "tap_test_date_confirm",
-                  params: null);
-              if (widget.source != Routes.profile_screen) {
-                Navigator.pushNamed(context, Routes.timePerDay,
-                    arguments: Routes.onboarding);
-              } else {
-                Navigator.pop(context);
-            }
-            },
-          ),
-        ));
+        builder: (_) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child: DatePicker(
+                dateController: dateController,
+                onDateConfirm: () {
+                  _updateTestDate();
+                },
+              ),
+            ));
   }
 
   Future<void> _updateTestDate() async {
@@ -174,11 +162,20 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
 
     if (result is ErrorResponse) {
       showToast(
-          text: "Something went wrong, please try again",
+          text: FlutterI18n.translate(context, "general.net_error"),
           context: context,
           color: Style.of(context).colors.error);
     } else {
       scheduleDate = dateController.selectedDate;
+      _analyticsProvider.logEvent(
+          isEditingTestDate ? "tap_test_date_update" : "tap_test_date_confirm",
+          params: null);
+      if (widget.source != Routes.profile_screen) {
+        Navigator.pushNamed(context, Routes.timePerDay,
+            arguments: Routes.onboarding);
+      } else {
+        Navigator.pop(context);
+      }
     }
     setState(() {
       isLoading = false;
@@ -246,14 +243,13 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
           ),
           actions: <DialogActionData>[
             DialogActionData(
-              text: FlutterI18n.translate(
-                context,
-                "general.cancel",
-              ),
-              onTap: () => {
-                Navigator.pop(context),
-              },
-            ),
+                text: FlutterI18n.translate(
+                  context,
+                  "general.cancel",
+                ),
+                onTap: () => {
+                      Navigator.pop(context),
+                    }),
             DialogActionData(
               text: FlutterI18n.translate(
                 context,
@@ -263,6 +259,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 _analyticsProvider.logEvent("tap_test_date_remove",
                     params: null);
                 Navigator.pop(context);
+
+                dateController.selectedDate = null;
                 setState(() {
                   scheduleDate = null;
                   userManager.removeTestDate();

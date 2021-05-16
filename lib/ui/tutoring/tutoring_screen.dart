@@ -196,8 +196,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        margin:
-                                        EdgeInsets.fromLTRB(
+                                        margin: EdgeInsets.fromLTRB(
                                             2.5, 2, 2.5, 15),
                                       ),
                                       onTap: () async {
@@ -214,7 +213,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                         _sendRequestInfo();
                                       },
                                     ),
-                                  _buildButton(context),
+                                    _buildButton(context),
                                   ],
                                 ),
                               ),
@@ -240,7 +239,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   }
 
   Widget closeButton() {
-    return  SafeArea(
+    return SafeArea(
       child: CloseButton(
         color: Colors.black,
         key: Key("dialog close"),
@@ -405,15 +404,15 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   }
 
   void launchURL(String url) async {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        print('Could not launch $url');
-      }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
   }
+
   Future _navigateToScheduleAMeeting() async {
-    _analyticsProvider.logEvent(
-    AnalyticsConstants.tapTutoringScheduleAMeeting,
+    _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });

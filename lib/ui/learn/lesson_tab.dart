@@ -22,7 +22,7 @@ class _LessonTabState extends State<LessonTab> {
   void initState() {
     super.initState();
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => _fetchCategories(forceApiRequest: false));
+        .addPostFrameCallback((_) => _fetchCategories(forceApiRequest: true));
   }
 
   Widget _loadingContent() {
@@ -86,7 +86,7 @@ class _LessonTabState extends State<LessonTab> {
           return SizedBox(
             height: MediaQuery.of(context).size.height * 0.1,
             child: InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pushNamed(
                   context,
                   Routes.section,
@@ -94,8 +94,7 @@ class _LessonTabState extends State<LessonTab> {
                       sectionId: section.id,
                       sectionName: section.name,
                       numberOfCourses: section.amountOfVideos,
-                      source: AnalyticsConstants.lessonScreen
-                  ),
+                      source: AnalyticsConstants.lessonScreen),
                 );
               },
               child: Card(

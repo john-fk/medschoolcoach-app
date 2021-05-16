@@ -2,23 +2,29 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
-import 'package:Medschoolcoach/ui/flash_card/how_to/flashcards_how_to.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
+import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash_card_bottom.dart';
+import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_html/style.dart' as medstyles;
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
-
-import 'flash_card_bar.dart';
 import 'flash_cards_stack.dart';
 
-typedef ChangeCardIndex({bool increase});
+typedef ChangeCardIndex({bool increase, FlashcardStatus cardstatus});
 
 class FlashCardScreen extends StatefulWidget {
   final FlashcardsStackArguments arguments;
@@ -31,23 +37,19 @@ class FlashCardScreen extends StatefulWidget {
 
 class _FlashCardScreenState extends State<FlashCardScreen>
     with SingleTickerProviderStateMixin {
-  static const _howToFrontKey = "flashcardsHowToFront";
-  static const _howToBackKey = "flashcardsHowToBack";
-  static const _howToSeen = "seen";
-
   final _flashcardsRepository =
       Injector.appInstance.getDependency<FlashcardRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
+  final String _howToSeen = "seen";
+  final String _howToFlashcard = "Flashcard_tutorial";
 
   RepositoryResult<FlashcardsStackModel> _result;
   bool _loading = false;
   int _cardIndex = 0;
-  Animation<double> _animation;
-  AnimationController _animationController;
   bool _front = true;
-  bool _showBackHowTo = false;
-
+  Size cardArea;
+  int _totalCards = 0;
   @override
   void initState() {
     super.initState();
@@ -58,14 +60,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.portraitUp,
     ]);
-
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-
-    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
-      ..addListener(() {
-        setState(() {});
-      });
 
     _analyticsProvider.logScreenView(
         AnalyticsConstants.screenFlashcards, widget.arguments.source);
@@ -86,37 +80,56 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       _loading = false;
     });
 
-    if (_result is RepositorySuccessResult<FlashcardsStackModel> &&
-        (_result as RepositorySuccessResult<FlashcardsStackModel>)
-                .data
-                .items
-                .length !=
-            0) _showFlashcardsHowTo();
+    if (_result is RepositorySuccessResult<FlashcardsStackModel>) {
+      _totalCards = (_result as RepositorySuccessResult<FlashcardsStackModel>)
+          .data
+          .items
+          .length;
+      if (_totalCards > 0) {
+        _cardIndex = (_result as RepositorySuccessResult<FlashcardsStackModel>)
+            .data
+            .position;
+        _showFlashcardsHowTo();
+      }
+    }
   }
 
   void _showFlashcardsHowTo() async {
     final storage = FlutterSecureStorage();
-
-    final valueFront = await storage.read(key: _howToFrontKey);
-    final valueBack = await storage.read(key: _howToBackKey);
-
-    if (valueFront == null || valueFront != _howToSeen) {
-      await storage.write(key: _howToFrontKey, value: _howToSeen);
-      _animationController.forward();
-    }
-
-    if (valueBack == null || valueBack != _howToSeen) {
-      _showBackHowTo = true;
+    final _seenHowTo = await storage.read(key: _howToFlashcard);
+    if (_seenHowTo == null) {
+      openModal();
+      await storage.write(key: _howToFlashcard, value: _howToSeen);
     }
   }
 
-  void _changeCardIndex({bool increase = true}) {
+  void _changeCardIndex(
+      {bool increase = true,
+      FlashcardStatus cardstatus = FlashcardStatus.Seen}) {
     if (!increase && _cardIndex == 0) return;
 
-    if (increase)
+    if (increase) {
+      //save current emoji
+      (_result as RepositorySuccessResult<FlashcardsStackModel>)
+          .data
+          .items[_cardIndex]
+          .status = cardstatus;
+
       _cardIndex++;
-    else
+    } else
       _cardIndex--;
+
+    if (_cardIndex + 1 > _totalCards) {
+      _totalCards = 0;
+      _flashcardsRepository.clearCacheKey(widget.arguments);
+    } else {
+      (_result as RepositorySuccessResult<FlashcardsStackModel>).data.position =
+          _cardIndex;
+      //updates the cache
+      _flashcardsRepository.updateCard(widget.arguments,
+          (_result as RepositorySuccessResult<FlashcardsStackModel>).data);
+    }
+
     setState(() {});
   }
 
@@ -136,30 +149,45 @@ class _FlashCardScreenState extends State<FlashCardScreen>
           ),
           Column(
             children: <Widget>[
-              FlashCardBar(),
+              QuestionAppBar(
+                onChange: updateHeader,
+                isFlashCard: true,
+                onHowtoTap: openModal,
+                category: widget.arguments.subjectName ??
+                    widget.arguments.status.toString().split(".")[1],
+                currentQuestion: _cardIndex + 1,
+                questionsSize: _result != null ? _totalCards : 0,
+              ),
               Expanded(
                 child: _buildContent(),
-              ),
+              )
             ],
-          ),
-          Positioned.fill(
-            child: Opacity(
-              opacity: _animation.value,
-              child: _animation.value == 0
-                  ? Container()
-                  : FlashcardsHowTo(
-                      front: _front,
-                      gotIt: _hideHowTo,
-                    ),
-            ),
           ),
         ],
       ),
     );
   }
 
-  void _hideHowTo() {
-    if (_animation.value == 1) _animationController.reverse();
+  void updateHeader(Size header) {
+    bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+    double bottomHeight = (MediaQuery.of(context).size.width / 15) +
+        50 +
+        whenDevice(
+          context,
+          large: isPortrait ? 5 : 0,
+          tablet: isPortrait ? 15 : 0,
+        ) +
+        whenDevice(
+          context,
+          large: isPortrait ? 20 : 0,
+          small: isPortrait ? 15 : 0,
+          tablet: isPortrait ? 30 : 0,
+        );
+    setState(() {
+      cardArea = Size(MediaQuery.of(context).size.width,
+          MediaQuery.of(context).size.height - header.height - bottomHeight);
+    });
   }
 
   Widget _buildContent() {
@@ -175,13 +203,14 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     if (_result is RepositorySuccessResult<FlashcardsStackModel>) {
       final flashcardsStack =
           (_result as RepositorySuccessResult<FlashcardsStackModel>).data;
-      if (flashcardsStack.items.length == 0) {
+      if (_totalCards == 0) {
         _analyticsProvider.logScreenView(AnalyticsConstants.screenNoFlashcard,
             AnalyticsConstants.screenFlashcards);
         return NoFlashcardsWidget(widget.arguments);
       }
       return FlashCardsStack(
         changeCardIndex: _changeCardIndex,
+        cardArea: cardArea,
         cardIndex: _cardIndex,
         front: _front,
         flashcardsStackModel: flashcardsStack,
@@ -197,15 +226,75 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     setState(() {
       _front = front;
     });
-    if (!front && _showBackHowTo) {
-      setState(() {
-        _showBackHowTo = false;
-      });
-      final storage = FlutterSecureStorage();
-      storage.write(key: _howToBackKey, value: _howToSeen);
+  }
 
-      _animationController.forward();
-    }
+  void openModal() {
+    _analyticsProvider.logEvent("tap_flashcard_tutorial");
+    openExplanationModal(
+      context: context,
+      fitHeight: isPortrait(context) ? true : false,
+      title: FlutterI18n.translate(context, "flashcards_tips.welcome"),
+      content: _explanationContent(),
+    );
+  }
+
+  Widget _explanationContent() {
+    List<int> tips = [1, 2, 3, 4, 5];
+
+    return Column(children: [for (var i in tips) _buildTips(i)]);
+  }
+
+  Widget _buildTips(int tipsNumber) {
+    return Container(
+        margin: EdgeInsets.only(bottom: biggerResponsiveFont(context).fontSize),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+                height: whenDevice(
+                  context,
+                  medium: 50,
+                  large: 80,
+                  tablet: 90,
+                ),
+                child: Container(
+                    alignment: Alignment.center,
+                    child: Image(
+                      image: AssetImage(Style.of(context).pngAsset.flipTips +
+                          tipsNumber.toString() +
+                          ".png"),
+                    ))),
+            SizedBox(
+                width: whenDevice(context, medium: 15, large: 20, tablet: 32)),
+            SizedBox(
+                width: whenDevice(
+                  context,
+                  small: 155,
+                  medium: 165,
+                  large: 175,
+                  tablet: 250,
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        FlutterI18n.translate(
+                            context, "flashcards_tips.tips${tipsNumber}_title"),
+                        style: biggerResponsiveFont(context,
+                                fontColor: FontColor.DividerColor)
+                            .copyWith(fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                        FlutterI18n.translate(context,
+                            "flashcards_tips.tips${tipsNumber}_subtitle"),
+                        style: mediumResponsiveFont(context,
+                            fontColor: FontColor.DividerColor),
+                      )
+                    ]))
+          ],
+        ));
   }
 
   @override

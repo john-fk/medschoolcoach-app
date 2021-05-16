@@ -1,32 +1,45 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
-import 'package:native_mixpanel/native_mixpanel.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:Medschoolcoach/config.dart';
+import 'dart:convert';
 
 class AnalyticsProvider {
   Mixpanel _mixpanel;
 
   AnalyticsProvider() {
-    _mixpanel = Mixpanel(shouldLogEvents: true, isOptedOut: false);
+    this.initialize(Config.prodMixPanelToken);
   }
 
-  Future initialize(String token) {
-    return this._mixpanel.initialize(token);
+  Future initialize(String token) async {
+    if (_mixpanel == null) {
+      _mixpanel = await Mixpanel.init(token, optOutTrackingDefault: false);
+    }
+    return _mixpanel;
   }
 
-  Future identify(String distinctId) {
+  void identify(String distinctId) {
     return this._mixpanel.identify(distinctId);
   }
 
-  Future identifyPeople(String distinctId) {
-    return this._mixpanel.identifyPeople(distinctId);
+  void identifyPeople(String distinctId) {
+    return this.logEvent("identifyPeople", params: {"distinctId": distinctId});
   }
 
-  Future setPeopleProperties(Map<String, dynamic> props) {
-    return this._mixpanel.setPeopleProperties(props);
+  void setPeopleProperties(Map<String, dynamic> props) {
+    return this.logEvent("setPeopleProperties", params: props);
   }
 
   void logEvent(String eventName, {dynamic params}) {
     final emptyList = <String, String>{};
-    _mixpanel.track(eventName, params == null ? emptyList : params);
+    this
+        ._mixpanel
+        .track(eventName, properties: params == null ? emptyList : params);
+
+    /*
+    print(
+        "Event:$eventName 
+        Data : ${json.encode(params == null ? emptyList : params)}");
+    */
   }
 
   void logScreenView(String screenName, String sourceName, {dynamic params}) {
@@ -62,7 +75,10 @@ class AnalyticsProvider {
 
   void logAccountManagementEvent(
       // ignore: avoid_positional_boolean_parameters
-      String event, String email, bool isSuccess, String errorMessage) {
+      String event,
+      String email,
+      bool isSuccess,
+      String errorMessage) {
     logEvent(event, params: {
       AnalyticsConstants.keyEmail: email,
       AnalyticsConstants.keyIsSuccess: isSuccess,

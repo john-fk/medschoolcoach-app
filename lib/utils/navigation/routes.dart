@@ -18,7 +18,6 @@ import 'package:Medschoolcoach/ui/practice/practice_screen.dart';
 import 'package:Medschoolcoach/ui/profile/profile_screen.dart';
 import 'package:Medschoolcoach/ui/profile_tab/profile_screen.dart';
 import 'package:Medschoolcoach/ui/progress/progress_screen.dart';
-import 'package:Medschoolcoach/ui/question_of_the_day/question_of_the_day.dart';
 import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart';
 import 'package:Medschoolcoach/ui/questions/question_bank_screen.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
@@ -40,7 +39,7 @@ import 'package:flutter/material.dart';
 
 abstract class Routes {
   static const String onboarding = "onboarding";
-  static const String welcome = "welcome";
+  static const String welcome = "screen_welcome";
   static const String login = "login";
   static const String register = "register";
   static const String forgotPassword = "forgot";
@@ -67,8 +66,8 @@ abstract class Routes {
   static const String profile = "profile";
   static const String userSettings = "settings";
   static const String tutoring = "tutoring";
-  static const String scheduleQuestionOfTheDay
-  = "screen_schedule_question_of_the_day";
+  static const String scheduleQuestionOfTheDay =
+      "screen_schedule_question_of_the_day";
   static const String scheduleTestDate = "screen_schedule_test_date";
   static const String timePerDay = "screen_study_time_per_day";
   static const String progressScreen = "screen_progress";
@@ -216,7 +215,10 @@ abstract class Routes {
       case oldUserOnboarding:
         return FadeRoute(page: OldUserOnboarding());
       case questionOfTheDayScreen:
-        return FadeRoute(page: QuestionOfTheDay(source: settings.arguments));
+        return FadeRoute(
+            page: MultipleChoiceQuestionScreen(
+                arguments: MultipleChoiceQuestionScreenArguments(
+                    status: QuestionStatusType.qotd)));
       default:
         throw Exception("No route defined for \"${settings.name}\"");
     }
@@ -225,7 +227,7 @@ abstract class Routes {
   static void navigateToTutoringScreen(BuildContext context, String source,
       {bool isNavBar = false}) {
     Navigator.of(context).pushNamed(Routes.tutoring,
-        arguments: TutoringScreenData(source: source,
-            showNavigationBar: isNavBar));
+        arguments:
+            TutoringScreenData(source: source, showNavigationBar: isNavBar));
   }
 }

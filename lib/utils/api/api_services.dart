@@ -31,6 +31,7 @@ import 'package:Medschoolcoach/utils/api/models/statistics.dart';
 import 'package:Medschoolcoach/utils/api/models/subject.dart';
 import 'package:Medschoolcoach/utils/api/models/topic.dart';
 import 'package:Medschoolcoach/utils/api/models/video.dart';
+import 'package:Medschoolcoach/ui/flash_card/card/flash.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -620,15 +621,11 @@ class ApiServicesImpl implements ApiServices {
 
   @override
   Future<NetworkResponse<Auth0UserData>> getAuth0UserData() async {
-    final Map<String, String> headers = await _getHeaders(
-      mobileHeader: false,
-      authHeader: false,
-      accessTokenHeader: true,
-    );
+    final Map<String, String> headers = await _getHeaders();
 
     try {
       final String response = await _networkClient.get(
-        _baseAuth0Url + "/userinfo",
+        _baseUrl + "/users/account",
         headers: headers,
       );
 
@@ -1315,7 +1312,6 @@ class ApiServicesImpl implements ApiServices {
     } catch (error) {
       if (error is ApiException && error.code == 400)
         return ErrorResponse(UnavailableEmailException());
-
       return _handleError<void>(error, null);
     }
   }

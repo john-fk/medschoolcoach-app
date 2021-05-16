@@ -20,10 +20,10 @@ class TutoringSliderItem extends StatelessWidget {
             Container(
                 width: size.width / 1.2,
                 height: size.height * 0.32,
-                child: Image(image: AssetImage(sliderModel.image),
+                child: Image(
+                  image: AssetImage(sliderModel.image),
                 )),
-            Container(
-              height: size.height * 0.17,
+            Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -59,7 +59,7 @@ class TutoringSliderItem extends StatelessWidget {
   AutoSizeText _getDescription(String text, BuildContext context) {
     return AutoSizeText(
       _getText(text, context),
-      maxLines: 3,
+      maxLines: 5,
       style: mediumResponsiveFont(context).copyWith(color: Colors.black),
       textAlign: TextAlign.center,
     );
