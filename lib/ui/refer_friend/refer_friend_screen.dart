@@ -21,7 +21,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class ReferFriendScreen extends StatefulWidget {
   final String source;
 
@@ -46,8 +45,8 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
   @override
   void initState() {
     super.initState();
-    _analyticsProvider.logScreenView(AnalyticsConstants.screenReferFriend,
-        widget.source);
+    _analyticsProvider.logScreenView(
+        AnalyticsConstants.screenReferFriend, widget.source);
   }
 
   @override
@@ -85,8 +84,8 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Form(
                   autovalidateMode: _autovalidate
-                            ? AutovalidateMode.always
-                            : AutovalidateMode.disabled,
+                      ? AutovalidateMode.always
+                      : AutovalidateMode.disabled,
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,6 +107,10 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
                                 context,
                                 "refer_friend_screen.line2",
                               ),
+                              style: normalResponsiveFont(context),
+                            ),
+                            TextSpan(
+                              text: ' \n',
                               style: normalResponsiveFont(context),
                             ),
                             TextSpan(

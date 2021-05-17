@@ -57,18 +57,18 @@ class SearchBar extends StatelessWidget {
             key: const Key("search clear"),
             icon: Icon(Icons.clear),
             onPressed: () => {
-              if(searchController.text.isEmpty)
+              if (searchController.text.isEmpty)
                 Navigator.of(context).pop()
               else
-              Future<dynamic>.delayed(
-                Duration(
-                  milliseconds: 50,
-                ),
-              ).then((dynamic _) {
-                clearFunction();
-                searchController.clear();
-                focusNode.unfocus();
-              }),
+                Future<dynamic>.delayed(
+                  Duration(
+                    milliseconds: 50,
+                  ),
+                ).then((dynamic _) {
+                  if (clearFunction!=null)  clearFunction();
+                  searchController.text = "";
+                  focusNode.unfocus();
+                }),
             },
           ),
         ),

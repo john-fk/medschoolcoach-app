@@ -7,13 +7,10 @@ import 'package:visibility_detector/visibility_detector.dart';
 class PracticeProgressCard extends StatefulWidget {
   final ProgressCardData cardData;
 
-  PracticeProgressCard({
-    this.cardData
-  });
+  PracticeProgressCard({this.cardData});
 
   @override
-  _PracticeProgressCardState createState() =>
-      _PracticeProgressCardState();
+  _PracticeProgressCardState createState() => _PracticeProgressCardState();
 }
 
 class _PracticeProgressCardState extends State<PracticeProgressCard>
@@ -42,6 +39,7 @@ class _PracticeProgressCardState extends State<PracticeProgressCard>
                         data.color, data.label, "${data.percent}%"))
                     .toList()),
           ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.03),
           Flexible(
               flex: 3,
               child: Center(
@@ -225,11 +223,7 @@ class ProgressCardData {
   String graphSubtitle;
   List<RadianGraphData> graphData;
 
-  ProgressCardData(
-      {
-      this.graphData,
-      this.graphTitle,
-      this.graphSubtitle});
+  ProgressCardData({this.graphData, this.graphTitle, this.graphSubtitle});
 }
 
 class RadianGraphData {

@@ -3,6 +3,7 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:Medschoolcoach/utils/inkwell_splash.dart';
 
 // ignore: must_be_immutable
 class MorePageListCell extends StatelessWidget {
@@ -15,30 +16,31 @@ class MorePageListCell extends StatelessWidget {
   double iconSize;
   final double trailingOpacity;
 
-  MorePageListCell({
-    @required this.iconAssetName,
-    @required this.cellText,
-    @required this.onTap,
-    this.trailing = "",
-    this.intend = false,
-    this.svgAsset = true,
-    this.iconSize,
-    this.trailingOpacity = 1.0
-  });
+  MorePageListCell(
+      {@required this.iconAssetName,
+      @required this.cellText,
+      @required this.onTap,
+      this.trailing = "",
+      this.intend = false,
+      this.svgAsset = true,
+      this.iconSize,
+      this.trailingOpacity = 1.0});
 
   @override
   Widget build(BuildContext context) {
-    if(iconSize == null) {
-      iconSize  = whenDevice(
+    if (iconSize == null) {
+      iconSize = whenDevice(
         context,
         large: 23.0,
         tablet: 28.0,
       );
     }
 
-    return InkWell(
+    return InkWellSplash(
       key: Key(cellText),
       onTap: onTap,
+      onDoubleTap: onTap,
+      doubleTapTime: const Duration(milliseconds: 500),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 27.0,
@@ -51,16 +53,9 @@ class MorePageListCell extends StatelessWidget {
                 width: 30,
               ),
             svgAsset
-                ? SvgPicture.asset(
-                    iconAssetName,
-                    width: iconSize,
-                    height: iconSize
-                  )
-                : Image.asset(
-                    iconAssetName,
-                    width: iconSize,
-                    height: iconSize
-                  ),
+                ? SvgPicture.asset(iconAssetName,
+                    width: iconSize, height: iconSize)
+                : Image.asset(iconAssetName, width: iconSize, height: iconSize),
             const SizedBox(
               width: 20,
             ),
@@ -73,7 +68,8 @@ class MorePageListCell extends StatelessWidget {
               trailing,
               style: normalResponsiveFont(context,
                   fontColor: FontColor.Accent4,
-                  fontWeight: FontWeight.w500, opacity: trailingOpacity),
+                  fontWeight: FontWeight.w500,
+                  opacity: trailingOpacity),
             )
           ],
         ),

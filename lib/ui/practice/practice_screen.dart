@@ -328,7 +328,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     style: smallResponsiveFont(context,
                         fontColor: FontColor.Content2,
                         fontWeight: FontWeight.w600)),
-                Icon(Icons.arrow_right_alt_outlined)
+                Image(
+                    color: Color(0xFFFFFFFF),
+                    image: AssetImage(
+                        Style.of(context).pngAsset.questionArrowNext),
+                    height: smallResponsiveFont(context).fontSize * 0.8)
               ],
             ),
           ),

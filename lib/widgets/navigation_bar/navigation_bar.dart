@@ -36,10 +36,11 @@ class NavigationBar extends StatelessWidget {
             ) +
             MediaQuery.of(context).viewPadding.bottom,
         decoration: BoxDecoration(
-            border: Border(top: BorderSide(width: 1.0,
-                color: Colors.black.withOpacity(0.07))),
-            color: Style.of(context).colors.background,
-            ),
+          border: Border(
+              top: BorderSide(
+                  width: 1.0, color: Colors.black.withOpacity(0.07))),
+          color: Style.of(context).colors.background,
+        ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 6),
@@ -50,8 +51,8 @@ class NavigationBar extends StatelessWidget {
                 _customInkWell(context,
                     key: const Key("home"),
                     isSelected: page == NavigationPage.Home,
-                    icon: Image(image: AssetImage(
-                      page == NavigationPage.Home
+                    icon: Image(
+                      image: AssetImage(page == NavigationPage.Home
                           ? Style.of(context).pngAsset.homeActive
                           : Style.of(context).pngAsset.home),
                       height: iconSize,
@@ -65,8 +66,8 @@ class NavigationBar extends StatelessWidget {
                 _customInkWell(context,
                     key: const Key("progress"),
                     isSelected: page == NavigationPage.Progress,
-                    icon: Image(image: AssetImage(
-                      page == NavigationPage.Progress
+                    icon: Image(
+                      image: AssetImage(page == NavigationPage.Progress
                           ? Style.of(context).pngAsset.progressActive
                           : Style.of(context).pngAsset.progress),
                       height: iconSize,
@@ -80,8 +81,8 @@ class NavigationBar extends StatelessWidget {
                 _customInkWell(
                   context,
                   isSelected: page == NavigationPage.Schedule,
-                  icon: Image(image: AssetImage(
-                    page == NavigationPage.Schedule
+                  icon: Image(
+                    image: AssetImage(page == NavigationPage.Schedule
                         ? Style.of(context).pngAsset.learnActive
                         : Style.of(context).pngAsset.learn),
                     height: iconSize,
@@ -93,13 +94,11 @@ class NavigationBar extends StatelessWidget {
                 _customInkWell(context,
                     key: const Key("practice"),
                     isSelected: page == NavigationPage.Practice,
-                    icon: Image(image: AssetImage(
-                      page == NavigationPage.Practice
-                          ? Style.of(context).pngAsset.practiceActive
-                          : Style.of(context).pngAsset.practice),
-                      height: iconSize,
-                      width: iconSize,
-                    ),
+                    icon: Image(
+                        image: AssetImage(page == NavigationPage.Practice
+                            ? Style.of(context).pngAsset.practiceActive
+                            : Style.of(context).pngAsset.practice),
+                        height: iconSize),
                     onPressed: () => _openPracticeScreen(context),
                     label: FlutterI18n.translate(
                       context,
@@ -109,16 +108,16 @@ class NavigationBar extends StatelessWidget {
                   context,
                   isSelected: page == NavigationPage.Profile,
                   key: const Key("profile"),
-                  icon: Image(image: AssetImage(
-                    page == NavigationPage.Profile
+                  icon: Image(
+                    image: AssetImage(page == NavigationPage.Profile
                         ? Style.of(context).pngAsset.profileActive
                         : Style.of(context).pngAsset.profile),
                     height: iconSize,
                     width: iconSize,
                   ),
                   onPressed: () => _openMoreScreenOrClose(context),
-                  label: FlutterI18n.translate(context,
-                      "navigation_bar.profile"),
+                  label:
+                      FlutterI18n.translate(context, "navigation_bar.profile"),
                 ),
               ],
             ),
@@ -131,8 +130,8 @@ class NavigationBar extends StatelessWidget {
   void _openPracticeScreen(BuildContext context) {
     if (page == NavigationPage.Practice) return;
     runOnTap?.call();
-    Navigator.of(context).pushNamed(
-        Routes.practiceScreen, arguments: "navigation_bar");
+    Navigator.of(context)
+        .pushNamed(Routes.practiceScreen, arguments: "navigation_bar");
   }
 
   void _openHomeScreen(BuildContext context) {
@@ -151,15 +150,15 @@ class NavigationBar extends StatelessWidget {
   void _openProgressScreen(BuildContext context) {
     if (page == NavigationPage.Progress) return;
     runOnTap?.call();
-    Navigator.pushNamed(context,
-        Routes.progressScreen, arguments: "navigation_bar");
+    Navigator.pushNamed(context, Routes.progressScreen,
+        arguments: "navigation_bar");
   }
 
   void _openMoreScreenOrClose(BuildContext context) {
     runOnTap?.call();
     if (page != NavigationPage.Profile)
-      Navigator.of(context).pushNamed(
-          Routes.profile_screen, arguments: "navigation_bar");
+      Navigator.of(context)
+          .pushNamed(Routes.profile_screen, arguments: "navigation_bar");
   }
 
   InkWell _customInkWell(
