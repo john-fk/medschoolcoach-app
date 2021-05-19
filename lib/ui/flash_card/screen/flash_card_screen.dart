@@ -7,12 +7,11 @@ import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
+import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
-import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
-import 'package:Medschoolcoach/ui/flash_card/card/flash_card_bottom.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +22,7 @@ import 'package:flutter_html/style.dart' as medstyles;
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
 import 'flash_cards_stack.dart';
+import 'dart:ui';
 
 typedef ChangeCardIndex({bool increase, FlashcardStatus cardstatus});
 
@@ -98,7 +98,38 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     final storage = FlutterSecureStorage();
     final _seenHowTo = await storage.read(key: _howToFlashcard);
     if (_seenHowTo == null) {
-      openModal();
+      showGeneralDialog<void>(
+        barrierDismissible: true,
+        barrierLabel: '',
+        barrierColor: Colors.black38,
+        transitionDuration: Duration(milliseconds: 500),
+        pageBuilder: (ctx, anim1, anim2) => AlertDialog(
+          title: Text(FlutterI18n.translate(
+              context, "flashcards_tips.first_load_title")),
+          content: Text(FlutterI18n.translate(
+              context, "flashcards_tips.first_load_subtitle")),
+          elevation: 2,
+          actions: [
+            FlatButton(
+              child: Text(FlutterI18n.translate(
+                  context, "flashcards_tips.first_load_continue")),
+              onPressed: () {
+                Navigator.pop(context);
+                openModal();
+              },
+            ),
+          ],
+        ),
+        transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
+          filter: ImageFilter.blur(
+              sigmaX: 4 * anim1.value, sigmaY: 4 * anim1.value),
+          child: FadeTransition(
+            child: child,
+            opacity: anim1,
+          ),
+        ),
+        context: context,
+      );
       await storage.write(key: _howToFlashcard, value: _howToSeen);
     }
   }

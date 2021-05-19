@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/repository/user_repository.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
@@ -11,6 +12,7 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/buttons/secondary_button.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/text_button.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -19,8 +21,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
-
 import 'package:Medschoolcoach/repository/repository_result.dart';
+import 'dart:io';
+import 'dart:core';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -125,14 +128,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             margin: EdgeInsets.symmetric(
                                 horizontal: screenWidth * 0.07),
                             text: FlutterI18n.translate(
-                                context, "welcome_screen.register"),
+                                    context, "welcome_screen.register"),
                             onPressed: () => _navigateToAuth(false),
                           ),
                           const SizedBox(height: 5),
                           MSCTextButton(
                             key: const Key("go_login_button"),
                             text: FlutterI18n.translate(
-                                context, "welcome_screen.login"),
+                                    context, "welcome_screen.login"),
                             onPressed: () => _navigateToAuth(true),
                             secondaryButton: true,
                           )
@@ -238,43 +241,65 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _navigateToAuth(bool isLogin) async {
-    _analyticsProvider.logScreenView("screen_auth", Routes.welcome);
-    var response = await _authService.loginAuth0(isLogin);
-    if (!response.didSucceed) return;
-
-    var eventName = isLogin ?
-    AnalyticsConstants.signIn : AnalyticsConstants.signUp;
-    _analyticsProvider.logEvent(eventName,
-        params: {"network": response.network});
-
+    if (loading) return;
+    //toggle loading
     setState(() {
       loading = true;
     });
+    Fluttertoast.cancel();
 
-    UserManager userManager = Injector.appInstance.getDependency<UserManager>();
+    try {
+      var result = await InternetAddress.lookup(Uri.parse(Config.prodApiUrl).host);
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        _analyticsProvider.logScreenView("screen_auth", Routes.welcome);
+        var response = await _authService.loginAuth0(isLogin);
+        if (!response.didSucceed) return;
 
-    if (await shouldShowOnboarding()) {
-      if (isLogin) {
-        userManager.markOnboardingState(OnboardingState.ShowForExistingUser);
-        Navigator.pushNamed(context, Routes.oldUserOnboarding);
-      } else {
-        userManager.markOnboardingState(OnboardingState.ShowForNewUser);
-        Navigator.pushNamed(context, Routes.newUserOnboardingScreen);
+        var eventName =
+            isLogin ? AnalyticsConstants.signIn : AnalyticsConstants.signUp;
+        _analyticsProvider
+            .logEvent(eventName, params: {"network": response.network});
+
+        UserManager userManager =
+            Injector.appInstance.getDependency<UserManager>();
+
+        if (await shouldShowOnboarding()) {
+          if (isLogin) {
+            userManager
+                .markOnboardingState(OnboardingState.ShowForExistingUser);
+            Navigator.pushNamed(context, Routes.oldUserOnboarding);
+          } else {
+            userManager.markOnboardingState(OnboardingState.ShowForNewUser);
+            Navigator.pushNamed(context, Routes.newUserOnboardingScreen);
+          }
+        } else {
+          Future.wait([
+            this.fetchAndStoreMcatTestDate(),
+            this.fetchAndStoreNumberOfHoursPerDay()
+          ]);
+
+          userManager.markOnboardingComplete();
+
+          if (await userManager.getQuestionOfTheDayTime() == null) {
+            Navigator.pushNamed(context, Routes.scheduleQuestionOfTheDay,
+                arguments: Routes.welcome);
+          } else {
+            Navigator.pushNamed(context, Routes.home,
+                arguments: Routes.welcome);
+          }
+        }
       }
-    } else {
-      Future.wait([
-        this.fetchAndStoreMcatTestDate(),
-        this.fetchAndStoreNumberOfHoursPerDay()
-      ]);
-
-      userManager.markOnboardingComplete();
-
-      if (await userManager.getQuestionOfTheDayTime() == null) {
-        Navigator.pushNamed(context,
-            Routes.scheduleQuestionOfTheDay, arguments: Routes.welcome);
-      } else {
-        Navigator.pushNamed(context, Routes.home, arguments: Routes.welcome);
-      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: FlutterI18n.translate(context, "general.net_error"),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Style.of(context).colors.error);
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 

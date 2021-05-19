@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
+import 'package:Medschoolcoach/widgets/app_bars/home_app_bar.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 // import 'package:Medschoolcoach/ui/register/number_input_fromatter.dart';
 // import 'package:Medschoolcoach/ui/register/number_prefix_input_fromatter.dart';
@@ -110,13 +111,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             // const SizedBox(height: 8),
                             // _buildTestTextField(),
                             // const SizedBox(height: 8),
-                            Text(
-                              FlutterI18n.translate(
-                                context,
-                                "settings_screen.log_out_info",
-                              ),
-                              style: normalResponsiveFont(context),
-                            ),
                             _buildErrorMessage(),
                             _buildUpdateButton()
                           ],
@@ -377,7 +371,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _buttonLoading = false;
       });
-      SuperStateful.of(context).updateUserData();
+      SuperStateful.of(context).updateUserData(forceApiRequest: true);
       _getProfileUser();
       _showSuccessDialog();
     } else {
@@ -457,7 +451,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   "general.continue",
                 ),
                 onTap: () {
-                  Navigator.of(context, rootNavigator: true).pop('dialog');
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 }),
           ],
         );

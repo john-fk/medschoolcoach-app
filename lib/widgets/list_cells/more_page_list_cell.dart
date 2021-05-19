@@ -39,8 +39,8 @@ class MorePageListCell extends StatelessWidget {
     return InkWellSplash(
       key: Key(cellText),
       onTap: onTap,
-      onDoubleTap: onTap,
-      doubleTapTime: const Duration(milliseconds: 500),
+      onDoubleTap:onTap,
+      doubleTapTime: const Duration(milliseconds: 200),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 27.0,

@@ -332,6 +332,18 @@ class ApiServicesImpl implements ApiServices {
   }
 
   @override
+  Future<NetworkResponse<bool>> setQoD(String time) async {
+    try {
+      final Map<String, String> headers = await _getHeaders(contentType: true);
+      final body = json.encode({"qod": time});
+      await _networkClient.patch(_getBaseUrl() + "/users/onboard",
+          headers: headers, body: body);
+      return SuccessResponse<bool>(true);
+    } catch (error) {
+      return _handleError<bool>(error, bool);
+    }
+  }
+  @override
   Future<NetworkResponse<bool>> setTimePerDay(int time) async {
     final body = {"hours": "$time"};
     try {

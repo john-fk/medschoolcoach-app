@@ -3,6 +3,7 @@ import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/ui/profile/buddies_view.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/ui/profile/stats_view.dart';
 import 'package:Medschoolcoach/utils/api/models/auth0_user_data.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -113,13 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   String _getUserName() {
-    if (_auth0DataResult is RepositorySuccessResult<Auth0UserData>) {
-      RepositorySuccessResult<Auth0UserData> result = _auth0DataResult;
-      if (result.data != null && result.data.name != null) {
-        return " " + result.data.name;
-      }
-    }
-    return "";
+    return SuperStateful.of(context).userData.name;
   }
 
   String _getAvatar() {

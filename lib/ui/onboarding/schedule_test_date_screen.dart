@@ -4,7 +4,6 @@ import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
-import 'package:Medschoolcoach/utils/toasts.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
@@ -12,6 +11,7 @@ import 'package:Medschoolcoach/widgets/date_picker/date_picker.dart';
 import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
@@ -34,6 +34,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   DateTime scheduleDate;
   bool isLoading = false;
   bool isEditingTestDate = false;
+  FToast fToast;
   final userManager = Injector.appInstance.getDependency<UserManager>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
@@ -49,6 +50,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
         dateController.selectedDate = scheduleDate = value;
       });
     });
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -160,11 +163,15 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
         .getDependency<ApiServices>()
         .setTestDate(dateController.selectedDate);
 
+    Fluttertoast.cancel();
+
     if (result is ErrorResponse) {
-      showToast(
-          text: FlutterI18n.translate(context, "general.net_error"),
-          context: context,
-          color: Style.of(context).colors.error);
+      Fluttertoast.showToast(
+          msg: FlutterI18n.translate(context, "general.net_error"),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Style.of(context).colors.error);
     } else {
       scheduleDate = dateController.selectedDate;
       _analyticsProvider.logEvent(

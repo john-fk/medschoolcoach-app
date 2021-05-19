@@ -39,6 +39,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
 
   final UserManager _userManager =
       Injector.appInstance.getDependency<UserManager>();
+  bool isOpening = false;
 
   Future<bool> onWillPop() async {
     if (Platform.isAndroid) SystemNavigator.pop();
@@ -276,9 +277,12 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
   }
 
   void _openSocialMediaWebsite(String url) {
+    if (isOpening) return;
+    isOpening = true;
     ExternalNavigationUtils.openWebsite(url);
     _analyticsProvider.logEvent(AnalyticsConstants.tapSocialMedia,
         params: {AnalyticsConstants.keyUrl: url});
+    Future.delayed(Duration(milliseconds: 1500), () {isOpening = false; });
   }
 
   List<Widget> _buildYoutubeLinks() {

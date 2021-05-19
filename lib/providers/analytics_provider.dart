@@ -5,6 +5,7 @@ import 'dart:convert';
 
 class AnalyticsProvider {
   Mixpanel _mixpanel;
+  String _distinctId;
 
   AnalyticsProvider() {
     this.initialize(Config.prodMixPanelToken);
@@ -18,6 +19,7 @@ class AnalyticsProvider {
   }
 
   void identify(String distinctId) {
+    _distinctId = distinctId;
     return this._mixpanel.identify(distinctId);
   }
 
@@ -26,11 +28,15 @@ class AnalyticsProvider {
   }
 
   void setPeopleProperties(Map<String, dynamic> props) {
-    return this.logEvent("setPeopleProperties", params: props);
+    props.forEach((key, dynamic value) {
+      this._mixpanel.identify(_distinctId);
+      this._mixpanel.getPeople().set(key,value.toString());
+    });
   }
 
   void logEvent(String eventName, {dynamic params}) {
     final emptyList = <String, String>{};
+    this._mixpanel.identify(_distinctId);
     this
         ._mixpanel
         .track(eventName, properties: params == null ? emptyList : params);

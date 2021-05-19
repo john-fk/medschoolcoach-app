@@ -190,6 +190,12 @@ class UserRepository implements Repository {
       final userResponse = await _apiServices.getAuth0UserData();
 
       if (userResponse is SuccessResponse<Auth0UserData>) {
+        if (userLoggingEmail == null){
+          userLoggingEmail = userResponse.body.email;
+          _analyticsProvider.logAccountManagementEvent(AnalyticsConstants.tapSignIn,
+              userLoggingEmail, true, null);
+            _setFirebaseUserEmailProperty(userLoggingEmail);
+        }
         if (userLoggingEmail != null && userLoggingEmail.isNotEmpty) {
           await _identifyUser(userResponse);
           FirebaseCrashlytics.instance.setUserIdentifier(userResponse.body.id);
@@ -325,6 +331,7 @@ class UserRepository implements Repository {
     _statisticsRepository.clearCache();
     clearCache();
     _userManager.logout();
+    userLoggingEmail = null;
   }
 
   @override

@@ -285,6 +285,9 @@ global_progress:
   locked_flashcards: Go Premium and unlock Flashcards!
   locked_questions: Go Premium and unlock Questions!
 flashcards_tips:
+  first_load_title : Welcome to Flashcard
+  first_load_subtitle : We will first show you how to navigate through the Flash cards
+  first_load_continue: Continue
   welcome: HOW TO USE
   tips1_title: Tap the card
   tips1_subtitle: View the reverse side
@@ -321,8 +324,7 @@ settings_screen:
   header: Edit profile
   update: Update profile
   dialog_header: Update completed successfully!
-  dialog_text: Your profile details have been updated. Please, log in again to refresh the updated profile data.
-  log_out_info: Please be aware that in order to refresh your user data you will be required to log in again after making an update
+  dialog_text: Your profile details have been updated.
 tutoring_modal:
   button: Request Info
   request_dialog_header: Information is on its way!

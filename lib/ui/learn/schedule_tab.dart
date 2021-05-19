@@ -179,6 +179,10 @@ class _ScheduleTabState extends State<ScheduleTab> {
             Expanded(
               child: _buildLessonsList(videos),
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child:_updateScheduleSection()
+            )
           ],
         ),
       );
@@ -292,18 +296,12 @@ class _ScheduleTabState extends State<ScheduleTab> {
       },
       child: ListView.separated(
         key: Key("schedule_scroll"),
-        itemCount: videos != null ? videos.length + 1 : 0,
+        itemCount: videos != null ? videos.length : 0,
         separatorBuilder: (context, index) => Container(
           height: 1,
           color: Style.of(context).colors.separator,
         ),
         itemBuilder: (context, index) {
-          if (index == videos.length) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: _updateScheduleSection(),
-            );
-          } else {
             return SlidableCell(
               successCallback: ({bool watched}) async {
                 setState(() {
@@ -348,7 +346,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
                 },
               ),
             );
-          }
         },
       ),
     );
