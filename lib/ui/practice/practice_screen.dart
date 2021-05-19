@@ -139,7 +139,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   "${allSubjects.isNotEmpty ? allSubjects[selectedIndex]?.amountOfFlashcards ?? 0 : 0}"
                   " Flashcards",
               onPressed: () {
-                _analyticsProvider.logEvent("tap_practice_flashcards",
+                _analyticsProvider.logEvent(AnalyticsConstants.tapPracticeFlashcards,
                     params: {"subject_name": allSubjects[selectedIndex].name});
                 Navigator.pushNamed(context, Routes.flashCard,
                     arguments: FlashcardsStackArguments(
@@ -156,7 +156,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   "${allSubjects.isNotEmpty ? allSubjects[selectedIndex]?.amountOfQuestions ?? 0 : 0}"
                   " Questions",
               onPressed: () {
-                _analyticsProvider.logEvent("tap_practice_questions",
+                _analyticsProvider.logEvent(AnalyticsConstants.tapPracticeQuestions,
                     params: {"subject_name": allSubjects[selectedIndex].name});
                 Navigator.of(context).pushNamed(
                   Routes.multipleChoiceQuestion,

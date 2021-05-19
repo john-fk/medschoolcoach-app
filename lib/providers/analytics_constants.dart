@@ -73,6 +73,7 @@ abstract class AnalyticsConstants {
   static const screenNoMoreFlashcard = "screen_no_more_flashcards";
   static const screenQuestionSummary = "screen_question_summary";
   static const modalShouldChangeSchedule = "modal_should_change_schedule";
+  static const flashcardTutorial = "tap_flashcard_tutorial";
   static const practiceScreen = "screen_practice";
   static const lessonScreen = "screen_lesson";
 
@@ -84,6 +85,7 @@ abstract class AnalyticsConstants {
   static const tapSignIn = "tap_sign_in";
   static const tapSignOut = "tap_sign_out";
   static const tapPodcast = "tap_podcast";
+  static const tapPracticeQuestions = "tap_practice_questions";
   static const tapForgotPassword = "tap_forgot_password";
   static const tapPracticeSubject = "select_practice_subject";
   static const tapPreviousVideo = "tap_previous_video";
@@ -135,6 +137,17 @@ abstract class AnalyticsConstants {
   static const tapVideoCategory = "tap_video_category";
   static const tapProgress = "tap_progress";
   static const tapTutoringInfoModalDismiss = "tap_tutoring_info_modal_dismiss";
+  static const tapQOTDNotification = "tap_question_of_the_day_notification";
+  static const tapGetStarted = "tap_get_started_section";
+  static const tapSwitchLearnTab = "switch_learn_tab";
+  static const tapSpeedupSchedule = "tap_speed_up_schedule";
+  static const tapQOTDConfirm = "tap_question_of_the_day_confirm";
+  static const tapQOTDSkip = "tap_question_of_the_day_skip";
+  static const tapTestDateSkip = "tap_test_date_skip";
+  static const tapTestdateRemove = "tap_test_date_remove";
+  static const tapConfirmStudyTime = "tap_confirm_study_time";
+  static const tapPracticeFlashcards = "tap_practice_flashcards";
+  static const tapTutoringUpsell = "tap_tutoring_upsell_section";
 
   //Swipes
   static const swipeFlashcard = "swipe_flashcard";

@@ -260,7 +260,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void openModal() {
-    _analyticsProvider.logEvent("tap_flashcard_tutorial");
+    _analyticsProvider.logEvent(AnalyticsConstants.flashcardTutorial);
     openExplanationModal(
       context: context,
       fitHeight: isPortrait(context) ? true : false,

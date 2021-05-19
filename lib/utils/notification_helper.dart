@@ -10,7 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injector/injector.dart';
 import 'package:rxdart/subjects.dart' as _rxsub;
 import 'dart:io' show Platform;
-
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 class NotificationClass {
   final int id;
   final String title;
@@ -46,7 +46,7 @@ Future<void> initNotifications(
   await notifsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
     var analytics = Injector.appInstance.getDependency<AnalyticsProvider>();
-    analytics.logEvent("tap_question_of_the_day_notification", params: null);
+    analytics.logEvent(AnalyticsConstants.tapQOTDNotification, params: null);
     selectNotificationSubject.add(payload);
     final userManager = Injector.appInstance.getDependency<UserManager>();
     final isLoggedIn = await userManager.isUserLoggedIn();

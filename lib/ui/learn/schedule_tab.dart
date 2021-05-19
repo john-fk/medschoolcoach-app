@@ -617,14 +617,14 @@ class _ScheduleTabState extends State<ScheduleTab> {
                 text: FlutterI18n.translate(
                     context, "schedule_screen.speed_up_schedule"),
                 onPressed: () {
-                  _analyticsProvider.logEvent("tap_speed_up_schedule");
+                  _analyticsProvider.logEvent(AnalyticsConstants.tapSpeedupSchedule);
                   Routes.navigateToTutoringScreen(
                       context, AnalyticsConstants.screenLearn,
                       isNavBar: false);
                 }),
         TextButton(
             onPressed: () {
-              _analyticsProvider.logEvent("tap_change_my_schedule");
+              _analyticsProvider.logEvent(AnalyticsConstants.tapChangeSchedule);
               Navigator.of(context)
                   .push(
                     MaterialPageRoute<void>(builder: (_) => TimePerDay()),

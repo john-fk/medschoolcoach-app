@@ -9,7 +9,7 @@ import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
-
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 class LearnScreen extends StatefulWidget {
   final String source;
 
@@ -72,7 +72,7 @@ class _LearnScreenState extends State<LearnScreen>
             onTap: (int index) {
               var tabName = index == 0 ? "tab_schedule" : "tab_lesson";
               _analyticsProvider
-                  .logEvent("switch_learn_tab", params: {"name": tabName});
+                  .logEvent(AnalyticsConstants.tapSwitchLearnTab, params: {"name": tabName});
             },
             tabs: [
               Padding(

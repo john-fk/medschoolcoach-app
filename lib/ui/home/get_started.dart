@@ -87,7 +87,7 @@ class GetStarted extends StatelessWidget {
 
     void _goToSchedule(BuildContext context) {
       Injector.appInstance.getDependency<AnalyticsProvider>()
-          .logEvent("tap_get_started_section");
+          .logEvent(AnalyticsConstants.tapGetStarted);
       Navigator.of(context).pushNamed(
       Routes.schedule,
       arguments: AnalyticsConstants.screenHome

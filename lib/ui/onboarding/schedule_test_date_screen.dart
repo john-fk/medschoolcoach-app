@@ -17,7 +17,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/format_date.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 class SchedulingTestDateScreen extends StatefulWidget {
   final String source;
 
@@ -34,7 +34,6 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   DateTime scheduleDate;
   bool isLoading = false;
   bool isEditingTestDate = false;
-  FToast fToast;
   final userManager = Injector.appInstance.getDependency<UserManager>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
@@ -50,8 +49,6 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
         dateController.selectedDate = scheduleDate = value;
       });
     });
-    fToast = FToast();
-    fToast.init(context);
   }
 
   @override
@@ -130,7 +127,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
 
   void _onPressSecondaryButton() {
     if (scheduleDate == null) {
-      _analyticsProvider.logEvent("tap_test_date_skip", params: null);
+      _analyticsProvider.logEvent(AnalyticsConstants.tapTestDateSkip, params: null);
       Navigator.pushNamed(context, Routes.timePerDay,
           arguments: Routes.onboarding);
     } else {
@@ -263,7 +260,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 "general.remove",
               ),
               onTap: () async {
-                _analyticsProvider.logEvent("tap_test_date_remove",
+                _analyticsProvider.logEvent(AnalyticsConstants.tapTestdateRemove,
                     params: null);
                 Navigator.pop(context);
 

@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/onboarding/qotd_notifications.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/notification_helper.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
@@ -61,7 +62,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
     return FlatButton(
         onPressed: () {
           userManager.markOnboardingComplete();
-          _analyticsProvider.logEvent("tap_question_of_the_day_skip",
+          _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDSkip,
               params: null);
           Navigator.pushNamed(context, Routes.home);
         },
@@ -106,7 +107,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
                   // ignore: lines_longer_than_80_chars
                   QuestionOfTheDayNotification.scheduleNotifications(initialSchedulingDate());
                 }
-                _analyticsProvider.logEvent("tap_question_of_the_day_confirm",
+                _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDConfirm,
                     params: null);
                 if (widget.source == Routes.profile_screen)
                   Navigator.of(context).pop();
@@ -135,7 +136,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
           userManager.markOnboardingComplete();
           userManager.removeDailyNotification();
           await QuestionOfTheDayNotification.cancelNotifications();
-          _analyticsProvider.logEvent("tap_question_of_the_day_skip",
+          _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDSkip,
               params: null);
           Navigator.pop(context);
         },

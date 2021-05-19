@@ -18,7 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/format_date.dart';
-
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class TimePerDay extends StatefulWidget {
   final String source;
 
@@ -148,16 +149,19 @@ class _TimePerDayState extends State<TimePerDay> {
       loading = true;
     });
     final result = await apiServices.setTimePerDay(timePerDay);
+    Fluttertoast.cancel();
     if (result is ErrorResponse) {
-      showToast(
-          text: FlutterI18n.translate(context, "general.net_error"),
-          context: context,
-          color: Style.of(context).colors.error);
+      Fluttertoast.showToast(
+          msg: FlutterI18n.translate(context, "general.net_error"),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Style.of(context).colors.error);
       setState(() {
         loading = false;
       });
     } else {
-      _analyticsProvider.logEvent("tap_confirm_study_time",
+      _analyticsProvider.logEvent(AnalyticsConstants.tapConfirmStudyTime,
           params: {"hours_per_day": timePerDay.toString()});
       userManager.updateStudyTimePerDay(timePerDay);
       SuperStateful.of(context).scheduleProgress = Map();

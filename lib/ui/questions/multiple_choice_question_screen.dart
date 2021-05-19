@@ -99,6 +99,7 @@ class _MultipleChoiceQuestionScreenState
   @override
   void initState() {
     super.initState();
+    isQOTD = widget.arguments.status == QuestionStatusType.qotd;
     _logScreenViewAnalytics();
     _fetchQuestions(
       forceApiRequest: false,
@@ -128,7 +129,6 @@ class _MultipleChoiceQuestionScreenState
 
   @override
   Widget build(BuildContext context) {
-    isQOTD = widget.arguments.status == QuestionStatusType.qotd;
     if ((_questionsList.length > 0) &&
         ((isQOTD && _currentQuestionIndex == 5) ||
             (!isQOTD && _currentQuestionIndex >= _questionsList.length)))

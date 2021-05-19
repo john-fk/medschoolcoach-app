@@ -19,7 +19,7 @@ class UpsellBanner extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Injector.appInstance.getDependency<AnalyticsProvider>()
-            .logEvent("tap_tutoring_upsell_section", params: null);
+            .logEvent(AnalyticsConstants.tapTutoringUpsell, params: null);
         Routes.navigateToTutoringScreen(
               context, AnalyticsConstants.screenTutoring,
               isNavBar: false);
@@ -53,7 +53,7 @@ class UpsellBanner extends StatelessWidget {
                           onPressed: () {
                             Injector.appInstance
                                 .getDependency<AnalyticsProvider>()
-                                .logEvent("tap_tutoring_upsell_section",
+                                .logEvent(AnalyticsConstants.tapTutoringUpsell,
                                 params: null);
                             Routes.navigateToTutoringScreen(
                                 context, AnalyticsConstants.screenTutoring,
