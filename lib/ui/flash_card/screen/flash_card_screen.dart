@@ -99,10 +99,10 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     final _seenHowTo = await storage.read(key: _howToFlashcard);
     if (_seenHowTo == null) {
       showGeneralDialog<void>(
-        barrierDismissible: true,
+        barrierDismissible: false,
         barrierLabel: '',
         barrierColor: Colors.black38,
-        transitionDuration: Duration(milliseconds: 500),
+        transitionDuration: Duration(milliseconds: 200),
         pageBuilder: (ctx, anim1, anim2) => AlertDialog(
           title: Text(FlutterI18n.translate(
               context, "flashcards_tips.first_load_title")),

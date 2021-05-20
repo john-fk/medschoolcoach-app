@@ -12,14 +12,14 @@ class ProfileUser {
       this.firstName,
       this.lastName,
       this.onboarded,
-      this.qod,
+      this.qotd,
       this.mcatTestDate});
 
   String id;
   String email;
   String firstName;
   String lastName;
-  String qod;
+  String qotd;
   bool onboarded;
   DateTime mcatTestDate;
 
@@ -29,7 +29,7 @@ class ProfileUser {
         firstName: json["first_name"] == null ? null : json["first_name"],
         lastName: json["last_name"] == null ? null : json["last_name"],
         onboarded: json["onboarded"] == null ? null : json["onboarded"],
-        qod : json["qod"] == null ? null : json["qod"],
+        qotd : json["qotd"] == null ? null : json["qotd"],
         mcatTestDate: json["mcat_test_date"] == null
             ? null : DateTime.parse(json["mcat_test_date"]),
       );
@@ -40,7 +40,7 @@ class ProfileUser {
         "first_name": firstName == null ? null : firstName,
         "last_name": lastName == null ? null : lastName,
         "onboarded": onboarded,
-        "qod" : qod,
+        "qotd" : qotd,
         "mcat_test_date": mcatTestDate
       };
 }

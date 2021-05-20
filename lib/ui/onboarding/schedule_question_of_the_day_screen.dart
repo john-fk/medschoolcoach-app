@@ -1,4 +1,7 @@
+import 'package:Medschoolcoach/utils/api/api_services.dart';
+import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/ui/onboarding/qotd_notifications.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
@@ -9,9 +12,11 @@ import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injector/injector.dart';
+import 'local_notification.dart';
 
 class ScheduleQuestionOfTheDay extends StatefulWidget {
   final String source;
@@ -28,6 +33,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
   UserManager userManager;
   final AnalyticsProvider _analyticsProvider =
   Injector.appInstance.getDependency<AnalyticsProvider>();
+  int  isLoading = -1;
 
   @override
   void initState() {
@@ -92,27 +98,14 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
             _timeSlider(),
             Spacer(),
             PrimaryButton(
+              isLoading : isLoading == 1,
               text: FlutterI18n.translate(
                   context,
                   "general."
                   "${widget.source == Routes.profile_screen ?
                   "save" : "continue"}").toUpperCase(),
               onPressed: () async {
-                userManager.markOnboardingComplete();
-                userManager.updateQuestionOfTheDayTime(sliderValue.toInt());
-                final FlutterLocalNotificationsPlugin notifsPlugin =
-                FlutterLocalNotificationsPlugin();
-                var success = await requestPermissions(notifsPlugin);
-                if (success) {
-                  // ignore: lines_longer_than_80_chars
-                  QuestionOfTheDayNotification.scheduleNotifications(initialSchedulingDate());
-                }
-                _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDConfirm,
-                    params: null);
-                if (widget.source == Routes.profile_screen)
-                  Navigator.of(context).pop();
-                else
-                  Navigator.pushNamed(context, Routes.home);
+                  _updateAction(isSet:true);
               },
               color: Color(0xff009D7A),
             ),
@@ -133,12 +126,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
   Widget _disableNotificationButton() {
     return TextButton(
         onPressed: () async {
-          userManager.markOnboardingComplete();
-          userManager.removeDailyNotification();
-          await QuestionOfTheDayNotification.cancelNotifications();
-          _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDSkip,
-              params: null);
-          Navigator.pop(context);
+          _updateAction(isSet:false);
         },
         child: Text(
           FlutterI18n.translate(
@@ -270,6 +258,63 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
     );
   }
 
+  Future<void> _updateAction({bool isSet}) async{
+    if (isLoading > -1) return;
+
+    setState(() {
+      isLoading = isSet ? 1 : 0;
+    });
+
+    NetworkResponse<bool> result;
+
+    if (isSet){
+      result = await Injector.appInstance
+          .getDependency<ApiServices>()
+          .setQoD("${ sliderValue.toInt() == 24 ? "00"
+          : sliderValue.toInt().toString()}0000");
+    } else {
+      result = await Injector.appInstance
+          .getDependency<ApiServices>()
+          .setQoD(null);
+    }
+
+    Fluttertoast.cancel();
+
+    if (result is ErrorResponse) {
+      Fluttertoast.showToast(
+          msg: FlutterI18n.translate(context, "general.net_error"),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Style.of(context).colors.error);
+    } else {
+      if (isSet) {
+        _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDConfirm,
+            params: null);
+
+        var LN = new LocalNotification();
+        LN.setReminder(sliderValue.toInt().toString(),userManager);
+
+        if (widget.source == Routes.profile_screen)
+          Navigator.of(context).pop();
+        else
+          Navigator.pushNamed(context, Routes.home);
+      } else {
+        userManager.markOnboardingComplete();
+        userManager.removeDailyNotification();
+        await QuestionOfTheDayNotification.cancelNotifications();
+        _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDSkip,
+            params: null);
+        Navigator.pop(context);
+      }
+    }
+
+    setState(() {
+      isLoading = -1;
+    });
+
+  }
+
   Widget _message() {
     return Text(
       FlutterI18n.translate(context, "question_of_the_day.message"),
@@ -281,15 +326,4 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
     );
   }
 
-  DateTime initialSchedulingDate() {
-    var currentValue = sliderValue.toInt();
-    if (currentValue == 24) {
-      currentValue = 0;
-    }
-    var newHour = currentValue;
-    var time = DateTime.now().toLocal();
-    // ignore: lines_longer_than_80_chars
-    var scheduledTime = DateTime(time.year, time.month, time.day, newHour, 0, 0, 0, 0);
-    return scheduledTime;
-  }
 }

@@ -69,7 +69,9 @@ class AnalyticsProvider {
     }
     return args;
   }
-
+  void reset(){
+    _mixpanel.reset();
+  }
   // ignore: avoid_positional_boolean_parameters
   void logVideoBookMarkEvent(bool isRemove, String videoId, String videoName) {
     logEvent(

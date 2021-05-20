@@ -60,6 +60,8 @@ abstract class ApiServices {
 
   Future<NetworkResponse<bool>> setTimePerDay(int time);
 
+  Future<NetworkResponse<bool>> setQoD(String hours);
+
   Future<NetworkResponse<SectionsList>> getFlashcardsSections();
 
   Future<NetworkResponse<SectionsList>> getQuestionsSections();
@@ -304,9 +306,11 @@ class ApiServicesImpl implements ApiServices {
     }
   }
 
+
+
   @override
   Future<NetworkResponse<bool>> setTestDate(DateTime date) async {
-    final body = json.encode({"mcatTestDate": date.toString()});
+    final body = json.encode({"mcatTestDate": date ==null ? null : date.toString() });
     try {
       final Map<String, String> headers = await _getHeaders(contentType: true);
 
@@ -335,7 +339,7 @@ class ApiServicesImpl implements ApiServices {
   Future<NetworkResponse<bool>> setQoD(String time) async {
     try {
       final Map<String, String> headers = await _getHeaders(contentType: true);
-      final body = json.encode({"qod": time});
+      final body = json.encode({"qotd": time});
       await _networkClient.patch(_getBaseUrl() + "/users/onboard",
           headers: headers, body: body);
       return SuccessResponse<bool>(true);
@@ -343,6 +347,7 @@ class ApiServicesImpl implements ApiServices {
       return _handleError<bool>(error, bool);
     }
   }
+
   @override
   Future<NetworkResponse<bool>> setTimePerDay(int time) async {
     final body = {"hours": "$time"};

@@ -32,7 +32,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   Size size;
   DateRangePickerController dateController;
   DateTime scheduleDate;
-  bool isLoading = false;
+  int  isLoading = -1;
   bool isEditingTestDate = false;
   final userManager = Injector.appInstance.getDependency<UserManager>();
   final AnalyticsProvider _analyticsProvider =
@@ -100,7 +100,9 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
             if (widget.source != Routes.profile_screen || scheduleDate != null)
               TextButton(
                   onPressed: _onPressSecondaryButton,
-                  child: Text(
+                  child:  isLoading == 0
+                      ? ProgressBar()
+                      : Text(
                     FlutterI18n.translate(
                         context,
                         scheduleDate == null
@@ -145,20 +147,32 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
               child: DatePicker(
                 dateController: dateController,
                 onDateConfirm: () {
-                  _updateTestDate();
+                  _updateAction(isSet:true);
                 },
               ),
             ));
   }
 
-  Future<void> _updateTestDate() async {
-    userManager.updateTestDate(dateController.selectedDate);
+  Future<void> _updateAction({bool isSet}) async{
+    if (isLoading > -1) return;
+
     setState(() {
-      isLoading = true;
+      isLoading = isSet ? 1 : 0;
     });
-    final result = await Injector.appInstance
-        .getDependency<ApiServices>()
-        .setTestDate(dateController.selectedDate);
+
+    NetworkResponse<bool> result;
+
+    if (isSet){
+      userManager.updateTestDate(dateController.selectedDate);
+      result = await Injector.appInstance
+          .getDependency<ApiServices>()
+          .setTestDate(dateController.selectedDate);
+    } else {
+      Navigator.pop(context);
+      result = await Injector.appInstance
+          .getDependency<ApiServices>()
+          .setTestDate(null);
+    }
 
     Fluttertoast.cancel();
 
@@ -170,19 +184,29 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
           timeInSecForIosWeb: 2,
           backgroundColor: Style.of(context).colors.error);
     } else {
-      scheduleDate = dateController.selectedDate;
-      _analyticsProvider.logEvent(
-          isEditingTestDate ? "tap_test_date_update" : "tap_test_date_confirm",
-          params: null);
-      if (widget.source != Routes.profile_screen) {
-        Navigator.pushNamed(context, Routes.timePerDay,
-            arguments: Routes.onboarding);
+      if (isSet) {
+        scheduleDate = dateController.selectedDate;
+        _analyticsProvider.logEvent(
+            isEditingTestDate
+                ? "tap_test_date_update"
+                : "tap_test_date_confirm",
+            params: null);
+        if (widget.source != Routes.profile_screen)
+          Navigator.pushNamed(context, Routes.timePerDay,
+              arguments: Routes.onboarding);
+        else
+          Navigator.pop(context);
       } else {
-        Navigator.pop(context);
+        dateController.selectedDate = null;
+        scheduleDate = null;
+        userManager.removeTestDate();
+        _analyticsProvider.logEvent(AnalyticsConstants.tapTestdateRemove,
+            params: null);
       }
     }
+
     setState(() {
-      isLoading = false;
+      isLoading = -1;
     });
   }
 
@@ -221,7 +245,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
       opacity = 1;
     }
 
-    return isLoading
+    return isLoading == 1
         ? ProgressBar()
         : Text(
             date,
@@ -260,18 +284,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
                 "general.remove",
               ),
               onTap: () async {
-                _analyticsProvider.logEvent(AnalyticsConstants.tapTestdateRemove,
-                    params: null);
-                Navigator.pop(context);
-
-                dateController.selectedDate = null;
-                setState(() {
-                  scheduleDate = null;
-                  userManager.removeTestDate();
-                });
-                await Injector.appInstance
-                    .getDependency<ApiServices>()
-                    .setTestDate(dateController.selectedDate);
+                _updateAction(isSet:false);
               },
             ),
           ],

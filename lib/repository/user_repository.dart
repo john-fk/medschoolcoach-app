@@ -1,7 +1,6 @@
 import 'dart:convert';
-
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/cache/cache.dart';
 import 'package:Medschoolcoach/repository/cache/map_chache.dart';
@@ -332,6 +331,7 @@ class UserRepository implements Repository {
     clearCache();
     _userManager.logout();
     userLoggingEmail = null;
+    _analyticsProvider.reset();
   }
 
   @override

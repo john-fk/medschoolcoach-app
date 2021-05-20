@@ -14,12 +14,13 @@ import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/buttons/secondary_button.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/text_button.dart';
-import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
+import 'package:Medschoolcoach/ui/onboarding/schedule_question_of_the_day_screen.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
+import 'package:Medschoolcoach/ui/onboarding/local_notification.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'dart:io';
@@ -38,6 +39,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       Injector.appInstance.getDependency<AuthServices>();
 
   bool loading = false;
+  String QOTD = null;
 
   @override
   void initState() {
@@ -280,10 +282,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
           userManager.markOnboardingComplete();
 
-          if (await userManager.getQuestionOfTheDayTime() == null) {
+          if (QOTD == null) {
             Navigator.pushNamed(context, Routes.scheduleQuestionOfTheDay,
                 arguments: Routes.welcome);
           } else {
+            var LN = new LocalNotification();
+            LN.setReminder(QOTD,userManager);
             Navigator.pushNamed(context, Routes.home,
                 arguments: Routes.welcome);
           }
@@ -307,6 +311,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
     var data = await apiServices.getAccountData();
     final hasOnboarded = data?.onboarded ?? false;
+    QOTD = data.qotd;
+
     return !hasOnboarded;
   }
 
