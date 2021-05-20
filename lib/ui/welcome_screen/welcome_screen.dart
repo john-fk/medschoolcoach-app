@@ -286,8 +286,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Navigator.pushNamed(context, Routes.scheduleQuestionOfTheDay,
                 arguments: Routes.welcome);
           } else {
-            var LN = new LocalNotification();
-            LN.setReminder(QOTD,userManager);
+            LocalNotification().setReminder(QOTD,userManager);
             Navigator.pushNamed(context, Routes.home,
                 arguments: Routes.welcome);
           }

@@ -32,6 +32,7 @@ Future<void> main() async {
     auth0Url: Config.prodBaseAuth0Url,
     analyticsProvider: _analyticsProvider,
   );
+
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
 
@@ -47,6 +48,12 @@ Future<void> main() async {
     provisional: false,
     sound: true,
   );
+  //endregion
+
+  //region :MixPanel
+  messaging.getToken().then((token) {
+    _analyticsProvider.fcmcode = token;
+  });
   //endregion
 
   print('User granted permission: ${settings.authorizationStatus}');

@@ -227,6 +227,7 @@ class UserRepository implements Repository {
     await _analyticsProvider.identify(userResponse.body.id);
     await _analyticsProvider.identifyPeople(userResponse.body.id);
     await _setEmail(userResponse);
+    _analyticsProvider.setFCM();
   }
 
   Future _setEmail(SuccessResponse<Auth0UserData> userResponse) async {

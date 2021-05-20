@@ -54,7 +54,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   void initState() {
     super.initState();
     _fetchFlashcards();
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -89,7 +88,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
         _cardIndex = (_result as RepositorySuccessResult<FlashcardsStackModel>)
             .data
             .position;
-        _showFlashcardsHowTo();
       }
     }
   }
@@ -102,7 +100,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
         barrierDismissible: false,
         barrierLabel: '',
         barrierColor: Colors.black38,
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: Duration.zero,
         pageBuilder: (ctx, anim1, anim2) => AlertDialog(
           title: Text(FlutterI18n.translate(
               context, "flashcards_tips.first_load_title")),
@@ -119,14 +117,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
               },
             ),
           ],
-        ),
-        transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
-          filter: ImageFilter.blur(
-              sigmaX: 4 * anim1.value, sigmaY: 4 * anim1.value),
-          child: FadeTransition(
-            child: child,
-            opacity: anim1,
-          ),
         ),
         context: context,
       );
@@ -166,6 +156,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
 
   @override
   Widget build(BuildContext context) {
+    _showFlashcardsHowTo();
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(

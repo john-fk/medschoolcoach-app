@@ -28,7 +28,7 @@ class ProfileUser {
         email: json["email"] == null ? null : json["email"],
         firstName: json["first_name"] == null ? null : json["first_name"],
         lastName: json["last_name"] == null ? null : json["last_name"],
-        onboarded: json["onboarded"] == null ? null : json["onboarded"],
+        onboarded: json["onboarded"] == null ? null : json["onboarded"].toString().toLowerCase() == 'true' ,
         qotd : json["qotd"] == null ? null : json["qotd"],
         mcatTestDate: json["mcat_test_date"] == null
             ? null : DateTime.parse(json["mcat_test_date"]),

@@ -22,8 +22,8 @@ FlutterLocalNotificationsPlugin();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AnalyticsProvider _analyticsProvider = await AnalyticsProvider();
-  await initNotifications(notifsPlugin, navigatorKey);
 
+  await initNotifications(notifsPlugin, navigatorKey);
   await _analyticsProvider.initialize(Config.devMixPanelToken);
   _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen, params: null);
 
@@ -48,6 +48,12 @@ Future<void> main() async {
     provisional: false,
     sound: true,
   );
+  //endregion
+
+  //region :MixPanel
+  messaging.getToken().then((token) {
+    _analyticsProvider.fcmcode = token;
+  });
   //endregion
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);

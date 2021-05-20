@@ -112,7 +112,9 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
             SizedBox(
               height: 20,
             ),
-            if (widget.source != Routes.profile_screen)
+            if (isLoading == 0)
+              ProgressBar()
+            else if (widget.source != Routes.profile_screen)
               _message()
             else
               _disableNotificationButton(),
@@ -292,8 +294,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
         _analyticsProvider.logEvent(AnalyticsConstants.tapQOTDConfirm,
             params: null);
 
-        var LN = new LocalNotification();
-        LN.setReminder(sliderValue.toInt().toString(),userManager);
+        LocalNotification().setReminder(sliderValue.toInt().toString(),userManager);
 
         if (widget.source == Routes.profile_screen)
           Navigator.of(context).pop();

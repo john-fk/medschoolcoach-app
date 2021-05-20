@@ -38,14 +38,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
-  // final TextEditingController _phonePrefixController
-  // = TextEditingController();
-  // final TextEditingController _phoneNumberController
-  //  = TextEditingController();
-  // final TextEditingController _yearController = TextEditingController();
-  // final TextEditingController _testDateController = TextEditingController();
 
   bool _loading = true;
   bool _buttonLoading = false;
@@ -99,18 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             const SizedBox(height: 8),
                             _buildLastNameTextField(),
                             const SizedBox(height: 8),
-                            _isRegularLogin(user?.id)
-                                ? _buildEmailTextField()
-                                : SizedBox.shrink(),
-                            _isRegularLogin(user?.id)
-                                ? const SizedBox(height: 8)
-                                : SizedBox.shrink(),
-                            // _buildPhoneTextField(),
-                            // const SizedBox(height: 8),
-                            // _buildYearTextField(),
-                            // const SizedBox(height: 8),
-                            // _buildTestTextField(),
-                            // const SizedBox(height: 8),
+                            SizedBox.shrink(),
                             _buildErrorMessage(),
                             _buildUpdateButton()
                           ],
@@ -155,127 +136,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onEditingComplete: () => FocusScope.of(context).nextFocus(),
     );
   }
-
-  MainTextField _buildEmailTextField() {
-    return MainTextField(
-      key: const Key("email"),
-      controller: _emailController,
-      labelText: FlutterI18n.translate(
-        context,
-        "text_field_labels.email_label",
-      ),
-      validators: [
-        Validators.requiredValidator(context),
-        Validators.emailValidator(context)
-      ],
-      keyboardType: TextInputType.emailAddress,
-      onEditingComplete: () => FocusScope.of(context).nextFocus(),
-    );
-  }
-
-  // Row _buildPhoneTextField() {
-  //   return Row(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: <Widget>[
-  //       Container(
-  //         child: MainTextField(
-  //           controller: _phonePrefixController,
-  //           labelText: FlutterI18n.translate(
-  //             context,
-  //             "text_field_labels.phone",
-  //           ),
-  //           keyboardType: TextInputType.phone,
-  //           formatterList: [
-  //             NumberPrefixInputFormatter(),
-  //           ],
-  //           onEditingComplete: () => FocusScope.of(context).nextFocus(),
-  //         ),
-  //         width: 100,
-  //       ),
-  //       SizedBox(
-  //         width: 2,
-  //       ),
-  //       Expanded(
-  //         child: MainTextField(
-  //           key: const Key("phone number"),
-  //           controller: _phoneNumberController,
-  //           labelText: "",
-  //           formatterList: [
-  //             WhitelistingTextInputFormatter.digitsOnly,
-  //             NumberInputFormatter(),
-  //             LengthLimitingTextInputFormatter(14),
-  //           ],
-  //           keyboardType: TextInputType.phone,
-  //           onEditingComplete: () => FocusScope.of(context).nextFocus(),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // void _showYearPickerDialog() {
-  //   showDialog<DateTime>(
-  //     context: context,
-  //     useRootNavigator: true,
-  //     builder: (BuildContext context) {
-  //       return Dialog(
-  //         // ignore: deprecated_member_use
-  //         child: YearPicker(
-  //           selectedDate: _yearController.text.isEmpty
-  //               ? DateTime.now()
-  //               : DateTime(int.parse(_yearController.text)),
-  //           onChanged: (DateTime dateTime) {
-  //             _yearController.text = dateTime.year.toString();
-  //             FocusScope.of(context).unfocus();
-  //             Navigator.pop(context);
-  //           },
-  //           firstDate: DateTime(1980),
-  //           lastDate: DateTime(2040),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // MainTextField _buildYearTextField() {
-  //   return MainTextField(
-  //     key: const Key("year"),
-  //     controller: _yearController,
-  //     labelText: FlutterI18n.translate(
-  //       context,
-  //       "text_field_labels.graduation_year_label​",
-  //     ),
-  //     keyboardType: TextInputType.text,
-  //     onEditingComplete: () => FocusScope.of(context).nextFocus(),
-  //     onTap: _showYearPickerDialog,
-  //   );
-  // }
-
-  // MainTextField _buildTestTextField() {
-  //   return MainTextField(
-  //     key: const Key("mcat test date"),
-  //     controller: _testDateController,
-  //     labelText: FlutterI18n.translate(
-  //       context,
-  //       "text_field_labels.test_date_label",
-  //     ),
-  //     keyboardType: TextInputType.text,
-  //     onEditingComplete: () => FocusScope.of(context).unfocus(),
-  //     onTap: () async {
-  //       var selectedDate = await showDatePicker(
-  //         context: context,
-  //         firstDate: DateTime.now(),
-  //         initialDate: DateTime.now(),
-  //         lastDate: DateTime(2040),
-  //       );
-  //       _testDateController.text = DateFormat(
-  //         Config.defaultDateFormat,
-  //         Config.defaultLocale,
-  //       ).format(selectedDate);
-  //     },
-  //     readOnly: true,
-  //   );
-  // }
 
   Padding _buildUpdateButton() {
     return Padding(
@@ -322,27 +182,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (user.lastName != null && user.lastName.isNotEmpty) {
         _lastNameController.text = user.lastName;
       }
-      if (user.email != null && user.email.isNotEmpty) {
-        _emailController.text = user.email;
-      }
 
       setState(() {
         _loading = false;
       });
+
     } else {
       _loading = false;
     }
-  }
-
-  bool _isRegularLogin(String id) {
-    bool isRegularLogin = false;
-    if (id != null && id.isNotEmpty) {
-      final idArray = id.split('|');
-      if (idArray.length > 0 && idArray[0] != null && idArray[0].isNotEmpty) {
-        isRegularLogin = id.contains(Config.REGULAR_AUTH_PREFIX);
-      }
-    }
-    return isRegularLogin;
   }
 
   Future<void> _updateUserProfile() async {
@@ -351,10 +198,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _buttonLoading = true;
     });
     String email;
-    if (_isRegularLogin(user?.id)) {
-      _emailController.text = _emailController.text.trim();
-      email = _emailController.text;
-    }
+
     _logAnalytics();
     if (!_formKey.currentState.validate()) {
       setState(() {
@@ -362,6 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
       return;
     }
+
     final response = await _userRepository.updateUserProfile(
         userFirstName: _firstNameController.text,
         userLastName: _lastNameController.text,
@@ -422,9 +267,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
       if (_lastNameController.text?.trim() != user.lastName?.trim()) {
         args.add(getDict("last_name", user.lastName, _lastNameController.text));
-      }
-      if (_emailController.text?.trim() != user.email?.trim()) {
-        args.add(getDict("email_id", user.email, _emailController.text));
       }
       _analyticsProvider.logEvent(AnalyticsConstants.tapUpdateProfile,
           params: {"updated": args.toString()});

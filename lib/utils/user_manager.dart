@@ -110,6 +110,7 @@ class UserManagerImpl implements UserManager {
     storage.delete(key: "question_of_the_day_time");
     storage.delete(key: "study_time_per_day");
     storage.delete(key: "name");
+    storage.delete(key: "Flashcard_tutorial");
     storage.deleteAll();
   }
 
