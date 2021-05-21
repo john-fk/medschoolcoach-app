@@ -36,27 +36,6 @@ Future<void> main() async {
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
 
-  //region: Firebase
-  await CrashReporting.initialize();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  //endregion
-
-  //region :MixPanel
-  messaging.getToken().then((token) {
-    _analyticsProvider.fcmcode = token;
-  });
-  //endregion
-
-  print('User granted permission: ${settings.authorizationStatus}');
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
   /// App supported orientations init

@@ -1,20 +1,21 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:Medschoolcoach/config.dart';
-import 'dart:convert';
 import 'dart:io' show Platform;
 
 class AnalyticsProvider {
   Mixpanel _mixpanel;
   String _distinctId;
-  String fcmcode;
+  String token;
+  String key;
 
   AnalyticsProvider() {
-    this.initialize(Config.prodMixPanelToken);
+    this.initialize();
+    key = this.keyDevice();
   }
 
 
-  Future initialize(String token) async {
+  Future initialize([String token=Config.prodMixPanelToken]) async {
     if (_mixpanel == null) {
       _mixpanel = await Mixpanel.init(token, optOutTrackingDefault: false);
     }
@@ -22,7 +23,9 @@ class AnalyticsProvider {
   }
 
   void identify(String distinctId) {
+    if (distinctId == null) return;
     _distinctId = distinctId;
+    print(_distinctId);
     return _mixpanel.alias("auth",distinctId);
   }
 
@@ -30,38 +33,44 @@ class AnalyticsProvider {
     return logEvent("identifyPeople", params: {"distinctId": distinctId});
   }
 
-  void setFCM(){
-    String key;
-
-    if (Platform.isAndroid || Platform.isIOS) {
-      key ="\$android_devices";
-    }
-    if (key!=null)
-      setPeopleProperties(<String, String>{
-          key:fcmcode
-      });
+  String keyDevice(){
+    if (Platform.isAndroid)
+      return "\$android_devices";
+    else if ( Platform.isIOS)
+      return "\$ios_devices";
+    return null;
   }
 
-  Future<void> setPeopleProperties(Map<String, dynamic> props) async{
-    print(await _mixpanel.getDistinctId());
+  void setToken({bool remove=false}){
+    if (key!=null) {
+      print("TOKEN : " + token);
+
+      setPeopleProperties(<String, String>{
+        key: token
+      },remove:remove);
+    }
+
+  }
+
+
+  Future<void> setPeopleProperties(Map<String, dynamic> props,{bool remove=false}) async{
+    if (_distinctId == null) return;
     props.forEach((key, dynamic value) {
       _mixpanel.identify(_distinctId);
-      _mixpanel.getPeople().set(key,value.toString());
+      if (remove)
+        _mixpanel.getPeople().remove(key,value.toString());
+      else
+        _mixpanel.getPeople().set(key,value.toString());
     });
 
-    _mixpanel.flush();
+    await _mixpanel.flush();
   }
 
   void logEvent(String eventName, {dynamic params}) {
     final emptyList = <String, String>{};
-    _mixpanel.identify(_distinctId);
-    _mixpanel.track(eventName, properties: params == null ? emptyList : params);
-
-    /*
-    print(
-        "Event:$eventName 
-        Data : ${json.encode(params == null ? emptyList : params)}");
-    */
+    if (_distinctId!=null)
+      _mixpanel.identify(_distinctId);
+   _mixpanel.track(eventName, properties: params == null ? emptyList : params);
   }
 
   void logScreenView(String screenName, String sourceName, {dynamic params}) {
@@ -85,7 +94,9 @@ class AnalyticsProvider {
     }
     return args;
   }
-  void reset(){
+  Future<void> reset() async{
+    await setToken(remove: true);
+    _distinctId = null;
     _mixpanel.reset();
     _mixpanel.flush();
   }

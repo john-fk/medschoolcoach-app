@@ -197,7 +197,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _autoValidate = true;
       _buttonLoading = true;
     });
-    String email;
 
     _logAnalytics();
     if (!_formKey.currentState.validate()) {
@@ -207,10 +206,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return;
     }
 
+
     final response = await _userRepository.updateUserProfile(
         userFirstName: _firstNameController.text,
         userLastName: _lastNameController.text,
-        userEmail: email);
+        userEmail: user.email);
 
     if (response is RepositorySuccessResult) {
       setState(() {

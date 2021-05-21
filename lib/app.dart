@@ -1,16 +1,19 @@
 import 'dart:async';
-
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/notification_helper.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:injector/injector.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:flutter_apns/flutter_apns.dart';
 import 'main.dart';
+import 'dart:io' show Platform;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -68,8 +71,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  StreamSubscription _sub;
+  final PushConnector connector = createPushConnector();
+  final AnalyticsProvider _analyticsProvider =
+    Injector.appInstance.getDependency<AnalyticsProvider>();
 
+  StreamSubscription _sub;
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
@@ -78,6 +84,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    _register();
     super.initState();
     markLaunchedFromNotificationIfApplicable(notifsPlugin, context);
   }
@@ -87,6 +94,56 @@ class _MyAppState extends State<MyApp> {
     if (_sub != null) _sub.cancel();
     super.dispose();
   }
+
+  Future<void> _register() async {
+    if (Platform.isIOS || Platform.isMacOS) {
+      final connector = this.connector;
+      connector.configure(
+        onLaunch: (data) => onPush('onLaunch', data),
+        onResume: (data) => onPush('onResume', data),
+        onMessage: (data) => onPush('onMessage', data),
+        onBackgroundMessage: _onBackgroundMessage,
+      );
+
+      connector.token.addListener(() {
+        setToken(connector.token.value);
+      });
+      connector.requestNotificationPermissions();
+
+      if (connector is ApnsPushConnector) {
+        connector.shouldPresent = (x) => Future.value(true);
+      }
+    } else if(Platform.isAndroid){
+      //todo : also if platform is web
+      FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+      _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          onPush('onMessage', message);
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          onPush('onLaunch', message);
+        },
+        onResume: (Map<String, dynamic> message) async {
+          onPush('onResume', message);
+        },
+      );
+      _firebaseMessaging.getToken().then(setToken);
+    }
+  }
+  void setToken(String token){
+    _analyticsProvider.token = token;
+    if (_analyticsProvider.key != null)
+      _analyticsProvider.setToken();
+  }
+
+  //todo: implement onPush in different states if required
+  Future<dynamic> onPush(String name, Map<String, dynamic> payload) {
+    print(name);
+    return null;
+  }
+
+  Future<dynamic> _onBackgroundMessage(Map<String, dynamic> data) =>
+      onPush('onBackgroundMessage', data);
 
   @override
   Widget build(BuildContext context) {
