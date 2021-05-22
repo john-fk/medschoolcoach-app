@@ -32,7 +32,6 @@ class MainTextField extends StatefulWidget {
     this.formatterList = const [],
     this.showObscureTextIcon = false,
     this.textInputAction = TextInputAction.next,
-    // ignore: avoid_init_to_null
     this.onTap = null,
     this.readOnly = false,
     this.linesCount = 1,

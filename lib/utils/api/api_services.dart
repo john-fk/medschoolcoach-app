@@ -88,29 +88,9 @@ abstract class ApiServices {
     @required String videoId,
   });
 
-  Future<NetworkResponse<LoginResponse>> login({
-    @required String userEmail,
-    @required String password,
-  });
-
   Future<NetworkResponse<void>> logout();
 
   Future<NetworkResponse<LoginResponse>> refreshToken();
-
-  Future<NetworkResponse<void>> register({
-    @required String userEmail,
-    @required String password,
-    @required String userFirstName,
-    @required String userLastName,
-/*    @required String phoneNumber,
-    @required String undergraduateSchool,
-    @required String graduationYear,
-    @required String testDate,*/
-  });
-
-  Future<NetworkResponse<void>> resetPassword({
-    @required String userEmail,
-  });
 
   Future<NetworkResponse<Auth0UserData>> getAuth0UserData();
 
@@ -211,10 +191,7 @@ abstract class ApiServices {
   Future<NetworkResponse<void>> updateUserProfile({
     @required String userFirstName,
     @required String userLastName,
-    @required String userEmail,
-    // String phone,
-    // String graduationYear,
-    // String mcatTestDate,
+    @required String userEmail
   });
 
   Future<NetworkResponse<bool>> setOnboarded();
@@ -507,40 +484,6 @@ class ApiServicesImpl implements ApiServices {
     }
   }
 
-  Future<NetworkResponse<LoginResponse>> login({
-    @required String userEmail,
-    @required String password,
-  }) async {
-    try {
-      final Map<String, String> headers = await _getHeaders(
-        mobileHeader: false,
-        authHeader: false,
-        contentType: true,
-      );
-
-      final String response = await _networkClient.post(
-        _baseAuth0Url + "/oauth/token",
-        headers: headers,
-        body: json.encode(
-          <String, dynamic>{
-            'username': userEmail,
-            'password': password,
-            'realm': 'Username-Password-Authentication',
-            'audience': 'https://auth.medschoolcoach.com',
-            'scope': 'openid profile email offline_access offline_access',
-            "client_id": Config.prodAuth0ClientId,
-            "grant_type": 'password'
-          },
-        ),
-      );
-
-      return SuccessResponse<LoginResponse>(
-        loginResponseFromJson(response),
-      );
-    } catch (error) {
-      return _handleError<LoginResponse>(error, LoginResponse);
-    }
-  }
 
   Future<NetworkResponse<void>> logout() async {
     try {
@@ -560,81 +503,6 @@ class ApiServicesImpl implements ApiServices {
     }
   }
 
-  @override
-  Future<NetworkResponse<void>> register({
-    @required String userEmail,
-    @required String password,
-    @required String userFirstName,
-    @required String userLastName,
-/*    @required String phoneNumber,
-    @required String undergraduateSchool,
-    @required String graduationYear,
-    @required String testDate,*/
-  }) async {
-    final Map<String, String> headers = await _getHeaders(
-      mobileHeader: false,
-      authHeader: false,
-      contentType: true,
-    );
-
-    try {
-      final String response = await _networkClient.post(
-        _baseAuth0Url + "/dbconnections/signup",
-        headers: headers,
-        body: json.encode(
-          <String, dynamic>{
-            "client_id": Config.prodAuth0ClientId,
-            "email": userEmail,
-            "password": password,
-            "connection": "Username-Password-Authentication",
-            "name": userFirstName + " " + userLastName,
-            "user_metadata": {
-              "first_name": userFirstName,
-              "last_name": userLastName,
-              /*"phone": phoneNumber,
-              "school": undergraduateSchool,
-              "graduation_year": graduationYear,
-              "mcat_date": testDate,*/
-              "mcat_lms_app_user": "true"
-            }
-          },
-        ),
-      );
-
-      return SuccessResponse<void>(response);
-    } catch (error) {
-      return _handleError<void>(error, null);
-    }
-  }
-
-  @override
-  Future<NetworkResponse<void>> resetPassword({
-    @required String userEmail,
-  }) async {
-    final Map<String, String> headers = await _getHeaders(
-      mobileHeader: false,
-      authHeader: false,
-      contentType: true,
-    );
-
-    try {
-      final String response = await _networkClient.post(
-        _baseAuth0Url + "/dbconnections/change_password",
-        headers: headers,
-        body: json.encode(
-          <String, dynamic>{
-            "client_id": Config.prodAuth0ClientId,
-            "email": userEmail,
-            "connection": "Username-Password-Authentication",
-          },
-        ),
-      );
-
-      return SuccessResponse<void>(response);
-    } catch (error) {
-      return _handleError<void>(error, null);
-    }
-  }
 
   @override
   Future<NetworkResponse<Auth0UserData>> getAuth0UserData() async {
@@ -1300,10 +1168,7 @@ class ApiServicesImpl implements ApiServices {
   Future<NetworkResponse<void>> updateUserProfile({
     @required String userFirstName,
     @required String userLastName,
-    @required String userEmail,
-    // String phone,
-    // String graduationYear,
-    // String mcatTestDate,
+    @required String userEmail
   }) async {
     try {
       final Map<String, String> headers = await _getHeaders(

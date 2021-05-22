@@ -3,12 +3,10 @@ import 'package:Medschoolcoach/ui/coming_soon/coming_soon_screen.dart';
 import 'package:Medschoolcoach/ui/feedback/feedback_screen.dart';
 import 'package:Medschoolcoach/ui/flash_card/screen/flash_card_screen.dart';
 import 'package:Medschoolcoach/ui/flash_cards_bank/flash_cards_bank_screen.dart';
-import 'package:Medschoolcoach/ui/forgot/forgot_password_screen.dart';
 import 'package:Medschoolcoach/ui/go_premium/go_premium_screen.dart';
 import 'package:Medschoolcoach/ui/home/home_screen.dart';
 import 'package:Medschoolcoach/ui/learn/learn_screen.dart';
 import 'package:Medschoolcoach/ui/lesson/lesson_video_screen.dart';
-import 'package:Medschoolcoach/ui/login/login_screen.dart';
 import 'package:Medschoolcoach/ui/onboarding/new_user_onboarding.dart';
 import 'package:Medschoolcoach/ui/onboarding/old_user_onboarding.dart';
 import 'package:Medschoolcoach/ui/onboarding/schedule_question_of_the_day_screen.dart';
@@ -22,7 +20,6 @@ import 'package:Medschoolcoach/ui/questions/multiple_choice_question_screen.dart
 import 'package:Medschoolcoach/ui/questions/question_bank_screen.dart';
 import 'package:Medschoolcoach/ui/questions/questions_summary_screen.dart';
 import 'package:Medschoolcoach/ui/refer_friend/refer_friend_screen.dart';
-import 'package:Medschoolcoach/ui/register/register_screen.dart';
 import 'package:Medschoolcoach/ui/search/search_screen.dart';
 import 'package:Medschoolcoach/ui/section/section_screen.dart';
 import 'package:Medschoolcoach/ui/settings/settings_screen.dart';
@@ -82,18 +79,6 @@ abstract class Routes {
       case welcome:
         return MaterialPageRoute<void>(
           builder: (_) => WelcomeScreen(),
-        );
-      case login:
-        return MaterialPageRoute<void>(
-          builder: (_) => LoginScreen(),
-        );
-      case register:
-        return MaterialPageRoute<void>(
-          builder: (_) => RegisterScreen(settings.arguments),
-        );
-      case forgotPassword:
-        return MaterialPageRoute<void>(
-          builder: (_) => ForgotPasswordScreen(),
         );
       case home:
         return FadeRoute(

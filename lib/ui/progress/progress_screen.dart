@@ -204,7 +204,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
   }
 
   Widget _buildQuestionBankProgressCard() {
-    return ProgressCardWrapper(
+      return ProgressCardWrapper(
         key: _questionbankKey,
         selectedSubject: selectedQuestionBankSubject,
         title: "progress_screen.question_bank",

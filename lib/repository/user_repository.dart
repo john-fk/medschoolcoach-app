@@ -76,107 +76,10 @@ class UserRepository implements Repository {
     ),
   );
 
-  Future<RepositoryResult<LoginResponse>> login({
-    @required String userEmail,
-    @required String password,
-  }) async {
-    final response = await _apiServices.login(
-      userEmail: userEmail,
-      password: password,
-    );
-
-    if (response is SuccessResponse<LoginResponse>) {
-      _setFirebaseUserEmailProperty(userEmail);
-      userLoggingEmail = userEmail;
-
-      await updateUser(
-        accessToken: response.body.accessToken,
-        idToken: response.body.idToken,
-        refreshToken: response.body.refreshToken,
-        expiresIn: response.body.expiresIn,
-        lastTokenAccessTimeStamp: DateTime.now().toIso8601String(),
-      );
-      return RepositorySuccessResult(
-        response.body,
-      );
-    } else if (response is ErrorResponse<LoginResponse>) {
-      if (response.error is ApiException &&
-          jsonDecode(
-                  (response.error as ApiException).body)["error_description"] ==
-              "Wrong email or password.") {
-        return RepositoryErrorResult(
-          ApiError.wrongCredentials,
-        );
-      }
-      return RepositoryUtils.handleRepositoryError(
-        response,
-      );
-    }
-    return RepositoryErrorResult(
-      ApiError.unknown,
-    );
-  }
-
-  Future<RepositoryResult<void>> register({
-    @required String userEmail,
-    @required String password,
-    @required String userFirstName,
-    @required String userLastName,
-/*    @required String phoneNumber,
-    @required String undergraduateSchool,
-    @required String graduationYear,
-    @required String testDate,*/
-  }) async {
-    final registerResponse = await _apiServices.register(
-      userEmail: userEmail,
-      password: password,
-      userFirstName: userFirstName,
-      userLastName: userLastName,
-/*      phoneNumber: phoneNumber,
-      undergraduateSchool: undergraduateSchool,
-      graduationYear: graduationYear,
-      testDate: testDate,*/
-    );
-    if (registerResponse is SuccessResponse<void>) {
-      final loginResponse = await login(
-        userEmail: userEmail,
-        password: password,
-      );
-
-      return loginResponse;
-    } else {
-      if (registerResponse is Auth0ErrorNetworkResponse) {
-        return RepositoryErrorResultAuth0(
-          registerResponse.errorResponse,
-        );
-      } else {
-        return RepositoryUtils.handleRepositoryError(
-          registerResponse,
-        );
-      }
-    }
-  }
-
   void _setFirebaseUserEmailProperty(String userEmail) {
     _firebaseAnalytics.setUserProperty(name: "email", value: userEmail);
   }
 
-  Future<RepositoryResult<void>> resetPassword({
-    @required String userEmail,
-  }) async {
-    final response = await _apiServices.resetPassword(
-      userEmail: userEmail,
-    );
-    if (response is SuccessResponse<void>) {
-      return RepositorySuccessResult(
-        response.body,
-      );
-    } else {
-      return RepositoryUtils.handleRepositoryError(
-        response,
-      );
-    }
-  }
 
   Future<RepositoryResult<Auth0UserData>> getAuth0UserData({
     bool forceApiRequest = false,
@@ -287,18 +190,12 @@ class UserRepository implements Repository {
   Future<RepositoryResult<void>> updateUserProfile({
     @required String userFirstName,
     @required String userLastName,
-    @required String userEmail,
-    // String phone,
-    // String graduationYear,
-    // String mcatTestDate,
+    @required String userEmail
   }) async {
     final response = await _apiServices.updateUserProfile(
       userEmail: userEmail,
       userFirstName: userFirstName,
-      userLastName: userLastName,
-      // phone: phone,
-      // graduationYear: graduationYear,
-      // mcatTestDate: mcatTestDate,
+      userLastName: userLastName
     );
     if (response is SuccessResponse<void>) {
       return RepositorySuccessResult(

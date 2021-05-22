@@ -32,9 +32,12 @@ class _AppPngAssets {
   final home = "assets/png/home_unselected.png";
 
   final progressActive = "assets/png/progress_selected.png";
+  final progressTutor = "assets/png/progress_screen_tutor.png";
   final progress = "assets/png/progress_unselected.png";
 
   final learnActive = "assets/png/learn_selected.png";
+  final learnTutor = "assets/png/learn_tutor.png";
+  final learnSchedule = "assets/png/learn_schedule.png";
   final learn = "assets/png/learn_unselected.png";
 
   final practiceActive = "assets/png/practice_selected.png";
@@ -47,6 +50,8 @@ class _AppPngAssets {
   final tutoringSliderOne = "assets/png/tutoring_slider_1.png";
   final tutoringSliderTwo = "assets/png/tutoring_slider_2.png";
   final tutoringSliderThree = "assets/png/tutoring_slider_3.png";
+  final tutoringUnchecked = "assets/png/tutoring_screen_unchecked.png";
+  final tutoringChecked = "assets/png/tutoring_screen_checked.png";
 
   //Progress Screen
   final upSellBannerGraphic = "assets/png/upsell_banner_graphic.png";

@@ -18,6 +18,8 @@ abstract class Config {
   static const tutoringUrl = 'https://www.medschoolcoach.com/mcat-tutoring/';
   static const scheduleMeetingUrl =
       'https://app.hubspot.com/meetings/msc/mcat-tutoring';
+  static const scheduleMeetingUrlUnknown =
+      'https://app.hubspot.com/meetings/msc/mcat-tutoring-unplanned';
   static const defaultDateFormat = 'dd MMM yyyy';
   static const defaultLocale = 'en';
   static const requiredPasswordLength = 8;

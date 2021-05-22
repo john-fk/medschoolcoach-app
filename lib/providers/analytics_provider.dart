@@ -23,9 +23,8 @@ class AnalyticsProvider {
   }
 
   void identify(String distinctId) {
-    if (distinctId == null) return;
+    if (distinctId == null || _distinctId == distinctId) return;
     _distinctId = distinctId;
-    print(_distinctId);
     return _mixpanel.alias("auth",distinctId);
   }
 

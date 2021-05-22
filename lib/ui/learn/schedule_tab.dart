@@ -27,6 +27,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
+import 'tutor_header.dart';
 
 class ScheduleTab extends StatefulWidget {
   @override
@@ -135,6 +136,8 @@ class _ScheduleTabState extends State<ScheduleTab> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
+            //_updateScheduleSection(),
+            TutorHeader(getTutor:getTutor,changeSchedule:changeSchedule),
             _buildScheduleHeader(),
             _buildDatesList(),
             Expanded(
@@ -166,6 +169,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
+            TutorHeader(getTutor:getTutor,changeSchedule:changeSchedule),
             _buildScheduleHeader(),
             _buildCompleted(),
             _buildDatesList(),
@@ -178,10 +182,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
                 : Container(),
             Expanded(
               child: _buildLessonsList(videos),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child:_updateScheduleSection()
             )
           ],
         ),
@@ -194,11 +194,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Container(
-            //   height: 20,
-            //   width: 200,
-            //   color: Colors.red,
-            // ),
             _setScheduleError != null
                 ? Padding(
                     padding: const EdgeInsets.only(
@@ -208,8 +203,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
                       repositoryResult: _setScheduleError,
                     ),
                   )
-                : Container(),
-            _updateScheduleSection(),
+                : Container()
           ],
         ),
       );
@@ -217,7 +211,10 @@ class _ScheduleTabState extends State<ScheduleTab> {
   }
 
   Widget _buildScheduleHeader() {
-    return Padding(
+    return
+      (daysLeft==null || daysLeft.days==null) ?
+        SizedBox.shrink()
+        :Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 15),
       child: TimeBanner(
         daysLeft: daysLeft?.days ?? -1,
@@ -607,51 +604,18 @@ class _ScheduleTabState extends State<ScheduleTab> {
       });
     }
   }
-
-  Widget _updateScheduleSection() {
-    return Column(
-      children: [
-        _completed
-            ? Container()
-            : PrimaryButton(
-                text: FlutterI18n.translate(
-                    context, "schedule_screen.speed_up_schedule"),
-                onPressed: () {
-                  _analyticsProvider.logEvent(AnalyticsConstants.tapSpeedupSchedule);
-                  Routes.navigateToTutoringScreen(
-                      context, AnalyticsConstants.screenLearn,
-                      isNavBar: false);
-                }),
-        TextButton(
-            onPressed: () {
-              _analyticsProvider.logEvent(AnalyticsConstants.tapChangeSchedule);
-              Navigator.of(context)
-                  .push(
-                    MaterialPageRoute<void>(builder: (_) => TimePerDay()),
-                  )
-                  .then((_) => setScheduleInfo(forceApiRequest: true));
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  FlutterI18n.translate(
-                      context, "schedule_screen.change_schedule"),
-                  style: mediumResponsiveFont(context,
-                      fontColor: FontColor.Accent,
-                      fontWeight: FontWeight.w400,
-                      style: TextStyle(decoration: TextDecoration.underline)),
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Icon(
-                  Icons.arrow_forward,
-                  color: Style.of(context).colors.accent,
-                )
-              ],
-            ))
-      ],
-    );
-  }
+ void changeSchedule(){
+   _analyticsProvider.logEvent(AnalyticsConstants.tapChangeSchedule);
+   Navigator.of(context)
+       .push(
+     MaterialPageRoute<void>(builder: (_) => TimePerDay()),
+   )
+       .then((_) => setScheduleInfo(forceApiRequest: true));
+ }
+ void getTutor(){
+   _analyticsProvider.logEvent(AnalyticsConstants.tapSpeedupSchedule);
+   Routes.navigateToTutoringScreen(
+       context, AnalyticsConstants.screenLearn,
+       isNavBar: false);
+ }
 }

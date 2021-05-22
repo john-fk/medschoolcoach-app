@@ -15,7 +15,7 @@ class UpsellBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
-    final height = size.height / 4.4;
+    final height = size.height / 8;
     return GestureDetector(
       onTap: () {
         Injector.appInstance.getDependency<AnalyticsProvider>()
@@ -24,73 +24,95 @@ class UpsellBanner extends StatelessWidget {
               context, AnalyticsConstants.screenTutoring,
               isNavBar: false);
       },
-      child: Container(
-        decoration: BoxDecoration(
-            color: Style.of(context).colors.accent,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        height: whenDevice(context,
-            small: height * 1.25, medium: height, large: height),
+      child:
+      Container(
+      height: whenDevice(context,
+          small: height * 1.25, medium: height, large: height),
+        child: Card(
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 5,
+            shadowColor: Colors.black.withOpacity(0.1),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  flex: 5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        FlutterI18n.translate(
-                            context, "upsell_banner.banner_text"),
-                        style: bigResponsiveFont(context,
-                            fontColor: FontColor.Content2),
-                        textAlign: TextAlign.left,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: FlatButton(
-                          onPressed: () {
-                            Injector.appInstance
-                                .getDependency<AnalyticsProvider>()
-                                .logEvent(AnalyticsConstants.tapTutoringUpsell,
-                                params: null);
-                            Routes.navigateToTutoringScreen(
-                                context, AnalyticsConstants.screenTutoring,
-                                isNavBar: false);
-                          },
-                          padding:
-                              EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                          color: Style.of(context).colors.background,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Text(
-                            FlutterI18n.translate(
-                              context,
-                              "upsell_banner.button_text",
-                            ),
-                            style: bigResponsiveFont(context,
-                                fontColor: FontColor.Accent,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
+                  flex: 1,
                   child: Image(
                     image: AssetImage(
-                        Style.of(context).pngAsset.upSellBannerGraphic),
-                    height: height,
+                        Style.of(context).pngAsset.progressTutor),
                     fit: BoxFit.contain,
+                  ),
+                ),
+                SizedBox(width:10),
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Text(
+                        FlutterI18n.translate(
+                          context,
+                          "progress_screen.tutor_title",
+                        ),
+                      textAlign: TextAlign.left,
+                      style: bigResponsiveFont(context,
+                          fontColor: FontColor.Accent,
+                          fontWeight: FontWeight.w800)
+                          .copyWith(color: Color(0xFF112D44)),
+                    ),
+                      SizedBox(height:height/20),
+                      Text(FlutterI18n.translate(
+                        context,
+                        "progress_screen.tutor_content",
+                      ),
+                        textAlign: TextAlign.left,
+                        style: mediumResponsiveFont(context,
+                            fontWeight: FontWeight.w400)
+                            .copyWith(color: Color(0xFF000000).withOpacity(0.5)
+                        ),
+                      )
+                    ],
+                  )
+                ),
+                SizedBox(width:10),
+                Expanded(
+                  flex: 2,
+                  child:FlatButton(
+                    onPressed: () {
+                      Injector.appInstance
+                          .getDependency<AnalyticsProvider>()
+                          .logEvent(AnalyticsConstants.tapTutoringUpsell,
+                          params: null);
+                      Routes.navigateToTutoringScreen(
+                          context, AnalyticsConstants.screenTutoring,
+                          isNavBar: false);
+                    },
+                    padding:
+                    EdgeInsets.symmetric(
+                        vertical: 2, horizontal: 10),
+                    color: Color.fromRGBO(20, 94, 215, 0.15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Text(
+                      FlutterI18n.translate(
+                        context,
+                          "progress_screen.tutor_button",
+                      ),
+                      style: bigResponsiveFont(context,
+                          fontColor: FontColor.Accent,
+                          fontWeight: FontWeight.w500),
+                    ),
                   ),
                 )
               ],
             )),
-      ),
+      )
+    )
     );
   }
 }

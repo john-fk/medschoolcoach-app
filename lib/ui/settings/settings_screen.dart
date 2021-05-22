@@ -276,6 +276,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showSuccessDialog() {
     showDialog<dynamic>(
       context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black38,
       builder: (context) {
         return CustomDialog(
           title: FlutterI18n.translate(

@@ -43,9 +43,10 @@ class TutoringScreen extends StatefulWidget {
 
 class _TutoringScreenPageState extends State<TutoringScreen> {
   final AnalyticsProvider _analyticsProvider =
-      Injector.appInstance.getDependency<AnalyticsProvider>();
+  Injector.appInstance.getDependency<AnalyticsProvider>();
   final GlobalKey _scaffoldKey = GlobalKey();
-
+  bool _isVisible = true;
+  bool checked = false;
   int _current = 0;
   List<TutoringSlider> _sliders;
   CarouselController carouselController;
@@ -95,7 +96,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                 carouselController: carouselController,
                                 items: _sliders
                                     .map((item) =>
-                                        TutoringSliderItem(sliderModel: item))
+                                    TutoringSliderItem(sliderModel: item))
                                     .toList(),
                                 options: CarouselOptions(
                                     autoPlay: true,
@@ -110,7 +111,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                                   .swipeTutoringSlider,
                                               params: {
                                                 AnalyticsConstants.keyPageIndex:
-                                                    index
+                                                index
                                               });
                                           setState(() {
                                             _current = index;
@@ -160,9 +161,9 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                 color: _current == index
                                     ? Style.of(context).colors.accent3
                                     : Style.of(context)
-                                        .colors
-                                        .accent3
-                                        .withAlpha(25),
+                                    .colors
+                                    .accent3
+                                    .withAlpha(25),
                               ),
                             );
                           }).toList(),
@@ -181,36 +182,43 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     InkWell(
                                       child: Container(
-                                        child: AutoSizeText(
-                                          FlutterI18n.translate(context,
-                                              "tutoring_sliders.qualifier"),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 1,
-                                          style: mediumResponsiveFont(
-                                            context,
-                                            fontColor: FontColor.QualifyingText,
-                                            fontWeight: FontWeight.w500,
+                                      margin: EdgeInsets.fromLTRB(
+                                          2.5, 2, 2.5, 15),
+                                      child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          height : mediumResponsiveFont(context).fontSize * 1.2,
+                                          width : mediumResponsiveFont(context).fontSize * 3,
+                                          child:(
+                                                Image(image:
+                                                AssetImage(checked ?
+                                                    Style.of(context).pngAsset.tutoringChecked:
+                                                    Style.of(context).pngAsset.tutoringUnchecked),
+                                                fit:BoxFit.fitHeight)
+                                              )
                                           ),
-                                        ),
-                                        margin: EdgeInsets.fromLTRB(
-                                            2.5, 2, 2.5, 15),
+                                          AutoSizeText(
+                                              FlutterI18n.translate(context,
+                                                  "tutoring_sliders.qualifier"),
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              style: mediumResponsiveFont(
+                                                context,
+                                                fontColor: FontColor.QualifyingText,
+                                                fontWeight: FontWeight.w500,
+                                              )
+                                          ),
+                                        ])
                                       ),
                                       onTap: () async {
-                                        _analyticsProvider.logEvent(
-                                            AnalyticsConstants
-                                                .tapExploreOptions,
-                                            params: {
-                                              AnalyticsConstants.keySource:
-                                                  AnalyticsConstants
-                                                      .screenTutoring,
-                                              AnalyticsConstants.keyType:
-                                                  "text",
-                                            });
-                                        _sendRequestInfo();
+                                        setState(() {
+                                          checked = !checked;
+                                        });
                                       },
                                     ),
                                     _buildButton(context),
@@ -417,7 +425,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
     Navigator.of(_scaffoldKey.currentContext).pop("success");
-    await launchURL(Config.scheduleMeetingUrl);
+    await launchURL(!checked ? Config.scheduleMeetingUrlUnknown : Config.scheduleMeetingUrl);
   }
 
   Future _flagForTutoringUpsell() async {
@@ -457,7 +465,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
 
   Future<void> _fetchSliders() async {
     final result =
-        await SuperStateful.of(context).updateTutoringSlider(context);
+    await SuperStateful.of(context).updateTutoringSlider(context);
     setState(() {
       _sliders = result;
     });

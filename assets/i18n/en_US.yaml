@@ -326,7 +326,7 @@ settings_screen:
   dialog_header: Update completed successfully!
   dialog_text: Your profile details have been updated.
 tutoring_modal:
-  button: Request Info
+  button: GET STARTED
   request_dialog_header: Information is on its way!
   request_dialog_error_message: There was an error sending your request. Please try again.
   request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
@@ -400,6 +400,13 @@ progress_screen:
   see_questions: See Questions
   try_flashcards: Try Flashcards
   get_started: Get Started
+  tutor_button : Learn More
+  tutor_title : Get help from a Tutor
+  tutor_content : Need 1-1 time with 99th percentile tutors?
+
+learn_screen :
+  tutor_title: Get help from a Tutor
+  schedule_title : Change My Schedule
 
 upsell_banner:
   banner_text: Want to know how we can help you get the results you’re looking for faster?
