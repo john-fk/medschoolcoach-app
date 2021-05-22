@@ -9,7 +9,6 @@ import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
 class LearnScreen extends StatefulWidget {
   final String source;
 

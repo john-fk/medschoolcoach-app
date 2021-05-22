@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 // ignore: must_be_immutable
 class ProgressCardWrapper extends StatefulWidget {
   String title;
@@ -108,28 +108,33 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
           children: [
             Row(
               children: [
-                Text(
-                  FlutterI18n.translate(context, widget.title),
-                  style: normalResponsiveFont(context,
-                      fontWeight: FontWeight.w700),
+                Expanded(
+                    flex:3,
+                    child:
+                      Text(
+                        FlutterI18n.translate(context, widget.title),
+                        style: normalResponsiveFont(context,
+                            fontWeight: FontWeight.w700),
+                      )
                 ),
                 Spacer(),
-                Text(
-                  "${selectedSubject}",
-                  textAlign: TextAlign.right,
-                  style: smallResponsiveFont(context,
-                      fontWeight: FontWeight.w400, opacity: 0.5),
-                ),
-                SizedBox(
-                  width: 6,
-                ),
-                _filterDropDown(
-                    onChanged: (val) {
-                      setState(() {
-                        selectedSubject = val;
-                      });
-                    },
-                    selectedSubject: this.selectedSubject)
+                Row(
+                  children:[
+                    AutoSizeText(
+                      "${FlutterI18n.translate(context, "progress_screen.subject")} :   ${selectedSubject}",
+                        maxLines:1,
+                        style: smallResponsiveFont(context,
+                            fontWeight: FontWeight.w400, opacity: 0.5),
+                      ),
+                      _filterDropDown(
+                          onChanged: (val) {
+                            setState(() {
+                              selectedSubject = val;
+                            });
+                          },
+                          selectedSubject: this.selectedSubject)
+                  ]
+                )
               ],
             ),
             SizedBox(

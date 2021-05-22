@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/ui/onboarding/time_per_day_screen.dart';
-import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -59,21 +57,25 @@ class TutorHeader extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children:[
-                                  Image(
+                                  Expanded(
+                                  flex:7,
+                                  child:Image(
                                     image: AssetImage(
                                         Style.of(context).pngAsset.learnTutor),
-                                    height:height * 0.5
-                                  ),
+                                    fit:BoxFit.fitHeight
+                                  )),
                                   Spacer(),
-                                  Text(FlutterI18n.translate(
-                                    context,
-                                    "learn_screen.tutor_title",
-                                  ),
-                                    textAlign: TextAlign.center,
-                                    style: mediumResponsiveFont(context,
-                                        fontWeight: FontWeight.w400)
-                                        .copyWith(color: Color(0xFF0E2D45)
-                                    ),
+                                  Expanded(
+                                      flex:2,
+                                      child:
+                                      AutoSizeText(FlutterI18n.translate(context,"learn_screen.tutor_title"),
+                                        maxLines:1,
+                                        textAlign: TextAlign.center,
+                                        style: mediumResponsiveFont(context,
+                                            fontWeight: FontWeight.w400)
+                                            .copyWith(color: Color(0xFF0E2D45)
+                                        ),
+                                      )
                                   )
                                 ]
                               )
@@ -94,21 +96,23 @@ class TutorHeader extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children:[
-                                  Image(
+                                  Expanded(flex:7,
+                                  child:Image(
                                       image: AssetImage(
-                                          Style.of(context).pngAsset.learnSchedule),
-                                      height:height * 0.5
-                                  ),
+                                      Style.of(context).pngAsset.learnSchedule),
+                                        fit:BoxFit.fitHeight
+                                  )),
                                   Spacer(),
-                                  Text(FlutterI18n.translate(
-                                    context,
-                                    "learn_screen.schedule_title",
-                                  ),
-                                    textAlign: TextAlign.center,
-                                    style: mediumResponsiveFont(context,
-                                        fontWeight: FontWeight.w400)
-                                        .copyWith(color: Color(0xFF0E2D45)
-                                    ),
+                                  Expanded(flex:2,
+                                  child:
+                                    AutoSizeText(FlutterI18n.translate(context,"learn_screen.schedule_title",),
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.center,
+                                                  style: mediumResponsiveFont(context,
+                                                      fontWeight: FontWeight.w400)
+                                                      .copyWith(color: Color(0xFF0E2D45)
+                                                  ),
+                                    )
                                   )
                                 ]
                             )
@@ -119,6 +123,7 @@ class TutorHeader extends StatelessWidget {
             )
         );
   }
+
   bool disableClick(){
     if (isClicking) return true;
     isClicking = true;

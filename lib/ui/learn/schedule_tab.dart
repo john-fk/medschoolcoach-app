@@ -136,7 +136,6 @@ class _ScheduleTabState extends State<ScheduleTab> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            //_updateScheduleSection(),
             TutorHeader(getTutor:getTutor,changeSchedule:changeSchedule),
             _buildScheduleHeader(),
             _buildDatesList(),
@@ -231,6 +230,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TutorHeader(getTutor:getTutor,changeSchedule:changeSchedule),
             _buildScheduleHeader(),
             _buildCompleted(),
             _buildDatesList(),
@@ -372,6 +372,7 @@ class _ScheduleTabState extends State<ScheduleTab> {
   Padding _buildDatesList() {
     scheduleProgress = SuperStateful.of(context).scheduleProgress;
     _days.forEach((date) => date.completed = _getProgress(date.day) == 100);
+    double totalContainer = (MediaQuery.of(context).size.width - 16) / (whenDevice(context, large: 54, tablet: 80) + 8);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -397,6 +398,12 @@ class _ScheduleTabState extends State<ScheduleTab> {
               );
               _analyticsProvider.logEvent(AnalyticsConstants.tapScheduleDay,
                   params: {AnalyticsConstants.keySelectedDay: index + 1});
+              //decide to scroll or not
+              double position = _scrollController.position.pixels;
+              int mostLeft = (position / (whenDevice(context, large: 54, tablet: 80) + 8)).ceil()+1;
+              int mostRight = (mostLeft + totalContainer.floor()) - 1;
+              if (index+1 > mostRight)
+                _scrollController.animateTo(62 * index.toDouble(), duration: const Duration(seconds:1),curve: Curves.ease);
             },
           ),
           itemCount: _days.length,

@@ -57,7 +57,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
           children: <Widget>[
-            CustomAppBar(
+            CustomAppBar(padding: EdgeInsets.only(
+                    top: whenDevice(context,
+                    small: 5, medium: 8, large: 15, tablet: 30),
+              ),
               title: FlutterI18n.translate(context, "feedback_screen.support"),
             ),
             Expanded(
@@ -71,7 +74,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   Widget _buildContent() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.fromLTRB(
+        10,
+        MediaQuery.of(context).padding.top,
+        10,
+        10,
+      ),
       child: SingleChildScrollView(
         controller: _scrollController,
         child: Column(

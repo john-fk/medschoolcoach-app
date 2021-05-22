@@ -101,7 +101,7 @@ class CourseProgressCardState extends State<CourseProgressCard>
     scheduleProgressColor = track != ProgressType.Behind
         ? Style.of(context).colors.accent4
         : Style.of(context).colors.questions;
-    return Card(
+    return Column(children:[Card(
       elevation: 5,
       shadowColor: Colors.black.withOpacity(0.1),
       child: showLoading
@@ -114,13 +114,14 @@ class CourseProgressCardState extends State<CourseProgressCard>
                       ? _buildCourseCompletedCard()
                       : _buildCourseInProgressCard())
               : _buildCourseNotStartedCard()),
-    );
+    ),
+    _scheduleButton()]);
   }
 
   Widget _scheduleButton() {
     if (track == ProgressType.Failed) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.only(top: 20.0),
         child: PrimaryButton(
           text: "Update My Schedule",
           onPressed: () {
@@ -131,7 +132,7 @@ class CourseProgressCardState extends State<CourseProgressCard>
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.only(top: 20.0),
         child: PrimaryButton(
           text: "View My Schedule",
           onPressed: () {
@@ -251,7 +252,6 @@ class CourseProgressCardState extends State<CourseProgressCard>
         SizedBox(
           height: 15,
         ),
-        _scheduleButton(),
       ],
     );
   }

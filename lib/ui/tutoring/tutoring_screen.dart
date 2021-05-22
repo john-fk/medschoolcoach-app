@@ -45,7 +45,6 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   final AnalyticsProvider _analyticsProvider =
   Injector.appInstance.getDependency<AnalyticsProvider>();
   final GlobalKey _scaffoldKey = GlobalKey();
-  bool _isVisible = true;
   bool checked = false;
   int _current = 0;
   List<TutoringSlider> _sliders;
@@ -425,14 +424,13 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
     Navigator.of(_scaffoldKey.currentContext).pop("success");
-    await launchURL(!checked ? Config.scheduleMeetingUrlUnknown : Config.scheduleMeetingUrl);
+    await launchURL(Config.scheduleMeetingUrl);
   }
 
   Future _flagForTutoringUpsell() async {
     final NetworkResponse result = await Injector.appInstance
         .getDependency<ApiServices>()
-        .requestForTutoringUpsell();
-    // TODO: Need to figure out how to handle/suppress SUCCESS/ERROR reponse bc user should not know about this ideally.
+        .requestForTutoringUpsell(checked);
     if (result is SuccessResponse<String>) {
       _sendTutoringUpsellAnalytics(isSuccess: true);
       Navigator.of(_scaffoldKey.currentContext).pop();

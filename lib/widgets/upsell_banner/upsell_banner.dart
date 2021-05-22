@@ -16,15 +16,7 @@ class UpsellBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     final height = size.height / 8;
-    return GestureDetector(
-      onTap: () {
-        Injector.appInstance.getDependency<AnalyticsProvider>()
-            .logEvent(AnalyticsConstants.tapTutoringUpsell, params: null);
-        Routes.navigateToTutoringScreen(
-              context, AnalyticsConstants.screenTutoring,
-              isNavBar: false);
-      },
-      child:
+    return
       Container(
       height: whenDevice(context,
           small: height * 1.25, medium: height, large: height),
@@ -112,7 +104,6 @@ class UpsellBanner extends StatelessWidget {
               ],
             )),
       )
-    )
     );
   }
 }
