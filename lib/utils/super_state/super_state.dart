@@ -525,7 +525,6 @@ class SuperState extends State<SuperStateful> {
   }
 
   void shownTutorPopup(int popupID){
-    if(localTutorPopup.ignore()) return;
     localTutorPopup.shown(popupID);
     localTutorPopup.updateData();
   }

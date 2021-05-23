@@ -21,6 +21,9 @@ class Popup {
     Color background = popupNumber==1 ? Color(0xFF145ED7) : Color(0xFF67A2FF);
     Color cross = popupNumber==1 ? Color(0x7fffffff) : Color(0xFF145ED7);
 
+    _analyticsProvider.logEvent(AnalyticsConstants.tutorPopupScreen,
+        params: {"popup_number": popupNumber.toString() });
+
     return showGeneralDialog<void>(
       barrierLabel: "",
       barrierDismissible: true,
