@@ -1,7 +1,6 @@
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
-import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/widgets/others/error_icon.dart';
 import 'package:Medschoolcoach/widgets/others/tick_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,9 +75,7 @@ class QuestionButton extends StatelessWidget {
                     : Center(
                         child: Html(
                           data: text,
-                          style: {
-                            "html": Style.fromTextStyle(_getTextStyle(context))
-                          },
+                          defaultTextStyle: _getTextStyle(context)
                         ),
                       ),
               ),

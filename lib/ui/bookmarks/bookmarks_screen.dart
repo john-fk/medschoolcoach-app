@@ -52,7 +52,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
               subTitle: FlutterI18n.translate(
                 context,
                 "app_bar.section_subtitle",
-                {
+                translationParams: {
                   "number": _getLessonsCount().toString(),
                 },
               )),

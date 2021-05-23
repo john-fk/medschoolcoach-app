@@ -1,7 +1,7 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:Medschoolcoach/config.dart';
-import 'dart:io' show Platform;
+import 'package:universal_io/io.dart'  show Platform;
 
 class AnalyticsProvider {
   Mixpanel _mixpanel;

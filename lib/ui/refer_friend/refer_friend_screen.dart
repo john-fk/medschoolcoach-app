@@ -260,7 +260,7 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
           content: FlutterI18n.translate(
             context,
             "refer_friend_screen.success",
-            {
+            translationParams: {
               "name": _nameController.text,
             },
           ),

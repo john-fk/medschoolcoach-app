@@ -20,14 +20,13 @@ import 'package:Medschoolcoach/repository/video_repository.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
 import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/auth0_user_data.dart';
-import 'package:Medschoolcoach/utils/api/models/login_response.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 const _rateLimiterKey = "userKey";
 const _profileUserLimiterKey = "profileUserKey";
 const _userCacheKey = "userCacheKey";

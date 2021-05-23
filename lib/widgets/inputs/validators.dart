@@ -11,7 +11,7 @@ abstract class Validators {
           return FlutterI18n.translate(
             context,
             "validator_errors.lenght",
-            {
+            translationParams: {
               "number": Config.requiredPasswordLength.toString(),
             },
           );

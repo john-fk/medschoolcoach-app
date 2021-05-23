@@ -76,7 +76,7 @@ class _SectionScreenState extends State<SectionScreen> {
     return FlutterI18n.translate(
       context,
       "app_bar.section_subtitle",
-      {
+      translationParams: {
         "number": widget.sectionScreenData.numberOfCourses.toString(),
       },
     );

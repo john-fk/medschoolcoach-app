@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_html/style.dart' as medstyles;
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
 import 'flash_cards_stack.dart';

@@ -9,7 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injector/injector.dart';
 import 'package:rxdart/subjects.dart' as _rxsub;
-import 'dart:io' show Platform;
+import 'package:universal_io/io.dart'  show Platform;
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 class NotificationClass {
   final int id;

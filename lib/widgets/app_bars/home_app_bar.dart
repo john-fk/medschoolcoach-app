@@ -57,7 +57,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
               FlutterI18n.translate(
                 context,
                 "home_screen.user_header",
-                {
+                translationParams: {
                   "user": userData != null ? 
                   userData.name : storedName,
                 },

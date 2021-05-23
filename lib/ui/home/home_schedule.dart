@@ -92,7 +92,7 @@ class _HomeScheduleState extends State<HomeSchedule> {
                   FlutterI18n.translate(
                     context,
                     "home_screen.day",
-                    {
+                    translationParams: {
                       "number": (dashboardSchedule.today).toString(),
                     },
                   ),

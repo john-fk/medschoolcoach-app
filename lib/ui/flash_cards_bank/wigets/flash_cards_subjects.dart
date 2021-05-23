@@ -69,7 +69,7 @@ class FlashCardsSubjects extends StatelessWidget {
               itemsWithNumber: FlutterI18n.translate(
                 context,
                 "flashcards_bank.flashcards_count",
-                {
+                translationParams: {
                   "number":
                   subjectWithSetting.subject.amountOfFlashcards.toString(),
                 },

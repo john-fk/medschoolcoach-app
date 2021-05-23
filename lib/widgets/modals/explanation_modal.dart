@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 
 void openExplanationModal(

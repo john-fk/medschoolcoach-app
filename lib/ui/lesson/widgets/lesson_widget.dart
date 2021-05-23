@@ -112,7 +112,7 @@ class _LessonWidgetState extends State<LessonWidget> {
                                 FlutterI18n.translate(
                                     context,
                                     "lesson_screen.lesson",
-                                    {"order": _getOrder()}),
+                                    translationParams: {"order": _getOrder()}),
                                 style: normalResponsiveFont(
                                   context,
                                   fontColor: FontColor.Accent,

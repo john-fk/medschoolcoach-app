@@ -99,7 +99,7 @@ class SchedulePickerWidget extends StatelessWidget {
                             text: FlutterI18n.translate(
                               context,
                               "schedule_screen.schedule_days",
-                              {
+                              translationParams: {
                                 "number": "30",
                               },
                             ),
@@ -118,7 +118,7 @@ class SchedulePickerWidget extends StatelessWidget {
                             text: FlutterI18n.translate(
                               context,
                               "schedule_screen.schedule_days",
-                              {
+                              translationParams: {
                                 "number": "60",
                               },
                             ),

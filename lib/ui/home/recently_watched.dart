@@ -129,7 +129,7 @@ class RecentlyWatched extends StatelessWidget {
                               FlutterI18n.translate(
                                 context,
                                 "home_screen.lesson",
-                                {
+                                translationParams: {
                                   "number":
                                       (recentlyWatched.order + 1).toString(),
                                 },
@@ -186,7 +186,7 @@ class RecentlyWatched extends StatelessWidget {
                                     FlutterI18n.translate(
                                       context,
                                       "home_screen.watched",
-                                      {
+                                      translationParams: {
                                         "number": recentlyWatched
                                             .progress.percentage
                                             .toString(),

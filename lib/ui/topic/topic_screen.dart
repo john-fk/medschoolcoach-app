@@ -94,7 +94,7 @@ class _TopicScreenState extends State<TopicScreen> {
     return FlutterI18n.translate(
       context,
       "app_bar.topic_subtitle",
-      {
+      translationParams: {
         "number": topic.percentage.toString(),
       },
     );

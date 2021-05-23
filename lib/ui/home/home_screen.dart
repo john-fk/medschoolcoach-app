@@ -1,4 +1,4 @@
-import 'dart:io';
+ import 'package:universal_io/io.dart';
 
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';

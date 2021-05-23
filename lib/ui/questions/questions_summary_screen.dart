@@ -152,17 +152,23 @@ class _QuestionSummaryScreenState extends State<QuestionSummaryScreen> {
                   widget.arguments.wrongAnswers.toDouble()
             },
           ),
-          chartValueStyle: normalResponsiveFont(
-            context,
-            fontColor: FontColor.Content2,
-            fontWeight: FontWeight.w500,
+          chartValuesOptions : ChartValuesOptions(
+            chartValueStyle: normalResponsiveFont(
+              context,
+              fontColor: FontColor.Content2,
+              fontWeight: FontWeight.w500,
+            )
           ),
-          legendStyle: biggerResponsiveFont(
-            context,
-            fontColor: FontColor.Content2,
-            fontWeight: FontWeight.w500,
-          ).copyWith(height: 1.5),
-          legendPosition: LegendPosition.top,
+          legendOptions: LegendOptions(
+            showLegendsInRow: false,
+            legendPosition: LegendPosition.top,
+            showLegends: true,
+            legendTextStyle: biggerResponsiveFont(
+              context,
+              fontColor: FontColor.Content2,
+              fontWeight: FontWeight.w500,
+            ).copyWith(height: 1.5),
+          ),
           chartLegendSpacing: 24,
           colorList: [
             Style.of(context).colors.accent2,

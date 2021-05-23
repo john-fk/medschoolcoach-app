@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:io';
+ import 'package:universal_io/io.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 
 import 'package:Medschoolcoach/providers/analytics_constants.dart';

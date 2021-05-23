@@ -7,13 +7,13 @@ import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injector/injector.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_apns/flutter_apns.dart';
 import 'main.dart';
-import 'dart:io' show Platform;
+import 'package:universal_io/io.dart'  show Platform;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -79,14 +79,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
-    await initNotifications(notifsPlugin, navigatorKey);
+    //await initNotifications(notifsPlugin, navigatorKey);
   }
 
   @override
   void initState() {
     _register();
     super.initState();
-    markLaunchedFromNotificationIfApplicable(notifsPlugin, context);
+    //markLaunchedFromNotificationIfApplicable(notifsPlugin, context);
   }
 
   @override
@@ -115,18 +115,19 @@ class _MyAppState extends State<MyApp> {
       }
     } else if(Platform.isAndroid){
       //todo : also if platform is web
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-      _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          onPush('onMessage', message);
-        },
-        onLaunch: (Map<String, dynamic> message) async {
-          onPush('onLaunch', message);
-        },
-        onResume: (Map<String, dynamic> message) async {
-          onPush('onResume', message);
-        },
-      );
+      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+      //background
+      FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
+      //foreground
+      FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+        print("message received");
+        print(event.notification?.body);
+      });
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        print('Message clicked!');
+      });
+
       _firebaseMessaging.getToken().then(setToken);
     }
   }
@@ -137,12 +138,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   //todo: implement onPush in different states if required
-  Future<dynamic> onPush(String name, Map<String, dynamic> payload) {
+  Future<dynamic> onPush(String name, RemoteMessage payload) {
     print(name);
     return null;
   }
 
-  Future<dynamic> _onBackgroundMessage(Map<String, dynamic> data) =>
+  Future<dynamic> _onBackgroundMessage(RemoteMessage data) =>
       onPush('onBackgroundMessage', data);
 
   @override
@@ -155,11 +156,20 @@ class _MyAppState extends State<MyApp> {
           title: Config.appTitle,
           localizationsDelegates: <LocalizationsDelegate<dynamic>>[
             FlutterI18nDelegate(
-                fallbackFile: 'en_US',
-                useCountryCode: true,
-                path: 'assets/i18n'),
+              translationLoader: FileTranslationLoader(
+                  useCountryCode: true,
+                  fallbackFile: 'en_US',
+                  basePath: 'assets/i18n'
+              ),
+              missingTranslationHandler: (key, locale) {
+                print("--- Missing Key: $key, languageCode: ${locale.languageCode}");
+              },
+            ),
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate
+          ],
+          supportedLocales: [
+            const Locale('en', 'US'),
           ],
           theme: ThemeData(
             fontFamily: Config.fontFamily,
