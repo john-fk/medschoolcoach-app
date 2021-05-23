@@ -135,6 +135,7 @@ class _LessonVideoScreenState extends State<LessonVideoScreen> {
     if (_topic == null || _video == null) return;
 
     _customVideoController = CustomVideoController(
+      context:context,
       topicVideosCount: _topic.videos.length,
       lessonScreenArguments: widget.arguments,
       setState: _runSetState,

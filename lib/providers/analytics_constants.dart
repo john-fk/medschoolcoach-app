@@ -148,6 +148,7 @@ abstract class AnalyticsConstants {
   static const tapConfirmStudyTime = "tap_confirm_study_time";
   static const tapPracticeFlashcards = "tap_practice_flashcards";
   static const tapTutoringUpsell = "tap_tutoring_upsell_section";
+  static const tapPopup = "tap_popup";
 
   //Swipes
   static const swipeFlashcard = "swipe_flashcard";

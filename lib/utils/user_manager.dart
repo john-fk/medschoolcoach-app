@@ -105,6 +105,7 @@ class UserManagerImpl implements UserManager {
   @override
   void logout() async {
     storage.delete(key: _userStoreKey);
+    storage.delete(key: "localTutorPopup");
     storage.delete(key: "OnboardingState");
     storage.delete(key: "test_date");
     storage.delete(key: "question_of_the_day_time");

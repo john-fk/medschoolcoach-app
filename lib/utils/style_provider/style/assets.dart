@@ -59,6 +59,10 @@ class _AppPngAssets {
   final globalDoctors = "assets/png/global_doctors.png";
 
   final emptyState = "assets/png/empty_state.png";
+  final iconClose = "assets/png/icon_close.png";
+
+  //Popup Screen
+  final tutorPopup = "assets/png/popup_tutor_";
 
   //question bank
   final questionExplanation = "assets/png/button_explanation.png";

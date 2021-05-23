@@ -104,6 +104,11 @@ class _MultipleChoiceQuestionScreenState
     _fetchQuestions(
       forceApiRequest: false,
     );
+
+    //reset consecutive multiple choice counter;
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) =>
+            SuperStateful.of(context).popupAnswer(correct:true));
   }
 
   void _logScreenViewAnalytics() {
@@ -510,13 +515,16 @@ class _MultipleChoiceQuestionScreenState
               key: Key("ans$index"),
               text: answer.text,
               optionLetter: answer.optionLetter,
-              onPressed: () async {
-                if (_selectedIndex == null) {
+              onPressed: () async {{
+                SuperStateful.of(context).popupAddQuestions();
+                if (_selectedIndex == null)
                   if (answer.isCorrect) {
                     correctAnswers = correctAnswers + 1;
+                    SuperStateful.of(context).popupAnswer(correct:true);
                     SuperStateful.of(context).correctAnswers++;
                   } else {
                     wrongAnswers = wrongAnswers + 1;
+                    SuperStateful.of(context).popupAnswer(correct:false);
                     SuperStateful.of(context).wrongAnswers++;
                   }
 

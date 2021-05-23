@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injector/injector.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 enum VideoQuality { P360, P540, P720 }
 
 enum VideoPlaybackSpeed { x1, x125, x15, x175, x2 }
@@ -51,18 +51,21 @@ class CustomVideoController {
   bool _isBuffering = false;
   bool _isVideoSeeking = false;
   bool _videoFinished = false;
+  bool updatedSuperstate = false;
   Duration _previousPosition;
   Duration _position;
   Timer _bufferingTimeoutTimer;
   Timer _savePositionTimer;
   Timer _checkBufferingTimer;
   Timer _connectionTimer;
+  BuildContext context;
 
   CustomVideoController({
     @required this.setState,
     @required this.video,
     @required this.lessonScreenArguments,
     @required this.topicVideosCount,
+    @required this.context,
   }) {
     _logAnalyticsEvent(AnalyticsConstants.tapPlayVideo);
     if (video.commercial != null) commercial = true;
@@ -219,6 +222,9 @@ class CustomVideoController {
 
     if (videoPlayerController.value.position >=
         videoPlayerController.value.duration) {
+      if (!updatedSuperstate)
+          SuperStateful.of(context).popupCountVideos(add:true);
+      
       if (commercial) {
         _finishCommercial();
       } else if (!_videoFinished) {

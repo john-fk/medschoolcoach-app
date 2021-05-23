@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
@@ -23,7 +24,6 @@ import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
 import 'flash_cards_stack.dart';
 import 'dart:ui';
-
 typedef ChangeCardIndex({bool increase, FlashcardStatus cardstatus});
 
 class FlashCardScreen extends StatefulWidget {
@@ -62,6 +62,10 @@ class _FlashCardScreenState extends State<FlashCardScreen>
 
     _analyticsProvider.logScreenView(
         AnalyticsConstants.screenFlashcards, widget.arguments.source);
+    //reset consecutive flashcard counter;
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) =>
+            SuperStateful.of(context).popupFlashcard(notConfident: false));
   }
 
   Future<void> _fetchFlashcards({bool forceApiRequest = false}) async {
@@ -130,11 +134,18 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     if (!increase && _cardIndex == 0) return;
 
     if (increase) {
+
       //save current emoji
       (_result as RepositorySuccessResult<FlashcardsStackModel>)
           .data
           .items[_cardIndex]
           .status = cardstatus;
+
+      //add card count
+      SuperStateful.of(context).popupAddCard();
+      //update confidence count for popup trigger
+      SuperStateful.of(context).popupFlashcard(
+          notConfident : cardstatus == FlashcardStatus.Negative);
 
       _cardIndex++;
     } else

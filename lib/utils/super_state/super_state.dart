@@ -31,10 +31,10 @@ import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
 class _InheritedSuperState extends InheritedWidget {
   final SuperState data;
-
   _InheritedSuperState({
     Key key,
     @required this.data,
@@ -60,8 +60,84 @@ class SuperStateful extends StatefulWidget {
   @override
   SuperState createState() => SuperState();
 }
+class PopupData{
+    final storage = FlutterSecureStorage();
+    int questions;
+    int videos;
+    int flashcards;
+    int popupNumber;
+    int popupNumberShown;
+    int wrongQuestion;
+    int wrongCards;
+
+    PopupData([
+      this.questions = 0, this.videos  = 0, this.flashcards  = 0,
+      this.popupNumber  = 0, this.popupNumberShown = 0, this.wrongQuestion  = 0,
+      this.wrongCards  = 0
+    ]);
+
+    bool ignore(){
+      return popupNumber == 2;
+    }
+    factory PopupData.fromJson(Map<String, dynamic> json) {
+      return PopupData(
+          json["questions"], json['videos'], json['flashcards'],
+          json['popupNumber'],
+          json['popupNumberShown'], json['wrongQuestion'],json['wrongCards']
+      );
+    }
+
+    Map<String, int> toJson() => <String, int>{
+      "questions" : questions,
+      "videos" : videos,
+      "flashcards" : flashcards,
+      "popupNumber" : popupNumber,
+      "popupNumberShown" : popupNumberShown,
+      "wrongQuestion" : wrongQuestion,
+      "wrongCards" : wrongCards
+    };
+
+    //force trigger show if 3x consecutive wrong question / low confidence card
+    void triggerShow(){
+      if (popupNumber < 2 && popupNumber == popupNumberShown)
+          popupNumber = popupNumberShown + 1;
+      updateData();
+    }
+
+    //decide whether to show or not, if yes, return popup number
+    int shouldShow() {
+      if (popupNumber != popupNumberShown)
+        return popupNumber;
+      else if (popupNumber < 2 && popupNumber == popupNumberShown &&
+          (questions >= 30 || videos >= 20 || flashcards >= 30 ) ) {
+          popupNumber = popupNumberShown+1;
+          updateData();
+          return popupNumber;
+      } else
+          return -1;
+    }
+
+    //reset count after shown
+    void shown(int popupID) {
+      questions = 0;
+      videos = 0;
+      flashcards = 0;
+      wrongQuestion = 0;
+      wrongCards = 0;
+      popupNumberShown = popupID;
+      updateData();
+    }
+
+    void updateData() {
+      storage.write(
+          key: "localTutorPopup", value: jsonEncode(this.toJson())
+      );
+    }
+}
+
 
 class SuperState extends State<SuperStateful> {
+  final storage = FlutterSecureStorage();
   final TopicRepository _topicRepository =
       Injector.appInstance.getDependency<TopicRepository>();
   final LectureNoteRepository _lectureNoteRepository =
@@ -93,6 +169,7 @@ class SuperState extends State<SuperStateful> {
   List<Section> sectionsList = List();
   List<Video> videosScheduleList = List();
   DashboardSchedule todaySchedule;
+
   ScheduleStats courseProgress;
   FlashcardsProgress flashcardProgress;
   QuestionBankProgress questionBankProgress;
@@ -109,12 +186,16 @@ class SuperState extends State<SuperStateful> {
   Auth0UserData userData;
   List<TutoringSlider> tutoringSliders = List();
 
-  //QOTD issues
+  //QOTD
   int currentQOTDIndex = 0;
   List<Question> questionsOfTheDay = List();
   int correctAnswers = 0;
   int wrongAnswers = 0;
   List<String> answeredQuestionsIds = [];
+
+  //Popup Tracker
+  PopupData localTutorPopup = PopupData();
+
 
   Future<RepositoryResult<List<Section>>> updateSectionsList({
     bool forceApiRequest = false,
@@ -391,6 +472,78 @@ class SuperState extends State<SuperStateful> {
     return result;
   }
 
+  //region Tutoring Popup
+  int showTutorPopup() {
+    return localTutorPopup.shouldShow();
+  }
+
+  void popupAnswer({bool correct}) {
+    if(localTutorPopup.ignore()) return;
+
+    if (correct)
+      localTutorPopup.wrongQuestion = 0;
+    else
+      localTutorPopup.wrongQuestion++;
+
+    if (localTutorPopup.wrongQuestion == 3)
+      localTutorPopup.triggerShow();
+  }
+
+  void popupAddCard(){
+    if(localTutorPopup.ignore()) return;
+    localTutorPopup.flashcards++;
+    localTutorPopup.updateData();
+  }
+
+
+  void popupCountVideos({bool add=true}){
+    if(localTutorPopup.ignore()) return;
+    if (add)
+      localTutorPopup.flashcards++ ;
+    else if (localTutorPopup.flashcards > 0)
+      localTutorPopup.flashcards--;
+
+    localTutorPopup.updateData();
+  }
+
+  void popupAddQuestions(){
+    if(localTutorPopup.ignore()) return;
+    localTutorPopup.questions++;
+    localTutorPopup.updateData();
+  }
+
+  void popupFlashcard({bool notConfident}) {
+    if(localTutorPopup.ignore()) return;
+    if (notConfident)
+      localTutorPopup.wrongCards++;
+    else
+      localTutorPopup.wrongCards=0;
+
+    //trigger popup check
+    if (localTutorPopup.wrongCards == 3)
+      localTutorPopup.triggerShow();
+  }
+
+  void shownTutorPopup(int popupID){
+    if(localTutorPopup.ignore()) return;
+    localTutorPopup.shown(popupID);
+    localTutorPopup.updateData();
+  }
+
+  void updatePopupData() {
+    localTutorPopup.updateData();
+  }
+
+  Future<int> loadPopupData() async {
+    String popupContent = await storage.read(key:"localTutorPopup");
+    if (popupContent != null)
+      localTutorPopup = PopupData.fromJson(jsonDecode(popupContent));
+    else
+      updatePopupData();
+    return localTutorPopup.shouldShow();
+  }
+  //endregion
+
   Future<RepositoryResult<List<Question>>> updateQuestionsOfTheDay({
     bool forceApiRequest = false,
   }) async {
@@ -405,6 +558,7 @@ class SuperState extends State<SuperStateful> {
   }
 
   void clearData() {
+    localTutorPopup = PopupData();
     topics = Map();
     sections = Map();
     flashcardsSections = List();

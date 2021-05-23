@@ -70,6 +70,7 @@ class SlidableCell extends StatelessWidget {
       seconds: watch ? "${video.seconds + 5}" : "0",
     );
     if (result is RepositorySuccessResult) {
+      SuperStateful.of(context).popupCountVideos(add:watch);
       _analyticsProvider.logEvent(
           watch
               ? AnalyticsConstants.tapVideoMarkWatched

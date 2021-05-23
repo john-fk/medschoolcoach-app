@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/ui/popup/popup.dart';
 import 'package:Medschoolcoach/ui/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/ui/home/get_started.dart';
 import 'package:Medschoolcoach/ui/home/home_schedule.dart';
@@ -49,6 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
         AnalyticsConstants.screenHome, widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
+        //ensure popup has loaded latest data
+        int popupID = await SuperStateful.of(context).loadPopupData();
+
         _fetchLastWatched();
         _fetchSchedule(forceApiRequest: true);
 
@@ -61,6 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
           Config.enteredAppFromQOTDNotification = false;
           Navigator.pushNamed(context, Routes.questionOfTheDayScreen,
               arguments: "notification");
+        } else {
+          //trigger popup if required
+          if (popupID > 0 && ModalRoute
+              .of(context)
+              .isCurrent) {
+            Popup().showDialog(context, 1, _analyticsProvider);
+            SuperStateful.of(context).shownTutorPopup(popupID);
+          }
         }
       },
     );

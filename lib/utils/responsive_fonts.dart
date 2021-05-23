@@ -22,6 +22,9 @@ enum FontColor {
   White
 }
 
+Color getFontColor(BuildContext context, FontColor fontColor){
+  return _getFontColor(context,fontColor);
+}
 Color _getFontColor(BuildContext context, FontColor fontColor) {
   switch (fontColor) {
     case FontColor.Content2:

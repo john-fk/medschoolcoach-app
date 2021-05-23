@@ -425,3 +425,11 @@ empty_state:
   title: "Oops!"
   message: "We were unable to load your updates.\n\n Please try again when you have a valid internet connection."
   button: "Try Again"
+
+tutor_popup:
+  popup_1_button : GET HELP FROM A TUTOR
+  popup_1_title : STUDYING
+  popup_1_subtitle : is more effective with a COACH
+  popup_2_button : GET STARTED
+  popup_2_title : SPEED UP YOUR PROGRESS
+  popup_2_subtitle : with a hand crafted schedule

@@ -11,6 +11,7 @@ class PrimaryButton extends StatelessWidget {
   final EdgeInsets margin;
   final Color color;
   final bool isSmall;
+  final Color fontColor;
 
   PrimaryButton({
     @required this.text,
@@ -19,6 +20,7 @@ class PrimaryButton extends StatelessWidget {
     this.margin,
     this.isSmall = false,
     this.color,
+    this.fontColor,
     Key key,
   }) : super(key: key);
 
@@ -52,9 +54,9 @@ class PrimaryButton extends StatelessWidget {
                   text,
                   style: normalResponsiveFont(
                     context,
-                    fontColor: FontColor.Content2,
+                    fontColor:FontColor.Content2,
                     fontWeight: FontWeight.w500,
-                  ),
+                  ).copyWith(color:fontColor ?? getFontColor(context,FontColor.Content2)),
                   textAlign: TextAlign.center,
                 ),
           color: color ?? Style.of(context).colors.accent,
