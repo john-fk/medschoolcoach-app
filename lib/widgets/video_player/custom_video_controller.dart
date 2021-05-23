@@ -13,6 +13,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injector/injector.dart';
 import 'package:video_player/video_player.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
 enum VideoQuality { P360, P540, P720 }
 
 enum VideoPlaybackSpeed { x1, x125, x15, x175, x2 }
@@ -45,7 +46,7 @@ class CustomVideoController {
       Injector.appInstance.getDependency<TopicRepository>();
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
-  final _storage = FlutterSecureStorage();
+  final _storage = localStorage();
 
   bool _connectingToVideoResource = false;
   bool _isBuffering = false;

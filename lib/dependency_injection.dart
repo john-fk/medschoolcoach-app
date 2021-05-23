@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
 import 'package:Medschoolcoach/repository/bookmarks_repository.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/repository/lecturenote_repository.dart';
@@ -185,7 +186,7 @@ void initializeDependencyInjection({
   injector.registerSingleton<AuthServices>(
     (injector) {
       final userRepository = injector.getDependency<UserRepository>();
-      final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+      final localStorage secureStorage = localStorage();
       final FlutterAppAuth appAuth = FlutterAppAuth();
       return AuthServicesImpl(userRepository, secureStorage, appAuth);
     },

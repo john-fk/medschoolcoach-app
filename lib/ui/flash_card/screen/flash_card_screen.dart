@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
@@ -8,7 +9,6 @@ import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
-import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -96,7 +96,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void _showFlashcardsHowTo() async {
-    final storage = FlutterSecureStorage();
+    final storage = localStorage();
     final _seenHowTo = await storage.read(key: _howToFlashcard);
     if (_seenHowTo == null) {
       showGeneralDialog<void>(

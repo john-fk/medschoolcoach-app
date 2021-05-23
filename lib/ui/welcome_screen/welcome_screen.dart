@@ -248,11 +248,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     setState(() {
       loading = true;
     });
-    Fluttertoast.cancel();
+    //Fluttertoast.cancel();
 
-    try {
-      var result = await InternetAddress.lookup(Uri.parse(Config.prodApiUrl).host);
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         _analyticsProvider.logScreenView("screen_auth", Routes.welcome);
         var response = await _authService.loginAuth0(isLogin);
         if (!response.didSucceed) return;
@@ -291,19 +288,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 arguments: Routes.welcome);
           }
         }
-      }
-    } on SocketException catch (_) {
-      Fluttertoast.showToast(
-          msg: FlutterI18n.translate(context, "general.net_error"),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Style.of(context).colors.error);
-    } finally {
-      setState(() {
-        loading = false;
-      });
-    }
+        setState(() {
+          loading = false;
+        });
   }
 
   Future<bool> shouldShowOnboarding() async {

@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:Medschoolcoach/ui/onboarding/onboarding_state.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
@@ -76,7 +77,7 @@ abstract class UserManager {
 }
 
 class UserManagerImpl implements UserManager {
-  final storage = FlutterSecureStorage();
+  final storage = localStorage();
 
   @override
   Future<void> update(User user) {
@@ -112,7 +113,6 @@ class UserManagerImpl implements UserManager {
     storage.delete(key: "study_time_per_day");
     storage.delete(key: "name");
     storage.delete(key: "Flashcard_tutorial");
-    storage.deleteAll();
   }
 
   @override

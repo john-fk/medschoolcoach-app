@@ -4,7 +4,6 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/notification_helper.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injector/injector.dart';
 import 'package:flutter_apns/flutter_apns.dart';
-import 'main.dart';
 import 'package:universal_io/io.dart'  show Platform;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -71,7 +69,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final PushConnector connector = createPushConnector();
   final AnalyticsProvider _analyticsProvider =
     Injector.appInstance.getDependency<AnalyticsProvider>();
 
@@ -84,7 +81,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    _register();
+    //_register();
     super.initState();
     //markLaunchedFromNotificationIfApplicable(notifsPlugin, context);
   }
@@ -95,42 +92,6 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  Future<void> _register() async {
-    if (Platform.isIOS || Platform.isMacOS) {
-      final connector = this.connector;
-      connector.configure(
-        onLaunch: (data) => onPush('onLaunch', data),
-        onResume: (data) => onPush('onResume', data),
-        onMessage: (data) => onPush('onMessage', data),
-        onBackgroundMessage: _onBackgroundMessage,
-      );
-
-      connector.token.addListener(() {
-        setToken(connector.token.value);
-      });
-      connector.requestNotificationPermissions();
-
-      if (connector is ApnsPushConnector) {
-        connector.shouldPresent = (x) => Future.value(true);
-      }
-    } else if(Platform.isAndroid){
-      //todo : also if platform is web
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
-      //background
-      FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
-      //foreground
-      FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-        print("message received");
-        print(event.notification?.body);
-      });
-      FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        print('Message clicked!');
-      });
-
-      _firebaseMessaging.getToken().then(setToken);
-    }
-  }
   void setToken(String token){
     _analyticsProvider.token = token;
     if (_analyticsProvider.key != null)
@@ -151,7 +112,6 @@ class _MyAppState extends State<MyApp> {
     return SuperStateful(
       child: Style(
         child: MaterialApp(
-          builder: DevicePreview.appBuilder,
           navigatorKey: navigatorKey,
           title: Config.appTitle,
           localizationsDelegates: <LocalizationsDelegate<dynamic>>[

@@ -1,10 +1,8 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
-import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:universal_io/io.dart'  show Platform;
 
 class AnalyticsProvider {
-  Mixpanel _mixpanel;
   String _distinctId;
   String token;
   String key;
@@ -16,70 +14,36 @@ class AnalyticsProvider {
 
 
   Future initialize([String token=Config.prodMixPanelToken]) async {
-    if (_mixpanel == null) {
-      _mixpanel = await Mixpanel.init(token, optOutTrackingDefault: false);
-    }
-    return _mixpanel;
+    return null;
   }
 
   void identify(String distinctId) {
-    if (distinctId == null || _distinctId == distinctId) return;
-    _distinctId = distinctId;
-    return _mixpanel.alias("auth",distinctId);
+    return null;
   }
 
   void identifyPeople(String distinctId) {
-    return logEvent("identifyPeople", params: {"distinctId": distinctId});
+    return null;
   }
 
   String keyDevice(){
-    if (Platform.isAndroid)
-      return "\$android_devices";
-    else if ( Platform.isIOS)
-      return "\$ios_devices";
     return null;
   }
 
   void setToken({bool remove=false}){
-    if (key!=null) {
-      print("TOKEN : " + token);
-
-      setPeopleProperties(<String, String>{
-        key: token
-      },remove:remove);
-    }
-
+    return null;
   }
 
 
   Future<void> setPeopleProperties(Map<String, dynamic> props,{bool remove=false}) async{
-    if (_distinctId == null) return;
-    props.forEach((key, dynamic value) {
-      _mixpanel.identify(_distinctId);
-      if (remove)
-        _mixpanel.getPeople().remove(key,value.toString());
-      else
-        _mixpanel.getPeople().set(key,value.toString());
-    });
-
-    await _mixpanel.flush();
+    return null;
   }
 
   void logEvent(String eventName, {dynamic params}) {
-    final emptyList = <String, String>{};
-    if (_distinctId!=null)
-      _mixpanel.identify(_distinctId);
-   _mixpanel.track(eventName, properties: params == null ? emptyList : params);
+    return null;
   }
 
   void logScreenView(String screenName, String sourceName, {dynamic params}) {
-    var args = {
-      AnalyticsConstants.keySource: sourceName,
-    };
-    if (params != null) {
-      args.addAll(params);
-    }
-    logEvent(screenName, params: args);
+    return null;
   }
 
   Map<String, String> getVideoParam(String id, String name,
@@ -94,10 +58,7 @@ class AnalyticsProvider {
     return args;
   }
   Future<void> reset() async{
-    await setToken(remove: true);
-    _distinctId = null;
-    _mixpanel.reset();
-    _mixpanel.flush();
+    return null;
   }
   // ignore: avoid_positional_boolean_parameters
   void logVideoBookMarkEvent(bool isRemove, String videoId, String videoName) {

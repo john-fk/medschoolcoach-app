@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class AuthServices {
   // ignore: avoid_positional_boolean_parameters
@@ -21,7 +21,7 @@ class AuthResponse {
 
 class AuthServicesImpl implements AuthServices {
   final UserRepository _userRepository;
-  final FlutterSecureStorage _secureStorage;
+  final localStorage _secureStorage;
   final FlutterAppAuth _appAuth;
 
   AuthServicesImpl(this._userRepository, this._secureStorage, this._appAuth);
