@@ -110,7 +110,7 @@ abstract class ApiServices {
 
   Future<NetworkResponse<void>> requestTutoringInfo();
 
-  Future<NetworkResponse<void>> requestForTutoringUpsell(bool checked);
+  Future<NetworkResponse<void>> requestForTutoringUpsell([bool checked = false]);
 
   Future<NetworkResponse<void>> startSchedule({
     @required int days,
@@ -713,7 +713,8 @@ class ApiServicesImpl implements ApiServices {
   }
 
   @override
-  Future<NetworkResponse<void>> requestForTutoringUpsell(bool checked) async {
+  Future<NetworkResponse<void>>
+    requestForTutoringUpsell([bool checked = false]) async {
     try {
       final Map<String, String> headers = await _getHeaders();
       String url = _getBaseUrl() + "/user/workflow/tutoring-upsell";

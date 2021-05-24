@@ -400,10 +400,14 @@ class _ScheduleTabState extends State<ScheduleTab> {
                   params: {AnalyticsConstants.keySelectedDay: index + 1});
               //decide to scroll or not
               double position = _scrollController.position.pixels;
-              int mostLeft = (position / (whenDevice(context, large: 54, tablet: 80) + 8)).ceil()+1;
+              int mostLeft = (position / (whenDevice(context, large: 54, tablet: 80) + 8)).floor()+1;
               int mostRight = (mostLeft + totalContainer.floor()) - 1;
-              if (index+1 > mostRight)
+              bool scrollLeft = (index+1 == mostLeft && 62 * index.toDouble() < position);
+              bool scrollRight = index+1 > mostRight;
+              if ( scrollLeft || scrollRight)
                 _scrollController.animateTo(62 * index.toDouble(), duration: const Duration(seconds:1),curve: Curves.ease);
+              else if (scrollRight && mostRight + totalContainer >= _days.length)
+                _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(seconds:1),curve: Curves.ease);
             },
           ),
           itemCount: _days.length,
