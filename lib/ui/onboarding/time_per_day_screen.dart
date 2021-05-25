@@ -211,7 +211,10 @@ class _TimePerDayState extends State<TimePerDay> {
               data: CupertinoThemeData(
                   primaryContrastingColor: Colors.transparent,
                   barBackgroundColor: Colors.transparent),
-              child: CupertinoPicker(
+              child: AbsorbPointer(
+                absorbing : loading,
+                child:
+                CupertinoPicker(
                   itemExtent: whenDevice(context, large: 30, tablet: 40),
                   diameterRatio: 1,
                   useMagnifier: false,
@@ -237,7 +240,7 @@ class _TimePerDayState extends State<TimePerDay> {
                           fontColor: FontColor.Content),
                     ));
                   })),
-            ),
+            )),
           ),
           Expanded(
               child:
