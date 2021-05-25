@@ -4,6 +4,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:flutter/material.dart';
 
+import 'package:auto_size_text/auto_size_text.dart';
 class PrimaryButton extends StatelessWidget {
   final String text;
   final Function onPressed;
@@ -50,15 +51,18 @@ class PrimaryButton extends StatelessWidget {
               ? Center(
                   child: ButtonProgressBar(),
                 )
-              : Text(
+              : AutoSizeText(
                   text,
-                  style: normalResponsiveFont(
-                    context,
-                    fontColor:FontColor.Content2,
+                  maxLines:1,
+                  minFontSize: 0,
+                  stepGranularity: 0.1,
+                  maxFontSize: normalResponsiveFont(context).fontSize,
+                  style:TextStyle(
                     fontWeight: FontWeight.w500,
-                  ).copyWith(color:fontColor ?? getFontColor(context,FontColor.Content2)),
+                    color:fontColor ?? getFontColor(context,FontColor.Content2)
+                  ),
                   textAlign: TextAlign.center,
-                ),
+                  ),
           color: color ?? Style.of(context).colors.accent,
         ),
       ),

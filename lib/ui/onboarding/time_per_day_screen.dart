@@ -8,7 +8,6 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
-import 'package:Medschoolcoach/utils/toasts.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
@@ -20,6 +19,8 @@ import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/utils/format_date.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 class TimePerDay extends StatefulWidget {
   final String source;
 
@@ -70,6 +71,7 @@ class _TimePerDayState extends State<TimePerDay> {
               ? Container()
               : BackButton(
                   color: Colors.black,
+                  onPressed: !loading ? null : (){return;},
                 ),
         ),
         body: SafeArea(child: _buildBody()));
@@ -157,9 +159,6 @@ class _TimePerDayState extends State<TimePerDay> {
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
           backgroundColor: Style.of(context).colors.error);
-      setState(() {
-        loading = false;
-      });
     } else {
       _analyticsProvider.logEvent(AnalyticsConstants.tapConfirmStudyTime,
           params: {"hours_per_day": timePerDay.toString()});
@@ -174,6 +173,9 @@ class _TimePerDayState extends State<TimePerDay> {
             arguments: Routes.onboarding);
       }
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   Widget _heading() {
@@ -228,21 +230,24 @@ class _TimePerDayState extends State<TimePerDay> {
                   children: List.generate(4, (index) {
                     var value = (index + 1) * 2;
                     var shownValue = value == 8 ? "8+" : value;
-                    return Text(
+                    return Center(child:Text(
                       "$shownValue",
                       style: biggerResponsiveFont(context,
                           fontWeight: FontWeight.w400,
                           fontColor: FontColor.Content),
-                    );
+                    ));
                   })),
             ),
           ),
           Expanded(
-              child: Text(
-            FlutterI18n.translate(context, "onboarding_scheduling.hr_per_day"),
-            style: normalResponsiveFont(context,
+              child:
+              AutoSizeText(
+              FlutterI18n.translate(context, "onboarding_scheduling.hr_per_day"),
+              maxLines:1,
+              style: normalResponsiveFont(context,
                 fontWeight: FontWeight.w400, fontColor: FontColor.Content),
-          )),
+              )
+          ),
           Spacer()
         ],
       ),

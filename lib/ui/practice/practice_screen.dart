@@ -30,8 +30,23 @@ class _PracticeScreenState extends State<PracticeScreen> {
   List<Subject> allSubjects = [];
   int selectedIndex = 0;
   bool _loading = false;
+
+  //region subject button
+  final double sbjMargin = 12;
+  double sbjSeperator;
+  double sbjContainer;
+  int totalContainer;
+  int count;
+  double capsuleListHeight;
+  double capsuleHeight;
+  double capsuleWidth;
+  double innerCircleHeight;
+  //endregion
+
   final AnalyticsProvider _analyticsProvider =
       Injector.appInstance.getDependency<AnalyticsProvider>();
+  ScrollController _scrollController = ScrollController();
+
 
   @override
   void initState() {
@@ -40,6 +55,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchFlashcardsAndQuestionsSections(),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   bool didFailLoading() {
@@ -173,6 +194,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    sbjSeperator = isTablet(context) ? 15 : 10;
+    count = allSubjects?.length ?? 0;
+    capsuleListHeight = isTablet(context) ? 320.0 : 225.0;
+    capsuleHeight = isTablet(context) ? 300 : 200;
+    capsuleWidth = isTablet(context) ? 155 : 100;
+    innerCircleHeight = isTablet(context) ?
+                        capsuleHeight / 2.25 : capsuleHeight / 2.5;
+    sbjContainer = capsuleWidth + sbjSeperator;
+    totalContainer =( (MediaQuery.of(context).size.width - sbjMargin * 2)
+                    / sbjContainer).floor();
+
     var horizontalInset =
         whenDevice(context, large: 4.0, medium: 0.0, small: 0.0);
     return Scaffold(
@@ -201,13 +233,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   Widget _buildSubjectsList() {
-    final int count = allSubjects?.length ?? 0;
-    final capsuleListHeight = isTablet(context) ? 320.0 : 225.0;
-    final double capsuleHeight = isTablet(context) ? 300 : 200;
-    final double capsuleWidth = isTablet(context) ? 155 : 100;
-    final double innerCircleHeight =
-        isTablet(context) ? capsuleHeight / 2.25 : capsuleHeight / 2.5;
-
     return Padding(
       padding: isTablet(context)
           ? const EdgeInsets.only(top: 10)
@@ -217,15 +242,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
         child: count == 0
             ? Container()
             : ListView.separated(
-                padding: isTablet(context)
-                    ? EdgeInsets.only(top: 20, bottom: 10, left: 12, right: 12)
-                    : EdgeInsets.only(top: 20, bottom: 20, left: 12, right: 12),
+                padding:  EdgeInsets.only(top: 20,
+                    bottom: isTablet(context) ? 10 : 20,
+                    left: sbjMargin, right: sbjMargin),
                 scrollDirection: Axis.horizontal,
+                controller: _scrollController,
                 shrinkWrap: true,
                 itemBuilder: (ctx, index) => _buildCapsule(
                     capsuleHeight, capsuleWidth, innerCircleHeight, index),
                 separatorBuilder: (ctx, index) => SizedBox(
-                      width: isTablet(context) ? 15 : 10,
+                      width: sbjSeperator,
                     ),
                 itemCount: allSubjects?.length ?? 0),
       ),
@@ -234,11 +260,26 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   Widget _buildCapsule(double capsuleHeight, double capsuleWidth,
       double innerCircleHeight, int index) {
+
     return SizedBox(
       height: capsuleHeight,
       width: capsuleWidth,
       child: GestureDetector(
         onTap: () {
+          //decide to scroll or not
+          double position = _scrollController.position.pixels;
+          int mostLeft = (position / sbjContainer).floor()+1;
+          int mostRight = (mostLeft + totalContainer.floor()) - 1;
+          bool scrollLeft =
+            index+1 == mostLeft && sbjContainer * index.toDouble() < position;
+          bool scrollRight = index+1 > mostRight;
+          if ( scrollLeft || scrollRight && index!=allSubjects.length-1)
+            _scrollController.animateTo(sbjSeperator + sbjContainer * index.toDouble(),
+                duration: const Duration(seconds:1),curve: Curves.ease);
+          else if (scrollRight && mostRight + totalContainer >= allSubjects.length)
+            _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+                duration: const Duration(seconds:1),curve: Curves.ease);
+
           setState(() {
             selectedIndex = index;
           });

@@ -41,6 +41,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.source == Routes.schedule)
+        _analyticsProvider.logEvent(AnalyticsConstants.tapViewMySchedule);
     _analyticsProvider.logScreenView(Routes.scheduleTestDate, widget.source);
     dateController = DateRangePickerController();
     userManager.getTestDate().then((value) {
@@ -91,6 +93,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
             _showTestDate(),
             Spacer(),
             PrimaryButton(
+               isLoading : isLoading == 1,
               text: FlutterI18n.translate(context, _getPrimaryButtonLabel())
                   .toUpperCase(),
               onPressed: showCustomDatePicker,
@@ -188,8 +191,8 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
         scheduleDate = dateController.selectedDate;
         _analyticsProvider.logEvent(
             isEditingTestDate
-                ? "tap_test_date_update"
-                : "tap_test_date_confirm",
+                ? AnalyticsConstants.tapTestDateUpdate
+                : AnalyticsConstants.tapTestDateConfirm,
             params: null);
         if (widget.source != Routes.profile_screen)
           Navigator.pushNamed(context, Routes.timePerDay,
@@ -246,7 +249,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
     }
 
     return isLoading == 1
-        ? ProgressBar()
+        ? SizedBox.shrink()
         : Text(
             date,
             style: greatResponsiveFont(context,

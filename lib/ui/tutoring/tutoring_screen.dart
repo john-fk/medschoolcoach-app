@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
@@ -44,6 +45,7 @@ class TutoringScreen extends StatefulWidget {
 class _TutoringScreenPageState extends State<TutoringScreen> {
   final AnalyticsProvider _analyticsProvider =
   Injector.appInstance.getDependency<AnalyticsProvider>();
+  final userRepository = Injector.appInstance.getDependency<UserRepository>();
   final GlobalKey _scaffoldKey = GlobalKey();
   bool checked = false;
   int _current = 0;
@@ -209,7 +211,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                               style: mediumResponsiveFont(
                                                 context,
                                                 fontColor: FontColor.QualifyingText,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w400,
                                               )
                                           ),
                                         ])
@@ -457,7 +459,8 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     Navigator.of(_scaffoldKey.currentContext).pop("success");
     launch("tel://${Config.supportPhoneNumber}");
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringCallUs, params: {
-      AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
+      AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
+      AnalyticsConstants.keyEmail: userRepository.userLoggingEmail,
     });
   }
 

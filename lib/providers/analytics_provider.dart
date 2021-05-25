@@ -1,6 +1,8 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Medschoolcoach/config.dart';
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 class AnalyticsProvider {
@@ -8,6 +10,7 @@ class AnalyticsProvider {
   String _distinctId;
   String token;
   String key;
+  bool isShow = false;
 
   AnalyticsProvider() {
     this.initialize();
@@ -66,6 +69,13 @@ class AnalyticsProvider {
   }
 
   void logEvent(String eventName, {dynamic params}) {
+    if (isShow)
+      Fluttertoast.showToast(
+          msg: "key:" + eventName + "\n" + jsonEncode(params),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP_RIGHT,
+          timeInSecForIosWeb: 2,
+      );
     final emptyList = <String, String>{};
     if (_distinctId!=null)
       _mixpanel.identify(_distinctId);

@@ -5,8 +5,10 @@ abstract class AnalyticsConstants {
   static const keyError = "error";
   static const keyType = "type";
   static const keySubjectId = "subject_id";
+  static const keyLessonId = "lesson_id";
   static const keyQuestionId = "question_id";
   static const keySubjectName = "subject_name";
+  static const keyLessonName = "lesson_name";
   static const keySearchingTerm = "searching_term";
   static const keySelectedDay = "day";
   static const keySearchResponseCount = "search_result_count";
@@ -86,6 +88,8 @@ abstract class AnalyticsConstants {
   static const tapSignIn = "tap_sign_in";
   static const tapSignOut = "tap_sign_out";
   static const tapPodcast = "tap_podcast";
+  static const tapLectureNotes ="tap_lecture_notes";
+  static const tapWhiteboardNotes = "tap_whiteboard_notes";
   static const tapPracticeQuestions = "tap_practice_questions";
   static const tapForgotPassword = "tap_forgot_password";
   static const tapPracticeSubject = "select_practice_subject";
@@ -142,14 +146,19 @@ abstract class AnalyticsConstants {
   static const tapGetStarted = "tap_get_started_section";
   static const tapSwitchLearnTab = "switch_learn_tab";
   static const tapSpeedupSchedule = "tap_speed_up_schedule";
+  static const tapViewMySchedule = "tap_view_my_schedule ";
   static const tapQOTDConfirm = "tap_question_of_the_day_confirm";
   static const tapQOTDSkip = "tap_question_of_the_day_skip";
   static const tapTestDateSkip = "tap_test_date_skip";
   static const tapTestdateRemove = "tap_test_date_remove";
+  static const tapTestDateConfirm = "tap_test_date_confirm";
+  static const tapTestDateUpdate = "tap_test_date_update";
   static const tapConfirmStudyTime = "tap_confirm_study_time";
   static const tapPracticeFlashcards = "tap_practice_flashcards";
   static const tapTutoringUpsell = "tap_tutoring_upsell_section";
   static const tapPopup = "tap_popup";
+  static const tapPopupDismiss ="close_tutoring_popup";
+  static const tapCallUsNow ="tap_call_us_now";
 
   //Swipes
   static const swipeFlashcard = "swipe_flashcard";
