@@ -115,7 +115,11 @@ class CourseProgressCardState extends State<CourseProgressCard>
                       : _buildCourseInProgressCard())
               : _buildCourseNotStartedCard()),
     ),
-    _scheduleButton()]);
+      !showLoading &&
+          track != ProgressType.NotStarted
+          && _programProgress < 1 ?
+        _scheduleButton() : SizedBox.shrink()
+    ]);
   }
 
   Widget _scheduleButton() {
