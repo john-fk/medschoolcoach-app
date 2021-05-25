@@ -36,10 +36,9 @@ class AnalyticsProvider {
   }
 
   String keyDevice(){
-    if (Platform.isAndroid)
+    //temporarily, as we are not getting APNs
+    if (Platform.isAndroid || Platform.isIOS)
       return "\$android_devices";
-    else if ( Platform.isIOS)
-      return "\$ios_devices";
     return null;
   }
 
@@ -53,7 +52,6 @@ class AnalyticsProvider {
     }
 
   }
-
 
   Future<void> setPeopleProperties(Map<String, dynamic> props,{bool remove=false}) async{
     if (_distinctId == null) return;

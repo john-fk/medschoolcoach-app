@@ -1,18 +1,14 @@
 import 'dart:async';
-
 import 'package:Medschoolcoach/app.dart';
 import 'package:Medschoolcoach/app_router.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/dependency_injection.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
-import 'package:Medschoolcoach/utils/crash_reporting.dart';
 import 'package:Medschoolcoach/utils/notification_helper.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'providers/analytics_constants.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

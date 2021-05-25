@@ -34,6 +34,9 @@ class _AppPngAssets {
   final progressActive = "assets/png/progress_selected.png";
   final progressTutor = "assets/png/progress_screen_tutor.png";
   final progress = "assets/png/progress_unselected.png";
+  final flashcard = "assets/png/flashcard.png";
+  final questionbank = "assets/png/questionbank.png";
+  final book = "assets/png/book.png";
 
   final learnActive = "assets/png/learn_selected.png";
   final learnTutor = "assets/png/learn_tutor.png";

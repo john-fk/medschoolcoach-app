@@ -1,7 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
-import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
@@ -43,7 +42,6 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
@@ -79,7 +77,9 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
                   child: CachedNetworkImage(
                     filterQuality: FilterQuality.high,
                     imageUrl: _url,
-                    placeholder: (context, url) => ProgressBar(),
+                    placeholder: (context, url) => Expanded(
+                            child:Center(child:ProgressBar()
+                    )),
                     errorWidget: (context, url, dynamic error) =>
                         const Icon(Icons.error),
                   ))),

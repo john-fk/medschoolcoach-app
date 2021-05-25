@@ -19,6 +19,7 @@ class UpsellBanner extends StatelessWidget {
     final height = size.height / 8;
     return
       Container(
+        padding: EdgeInsets.symmetric(vertical:10),
       height: whenDevice(context,
           small: height * 1.25, medium: height, large: height),
         child: Card(

@@ -5,7 +5,6 @@ import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/ui/onboarding/qotd_notifications.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
-import 'package:Medschoolcoach/utils/notification_helper.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
@@ -14,7 +13,6 @@ import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injector/injector.dart';
 import 'local_notification.dart';
 
@@ -212,15 +210,19 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
             activeTrackColor: Style.of(context).colors.divider,
             inactiveTrackColor: Style.of(context).colors.divider,
           ),
-          child: Slider(
-            value: sliderValue,
-            min: 1,
-            max: 24,
-            onChanged: (val) {
-              setState(() {
-                sliderValue = val.floor().toDouble();
-              });
-            },
+          child:
+          AbsorbPointer(
+            absorbing: isLoading > -1,
+            child:Slider(
+              value: sliderValue,
+              min: 1,
+              max: 24,
+              onChanged: (val) {
+                setState(() {
+                  sliderValue = val.floor().toDouble();
+                });
+              },
+            )
           ),
         ),
         Padding(

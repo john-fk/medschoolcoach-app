@@ -149,9 +149,9 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
                     buttonText: widget.isFlashCard
                         ? "progress_screen.try_flashcards"
                         : "progress_screen.see_questions",
-                    icon: widget.isFlashCard
-                        ? Icons.flash_on
-                        : Icons.help_outline_rounded,
+                    image: widget.isFlashCard
+                        ? Style.of(context).pngAsset.flashcard
+                        : Style.of(context).pngAsset.questionbank
                   )
                 : widget.isFlashCard
                     ? PracticeProgressCard(

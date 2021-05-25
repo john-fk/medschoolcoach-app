@@ -316,7 +316,7 @@ class CourseProgressCardState extends State<CourseProgressCard>
           height: 20,
         ),
         NoProgressCard(
-            icon: Icons.book_outlined,
+            image:  Style.of(context).pngAsset.book,
             text: "progress_screen.no_progress",
             buttonText: "progress_screen.get_started",
             onTapButton: () async {
