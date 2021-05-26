@@ -6,9 +6,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/ui/tutoring/tutoring_slider_item.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
-import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/models/tutoring_slider.dart';
-import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -21,6 +19,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
+import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TutoringScreenData {
@@ -35,7 +34,6 @@ class TutoringScreenData {
 
 class TutoringScreen extends StatefulWidget {
   final TutoringScreenData tutoringScreenData;
-
   const TutoringScreen(this.tutoringScreenData);
 
   @override
@@ -51,6 +49,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   int _current = 0;
   List<TutoringSlider> _sliders;
   CarouselController carouselController;
+  int isLoading = -1;
 
   @override
   void initState() {
@@ -308,11 +307,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
         ),
         color: Color(0xFF009D7A),
         onPressed: () async {
-          _analyticsProvider
-              .logEvent(AnalyticsConstants.tapExploreOptions, params: {
-            AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
-            AnalyticsConstants.keyType: "button",
-          });
+          _flagForTutoringUpsell();
           _sendRequestInfo();
         },
         child: Text(
@@ -372,10 +367,12 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                               )),
                         ),
                         _getDivider(),
+                        isLoading==0 ? ProgressBar() :
                         _getRequestInfoDialogButton(
                             "tutoring_request_info_dialog.call_us_now",
                             _openPhoneNumber),
                         _getDivider(),
+                        isLoading==1 ? ProgressBar() :
                         _getRequestInfoDialogButton(
                             "tutoring_request_info_dialog.schedule_a_meeting",
                             _navigateToScheduleAMeeting),
@@ -407,7 +404,8 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
       },
     ).then((dynamic result) {
       if (result != "success") {
-        _flagForTutoringUpsell();
+        _sendTutoringUpsellAnalytics(isSuccess: true);
+        Navigator.of(_scaffoldKey.currentContext).pop();
       }
     });
   }
@@ -421,30 +419,33 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   }
 
   Future _navigateToScheduleAMeeting() async {
+    setState(() {
+        isLoading = 1;
+    });
+    await reportClick();
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
         });
     Navigator.of(_scaffoldKey.currentContext).pop("success");
+    setState(() {
+      isLoading = -1;
+    });
     await launchURL(Config.scheduleMeetingUrl);
   }
 
-  Future _flagForTutoringUpsell() async {
-    final NetworkResponse result = await Injector.appInstance
+  Future reportClick() async{
+    await Injector.appInstance
         .getDependency<ApiServices>()
         .requestForTutoringUpsell(checked);
-    if (result is SuccessResponse<String>) {
-      _sendTutoringUpsellAnalytics(isSuccess: true);
-      Navigator.of(_scaffoldKey.currentContext).pop();
-    } else {
-      if (result is ErrorResponse &&
-          result.error is ApiException &&
-          (result.error as ApiException).code == 412) {
-        _sendTutoringUpsellAnalytics(isSuccess: true);
-      } else {
-        _sendTutoringUpsellAnalytics();
-      }
-    }
+  }
+  Future _flagForTutoringUpsell() async {
+
+    _analyticsProvider
+        .logEvent(AnalyticsConstants.tapExploreOptions, params: {
+      AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
+      AnalyticsConstants.keyType: "button",
+    });
   }
 
   void _sendTutoringUpsellAnalytics({bool isSuccess = false}) {
@@ -456,12 +457,19 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   }
 
   void _openPhoneNumber() {
-    Navigator.of(_scaffoldKey.currentContext).pop("success");
-    launch("tel://${Config.supportPhoneNumber}");
+    setState(() {
+      isLoading = 0;
+    });
+    reportClick();
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringCallUs, params: {
       AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
       AnalyticsConstants.keyEmail: userRepository.userLoggingEmail,
     });
+    setState(() {
+      isLoading = -1;
+    });
+    Navigator.of(_scaffoldKey.currentContext).pop("success");
+    launch("tel://${Config.supportPhoneNumber}");
   }
 
   Future<void> _fetchSliders() async {

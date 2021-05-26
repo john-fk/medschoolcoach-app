@@ -103,6 +103,7 @@ Future<void> scheduleNotification(
     id.toString(),
     title,
     body,
+    color: Color(0xFF147af3),
     playSound: true,
     importance: notifs.Importance.high,
   );
