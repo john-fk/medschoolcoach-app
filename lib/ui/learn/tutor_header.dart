@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
-import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 
@@ -19,7 +17,7 @@ class TutorHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
-    final height = size.height / 8 > 100 ? size.height / 8 : 100.00;
+    final height = size.height * 0.125 > 100 ? size.height *0.125 : 100.00;
     return
       Container(
           margin: EdgeInsets.only(bottom:height*0.1),
@@ -50,17 +48,14 @@ class TutorHeader extends StatelessWidget {
                           },
                           child:
                           Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
                               Image(
                                       image: AssetImage(
                                           Style.of(context).pngAsset.learnTutor),
                                       height:height*0.5
-                              ),
-                              Spacer(),
-                              Expanded(
-                                  child:Text(
+                              ),Text(
                                 FlutterI18n.translate(context,"learn_screen.tutor_title"),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.visible,
@@ -69,7 +64,6 @@ class TutorHeader extends StatelessWidget {
                                     .copyWith(color: Color(0xFF0E2D45),
                                     fontSize: height*0.13
                                 ),
-                              )
                               )
                               ]
                           )
@@ -88,7 +82,7 @@ class TutorHeader extends StatelessWidget {
                           child:
 
                           Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
                                 Image(
@@ -96,18 +90,15 @@ class TutorHeader extends StatelessWidget {
                                         Style.of(context).pngAsset.learnSchedule),
                                     height:height*0.5
                                 ),
-                                Spacer(),
-                                Expanded(
-                                    child:Text(
-                                      FlutterI18n.translate(context,"learn_screen.schedule_title"),
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.visible,
-                                      style: mediumResponsiveFont(context,
-                                          fontWeight: FontWeight.w400)
-                                          .copyWith(color: Color(0xFF0E2D45),
-                                          fontSize: height*0.13
-                                      ),
-                                    )
+                                Text(
+                                  FlutterI18n.translate(context,"learn_screen.schedule_title"),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.visible,
+                                  style: mediumResponsiveFont(context,
+                                      fontWeight: FontWeight.w400)
+                                      .copyWith(color: Color(0xFF0E2D45),
+                                      fontSize: height*0.13
+                                  ),
                                 )
                               ]
                           )

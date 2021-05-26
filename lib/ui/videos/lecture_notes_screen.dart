@@ -86,17 +86,15 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
   Widget _buildContent() {
     double width;
     width = MediaQuery.of(context).size.width;
-    return Padding(
+    return
+      _loading ? Center(child: ProgressBar()) :
+      Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
             controller: _scrollController,
             child: Column(children: <Widget>[
               const SizedBox(height: 15),
-              _loading
-                  ? Center(
-                      child: ProgressBar(),
-                    )
-                  : Container(
+              Container(
                       margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
                       child: Html(
                         data: _htmlContent ?? "",
