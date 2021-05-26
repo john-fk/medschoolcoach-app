@@ -77,9 +77,9 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
                   child: CachedNetworkImage(
                     filterQuality: FilterQuality.high,
                     imageUrl: _url,
-                    placeholder: (context, url) => Expanded(
-                            child:Center(child:ProgressBar()
-                    )),
+                    placeholder: (context, url) =>
+                            Center(child:ProgressBar()
+                    ),
                     errorWidget: (context, url, dynamic error) =>
                         const Icon(Icons.error),
                   ))),

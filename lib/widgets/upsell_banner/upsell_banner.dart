@@ -11,77 +11,92 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 // ignore: must_be_immutable
 class UpsellBanner extends StatelessWidget {
-  Size size;
+  double size;
+  double width;
+  double fsize;
 
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;
-    final height = size.height / 8;
+    size = MediaQuery.of(context).size.height / 8;
+    double height = size > 100 ? size : 100.00;
+    height = whenDevice(context,
+        small: height * 1.25, medium: height, large: height);
+    final double width = MediaQuery.of(context).size.width -
+            whenDevice(context, large: 16, medium: 8, small: 8);
+    fsize = mediumResponsiveFont(context).fontSize;
     return
       Container(
-        padding: EdgeInsets.symmetric(vertical:10),
-      height: whenDevice(context,
-          small: height * 1.25, medium: height, large: height),
+          margin: EdgeInsets.symmetric(
+              horizontal:8.0, vertical:height/10),
+      height: height,
         child: Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             elevation: 5,
             shadowColor: Colors.black.withOpacity(0.1),
         child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: height*0.15,
+                vertical: height*0.15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Image(
+                Image(
                     image: AssetImage(
                         Style.of(context).pngAsset.progressTutor),
-                    fit: BoxFit.contain,
+                    height:height*0.5
                   ),
-                ),
-                SizedBox(width:10),
+                SizedBox(width:width*0.04),
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    AutoSizeText(
-                        FlutterI18n.translate(
-                          context,
-                          "progress_screen.tutor_title",
-                        ),
-                      maxLines:1,
-                      minFontSize: 0,
-                      stepGranularity: 0.1,
-                      textAlign: TextAlign.left,
-                      style: bigResponsiveFont(context,
-                          fontColor: FontColor.Accent,
-                          fontWeight: FontWeight.w800)
-                          .copyWith(color: Color(0xFF112D44)),
-                    ),
-                      SizedBox(height:height/20),
-                      AutoSizeText(FlutterI18n.translate(
-                        context,
-                        "progress_screen.tutor_content",
-                      ),
-                        maxLines:2,
+                  child: Container(color:Colors.white,
+                        child:
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      AutoSizeText(
+                          FlutterI18n.translate(
+                            context,
+                            "progress_screen.tutor_title",
+                          ),
+                        maxLines:1,
+                        maxFontSize: fsize,
+                        stepGranularity: 0.1,
                         overflow: TextOverflow.visible,
+                        wrapWords: false,
+                        softWrap: false,
                         textAlign: TextAlign.left,
                         style: mediumResponsiveFont(context,
-                            fontWeight: FontWeight.w400)
-                            .copyWith(color: Color(0xFF000000).withOpacity(0.5)
+                            fontColor: FontColor.Accent,
+                            fontWeight: FontWeight.w800)
+                            .copyWith(color: Color(0xFF112D44)),
+                      ),SizedBox(height:height*0.05),
+                        AutoSizeText(FlutterI18n.translate(
+                          context,
+                          "progress_screen.tutor_content_line1"
+                        ) + "\n" + FlutterI18n.translate(
+                            context,
+                            "progress_screen.tutor_content_line2"
                         ),
-                      )
-                    ],
-                  )
+                          maxLines:2,
+                          minFontSize: 0,
+                          maxFontSize: fsize,
+                          stepGranularity: 0.1,
+                          textAlign: TextAlign.left,
+                          style: mediumResponsiveFont(context,
+                              fontWeight: FontWeight.w400)
+                              .copyWith(color: Color(0xFF000000)
+                              .withOpacity(0.5)
+                          ),
+                        ),
+                      ]))
                 ),
-                SizedBox(width:10),
-                Expanded(
-                  flex: 2,
-                  child:FlatButton(
+                SizedBox(width:width*0.04),
+              Container(
+              width: width*0.3,
+              height: height*0.25,
+                child:
+                FlatButton(
                     onPressed: () {
                       Injector.appInstance
                           .getDependency<AnalyticsProvider>()
@@ -92,27 +107,29 @@ class UpsellBanner extends StatelessWidget {
                           context, AnalyticsConstants.screenTutoring,
                           isNavBar: false);
                     },
-                    padding:
-                    EdgeInsets.symmetric(
-                        vertical: 2, horizontal: 10),
                     color: Color.fromRGBO(20, 94, 215, 0.15),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    child: AutoSizeText(
-                      FlutterI18n.translate(
-                        context,
-                          "progress_screen.tutor_button",
-                      ),
-                      maxLines: 1,
-                      minFontSize: 0,
-                      stepGranularity: 0.1,
-                      style: bigResponsiveFont(context,
-                          fontColor: FontColor.Accent,
-                          fontWeight: FontWeight.w500),
-                    ),
+                    child:Padding(
+                          padding: EdgeInsets.symmetric(vertical:height*0.05),
+                          child:
+                          AutoSizeText(
+                            FlutterI18n.translate(
+                              context,
+                              "progress_screen.tutor_button",
+                            ),
+                            maxLines: 1,
+                            minFontSize: 0,
+                            stepGranularity: 0.1,
+                            maxFontSize: fsize,
+                            style: mediumResponsiveFont(context,
+                                fontColor: FontColor.Accent,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )
                   ),
-                )
-              ],
+              )],
             )),
       )
     );

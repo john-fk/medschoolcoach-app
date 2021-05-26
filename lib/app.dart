@@ -11,9 +11,7 @@ import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injector/injector.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_apns/flutter_apns.dart';
 import 'main.dart';
-import 'dart:io' show Platform;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -71,7 +69,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final PushConnector connector = createPushConnector();
   final AnalyticsProvider _analyticsProvider =
     Injector.appInstance.getDependency<AnalyticsProvider>();
 
@@ -96,39 +93,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _register() async {
-    if (Platform.isIOS || Platform.isMacOS) {
-      final connector = this.connector;
-      connector.configure(
-        onLaunch: (data) => onPush('onLaunch', data),
-        onResume: (data) => onPush('onResume', data),
-        onMessage: (data) => onPush('onMessage', data),
-        onBackgroundMessage: _onBackgroundMessage,
-      );
-
-      connector.token.addListener(() {
-        setToken(connector.token.value);
-      });
-      connector.requestNotificationPermissions();
-
-      if (connector is ApnsPushConnector) {
-        connector.shouldPresent = (x) => Future.value(true);
-      }
-    } else if(Platform.isAndroid){
-      //todo : also if platform is web
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-      _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          onPush('onMessage', message);
-        },
-        onLaunch: (Map<String, dynamic> message) async {
-          onPush('onLaunch', message);
-        },
-        onResume: (Map<String, dynamic> message) async {
-          onPush('onResume', message);
-        },
-      );
-      _firebaseMessaging.getToken().then(setToken);
-    }
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        onPush('onMessage', message);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        onPush('onLaunch', message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        onPush('onResume', message);
+      },
+    );
+    _firebaseMessaging.getToken().then(setToken);
   }
   void setToken(String token){
     _analyticsProvider.token = token;
@@ -141,9 +118,6 @@ class _MyAppState extends State<MyApp> {
     print(name);
     return null;
   }
-
-  Future<dynamic> _onBackgroundMessage(Map<String, dynamic> data) =>
-      onPush('onBackgroundMessage', data);
 
   @override
   Widget build(BuildContext context) {

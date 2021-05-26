@@ -402,7 +402,8 @@ progress_screen:
   get_started: Get Started
   tutor_button : Learn More
   tutor_title : Get Help From A Tutor
-  tutor_content : Need 1-1 time with 99th percentile tutors?
+  tutor_content_line1 : "Need 1-1 time with 99th"
+  tutor_content_line2 : "percentile tutors?     "
 
 learn_screen :
   tutor_title: Get help from a Tutor
