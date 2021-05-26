@@ -35,8 +35,6 @@
 	<string>MCAT Prep by MedSchoolCoach</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
-	<key>flutter_apns.disable_firebase_core</key>
-    <false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
