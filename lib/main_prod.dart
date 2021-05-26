@@ -5,6 +5,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/dependency_injection.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/utils/crash_reporting.dart';
 import 'package:Medschoolcoach/utils/notification_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,7 @@ Future<void> main() async {
   Config.showSwitch = false;
   final String initialRoute = await AppRouter.getInitialRoute();
 
+  await CrashReporting.initialize();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
   /// App supported orientations init

@@ -35,7 +35,6 @@ Future<void> main() async {
   final String initialRoute = await AppRouter.getInitialRoute();
 
   await CrashReporting.initialize();
-
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
   var enableDevicePreview = false;
