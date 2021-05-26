@@ -57,7 +57,8 @@ class _LearnScreenState extends State<LearnScreen>
           centerTitle: false,
           titleSpacing: 12,
           automaticallyImplyLeading: false,
-          bottom: ShrinkedTabBar(TabBar(
+          bottom: ShrinkedTabBar(
+          TabBar(
             controller: _tabController,
             indicatorWeight: 3,
             labelColor: Style.of(context).colors.accent,
@@ -67,7 +68,7 @@ class _LearnScreenState extends State<LearnScreen>
                 Style.of(context).colors.content.withOpacity(0.6),
             indicatorColor: Style.of(context).colors.accent,
             isScrollable: true,
-            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorSize: TabBarIndicatorSize.label,
             onTap: (int index) {
               var tabName = index == 0 ? "tab_schedule" : "tab_lesson";
               _analyticsProvider
@@ -76,13 +77,13 @@ class _LearnScreenState extends State<LearnScreen>
             tabs: [
               Padding(
                 padding: EdgeInsets.only(
-                    bottom: 10.0, right: 5, left: isTablet(context) ? 2 : 0),
+                    bottom: 10.0),
                 child: Text("Schedule"),
               ),
               Padding(
                   padding: EdgeInsets.only(
-                      bottom: 10.0, left: 5, right: isTablet(context) ? 2 : 0),
-                  child: Text("All Lessons")),
+                      bottom: 10.0),
+                  child: Text("Lessons")),
             ],
           )),
         ),
@@ -103,8 +104,9 @@ class ShrinkedTabBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [tabBar, Expanded(child: Container())],
+    return Padding(padding:EdgeInsets.only(left:4),
+        child:
+        Row(children: [tabBar, Expanded(child: Container())])
     );
   }
 

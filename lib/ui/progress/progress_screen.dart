@@ -112,10 +112,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     if (hasFailedLoading()) {
       return _emptyStateView();
     }
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: whenDevice(context, large: 8, medium: 4, small: 4)),
-      child:
+    return
       Column(
         children:[
           UpsellBanner(),
@@ -168,8 +165,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
             ),
           ),
         )),
-      ])
-    );
+      ]);
   }
 
   Widget _emptyStateView() {

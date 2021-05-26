@@ -18,11 +18,8 @@ class UpsellBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size.height / 8;
-    double height = size > 100 ? size : 100.00;
-    height = whenDevice(context,
-        small: height * 1.25, medium: height, large: height);
-    final double width = MediaQuery.of(context).size.width -
-            whenDevice(context, large: 16, medium: 8, small: 8);
+    double height = size > 96 ? size : 96.00;
+    final double width = MediaQuery.of(context).size.width;
     fsize = mediumResponsiveFont(context).fontSize;
     return
       Container(
@@ -48,23 +45,19 @@ class UpsellBanner extends StatelessWidget {
                   ),
                 SizedBox(width:width*0.04),
                 Expanded(
-                  child: Container(color:Colors.white,
-                        child:
+                  child:
                       Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      AutoSizeText(
+                        AutoSizeText(
                           FlutterI18n.translate(
                             context,
                             "progress_screen.tutor_title",
                           ),
+                        minFontSize: 0,
                         maxLines:1,
-                        maxFontSize: fsize,
                         stepGranularity: 0.1,
-                        overflow: TextOverflow.visible,
-                        wrapWords: false,
-                        softWrap: false,
                         textAlign: TextAlign.left,
                         style: mediumResponsiveFont(context,
                             fontColor: FontColor.Accent,
@@ -89,12 +82,12 @@ class UpsellBanner extends StatelessWidget {
                               .withOpacity(0.5)
                           ),
                         ),
-                      ]))
+                      ])
                 ),
                 SizedBox(width:width*0.04),
               Container(
               width: width*0.3,
-              height: height*0.25,
+              height: height*0.3,
                 child:
                 FlatButton(
                     onPressed: () {
@@ -112,7 +105,7 @@ class UpsellBanner extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     child:Padding(
-                          padding: EdgeInsets.symmetric(vertical:height*0.05),
+                          padding: EdgeInsets.symmetric(vertical:height*0.08),
                           child:
                           AutoSizeText(
                             FlutterI18n.translate(
