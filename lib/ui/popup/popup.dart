@@ -13,10 +13,6 @@ import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 class Popup {
   Future<void> showDialog(BuildContext context,int popupNumber,
                           AnalyticsProvider _analyticsProvider){
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    height = height * (isPortrait(context)? 0.5 : 0.8 );
-    width = width * (isPortrait(context)? 0.8 : 0.5 );
     Color background = popupNumber==1 ? Color(0xFF145ED7) : Color(0xFF67A2FF);
     Color cross = popupNumber==1 ? Color(0x7fffffff) : Color(0xFF145ED7);
     bool clicked=false;
@@ -36,16 +32,19 @@ class Popup {
       transitionDuration: Duration(milliseconds: 200),
       context: context,
       pageBuilder: (_, __, ___) {
-        return Wrap(
-            children:[
+        double screenHeight = MediaQuery.of(context).size.height;
+        double screenWidth = MediaQuery.of(context).size.width;
+        double height = screenHeight * (isPortrait(context)? 0.5 : 0.8 );
+        double width = screenWidth * (isPortrait(context)? 0.8 : 0.5 );
+        return
             Container(
                 decoration: BoxDecoration(
                 color: background,
                 borderRadius: BorderRadius.all(Radius.circular(20))
             ),
           margin: EdgeInsets.symmetric(
-                      horizontal:(MediaQuery.of(context).size.width-width)/2,
-                      vertical:(MediaQuery.of(context).size.height-height)/2
+                      horizontal:(screenWidth-width)/2,
+                      vertical:(screenHeight-height)/2
           ),
           height:height,
           width:width,
@@ -133,7 +132,7 @@ class Popup {
                 ),
          ]
         )
-        ))]);
+        ));
       },
       transitionBuilder: (context, a1, a2, child) {
         return Transform.scale(

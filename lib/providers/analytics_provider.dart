@@ -43,9 +43,7 @@ class AnalyticsProvider {
   }
 
   void setToken({bool remove=false}){
-    if (key!=null) {
-      print("TOKEN : " + token);
-
+    if (key!=null && token != null) {
       setPeopleProperties(<String, String>{
         key: token
       },remove:remove);

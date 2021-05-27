@@ -40,6 +40,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
         Routes.scheduleQuestionOfTheDay, widget.source);
     userManager = Injector.appInstance.getDependency<UserManager>();
     userManager.getQuestionOfTheDayTime().then((value) {
+      if (value == 0) value = 24;
       setState(() {
         sliderValue = (value ?? 12).toDouble();
       });

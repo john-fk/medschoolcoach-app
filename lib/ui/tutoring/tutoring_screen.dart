@@ -189,19 +189,21 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
                                       margin: EdgeInsets.fromLTRB(
                                           2.5, 2, 2.5, 15),
                                       child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         SizedBox(
                                           height : mediumResponsiveFont(context).fontSize * 1.2,
-                                          width : mediumResponsiveFont(context).fontSize * 3,
-                                          child:(
+                                          width : mediumResponsiveFont(context).fontSize * 1.3,
+                                          child:
                                                 Image(image:
                                                 AssetImage(checked ?
                                                     Style.of(context).pngAsset.tutoringChecked:
                                                     Style.of(context).pngAsset.tutoringUnchecked),
                                                 fit:BoxFit.fitHeight)
-                                              )
+
                                           ),
+                                        SizedBox(width : mediumResponsiveFont(context).fontSize),
                                           AutoSizeText(
                                               FlutterI18n.translate(context,
                                                   "tutoring_sliders.qualifier"),

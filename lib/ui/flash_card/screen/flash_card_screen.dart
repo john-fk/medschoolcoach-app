@@ -8,7 +8,6 @@ import 'package:Medschoolcoach/ui/flash_card/widgets/no_flashcards_widget.dart';
 import 'package:Medschoolcoach/utils/api/models/flashcards_stack_model.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
-import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -19,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:Medschoolcoach/widgets/app_bars/questions_app_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_html/style.dart' as medstyles;
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:injector/injector.dart';
 import 'flash_cards_stack.dart';
@@ -97,34 +95,8 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void _showFlashcardsHowTo() async {
-    final storage = FlutterSecureStorage();
-    final _seenHowTo = await storage.read(key: _howToFlashcard);
-    if (_seenHowTo == null) {
-      showGeneralDialog<void>(
-        barrierDismissible: false,
-        barrierLabel: '',
-        barrierColor: Colors.black38,
-        transitionDuration: Duration.zero,
-        pageBuilder: (ctx, anim1, anim2) => AlertDialog(
-          title: Text(FlutterI18n.translate(
-              context, "flashcards_tips.first_load_title")),
-          content: Text(FlutterI18n.translate(
-              context, "flashcards_tips.first_load_subtitle")),
-          elevation: 2,
-          actions: [
-            FlatButton(
-              child: Text(FlutterI18n.translate(
-                  context, "flashcards_tips.first_load_continue")),
-              onPressed: () {
-                Navigator.pop(context);
-                openModal();
-              },
-            ),
-          ],
-        ),
-        context: context,
-      );
-      await storage.write(key: _howToFlashcard, value: _howToSeen);
+    if (await FlutterSecureStorage().read(key: _howToFlashcard) == null) {
+      openModal(true);
     }
   }
 
@@ -261,14 +233,65 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     });
   }
 
-  void openModal() {
+  void openModal([bool isFirst=false]) {
     _analyticsProvider.logEvent(AnalyticsConstants.flashcardTutorial);
     openExplanationModal(
       context: context,
       fitHeight: isPortrait(context) ? true : false,
       title: FlutterI18n.translate(context, "flashcards_tips.welcome"),
-      content: _explanationContent(),
+      content: _explanationContent()
     );
+    if (isFirst) {
+      _firstTimer();
+      FlutterSecureStorage().write(key: _howToFlashcard, value: _howToSeen);
+    }
+  }
+
+  void _firstTimer(){
+    showGeneralDialog<void>(
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Color(0x00000000),
+      transitionDuration: Duration(milliseconds: 200),
+      pageBuilder: (ctx, anim1, anim2) =>
+          Material(
+          type: MaterialType.transparency,
+            child:  Wrap(
+                children:[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.25,
+                child:
+                Center(
+                    child:
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:[
+                          Image(
+                              image: AssetImage(
+                                  Style.of(context).pngAsset.handwave),
+                              height:MediaQuery.of(context).size.height * 0.1,
+                          ),
+                          SizedBox(
+                              height:MediaQuery.of(context).size.height * 0.01),
+                          Text(FlutterI18n.translate(
+                              context, "flashcards_tips.first_load_text"),
+                            style: biggerResponsiveFont(context,
+                                fontColor: FontColor.DividerColor)
+                                .copyWith(fontWeight: FontWeight.w500),
+                          )
+                        ])
+                )
+            )])
+          ),
+      transitionBuilder: (ctx, anim1, anim2, child) =>
+          FadeTransition(
+            child: child,
+            opacity: anim1,
+          ),
+      context: context,
+    ).then((value) {
+      Navigator.of(context, rootNavigator: true).pop();
+    });
   }
 
   Widget _explanationContent() {
@@ -276,7 +299,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
 
     return Column(children: [for (var i in tips) _buildTips(i)]);
   }
-
   Widget _buildTips(int tipsNumber) {
     return Container(
         margin: EdgeInsets.only(bottom: biggerResponsiveFont(context).fontSize),

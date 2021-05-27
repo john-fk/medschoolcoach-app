@@ -2,7 +2,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
-import 'package:Medschoolcoach/utils/sizes.dart';
+import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -22,6 +22,15 @@ class UpsellBanner extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width;
     fsize = mediumResponsiveFont(context).fontSize;
     return
+      GestureDetector(
+        onTap: () {
+      Injector.appInstance.getDependency<AnalyticsProvider>()
+          .logEvent(AnalyticsConstants.tapTutoringUpsell, params: null);
+      Routes.navigateToTutoringScreen(
+          context, AnalyticsConstants.screenTutoring,
+          isNavBar: false);
+    },
+    child:
       Container(
           margin: EdgeInsets.symmetric(
               horizontal:8.0, vertical:height/10),
@@ -87,44 +96,20 @@ class UpsellBanner extends StatelessWidget {
                 SizedBox(width:width*0.04),
               Container(
               width: width*0.3,
-              height: height*0.3,
+              height: height*0.3 ,
                 child:
-                FlatButton(
-                    onPressed: () {
-                      Injector.appInstance
-                          .getDependency<AnalyticsProvider>()
-                          .logEvent(AnalyticsConstants.tapTutoringUpsell,
-                          params: null);
-
-                      Routes.navigateToTutoringScreen(
-                          context, AnalyticsConstants.screenTutoring,
-                          isNavBar: false);
-                    },
-                    color: Color.fromRGBO(20, 94, 215, 0.15),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    child:Padding(
-                          padding: EdgeInsets.symmetric(vertical:height*0.08),
-                          child:
-                          AutoSizeText(
-                            FlutterI18n.translate(
-                              context,
-                              "progress_screen.tutor_button",
-                            ),
-                            maxLines: 1,
-                            minFontSize: 0,
-                            stepGranularity: 0.1,
-                            maxFontSize: fsize,
-                            style: mediumResponsiveFont(context,
-                                fontColor: FontColor.Accent,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        )
+                PrimaryButton(
+                  onPressed: () {},
+                  text: FlutterI18n.translate(
+                    context,
+                    "progress_screen.tutor_button",
                   ),
+                  fontColor: Color(0xFF145ED7),
+                  color: Color(0xFFdce7f9)
+                ),
               )],
             )),
       )
-    );
+    ));
   }
 }
