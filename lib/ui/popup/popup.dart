@@ -36,6 +36,8 @@ class Popup {
         double screenWidth = MediaQuery.of(context).size.width;
         double height = screenHeight * (isPortrait(context)? 0.5 : 0.8 );
         double width = screenWidth * (isPortrait(context)? 0.8 : 0.5 );
+        double leftMarginText = popupNumber==1
+                                && !isPortrait(context) ? width*0.05:0;
         return
             Container(
                 decoration: BoxDecoration(
@@ -70,7 +72,7 @@ class Popup {
                       ),
                 )),
                 Container(
-                  margin:EdgeInsets.only(right:width*0.05),
+                  margin:EdgeInsets.only(right:width*0.05,left:leftMarginText),
                   alignment: popupNumber == 1 ? Alignment.topLeft : Alignment.topCenter,
                   child:
                   AutoSizeText(
@@ -83,7 +85,7 @@ class Popup {
                       )
                 ),
                 Container(
-                    margin:EdgeInsets.only(right:width*0.05),
+                    margin:EdgeInsets.only(right:width*0.05,left:leftMarginText),
                     alignment: popupNumber == 1 ? Alignment.topLeft : Alignment.topCenter,
                     child:
                       AutoSizeText(
@@ -97,7 +99,7 @@ class Popup {
                 ),
                 Spacer(),
                 Container(
-                  margin:EdgeInsets.only(right:width*0.05),
+                  margin:EdgeInsets.only(right:width*0.05,),
                   alignment: Alignment.center,
                   height:height*0.5,
                   child:
