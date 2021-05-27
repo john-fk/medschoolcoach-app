@@ -15,6 +15,13 @@ class UpsellBanner extends StatelessWidget {
   double width;
   double fsize;
 
+  void clicked(BuildContext context){
+    Injector.appInstance.getDependency<AnalyticsProvider>()
+        .logEvent(AnalyticsConstants.tapTutoringUpsell, params: null);
+    Routes.navigateToTutoringScreen(
+        context, AnalyticsConstants.screenTutoring,
+        isNavBar: false);
+  }
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size.height / 8;
@@ -24,11 +31,7 @@ class UpsellBanner extends StatelessWidget {
     return
       GestureDetector(
         onTap: () {
-      Injector.appInstance.getDependency<AnalyticsProvider>()
-          .logEvent(AnalyticsConstants.tapTutoringUpsell, params: null);
-      Routes.navigateToTutoringScreen(
-          context, AnalyticsConstants.screenTutoring,
-          isNavBar: false);
+          clicked(context);
     },
     child:
       Container(
@@ -99,7 +102,7 @@ class UpsellBanner extends StatelessWidget {
               height: height*0.3 ,
                 child:
                 PrimaryButton(
-                  onPressed: () {},
+                  onPressed: () => clicked(context),
                   text: FlutterI18n.translate(
                     context,
                     "progress_screen.tutor_button",

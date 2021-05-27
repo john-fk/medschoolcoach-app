@@ -2,12 +2,15 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:Medschoolcoach/utils/size_provider.dart';
+
+typedef CloseBarrierContent(double height);
 
 void openExplanationModal(
     {@required BuildContext context,
     @required Widget content,
     @required String title,
-    VoidCallback closeBarrierContent,
+    CloseBarrierContent closeBarrierContent,
     bool fitHeight = true}) {
 
   Widget _content() {
@@ -49,8 +52,6 @@ void openExplanationModal(
                               iconSize: whenDevice(context,
                                   large: 25.0, tablet: 40.0),
                               onPressed: () {
-                                if (closeBarrierContent != null)
-                                  closeBarrierContent();
                                 Navigator.pop(context);
                               },
                             )),
@@ -68,7 +69,9 @@ void openExplanationModal(
       context: context,
       isScrollControlled: fitHeight,
       builder: (context) {
-        return fitHeight
+        return SizeProviderWidget(
+            child:
+            fitHeight
             ? Container(
                 child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -81,6 +84,10 @@ void openExplanationModal(
                       child: Wrap(children: [_content()])),
                 ],
               ))
-            : _content();
+            : _content()
+            ,onChildSize: (size){
+              if (closeBarrierContent!=null) closeBarrierContent(size.height);
+            },
+        );
       });
 }

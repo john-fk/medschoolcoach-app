@@ -239,15 +239,15 @@ class _FlashCardScreenState extends State<FlashCardScreen>
       context: context,
       fitHeight: isPortrait(context) ? true : false,
       title: FlutterI18n.translate(context, "flashcards_tips.welcome"),
-      content: _explanationContent()
+      content: _explanationContent(),
+      closeBarrierContent: isFirst ? _firstTimer : null
     );
     if (isFirst) {
-      _firstTimer();
       FlutterSecureStorage().write(key: _howToFlashcard, value: _howToSeen);
     }
   }
 
-  void _firstTimer(){
+  void _firstTimer(double height){
     showGeneralDialog<void>(
       barrierDismissible: true,
       barrierLabel: '',
@@ -259,7 +259,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
             child:  Wrap(
                 children:[
               Container(
-                height: MediaQuery.of(context).size.height * 0.25,
+                height: height,
                 child:
                 Center(
                     child:
@@ -359,4 +359,6 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     ]);
     super.dispose();
   }
+
+
 }
