@@ -259,7 +259,8 @@ class _FlashCardScreenState extends State<FlashCardScreen>
             child:  Wrap(
                 children:[
               Container(
-                height: height,
+                padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
+                height: MediaQuery.of(context).size.height - height,
                 child:
                 Center(
                     child:
