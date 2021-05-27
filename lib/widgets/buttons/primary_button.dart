@@ -13,6 +13,7 @@ class PrimaryButton extends StatelessWidget {
   final Color color;
   final bool isSmall;
   final Color fontColor;
+  final double fontSize;
 
   PrimaryButton({
     @required this.text,
@@ -22,6 +23,7 @@ class PrimaryButton extends StatelessWidget {
     this.isSmall = false,
     this.color,
     this.fontColor,
+    this.fontSize,
     Key key,
   }) : super(key: key);
 
@@ -56,10 +58,11 @@ class PrimaryButton extends StatelessWidget {
                   maxLines:1,
                   minFontSize: 0,
                   stepGranularity: 0.1,
-                  maxFontSize: normalResponsiveFont(context).fontSize,
+                  maxFontSize: fontSize ?? normalResponsiveFont(context).fontSize,
                   style:TextStyle(
                     fontWeight: FontWeight.w500,
-                    color:fontColor ?? getFontColor(context,FontColor.Content2)
+                    color:fontColor ?? getFontColor(context,FontColor.Content2),
+                    fontSize: fontSize ?? normalResponsiveFont(context).fontSize
                   ),
                   textAlign: TextAlign.center,
                   ),

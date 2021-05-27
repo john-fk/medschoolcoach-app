@@ -2,6 +2,7 @@ import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class UpsellBanner extends StatelessWidget {
             shadowColor: Colors.black.withOpacity(0.1),
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: height*0.15,
-                vertical: height*0.15),
+                vertical: height*0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,6 +108,8 @@ class UpsellBanner extends StatelessWidget {
                     context,
                     "progress_screen.tutor_button",
                   ),
+                  fontSize: whenDevice(context, medium: 15,
+                      large: 20, tablet: 25),
                   fontColor: Color(0xFF145ED7),
                   color: Color(0xFFdce7f9)
                 ),

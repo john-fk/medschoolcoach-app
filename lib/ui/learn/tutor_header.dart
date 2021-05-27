@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -32,7 +33,7 @@ class TutorHeader extends StatelessWidget {
                 side: BorderSide(width: 1, color: Color(0xFFEFF1F6))),
             child: Padding(
                 padding:  EdgeInsets.symmetric(
-                    vertical:height*0.12,horizontal:10
+                    vertical:height*0.12
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -47,18 +48,23 @@ class TutorHeader extends StatelessWidget {
                             getTutor();
                           },
                           child:
-                          Column(
+                          Padding(
+                              padding:EdgeInsets.symmetric(horizontal:10),
+                              child:Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
                               Image(
-                                      image: AssetImage(
-                                          Style.of(context).pngAsset.learnTutor),
-                                      height:height*0.5
-                              ),Text(
+                                    image: AssetImage(
+                                        Style.of(context).pngAsset.learnTutor),
+                                    height:height*0.5
+                              ),
+                                AutoSizeText(
                                 FlutterI18n.translate(context,"learn_screen.tutor_title"),
                                 textAlign: TextAlign.center,
-                                overflow: TextOverflow.visible,
+                                minFontSize: 0,
+                                maxLines:1,
+                                stepGranularity: 0.1,
                                 style: mediumResponsiveFont(context,
                                     fontWeight: FontWeight.w400)
                                     .copyWith(color: Color(0xFF0E2D45),
@@ -66,6 +72,7 @@ class TutorHeader extends StatelessWidget {
                                 ),
                               )
                               ]
+                          )
                           )
                       ),
                     ),
@@ -80,27 +87,32 @@ class TutorHeader extends StatelessWidget {
                             changeSchedule();
                           },
                           child:
-
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children:[
-                                Image(
-                                    image: AssetImage(
-                                        Style.of(context).pngAsset.learnSchedule),
-                                    height:height*0.5
-                                ),
-                                Text(
-                                  FlutterI18n.translate(context,"learn_screen.schedule_title"),
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.visible,
-                                  style: mediumResponsiveFont(context,
-                                      fontWeight: FontWeight.w400)
-                                      .copyWith(color: Color(0xFF0E2D45),
-                                      fontSize: height*0.13
+                          Padding(
+                              padding:EdgeInsets.symmetric(horizontal:10),
+                          child:
+                            Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children:[
+                                  Image(
+                                      image: AssetImage(
+                                          Style.of(context).pngAsset.learnSchedule),
+                                      height:height*0.5
                                   ),
-                                )
-                              ]
+                                  AutoSizeText(
+                                    FlutterI18n.translate(context,"learn_screen.schedule_title"),
+                                    textAlign: TextAlign.center,
+                                    minFontSize: 0,
+                                    maxLines:1,
+                                    stepGranularity: 0.1,
+                                    style: mediumResponsiveFont(context,
+                                        fontWeight: FontWeight.w400)
+                                        .copyWith(color: Color(0xFF0E2D45),
+                                        fontSize: height*0.13
+                                    ),
+                                  )
+                                ]
+                            )
                           )
                       ),
                     ),
