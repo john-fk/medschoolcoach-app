@@ -80,7 +80,8 @@ class UpsellBanner extends StatelessWidget {
                         AutoSizeText(FlutterI18n.translate(
                           context,
                           "progress_screen.tutor_content_line1"
-                        ) + "\n" + FlutterI18n.translate(
+                        ) + (isTablet(context) ?" ": "\n")
+                        + FlutterI18n.translate(
                             context,
                             "progress_screen.tutor_content_line2"
                         ),
