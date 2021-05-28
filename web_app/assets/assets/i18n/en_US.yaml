@@ -1,0 +1,435 @@
+general:
+  cancel: Cancel
+  continue: Continue
+  success: Success
+  error: Error
+  congratulations: Congratulations!
+  warning: Warning
+  confirm: Confirm
+  updating: Updating...
+  save: Save
+  next: Next
+  remove: Remove
+  net_error : Something went wrong, please try again and make sure your internet is active
+common:
+  tutoring: Tutoring
+  premium: Premium
+  flash_cards: Flashcards
+  questions: Questions
+home_screen:
+  lessons: Lessons
+  practice: Practice
+  user_header: Hello {user}!
+  premium_account: PREMIUM ACCOUNT
+  recently_watched: Recently Watched
+  categories: Lesson Categories
+  up_next: "Up Next"
+  day: "Day {number}"
+  continue_watching: CONTINUE WATCHING
+  watched: "{number}% watched"
+  lesson: "LESSON {number}"
+  see_full_schedule_button: See full schedule
+  get_started: Get Started
+  pick_schedule: Let’s rock your MCAT
+  video_watched_toast: Video marked as watched
+  video_unwatched_toast: Video marked as unwatched
+  video: Video
+  question_of_the_day: Questions Of The Day
+  flashcards: Flashcards
+  question_bank: Question Bank
+bloc_example_screen:
+  title: Provider BLoC example
+  click_to_delete: Click to delete
+api_example_screen:
+  title: Api example
+  fetched_only_once: This image is fetched only once and can be refetched by pressing FAB button
+  fetched_every_10s: This image is fetched every 10 seconds
+login_screen:
+  login_header: Login
+  login_button_text: Sign in
+  password_label: Password
+  forgot_password: Forgot Password?
+  need_an_account: Need an account?
+text_field_labels:
+  email_label: Email
+  first_name: First Name
+  last_name: Last Name
+  phone: Phone Number
+  password_label: Password
+  school_label: Undergraduate School​
+  graduation_year_label​: Graduation Year​
+  test_date_label: Projected MCAT Test Date
+  new_password: New Password
+  confirm_new_password: Confirm New Password
+validator_errors:
+  required: This field cannot be empty
+  email: Wrong email format
+  lenght: "This field must contain at least {number} characters"
+  password: "Your password must contain: "
+  country_code: Wrong format
+  phone_too_short: Phone number too short
+forgot_password_screen:
+  forgot_password_header: Forgot password?
+  forgot_password_description: Please enter your email address. We will send you a link to reset your password.
+  forgot_password_button_text: Reset password
+  forgot_password_resend: "Having trouble logging in? Please contact "
+  dialog_title: Password reset request sent!
+  dialog_message: A password reset message was sent to your email address. Please click the link in the message to reset your password.
+welcome_screen:
+  header: All you need to achieve MCAT success
+  register: Sign up! It's free.
+  login: Already have an account? Sign in
+  session_expired_dialog_title: Session expired
+  session_expired_dialog_text: Your session has expired. Please sign in again.
+navigation_bar:
+  home: Home
+  search: Search
+  more: More
+  close: Close
+  tutoring: Tutoring
+  schedule: Schedule
+  progress: Progress
+  learn: Learn
+  profile: Profile
+  practice: Practice
+register_screen:
+  register_header: Register
+  register_button_text: Sign Up
+  terms_of_service_intro: "By signing up you agree with "
+  terms_of_service: Terms of Service
+  terms_of_service_and: " and "
+  privacy_policy: Privacy Policy
+  dialog_title: Registration completed successfully!
+  dialog_message: Welcome to MCAT Prep by MedSchoolCoach.
+errors:
+  global_api_error: An error has occurred, please try again
+  no_internet: Please check your internet connection and refresh page
+  no_internet_no_refresh: Please check your internet connection and try again
+  no_data: Nothing to show
+  wrong_credentials: Wrong email or password
+  no_search_result: Sorry, no videos were found matching your search
+  unavailable_email: An account with this email already exists
+more_screen:
+  videos: Videos
+  questions: Question Bank
+  logout: Logout
+  logout_dialog_text: Are you sure you want to logout?
+  youtube: Watch us on YouTube
+  link_mnemonics: MCAT Mnemonics
+  link_flashcards: MCAT Flashcards
+  link_secrets: Pre-Med Secrets
+  facebook: Like us on Facebook
+  instagram: Follow us on Instagram
+  support: Feedback
+  my_account: My Account
+  question_of_the_day: Question of the Day
+  test_date: Test Date
+  study_time_per_day: Study Time Per Day
+lesson_screen:
+  lesson: Lesson {order}
+  next_lesson: Next Lesson
+  previous_lesson: Previous Lesson
+  premium_features: Premium Features
+  other_options: Other options
+  lecture_notes: Lecture Notes
+  whiteboard_notes: Whiteboard Notes
+  podcast: Podcast
+  tutoring: Get tutoring on this topic
+video_screen:
+  error: Could not retrvie video - tap on the screen to return
+  commercial: Commercial - {name}
+  next: Next video
+  minimize: Minimize
+  speed: Speed
+  quality: Quality
+search:
+  text_too_short: The term must be at least 2 characters
+  search_hint: Search for a lesson
+videos_screen:
+  pick_category: Pick Category
+app_bar:
+  section_subtitle: "{number} lessons"
+  topic_subtitle: "{number}% completed"
+password_requirments:
+  length: At least 8 characters
+  requirements: "At least 2 of the following:"
+  lower_case: Lower case letters (a-z)
+  uper_case: Uper case letters (A-Z)
+  number: Numbers (0-9)
+  special: Special characters (ex. !@#)
+flashcard_screen:
+  flashcards: Flashcards
+  flip: Flip
+  next: Next
+  confidence_interval: Confidence Interval
+  example: "Example:"
+  new: NEW
+  seen: SEEN
+  no_flashcards:
+    title: No flashcards found
+    subject: Please try a different subject.
+    confidence: Start with a section below and mark your confidence to access it here later.
+    video: Please try a different video.
+  no_more:
+    title: No more Flashcards
+    subtitle: You have reviewed all Flashcards from this set, please try a different one.
+flashcards_bank:
+  pick_subject: Pick Subject
+  review_by_status: Review by confidence interval
+  emoji_flagged: "Practice flashcards you marked "
+  flashcards_count: "{number} flashcards"
+question_screen:
+  next_question: Next Question
+  view_explanation: View Explanation
+  explanation: Explanation
+  title: Questions
+  pick_subject: Pick Subject
+  new: New questions
+  correct: Correctly answered questions
+  wrong: Incorrectly answered questions
+  flagged: Flagged questions
+  summerize: Summarize
+  review_by_status: Review by status
+  no_questions_subject: No questions available for selected subject
+  no_questions_lesson: No questions available for selected lesson
+  no_new_questions: No new questions available
+  no_answers: No answered questions yet
+  no_flagged_questions: No flagged questions yet
+  questions_count: "{number} questions"
+  question_index: "Question {index}"
+  your_answer: Your answer
+  correct_answer: Correct answer
+  other_users_percentage: "{percentage}% of all users answered this question correctly"
+premium_modal:
+  description: We are hard at work building some awesome new features. Stay tuned!
+  coming_soon: Coming soon
+schedule_screen:
+  pick_schedule: Set your schedule length
+  update_schedule: Change your schedule length
+  pick_schedule_length: Pick your schedule length
+  schedule_days: "{number} days"
+  schedule_completed: You have completed your schedule. Start a new one or take a look at the completed lessons.
+  start_new_schedule: Start new schedule
+  dialog_description: This action will change your current schedule length. Are you sure you want to continue?
+  lessons_completed: All lessons completed
+  day: Day
+  watched: Mark watched
+  unwatched: Mark unwatched
+  days_left: days left before your test
+  day_left: day left before your test
+  days_left_schedule: days left to finish your schedule
+  day_left_schedule: day left to finish your schedule
+  speed_up_schedule: I want to speed up my schedule
+  change_schedule: Change My Schedule
+bookmarks:
+  title: Bookmarked Videos
+  empty_state: No bookmarks yet
+  single_lesson: 1 lesson
+refer_friend_cell:
+  line1: Studying is Better Together
+  line2: Give your friends MCAT Prep
+  line3: and we'll send you
+  line4: Pre-Med Swag
+  button: Invite a Friend
+refer_friend_screen:
+  line1: Studying is Better Together
+  line2: "Invite a friend to download the MCAT Prep app and we'll send you a $5 credit to the MSC Swag Store"
+  link: MSC Pre-Med Swag Store
+  button: Invite a Friend
+  name: Friend's First Name
+  surname: Friend's Last Name
+  email: Friend's Email
+  success: Email invitation to {name} has been sent.
+feedback_screen:
+  support: Feedback
+  hint: Type your message...
+  message_label: Please tell us how we can help!
+  button: Send Message
+  success: Your message has been sent successfully. The support team will contact you ASAP!
+  phone: Phone number (optional)
+  request_type: What happened?
+  bug: I found a bug/error in the app
+  feature: I have a feature request
+  question: I have a question about my account
+  content: I found a content related error
+  tick: Tick at least one checkbox
+  some_fields: Some fields have been no been filled correctly
+go_premium_screen:
+  confirm: Sign up
+  not_now: Not now
+  title: Go Premium
+  text1: → Live Weekly MCAT Office Hours
+  text2: → QBank (1,500+)
+  text3: → Flashcards (800+)
+  text4: → Whiteboard Snapshots (275+)
+  text5: → Downloadable Audio Lectures
+  text6: → Lecture Notes (500+)
+  text7: → Study Scheduler
+  plan1:
+    name: 1 Month
+    prize: $19.90
+  plan2:
+    name: 6 Months
+    prize: $59.90
+    discount: Save 12%
+  plan3:
+    name: 1 Year
+    prize: $99.90
+    discount: Save 30%
+global_progress:
+  name: Your Progress
+  course: Course Progress
+  watched: Total Lessons Watched
+  questions: Total Questions Completed
+  flashcards: Total Flashcards Reviewed
+  locked_flashcards: Go Premium and unlock Flashcards!
+  locked_questions: Go Premium and unlock Questions!
+flashcards_tips:
+  first_load_title : Welcome to Flashcard
+  first_load_subtitle : We will first show you how to navigate through the Flash cards
+  first_load_continue: Continue
+  welcome: HOW TO USE
+  tips1_title: Tap the card
+  tips1_subtitle: View the reverse side
+  tips2_title: Swipe left
+  tips2_subtitle: Indicate negative confidence
+  tips3_title: Swipe down
+  tips3_subtitle: Indicate neutral confidence
+  tips4_title: Swipe right
+  tips4_subtitle: Indicate positive confidence
+  tips5_title : Shake to undo
+  tips5_subtitle: Return to previous card
+  positive : Positive Confidence
+  negative : Negative Confidence
+  neutral : Neutral Confidence
+  return : Returned To Previous Card
+flashcards_how_to:
+  welcome: Welcome to Flashcards
+  flip: Tap on the card to flip it
+  swipe_right: Swipe right to see the previous card
+  swipe_left: Swipe left to see the next card
+  rotate: Rotate to use in landscape mode
+  got_it: Got it!
+  confidence: Mark your confidence interval to determine which cards you need to review again
+  next: Click to view the next card
+profile_screen:
+  buddies_tab: Buddies
+  stats_tab: My Stats
+  invite_status_sent: Sent
+  invite_status_signed_up: Signed up
+  flashcards_milestones: Flashcards Milestones
+  questions_milestones: Questions Milestones
+  videos_milestones: Videos Milestones
+settings_screen:
+  header: Edit profile
+  update: Update profile
+  dialog_header: Update completed successfully!
+  dialog_text: Your profile details have been updated.
+tutoring_modal:
+  button: GET STARTED
+  request_dialog_header: Information is on its way!
+  request_dialog_error_message: There was an error sending your request. Please try again.
+  request_dialog_message: Check your email for more information about our tutoring program. Want more info now?
+  request_dialog_button: Give us a call (617) 299-2601
+tutoring_sliders:
+  qualifier: I'm Taking the MCAT Within a Year
+  slider_one_header: 12 POINT SCORE IMPROVEMENT
+  slider_one_description: On average, the student part of our tutoring program score 12 points higher than their previous exam scores.
+  slider_two_header: COMPLETELY PERSONALIZED
+  slider_two_description: Our MCAT tutoring is completly personalized to you. From day one, we’ll work on indentifying your goals, your strengths and your weaknesses so that we can tailor the most effective program possible.
+  slider_three_header: 99TH PERCENTILE TUTORS
+  slider_three_description: Other companies settle for tutors who scored in the 85th percentile or better , we do not. Our tutors have all scored between 130-132 on each section of the exam they tutor.
+  slider_four_header: Guaranteed Score Increase
+  slider_four_description: We incluede a promise of an improved MCAT score or we'll work with you again for free!
+  slider_five_header: Study Smarter, Not Harder
+  slider_five_description: We focus on the highest yield topics and strategies to improve MCAT scores.
+  slider_six_header: Invest in Your Future
+  slider_six_description: You've come this far. Let our experts help you get into the medical school of your dreams.
+tutoring_request_info_dialog:
+  call_us_now: Call Us Now
+  dialog_header: Get In Touch
+  schedule_a_meeting: Schedule a Free Consultation
+question_of_the_day:
+  skip: Skip
+  heading: What time do you normally study?
+  subheading: Practice makes perfect. We can send you daily questions to help you prepare more effectively.
+  morning: Morning
+  noon: Noon
+  evening: Evening
+  message: You can change this in your settings at any time
+  i_dont_want_daily_notifications: I DON'T WANT DAILY NOTIFICATIONS
+
+onboarding_scheduling:
+  heading: When are you taking the test?
+  subheading: By setting a test date, we are able to give you helpful suggestions and reminders about your upcoming test.
+  heading2: How much time do you want to spend studying?
+  subheading2: By setting how much time you want to spend per day studying, we are able to pace your learning schedule to help you be more successful.
+  select_test_date: Select Test Date
+  i_dont_have_test_date: I DON'T HAVE A TEST DATE YET
+  hr_per_day: hrs per day
+  edit_test_date: Edit Test Date
+  remove_test_date: Remove Test Date
+  expected_completion_date: Your expected completion date is
+  are_you_sure: Are You Sure?
+  remove_date_dialog_content: Are you sure you want to remove your test date.
+
+new_user_onboarding:
+  heading: MCAT Prep - No.1 Practice App for Prospective Doctors
+  get_access_to: Get Access To
+  extensive_lessons_from_top_medical_experts: Entensive Lessons From Top Medical Experts
+  practice_with: Practice With
+  flashcards_and_question: Flashcards And Questions
+  pace_your_own_schedule: Pace your own schedule
+  adjust_anytime: " - Adjust anytime"
+  track_and_speed_progress: Track and speed up your progress with us
+  we_are_just_a_call_away: " - We are just a call away"
+  explore_our_features: EXPLORE OUR FEATURES
+
+progress_screen:
+  course_progress: Course Progress
+  practice: Practice
+  view_schedule: View your schedule
+  question_bank: Question Bank
+  subject: Subject
+  flashcards: Flashcards
+  goto_question_bank: Go to Question Bank
+  goto_flashcards: Go to Flashcards
+  no_progress: You haven't made enough progress yet
+  no_flashcards: You haven't completed any flashcards yet
+  no_questions: You haven't completed any questions yet
+  see_questions: See Questions
+  try_flashcards: Try Flashcards
+  get_started: Get Started
+  tutor_button : Learn More
+  tutor_title : Get help from a Tutor
+  tutor_content : Need 1-1 time with 99th percentile tutors?
+
+learn_screen :
+  tutor_title: Get help from a Tutor
+  schedule_title : Change My Schedule
+
+upsell_banner:
+  banner_text: Want to know how we can help you get the results you’re looking for faster?
+  button_text: Learn More
+
+calendar:
+  error_msg: "Your test is approaching quickly. The fastest schedule we provide from start to finish is 15 days."
+
+old_user_onboarding:
+  share_your_schedule: "Share your schedule preference to help us "
+  tailor: "tailor "
+  your: "your "
+  learning: "learning"
+
+empty_state:
+  title: "Oops!"
+  message: "We were unable to load your updates.\n\n Please try again when you have a valid internet connection."
+  button: "Try Again"
+
+tutor_popup:
+  popup_1_button : GET HELP FROM A TUTOR
+  popup_1_title : STUDYING
+  popup_1_subtitle : is more effective with a COACH
+  popup_2_button : GET STARTED
+  popup_2_title : SPEED UP YOUR PROGRESS
+  popup_2_subtitle : with a hand crafted schedule
