@@ -424,7 +424,6 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     setState(() {
         isLoading = 1;
     });
-    await reportClick();
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringScheduleAMeeting,
         params: {
           AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring
@@ -448,7 +447,7 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     }
   }
   Future _flagForTutoringUpsell() async {
-
+    await reportClick();
     _analyticsProvider
         .logEvent(AnalyticsConstants.tapExploreOptions, params: {
       AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
@@ -468,7 +467,6 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
     setState(() {
       isLoading = 0;
     });
-    reportClick();
     _analyticsProvider.logEvent(AnalyticsConstants.tapTutoringCallUs, params: {
       AnalyticsConstants.keySource: AnalyticsConstants.screenTutoring,
       AnalyticsConstants.keyEmail: userRepository.userLoggingEmail,

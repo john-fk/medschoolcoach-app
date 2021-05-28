@@ -98,7 +98,8 @@ class NavigationBar extends StatelessWidget {
                         image: AssetImage(page == NavigationPage.Practice
                             ? Style.of(context).pngAsset.practiceActive
                             : Style.of(context).pngAsset.practice),
-                        height: iconSize),
+                        height: iconSize,
+                        width: iconSize),
                     onPressed: () => _openPracticeScreen(context),
                     label: FlutterI18n.translate(
                       context,

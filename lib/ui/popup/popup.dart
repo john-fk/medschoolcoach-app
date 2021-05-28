@@ -117,6 +117,7 @@ class Popup {
                     width: width * 0.55,
                     child:
                     PrimaryButton(
+                      autoShrink: true,
                       color: Colors.white,
                       fontColor : Color(0xFF145ED7),
                       text: FlutterI18n.translate(
