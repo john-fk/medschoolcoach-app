@@ -437,9 +437,15 @@ class _TutoringScreenPageState extends State<TutoringScreen> {
   }
 
   Future reportClick() async{
-    await Injector.appInstance
-        .getDependency<ApiServices>()
-        .requestForTutoringUpsell(checked);
+    if (checked) {
+      await Injector.appInstance
+          .getDependency<ApiServices>()
+          .requestTutoringInfo();
+    } else {
+      await Injector.appInstance
+          .getDependency<ApiServices>()
+          .requestForTutoringUpsell();
+    }
   }
   Future _flagForTutoringUpsell() async {
 

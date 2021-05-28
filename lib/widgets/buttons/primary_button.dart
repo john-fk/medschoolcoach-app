@@ -12,8 +12,9 @@ class PrimaryButton extends StatelessWidget {
   final EdgeInsets margin;
   final Color color;
   final bool isSmall;
-  final Color fontColor;
-  final double fontSize;
+  final bool autoShrink;
+  Color fontColor;
+  double fontSize;
 
   PrimaryButton({
     @required this.text,
@@ -24,11 +25,15 @@ class PrimaryButton extends StatelessWidget {
     this.color,
     this.fontColor,
     this.fontSize,
+    this.autoShrink = false,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    fontSize = fontSize ?? normalResponsiveFont(context).fontSize;
+    fontColor = fontColor ?? getFontColor(context,FontColor.Content2);
+
     return Container(
       margin: margin,
       width: double.infinity,
@@ -53,19 +58,28 @@ class PrimaryButton extends StatelessWidget {
               ? Center(
                   child: ButtonProgressBar(),
                 )
-              : AutoSizeText(
+              : autoShrink ?
+                AutoSizeText(
                   text,
                   maxLines:1,
                   minFontSize: 0,
                   stepGranularity: 0.1,
-                  maxFontSize: fontSize ?? normalResponsiveFont(context).fontSize,
+                  maxFontSize: fontSize,
                   style:TextStyle(
                     fontWeight: FontWeight.w500,
                     color:fontColor ?? getFontColor(context,FontColor.Content2),
                     fontSize: fontSize ?? normalResponsiveFont(context).fontSize
                   ),
-                  textAlign: TextAlign.center,
+                ):
+                Text(
+                  text,
+                  style:TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: fontColor,
+                    fontSize: fontSize
                   ),
+                  textAlign: TextAlign.center,
+                ),
           color: color ?? Style.of(context).colors.accent,
         ),
       ),
