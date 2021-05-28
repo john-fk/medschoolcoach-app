@@ -35,9 +35,12 @@ class Popup {
         double screenHeight = MediaQuery.of(context).size.height;
         double screenWidth = MediaQuery.of(context).size.width;
         double height = screenHeight * (isPortrait(context)? 0.5 : 0.8 );
-        double width = screenWidth * (isPortrait(context)? 0.8 : 0.5 );
-        double leftMarginText = popupNumber==1
-                                && !isPortrait(context) ? width*0.05:0;
+        double width = height * 0.9;
+        width = width > screenWidth*0.9 ? screenWidth*0.9 : width;
+
+        double leftMarginText = popupNumber==1?
+                                (width-width*0.05-height*0.5*1.5)/2:0;
+
         return
             Container(
                 decoration: BoxDecoration(
@@ -64,11 +67,11 @@ class Popup {
                           alignment: Alignment.centerRight,
                           child: Image.asset(
                               Style.of(context).pngAsset.iconClose,
-                              height:height*0.03,
+                              height:(isPortrait(context)?height:width)*0.03,
                               color:cross
                           ),
                           padding: EdgeInsets.fromLTRB(width*0.1, height*0.03,
-                              width*0.05,width*0.05)
+                              height*0.03,width*0.05)
                       ),
                 )),
                 Container(
@@ -119,6 +122,7 @@ class Popup {
                     PrimaryButton(
                       autoShrink: true,
                       color: Colors.white,
+                      fontSize: bigResponsiveFont(context).fontSize,
                       fontColor : Color(0xFF145ED7),
                       text: FlutterI18n.translate(
                           context, "tutor_popup.popup_${popupNumber}_button"),

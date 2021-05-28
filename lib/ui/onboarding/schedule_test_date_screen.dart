@@ -41,8 +41,6 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.source == Routes.schedule)
-        _analyticsProvider.logEvent(AnalyticsConstants.tapViewMySchedule);
     _analyticsProvider.logScreenView(Routes.scheduleTestDate, widget.source);
     dateController = DateRangePickerController();
     userManager.getTestDate().then((value) {

@@ -10,6 +10,9 @@ import 'package:Medschoolcoach/utils/format_date.dart';
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:injector/injector.dart';
 
 enum ProgressType {
   Behind,
@@ -41,6 +44,9 @@ class CourseProgressCardState extends State<CourseProgressCard>
   ProgressType track;
   ScheduleStats scheduleProgress;
   bool showLoading = true;
+  final AnalyticsProvider _analyticsProvider =
+  Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   void initState() {
     super.initState();
@@ -140,6 +146,7 @@ class CourseProgressCardState extends State<CourseProgressCard>
         child: PrimaryButton(
           text: "View My Schedule",
           onPressed: () {
+            _analyticsProvider.logEvent(AnalyticsConstants.tapViewMySchedule);
             Navigator.of(context)
                 .pushNamed(Routes.schedule, arguments: Routes.progressScreen);
           },
