@@ -8,10 +8,7 @@ import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injector/injector.dart';
-import 'package:flutter_apns/flutter_apns.dart';
-import 'package:universal_io/io.dart'  show Platform;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -97,15 +94,6 @@ class _MyAppState extends State<MyApp> {
     if (_analyticsProvider.key != null)
       _analyticsProvider.setToken();
   }
-
-  //todo: implement onPush in different states if required
-  Future<dynamic> onPush(String name, RemoteMessage payload) {
-    print(name);
-    return null;
-  }
-
-  Future<dynamic> _onBackgroundMessage(RemoteMessage data) =>
-      onPush('onBackgroundMessage', data);
 
   @override
   Widget build(BuildContext context) {

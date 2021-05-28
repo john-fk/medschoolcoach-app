@@ -23,7 +23,7 @@ import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/ui/onboarding/local_notification.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
- import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart';
 import 'dart:core';
 
 class WelcomeScreen extends StatefulWidget {
