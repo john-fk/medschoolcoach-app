@@ -12,7 +12,6 @@ class MorePageListCell extends StatelessWidget {
   final String trailing;
   final VoidCallback onTap;
   final bool intend;
-  final bool svgAsset;
   double iconSize;
   final double trailingOpacity;
 
@@ -22,7 +21,6 @@ class MorePageListCell extends StatelessWidget {
       @required this.onTap,
       this.trailing = "",
       this.intend = false,
-      this.svgAsset = true,
       this.iconSize,
       this.trailingOpacity = 1.0});
 
@@ -31,10 +29,13 @@ class MorePageListCell extends StatelessWidget {
     if (iconSize == null) {
       iconSize = whenDevice(
         context,
-        large: 23.0,
-        tablet: 28.0,
+        large: 28.0,
+        tablet: 34.0,
       );
     }
+
+    bool svgAsset = iconAssetName.split(".")
+        .last.toLowerCase() != "png";
 
     return InkWellSplash(
       key: Key(cellText),

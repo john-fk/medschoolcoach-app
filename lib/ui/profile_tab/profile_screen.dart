@@ -85,7 +85,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                 children: <Widget>[
                   MorePageListCell(
                       iconAssetName:
-                          Style.of(context).svgAsset.profileMyAccount,
+                          Style.of(context).pngAsset.profileAccount,
                       cellText: FlutterI18n.translate(
                         context,
                         "more_screen.my_account",
@@ -105,8 +105,8 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                                 : "ON";
                         return MorePageListCell(
                           iconAssetName: Style.of(context)
-                              .svgAsset
-                              .profileQuestionOfTheDay,
+                              .pngAsset
+                              .profileNotification,
                           cellText: FlutterI18n.translate(
                             context,
                             "more_screen.question_of_the_day",
@@ -133,7 +133,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                             : formatDate(snapshot.data, "MM/dd/yyyy");
                         return MorePageListCell(
                           iconAssetName:
-                              Style.of(context).svgAsset.profileTestDate,
+                              Style.of(context).pngAsset.profileDate,
                           cellText: FlutterI18n.translate(
                             context,
                             "more_screen.test_date",
@@ -158,7 +158,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                                 : "${snapshot.data} hours";
                         return MorePageListCell(
                           iconAssetName:
-                              Style.of(context).svgAsset.profileStopWatch,
+                              Style.of(context).pngAsset.profileTime,
                           cellText: FlutterI18n.translate(
                             context,
                             "more_screen.study_time_per_day",
@@ -174,7 +174,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                       }),
                   MorePageListCell(
                       iconAssetName:
-                          Style.of(context).svgAsset.profileBookmarkVideos,
+                          Style.of(context).pngAsset.profileBookmark,
                       cellText: FlutterI18n.translate(
                         context,
                         "bookmarks.title",
@@ -184,12 +184,6 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                         setState(() {});
                       }),
                   MorePageListCell(
-                    svgAsset: false,
-                    iconSize: whenDevice(
-                      context,
-                      large: 28.0,
-                      tablet: 34.0,
-                    ),
                     iconAssetName: Style.of(context).pngAsset.support,
                     cellText: FlutterI18n.translate(
                       context,
@@ -200,7 +194,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                     ),
                   ),
                   MorePageListCell(
-                    iconAssetName: Style.of(context).svgAsset.profileLogout,
+                    iconAssetName: Style.of(context).pngAsset.profileLogout,
                     cellText: FlutterI18n.translate(
                       context,
                       "more_screen.logout",
@@ -255,7 +249,6 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                       "more_screen.facebook",
                     ),
                     onTap: () => _openSocialMediaWebsite(Config.facebook),
-                    svgAsset: false,
                   ),
                   MorePageListCell(
                     iconAssetName: Style.of(context).pngAsset.instagram,
@@ -263,8 +256,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                       context,
                       "more_screen.instagram",
                     ),
-                    onTap: () => _openSocialMediaWebsite(Config.instagram),
-                    svgAsset: false,
+                    onTap: () => _openSocialMediaWebsite(Config.instagram)
                   ),
                   ReferFriendCell(AnalyticsConstants.screenMore),
                 ],

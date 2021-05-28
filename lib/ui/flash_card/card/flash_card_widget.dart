@@ -143,12 +143,6 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
     }
   }
 
-  void _setFlashcardStatus(FlashcardStatus status) {
-    setState(() {
-      _flashcardStatus = status;
-    });
-  }
-
   void _nextFlashcard(
       {bool increase = true,
       String trigger = "swipe",
@@ -175,7 +169,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget>
       widget.changeCardIndex(increase: increase, cardstatus: cardstatus);
       _flashCardSwipe.currentState.hideCard(hide: false);
       Future.delayed(Duration(milliseconds: Durations.cardFadeGap), () {
-        _flashCardBottom.currentState.preventClick = false;
+        if (_flashCardBottom.currentState != null)
+          _flashCardBottom.currentState.preventClick = false;
       });
     });
   }

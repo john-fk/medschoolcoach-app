@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
@@ -108,7 +109,8 @@ class UpsellBanner extends StatelessWidget {
                     "progress_screen.tutor_button",
                   ),
                   autoShrink: true,
-                  fontSize: biggerResponsiveFont(context).fontSize,
+                  fontSize: whenDevice(context, medium: 15, large: 20,
+                      tablet: 25),
                   fontColor: Color(0xFF145ED7),
                   color: Color(0xFFdce7f9)
                 ),

@@ -85,9 +85,14 @@ class _AppPngAssets {
   final flipTips = "assets/png/flip_tips";
 
   //profile screen
-  final support ="assets/png/support.png";
+  final support = "assets/png/support.png";
+  final profileAccount = "assets/png/profile_account.png";
+  final profileNotification = "assets/png/profile_notification.png";
+  final profileDate = "assets/png/profile_date.png";
+  final profileLogout = "assets/png/profile_logout.png";
+  final profileBookmark = "assets/png/profile_bookmark.png";
+  final profileTime = "assets/png/profile_time.png";
 }
-
 class _AppSvgAssets {
   final loginHeader = "assets/svg/login_header.svg";
   final welcomeScreenBackground = "assets/svg/welcome_screen_background.svg";
@@ -150,11 +155,4 @@ class _AppSvgAssets {
 
   final scienceLady = "assets/svg/science_lady.svg";
 
-  //Profile menu icons
-  final profileMyAccount = "assets/svg/profile_account.svg";
-  final profileBookmarkVideos = "assets/svg/profile_bookmark.svg";
-  final profileQuestionOfTheDay = "assets/svg/profile_question_of_the_day.svg";
-  final profileTestDate = "assets/svg/profile_test_date.svg";
-  final profileStopWatch = "assets/svg/profile_stopwatch.svg";
-  final profileLogout = "assets/svg/profile_logout.svg";
 }
