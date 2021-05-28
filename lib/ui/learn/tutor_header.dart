@@ -18,7 +18,7 @@ class TutorHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
-    final height = size.height * 0.125 > 100 ? size.height *0.125 : 100.00;
+    final height = size.height * 0.15 > 100 ? size.height * 0.15 : 100.00;
     return
       Container(
           margin: EdgeInsets.only(bottom:height*0.1),
@@ -57,7 +57,7 @@ class TutorHeader extends StatelessWidget {
                               Image(
                                     image: AssetImage(
                                         Style.of(context).pngAsset.learnTutor),
-                                    height:height*0.5
+                                    height:height*0.45
                               ),
                                 AutoSizeText(
                                 FlutterI18n.translate(context,"learn_screen.tutor_title"),
@@ -97,7 +97,7 @@ class TutorHeader extends StatelessWidget {
                                   Image(
                                       image: AssetImage(
                                           Style.of(context).pngAsset.learnSchedule),
-                                      height:height*0.5
+                                      height:height*0.45
                                   ),
                                   AutoSizeText(
                                     FlutterI18n.translate(context,"learn_screen.schedule_title"),
