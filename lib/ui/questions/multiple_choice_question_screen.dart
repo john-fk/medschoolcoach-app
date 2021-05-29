@@ -289,6 +289,7 @@ class _MultipleChoiceQuestionScreenState
                 fontColor: FontColor.White, opacity: 0.5))
       ]),
       onTap: () {
+        if (_selectedIndex==null) return;
         _logQuestionEvent(AnalyticsConstants.tapViewExplanation);
         openExplanationModal(
           context: context,
@@ -302,6 +303,7 @@ class _MultipleChoiceQuestionScreenState
   }
 
   Future<void> _onTap() async {
+    if (_selectedIndex==null) return;
     bool initialValue = _favourite;
 
     setState(() {
@@ -511,6 +513,7 @@ class _MultipleChoiceQuestionScreenState
               text: answer.text,
               optionLetter: answer.optionLetter,
               onPressed: () async {{
+                if (_previousQuestionIndex == _currentQuestionIndex) return;
                 SuperStateful.of(context).popupAddQuestions();
                 if (_selectedIndex == null)
                   if (answer.isCorrect) {
@@ -572,7 +575,42 @@ class _MultipleChoiceQuestionScreenState
     _logShowAnswersEvent(index);
 
     _answeredQuestionsIds.add(_questionsList[_currentQuestionIndex].id);
+    //skip rebuild if nothing changes
+    if (!((index == 0 && _answers[index].isCorrect)
+        || (index == 1 && _answers[0].isCorrect))) {
+      int answersLength = _answers.length - 1;
+      List<Answer> tempAnswers = List.of(_answers);
+      Answer changedItem;
+      //reorder : first removes, seconds re-add.
+      for (int i = answersLength; i >= 0; i--)
+        if (!tempAnswers[i].isCorrect) {
+          changedItem = _answers.removeAt(i);
+          builder(BuildContext context,
+              Animation animation,) {
+            return _buildListItem(
+              changedItem,
+              animation,
+              i,
+            );
+          }
+          _listKey.currentState.removeItem(
+              i,
+              builder,
+              duration: _animationDuration);
+        }
+      bool isCorrect = tempAnswers[index].isCorrect;
+      for (int newOrder = 1; newOrder < tempAnswers.length; newOrder++) {
+        if (!isCorrect && newOrder == 1)
+          _answers.insert(newOrder,tempAnswers[index]);
+        else _answers.insert(newOrder,
+            tempAnswers.where((value) => !_answers.contains(value)).first);
 
+        changedItem = _answers[newOrder];
+        _listKey.currentState.insertItem(
+            newOrder,
+            duration: _animationDuration);
+      }
+    }
     if (isQOTD)
       SuperStateful.of(context)
           .answeredQuestionsIds

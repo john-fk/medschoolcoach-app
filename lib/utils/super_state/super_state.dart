@@ -31,7 +31,6 @@ import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:Medschoolcoach/utils/storage.dart';
 import 'package:Medschoolcoach/utils/storage.dart';
@@ -78,8 +77,13 @@ class PopupData{
       this.wrongCards  = 0
     ]);
 
+    final int maxPopups = 2;
+    final int cQuestions = 30;
+    final int cVideos = 20;
+    final int cCards = 30;
+
     bool ignore(){
-      return popupNumber == 2;
+      return popupNumber == maxPopups;
     }
     factory PopupData.fromJson(Map<String, dynamic> json) {
       return PopupData(
@@ -101,7 +105,7 @@ class PopupData{
 
     //force trigger show if 3x consecutive wrong question / low confidence card
     void triggerShow(){
-      if (popupNumber < 2 && popupNumber == popupNumberShown)
+      if (popupNumber < maxPopups && popupNumber == popupNumberShown)
           popupNumber = popupNumberShown + 1;
       updateData();
     }
@@ -110,8 +114,9 @@ class PopupData{
     int shouldShow() {
       if (popupNumber != popupNumberShown)
         return popupNumber;
-      else if (popupNumber < 2 && popupNumber == popupNumberShown &&
-          (questions >= 30 || videos >= 20 || flashcards >= 30 ) ) {
+      else if (popupNumber < maxPopups && popupNumber == popupNumberShown &&
+          (questions > cQuestions || videos > cVideos || flashcards > cCards)
+          ) {
           popupNumber = popupNumberShown+1;
           updateData();
           return popupNumber;
@@ -501,9 +506,9 @@ class SuperState extends State<SuperStateful> {
   void popupCountVideos({bool add=true}){
     if(localTutorPopup.ignore()) return;
     if (add)
-      localTutorPopup.flashcards++ ;
-    else if (localTutorPopup.flashcards > 0)
-      localTutorPopup.flashcards--;
+      localTutorPopup.videos++ ;
+    else if (localTutorPopup.videos > 0)
+      localTutorPopup.videos--;
 
     localTutorPopup.updateData();
   }

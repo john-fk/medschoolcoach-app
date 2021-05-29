@@ -1,4 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
+import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/repository/flashcard_repository.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/square_feature_button.dart';
 import 'package:Medschoolcoach/ui/lesson/widgets/wide_feature_button.dart';
@@ -21,7 +23,7 @@ class PremiumUserCards extends StatelessWidget {
   final VoidCallback pausePlayer;
   final VoidCallback resumePlayer;
 
-  const PremiumUserCards({
+  PremiumUserCards({
     Key key,
     @required this.sidePaddingValue,
     @required this.video,
@@ -29,8 +31,12 @@ class PremiumUserCards extends StatelessWidget {
     @required this.resumePlayer
   }) : super(key: key);
 
+  final AnalyticsProvider _analyticsProvider =
+  Injector.appInstance.getDependency<AnalyticsProvider>();
+
   @override
   Widget build(BuildContext context) {
+
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: sidePaddingValue),
@@ -167,6 +173,11 @@ class PremiumUserCards extends StatelessWidget {
               size: iconSize,
             ),
             onTap: () => {
+              _analyticsProvider.logEvent(AnalyticsConstants.tapLectureNotes,
+                  params: {
+                    AnalyticsConstants.keyLessonName: video.name,
+                    AnalyticsConstants.keySubjectId: video.id
+              }),
               pausePlayer(),
               _openLectureNotesScreen(context)
             },
@@ -181,6 +192,11 @@ class PremiumUserCards extends StatelessWidget {
               height: iconSize,
             ),
             onTap: () => {
+            _analyticsProvider.logEvent(AnalyticsConstants.tapWhiteboardNotes,
+                params: {
+                  AnalyticsConstants.keyLessonName: video.name,
+                  AnalyticsConstants.keySubjectId: video.id
+                }),
               pausePlayer(),
               _openWhiteboardNotesScreen(context)
             },

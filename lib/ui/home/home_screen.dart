@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _analyticsProvider.logScreenView(
         AnalyticsConstants.screenHome, widget.source);
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
+        (_) async {
         //ensure popup has loaded latest data
         int popupID = await SuperStateful.of(context).loadPopupData();
 
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (popupID > 0 && ModalRoute
               .of(context)
               .isCurrent) {
-            Popup().showDialog(context, 1, _analyticsProvider);
+            Popup().showDialog(context, popupID, _analyticsProvider);
             SuperStateful.of(context).shownTutorPopup(popupID);
           }
         }

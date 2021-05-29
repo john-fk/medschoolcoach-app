@@ -7,7 +7,6 @@ import 'package:Medschoolcoach/utils/navigation/routes.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 
@@ -20,6 +19,12 @@ class Popup {
     width = width * (isPortrait(context)? 0.8 : 0.5 );
     Color background = popupNumber==1 ? Color(0xFF145ED7) : Color(0xFF67A2FF);
     Color cross = popupNumber==1 ? Color(0x7fffffff) : Color(0xFF145ED7);
+    bool clicked=false;
+
+    void dismissScreenAnalytics(){
+      _analyticsProvider.logEvent(AnalyticsConstants.tapPopupDismiss,
+          params: {"popup_number": popupNumber.toString()});
+    }
 
     _analyticsProvider.logEvent(AnalyticsConstants.tutorPopupScreen,
         params: {"popup_number": popupNumber.toString() });
@@ -53,7 +58,7 @@ class Popup {
                   alignment: Alignment.centerRight,
                   child:
                   InkWell(
-                      onTap: ()=> Navigator.pop(context),
+                      onTap: ()=>Navigator.pop(context),
                       child:Container(
                           alignment: Alignment.centerRight,
                           child: Image.asset(
@@ -108,6 +113,7 @@ class Popup {
                     alignment: Alignment.center,
                     margin:EdgeInsets.only(right:width*0.05),
                     height: height*0.1,
+                    width: width * 0.55,
                     child:
                     PrimaryButton(
                       color: Colors.white,
@@ -115,6 +121,7 @@ class Popup {
                       text: FlutterI18n.translate(
                           context, "tutor_popup.popup_${popupNumber}_button"),
                       onPressed: () {
+                        clicked=true;
                         Navigator.of(context).pop();
                         _analyticsProvider.logEvent(AnalyticsConstants.tapPopup,
                             params: {"popup_number": popupNumber.toString()});
@@ -122,7 +129,6 @@ class Popup {
                             context, AnalyticsConstants.tapPopup,
                             isNavBar: false);
                       },
-                      margin: EdgeInsets.symmetric(horizontal: 10),
                     ),
                 ),
          ]
@@ -138,6 +144,8 @@ class Popup {
             ),
           );
         },
-    );
+    ).then((value){
+      if (!clicked) dismissScreenAnalytics();
+    });
   }
 }

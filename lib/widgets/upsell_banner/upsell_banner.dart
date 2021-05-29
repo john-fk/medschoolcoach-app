@@ -7,6 +7,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 // ignore: must_be_immutable
 class UpsellBanner extends StatelessWidget {
@@ -46,11 +47,14 @@ class UpsellBanner extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    Text(
+                    AutoSizeText(
                         FlutterI18n.translate(
                           context,
                           "progress_screen.tutor_title",
                         ),
+                      maxLines:1,
+                      minFontSize: 0,
+                      stepGranularity: 0.1,
                       textAlign: TextAlign.left,
                       style: bigResponsiveFont(context,
                           fontColor: FontColor.Accent,
@@ -58,10 +62,12 @@ class UpsellBanner extends StatelessWidget {
                           .copyWith(color: Color(0xFF112D44)),
                     ),
                       SizedBox(height:height/20),
-                      Text(FlutterI18n.translate(
+                      AutoSizeText(FlutterI18n.translate(
                         context,
                         "progress_screen.tutor_content",
                       ),
+                        maxLines:2,
+                        overflow: TextOverflow.visible,
                         textAlign: TextAlign.left,
                         style: mediumResponsiveFont(context,
                             fontWeight: FontWeight.w400)
@@ -80,6 +86,7 @@ class UpsellBanner extends StatelessWidget {
                           .getDependency<AnalyticsProvider>()
                           .logEvent(AnalyticsConstants.tapTutoringUpsell,
                           params: null);
+
                       Routes.navigateToTutoringScreen(
                           context, AnalyticsConstants.screenTutoring,
                           isNavBar: false);
@@ -90,11 +97,14 @@ class UpsellBanner extends StatelessWidget {
                     color: Color.fromRGBO(20, 94, 215, 0.15),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    child: Text(
+                    child: AutoSizeText(
                       FlutterI18n.translate(
                         context,
                           "progress_screen.tutor_button",
                       ),
+                      maxLines: 1,
+                      minFontSize: 0,
+                      stepGranularity: 0.1,
                       style: bigResponsiveFont(context,
                           fontColor: FontColor.Accent,
                           fontWeight: FontWeight.w500),
