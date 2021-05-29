@@ -252,7 +252,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
         _analyticsProvider.logScreenView("screen_auth", Routes.welcome);
         var response = await _authService.loginAuth0(isLogin);
-        if (!response.didSucceed) return;
 
         var eventName =
             isLogin ? AnalyticsConstants.signIn : AnalyticsConstants.signUp;
@@ -297,7 +296,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
     var data = await apiServices.getAccountData();
     final hasOnboarded = data?.onboarded ?? false;
-    QOTD = data.qotd;
+    QOTD = data?.qotd??false;
 
     return !hasOnboarded;
   }
