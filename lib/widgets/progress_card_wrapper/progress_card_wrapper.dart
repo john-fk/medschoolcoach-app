@@ -149,14 +149,13 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
                     buttonText: widget.isFlashCard
                         ? "progress_screen.try_flashcards"
                         : "progress_screen.see_questions",
-                    icon: widget.isFlashCard
-                        ? Icons.flash_on
-                        : Icons.help_outline_rounded,
+                    image: widget.isFlashCard
+                        ? Style.of(context).pngAsset.flashcard
+                        : Style.of(context).pngAsset.questionbank
                   )
-                : widget.isFlashCard
-                    ? PracticeProgressCard(
+                :   PracticeProgressCard(
                         cardData: ProgressCardData(
-                            graphData: [
+                            graphData: widget.isFlashCard ? [
                               RadianGraphData(
                                   label: "Positive Confidence",
                                   percent: positive,
@@ -169,22 +168,16 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
                                   label: "Negative Confidence",
                                   percent: negative,
                                   color: Style.of(context).colors.questions),
-                            ],
-                            graphSubtitle: attempted.toString(),
-                            graphTitle: "Total Attempted"),
-                      )
-                    : PracticeProgressCard(
-                        cardData: ProgressCardData(
-                            graphData: [
+                            ]: [
                               RadianGraphData(
-                                  label: "Correctly Answered",
-                                  percent: correct,
-                                  color: Style.of(context).colors.accent4),
+                                label: "Correctly Answered",
+                                percent: correct,
+                                color: Style.of(context).colors.accent4),
                               RadianGraphData(
-                                  label: "Incorrectly Answered",
-                                  percent: incorrect,
-                                  color: Style.of(context).colors.questions),
-                            ],
+                                label: "Incorrectly Answered",
+                                percent: incorrect,
+                                color: Style.of(context).colors.questions),
+                              ],
                             graphSubtitle: attempted.toString(),
                             graphTitle: "Total Attempted"),
                       ),

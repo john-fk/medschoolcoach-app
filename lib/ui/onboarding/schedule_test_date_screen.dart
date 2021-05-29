@@ -131,6 +131,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   }
 
   void _onPressSecondaryButton() {
+    if (isLoading != -1 ) return;
     if (scheduleDate == null) {
       _analyticsProvider.logEvent(AnalyticsConstants.tapTestDateSkip, params: null);
       Navigator.pushNamed(context, Routes.timePerDay,
@@ -141,6 +142,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
   }
 
   void showCustomDatePicker() {
+    if (isLoading != -1 ) return;
     if (scheduleDate != null) dateController.selectedDate = scheduleDate;
     showDialog<Dialog>(
         context: context,

@@ -1,16 +1,17 @@
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
+import 'package:Medschoolcoach/utils/size_provider.dart';
+
+typedef CloseBarrierContent(double height);
 
 void openExplanationModal(
     {@required BuildContext context,
     @required Widget content,
     @required String title,
+    CloseBarrierContent closeBarrierContent,
     bool fitHeight = true}) {
-  final width = MediaQuery.of(context).size.width;
 
   Widget _content() {
     return Padding(
@@ -63,13 +64,14 @@ void openExplanationModal(
                       : content
                 ])));
   }
-
   showModalBottomSheet<void>(
       backgroundColor: medstyles.Style.of(context).colors.accent,
       context: context,
       isScrollControlled: fitHeight,
       builder: (context) {
-        return fitHeight
+        return SizeProviderWidget(
+            child:
+            fitHeight
             ? Container(
                 child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -82,6 +84,10 @@ void openExplanationModal(
                       child: Wrap(children: [_content()])),
                 ],
               ))
-            : _content();
+            : _content()
+            ,onChildSize: (size){
+              if (closeBarrierContent!=null) closeBarrierContent(size.height);
+            },
+        );
       });
 }

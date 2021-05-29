@@ -3,7 +3,7 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
+import 'package:Medschoolcoach/utils/sizes.dart';
 class PracticeProgressCard extends StatefulWidget {
   final ProgressCardData cardData;
 
@@ -39,16 +39,17 @@ class _PracticeProgressCardState extends State<PracticeProgressCard>
                         data.color, data.label, "${data.percent}%"))
                     .toList()),
           ),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+          SizedBox(width: 5),
           Flexible(
               flex: 3,
               child: Center(
                 child: Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    height: MediaQuery.of(context).size.width / 3,
-                    width: MediaQuery.of(context).size.width / 3,
+                    margin: EdgeInsets.only(bottom: 20,right:15),
+                    height: MediaQuery.of(context).size.width * 0.35,
+                    width: MediaQuery.of(context).size.width * 0.35,
                     child: progressViewGraph()),
               ))
+
         ],
       ),
     );

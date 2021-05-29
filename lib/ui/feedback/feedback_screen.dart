@@ -111,7 +111,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               text: FlutterI18n.translate(context, "feedback_screen.button"),
               onPressed: _submit,
               isLoading: _loading,
-              key: const Key("feedbackSubmit"),
+              key: const Key("feedbackSubmit")
             ),
           ],
         ),

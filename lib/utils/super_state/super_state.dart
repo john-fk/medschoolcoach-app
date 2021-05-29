@@ -115,7 +115,7 @@ class PopupData{
       if (popupNumber != popupNumberShown)
         return popupNumber;
       else if (popupNumber < maxPopups && popupNumber == popupNumberShown &&
-          (questions > cQuestions || videos > cVideos || flashcards > cCards)
+          (questions >= cQuestions || videos >= cVideos || flashcards >= cCards)
           ) {
           popupNumber = popupNumberShown+1;
           updateData();

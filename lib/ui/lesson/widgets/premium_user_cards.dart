@@ -216,6 +216,7 @@ class PremiumUserCards extends StatelessWidget {
                 Routes.flashCard,
                 arguments: FlashcardsStackArguments(
                     videoId: video.id,
+                    subjectName: video.name,
                     source: AnalyticsConstants.screenLessonVideo),
               ),
             },

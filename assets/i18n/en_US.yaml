@@ -285,9 +285,7 @@ global_progress:
   locked_flashcards: Go Premium and unlock Flashcards!
   locked_questions: Go Premium and unlock Questions!
 flashcards_tips:
-  first_load_title : Welcome to Flashcard
-  first_load_subtitle : We will first show you how to navigate through the Flash cards
-  first_load_continue: Continue
+  first_load_text: Welcome to Flashcards!
   welcome: HOW TO USE
   tips1_title: Tap the card
   tips1_subtitle: View the reverse side
@@ -401,11 +399,12 @@ progress_screen:
   try_flashcards: Try Flashcards
   get_started: Get Started
   tutor_button : Learn More
-  tutor_title : Get help from a Tutor
-  tutor_content : Need 1-1 time with 99th percentile tutors?
+  tutor_title : Get Help From A Tutor
+  tutor_content_line1 : "Need 1-1 time with 99th"
+  tutor_content_line2 : "percentile tutors?     "
 
 learn_screen :
-  tutor_title: Get help from a Tutor
+  tutor_title: Get Help From A Tutor
   schedule_title : Change My Schedule
 
 upsell_banner:

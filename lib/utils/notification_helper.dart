@@ -30,7 +30,7 @@ Future<void> initNotifications(
     notifs.FlutterLocalNotificationsPlugin notifsPlugin,
     GlobalKey<NavigatorState> navigatorKey) async {
   var initializationSettingsAndroid =
-      notifs.AndroidInitializationSettings('ic_notification');
+      notifs.AndroidInitializationSettings('app_icon');
   var initializationSettingsIOS = notifs.IOSInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -103,6 +103,7 @@ Future<void> scheduleNotification(
     id.toString(),
     title,
     body,
+    color: Color(0xFF147af3),
     playSound: true,
     importance: notifs.Importance.high,
   );

@@ -6,14 +6,14 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 
 class NoProgressCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final String image;
   final String text;
   final String buttonText;
   final VoidCallback onTapButton;
 
   NoProgressCard(
       {this.title = "",
-      this.icon,
+      this.image,
       this.text,
       this.buttonText,
       this.onTapButton});
@@ -29,10 +29,9 @@ class NoProgressCard extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 90,
-                color: Style.of(context).colors.background3,
+              Image(
+                image:  AssetImage(image),
+                height: 90
               ),
               SizedBox(
                 height: 20,

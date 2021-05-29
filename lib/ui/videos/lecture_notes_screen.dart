@@ -5,7 +5,6 @@ import 'package:Medschoolcoach/utils/api/models/lecturenote.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:Medschoolcoach/utils/super_state/super_state.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
-import 'package:Medschoolcoach/widgets/navigation_bar/navigation_bar.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -52,7 +51,6 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
@@ -87,17 +85,15 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
   Widget _buildContent() {
     double width;
     width = MediaQuery.of(context).size.width;
-    return Padding(
+    return
+      _loading ? Center(child: ProgressBar()) :
+      Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
             controller: _scrollController,
             child: Column(children: <Widget>[
               const SizedBox(height: 15),
-              _loading
-                  ? Center(
-                      child: ProgressBar(),
-                    )
-                  : Container(
+              Container(
                       margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
                       child: Html(
                         data: _htmlContent ?? "",
