@@ -1,9 +1,7 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/config.dart';
-import 'package:universal_io/io.dart'  show Platform;
 
 class AnalyticsProvider {
-  String _distinctId;
   String token;
   String key;
 
@@ -13,7 +11,7 @@ class AnalyticsProvider {
   }
 
 
-  Future initialize([String token=Config.prodMixPanelToken]) async {
+  Future initialize([String token = Config.prodMixPanelToken]) async {
     return null;
   }
 
@@ -25,16 +23,17 @@ class AnalyticsProvider {
     return null;
   }
 
-  String keyDevice(){
+  String keyDevice() {
     return null;
   }
 
-  void setToken({bool remove=false}){
+  void setToken({bool remove = false}) {
     return null;
   }
 
 
-  Future<void> setPeopleProperties(Map<String, dynamic> props,{bool remove=false}) async{
+  Future<void> setPeopleProperties(Map<String, dynamic> props,
+      {bool remove = false}) async {
     return null;
   }
 
@@ -57,10 +56,12 @@ class AnalyticsProvider {
     }
     return args;
   }
-  Future<void> reset() async{
+
+  Future<void> reset() async {
     return null;
   }
-  // ignore: avoid_positional_boolean_parameters
+
+// ignore: avoid_positional_boolean_parameters
   void logVideoBookMarkEvent(bool isRemove, String videoId, String videoName) {
     logEvent(
         isRemove
@@ -69,8 +70,7 @@ class AnalyticsProvider {
         params: getVideoParam(videoId, videoName));
   }
 
-  void logAccountManagementEvent(
-      // ignore: avoid_positional_boolean_parameters
+  void logAccountManagementEvent( // ignore: avoid_positional_boolean_parameters
       String event,
       String email,
       bool isSuccess,
@@ -82,3 +82,4 @@ class AnalyticsProvider {
     });
   }
 }
+
