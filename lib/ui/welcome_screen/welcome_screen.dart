@@ -296,7 +296,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
     var data = await apiServices.getAccountData();
     final hasOnboarded = data?.onboarded ?? false;
-    QOTD = data?.qotd??false;
+    QOTD = data?.qotd;
 
     return !hasOnboarded;
   }
