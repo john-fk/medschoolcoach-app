@@ -116,13 +116,18 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
                 SizedBox(width:3),
                 Expanded(
                   child:
-                    AutoSizeText(
-                      "${FlutterI18n.translate(context, "progress_screen.subject")} :   ${selectedSubject}",
-                      maxLines:2,
-                      minFontSize: 0,
-                      stepGranularity: 0.1,
-                        style: smallResponsiveFont(context,
-                            fontWeight: FontWeight.w400, opacity: 0.5),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child:
+                        AutoSizeText(
+                          selectedSubject,
+                          textAlign: TextAlign.right,
+                          maxLines:2,
+                          minFontSize: 0,
+                          stepGranularity: 0.1,
+                          style: smallResponsiveFont(context,
+                              fontWeight: FontWeight.w400, opacity: 0.5),
+                        )
                       )
                 ),
                 SizedBox(width:1),
@@ -241,7 +246,7 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
     );
   }
 
-  Widget _filterDropDown({Function(String) onChanged, String selectedSubject}) {
+  Widget  _filterDropDown({Function(String) onChanged, String selectedSubject}) {
     return PopupMenuButton(
         itemBuilder: (context) => localSubjects.map((subject) {
               return PopupMenuItem(
