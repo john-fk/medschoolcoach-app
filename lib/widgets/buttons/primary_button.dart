@@ -15,6 +15,7 @@ class PrimaryButton extends StatelessWidget {
   final bool autoShrink;
   Color fontColor;
   double fontSize;
+  double paddingMultiplier;
 
   PrimaryButton({
     @required this.text,
@@ -26,6 +27,7 @@ class PrimaryButton extends StatelessWidget {
     this.fontColor,
     this.fontSize,
     this.autoShrink = false,
+    this.paddingMultiplier,
     Key key,
   }) : super(key: key);
 
@@ -43,6 +45,8 @@ class PrimaryButton extends StatelessWidget {
         tablet: isSmall ? 65 : 80,
       ),
       child: ButtonTheme(
+        padding: EdgeInsets.symmetric(horizontal: paddingMultiplier == null ? 0
+            : fontSize * paddingMultiplier),
         child: RaisedButton(
           onPressed: isLoading ? () {} : onPressed,
           shape: RoundedRectangleBorder(

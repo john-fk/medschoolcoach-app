@@ -108,9 +108,10 @@ class UpsellBanner extends StatelessWidget {
                     context,
                     "progress_screen.tutor_button",
                   ),
+                  paddingMultiplier: 1.5,
                   autoShrink: true,
-                  fontSize: whenDevice(context, medium: 15, large: 18,
-                      tablet: 22),
+                  fontSize: whenDevice(context, small: 10, medium: 12,
+                      large: 15, tablet: 22),
                   fontColor: Color(0xFF145ED7),
                   color: Color(0xFFdce7f9)
                 ),
