@@ -108,33 +108,31 @@ class ProgressCardWrapperState extends State<ProgressCardWrapper>
           children: [
             Row(
               children: [
-                Expanded(
-                    flex:3,
-                    child:
-                      Text(
-                        FlutterI18n.translate(context, widget.title),
-                        style: normalResponsiveFont(context,
-                            fontWeight: FontWeight.w700),
-                      )
+                Text(
+                  FlutterI18n.translate(context, widget.title),
+                  style: normalResponsiveFont(context,
+                      fontWeight: FontWeight.w700),
                 ),
-                Spacer(),
-                Row(
-                  children:[
+                SizedBox(width:3),
+                Expanded(
+                  child:
                     AutoSizeText(
                       "${FlutterI18n.translate(context, "progress_screen.subject")} :   ${selectedSubject}",
-                        maxLines:1,
+                      maxLines:2,
+                      minFontSize: 0,
+                      stepGranularity: 0.1,
                         style: smallResponsiveFont(context,
                             fontWeight: FontWeight.w400, opacity: 0.5),
-                      ),
-                      _filterDropDown(
-                          onChanged: (val) {
-                            setState(() {
-                              selectedSubject = val;
-                            });
-                          },
-                          selectedSubject: this.selectedSubject)
-                  ]
-                )
+                      )
+                ),
+                SizedBox(width:1),
+                _filterDropDown(
+                    onChanged: (val) {
+                      setState(() {
+                        selectedSubject = val;
+                      });
+                    },
+                    selectedSubject: this.selectedSubject)
               ],
             ),
             SizedBox(

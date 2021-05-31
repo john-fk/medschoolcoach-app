@@ -1301,6 +1301,8 @@ class ApiServicesImpl implements ApiServices {
         return ErrorResponse<T>(
           SessionExpiredException(),
         );
+      } else if (error.code == 400){
+        return ErrorResponse<T>(error);
       }
       try {
         Auth0ErrorSignUpResponse response =

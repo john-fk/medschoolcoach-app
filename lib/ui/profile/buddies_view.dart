@@ -27,24 +27,25 @@ class _BuddiesViewState extends State<BuddiesView> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16.0,
-            ),
-            child: ReferFriendCell(AnalyticsConstants.screenProfileMyStats),
+    return Column(
+    children:[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 16.0,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12.0,
-            ),
-            child: _buildContent(),
-          )
-        ],
-      ),
-    );
+          child: ReferFriendCell(AnalyticsConstants.screenProfileMyStats),
+        ),
+        Expanded(
+          child:SingleChildScrollView(
+          child:
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                ),
+                child: _buildContent()
+              )
+            )
+    )]);
   }
 
   Widget _buildContent() {

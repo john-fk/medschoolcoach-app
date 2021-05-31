@@ -4,6 +4,7 @@ import 'package:Medschoolcoach/providers/analytics_provider.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
 import 'package:Medschoolcoach/repository/repository_utils.dart';
 import 'package:Medschoolcoach/utils/api/api_services.dart';
+import 'package:Medschoolcoach/utils/api/errors.dart';
 import 'package:Medschoolcoach/utils/api/network_response.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
@@ -39,6 +40,7 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
       Injector.appInstance.getDependency<AnalyticsProvider>();
 
   RepositoryErrorResult _error;
+  String _errorText;
   bool _loading = false;
   bool _autovalidate = false;
 
@@ -184,7 +186,7 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
                       if (_error != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 15.0),
-                          child: EmptyState(repositoryResult: _error),
+                          child: EmptyState(repositoryResult: _error,errorText: _errorText),
                         ),
                       PrimaryButton(
                         text: FlutterI18n.translate(
@@ -231,6 +233,7 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
       setState(() {
         _loading = false;
         _error = null;
+        _errorText = null;
       });
       await _showSuccessDialog();
       Navigator.of(context).pop();
@@ -238,6 +241,11 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
       setState(() {
         _loading = false;
         _error = RepositoryUtils.handleRepositoryError<void>(result);
+        try {
+          _errorText = ((result as ErrorResponse).error as ApiException).body;
+        } catch (error){
+          _errorText = null;
+        }
       });
     }
 

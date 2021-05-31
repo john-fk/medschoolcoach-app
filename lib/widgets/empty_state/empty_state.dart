@@ -6,9 +6,11 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 
 class EmptyState extends StatelessWidget {
   final RepositoryResult repositoryResult;
+  final String errorText;
 
   EmptyState({
     this.repositoryResult,
+    this.errorText
   });
 
   @override
@@ -26,6 +28,8 @@ class EmptyState extends StatelessWidget {
     BuildContext context,
     RepositoryResult repositoryResult,
   ) {
+    if (errorText != null)
+        return errorText;
     if (repositoryResult == null) {
       return FlutterI18n.translate(context, "errors.global_api_error");
     }

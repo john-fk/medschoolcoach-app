@@ -298,10 +298,11 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
             params: null);
 
         LocalNotification().setReminder(sliderValue.toInt().toString(),userManager);
-
-        if (widget.source == Routes.profile_screen)
-          Navigator.of(context).pop();
-        else
+        if (widget.source == Routes.profile_screen) {
+          Future.delayed(const Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+          });
+        }else
           Navigator.pushNamed(context, Routes.home);
       } else {
         userManager.markOnboardingComplete();
