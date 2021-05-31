@@ -1,5 +1,6 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
 import 'package:Medschoolcoach/providers/analytics_provider.dart';
+import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -44,19 +45,24 @@ class _WhiteboardNotesScreenState extends State<WhiteboardNotesScreen> {
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Column(
-          children: <Widget>[
-            CustomAppBar(
-              title:
-              FlutterI18n.translate(context, "lesson_screen.whiteboard_notes"),
-            ),
-            Expanded(
-              child: _buildContent(),
-            ),
-          ],
+        child: Stack(
+            children:[
+              Container(
+                    padding:EdgeInsets.only(top:
+                    MediaQuery.of(context).padding.top
+                    + whenDevice(context, large: 66, tablet: 112)),
+                    child:_buildContent(),
+              ),
+              Column(
+              children:[
+                CustomAppBar(
+                  title:
+                  FlutterI18n.translate(context, "lesson_screen.whiteboard_notes"),
+                )]),
+            ],
+          )
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildContent() {
