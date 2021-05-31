@@ -49,6 +49,7 @@ class NoProgressCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: RoundedButton(
                   text: FlutterI18n.translate(context, buttonText),
+                  size: smallerResponsiveFont(context).fontSize,
                   color: Style.of(context).colors.accent,
                   onPressed: onTapButton,
                 ),

@@ -19,6 +19,8 @@ class TutorHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     final height = size.height * 0.15 > 100 ? size.height * 0.15 : 100.00;
+    final fontSize = normalResponsiveFont(context).fontSize*.83 > height * 0.1 ?
+                      normalResponsiveFont(context).fontSize*.83 : height * 0.1;
     return
       Container(
           margin: EdgeInsets.only(bottom:height*0.1),
@@ -65,12 +67,12 @@ class TutorHeader extends StatelessWidget {
                                 minFontSize: 0,
                                 maxLines:1,
                                 stepGranularity: 0.1,
-                                style: mediumResponsiveFont(context,
-                                    fontWeight: FontWeight.w400)
-                                    .copyWith(color: Color(0xFF0E2D45),
-                                    fontSize: height*0.13
+                                style: TextStyle(
+                                    fontSize: fontSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFF0E2D45)
+                                )
                                 ),
-                              )
                               ]
                           )
                           )
@@ -105,11 +107,11 @@ class TutorHeader extends StatelessWidget {
                                     minFontSize: 0,
                                     maxLines:1,
                                     stepGranularity: 0.1,
-                                    style: mediumResponsiveFont(context,
-                                        fontWeight: FontWeight.w400)
-                                        .copyWith(color: Color(0xFF0E2D45),
-                                        fontSize: height*0.13
-                                    ),
+                                    style: TextStyle(
+                                        fontSize: fontSize,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xFF0E2D45)
+                                    )
                                   )
                                 ]
                             )

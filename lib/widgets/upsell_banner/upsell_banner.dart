@@ -87,13 +87,12 @@ class UpsellBanner extends StatelessWidget {
                         ),
                           maxLines:2,
                           minFontSize: 0,
-                          maxFontSize: fsize,
                           stepGranularity: 0.1,
                           textAlign: TextAlign.left,
-                          style: mediumResponsiveFont(context,
-                              fontWeight: FontWeight.w400)
-                              .copyWith(color: Color(0xFF000000)
-                              .withOpacity(0.5)
+                          style: TextStyle(
+                              fontSize: fsize,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF000000).withOpacity(0.5)
                           ),
                         ),
                       ])

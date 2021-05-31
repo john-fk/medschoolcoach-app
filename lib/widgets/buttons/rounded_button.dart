@@ -6,23 +6,28 @@ class RoundedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color color;
   final String text;
+  double size;
 
   RoundedButton(
       {this.onPressed,
       this.color,
-      this.text});
+      this.text,
+      this.size});
 
   @override
   Widget build(BuildContext context) {
+    size = size ?? bigResponsiveFont(context).fontSize;
     return FlatButton(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 25),
+        minWidth:  size * 12,
         onPressed: onPressed,
         color: color?? Style.of(context).colors.accent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Text(
-          text,
-          style: bigResponsiveFont(context,
-              fontColor: FontColor.Content2, fontWeight: FontWeight.w500),
+          text.toUpperCase(),
+          style: TextStyle(
+              fontSize:size,
+              color: getFontColor(context, FontColor.Content2),
+              fontWeight: FontWeight.w500)
         ));
   }
 }
