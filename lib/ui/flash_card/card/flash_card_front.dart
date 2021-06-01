@@ -4,9 +4,7 @@ import 'package:Medschoolcoach/utils/api/models/flashcard_model.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class FlashCardFront extends StatelessWidget {
@@ -64,7 +62,7 @@ class FlashCardFront extends StatelessWidget {
                           )
                         : Html(
                             data: reformatText(flashCard.front),
-                            style: {"html": Style.fromTextStyle(txtStyle)}))
+                            defaultTextStyle: txtStyle))
                 : ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: height * 0.8),
                     child: Image.network(

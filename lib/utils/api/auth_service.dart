@@ -3,8 +3,14 @@ import 'dart:convert';
 
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/repository/user_repository.dart';
+import 'package:Medschoolcoach/utils/api/network_response.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injector/injector.dart';
+
+import 'api_services.dart';
+import 'models/login_response.dart';
 
 abstract class AuthServices {
   // ignore: avoid_positional_boolean_parameters
@@ -21,40 +27,55 @@ class AuthResponse {
 
 class AuthServicesImpl implements AuthServices {
   final UserRepository _userRepository;
-  final FlutterSecureStorage _secureStorage;
+  final localStorage _secureStorage;
   final FlutterAppAuth _appAuth;
 
   AuthServicesImpl(this._userRepository, this._secureStorage, this._appAuth);
 
   @override
   Future<AuthResponse> loginAuth0(bool isLogin) async {
+    ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
     try {
-      final AuthorizationTokenResponse result =
-          await _appAuth.authorizeAndExchangeCode(
+      dynamic result;
+      if(kIsWeb){
+        result = await apiServices.login(
+            password: "tester123",
+            userEmail: "tester@tester.com"
+        );
+      } else {
+        result =
+        await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
-          Config.AUTH0_CLIENT_ID,
-          Config.AUTH0_REDIRECT_URI,
-          additionalParameters: {
+            Config.AUTH0_CLIENT_ID,
+            Config.AUTH0_REDIRECT_URI,
+            additionalParameters: {
             'audience': Config.prodBaseAuth0Url,
             'action': isLogin ? 'login' : 'signup'
-          },
-          issuer: Config.AUTH0_ISSUER,
-          scopes: ['openid', 'profile', 'email', 'offline_access', 'api'],
-          promptValues: ['login'],
-        ),
-      );
-      final decodedData = parseIdToken(result.idToken);
-      String network = decodedData != null ? decodedData["sub"] ?? "" : "";
-      String trackingNetwork = fetchAuthRepresentation(network);
-      _userRepository.updateUser(
-          accessToken: result.accessToken,
-          idToken: result.idToken,
-          refreshToken: result.refreshToken,
-          expiresIn: Config.AUTH_EXPIRY_DURATION,
-          lastTokenAccessTimeStamp: DateTime.now().toIso8601String());
-      await _secureStorage.write(
-          key: 'refresh_token', value: result.refreshToken);
-      return AuthResponse(trackingNetwork , true);
+            },
+            issuer: Config.AUTH0_ISSUER,
+            scopes: ['openid', 'profile', 'email', 'offline_access', 'api'],
+            promptValues: ['login'],
+            )
+        );
+      }
+
+      if(result is SuccessResponse<LoginResponse>) {
+        final decodedData = parseIdToken(result.body.idToken);
+        String network = decodedData != null ? decodedData["sub"] ?? "" : "";
+        String trackingNetwork = fetchAuthRepresentation(network);
+
+        _userRepository.updateUser(
+            accessToken: result.body.accessToken,
+            idToken: result.body.idToken,
+            refreshToken: result.body.refreshToken,
+            expiresIn: Config.AUTH_EXPIRY_DURATION,
+            lastTokenAccessTimeStamp: DateTime.now().toIso8601String());
+
+        await _secureStorage.write(
+            key: 'refresh_token', value: result.body.refreshToken);
+        return AuthResponse(trackingNetwork , true);
+      }
+      return AuthResponse(null, false);
     } catch (e) {
       return AuthResponse(null, false);
     }

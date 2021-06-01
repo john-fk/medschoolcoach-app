@@ -11,6 +11,7 @@ import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/widgets/empty_state/empty_state.dart';
 import 'package:Medschoolcoach/widgets/empty_state/refreshing_empty_state.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:Medschoolcoach/utils/storage.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/button_progress_bar.dart';
 import 'package:Medschoolcoach/widgets/modals/explanation_modal.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -95,7 +96,7 @@ class _FlashCardScreenState extends State<FlashCardScreen>
   }
 
   void _showFlashcardsHowTo() async {
-    if (await FlutterSecureStorage().read(key: _howToFlashcard) == null) {
+    if (await localStorage().read(key: _howToFlashcard) == null) {
       openModal(true);
     }
   }
@@ -360,6 +361,4 @@ class _FlashCardScreenState extends State<FlashCardScreen>
     ]);
     super.dispose();
   }
-
-
 }

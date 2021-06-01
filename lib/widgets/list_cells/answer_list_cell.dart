@@ -1,7 +1,6 @@
 import 'package:Medschoolcoach/utils/api/models/question.dart';
 import 'package:Medschoolcoach/utils/responsive_fonts.dart';
 import 'package:Medschoolcoach/utils/sizes.dart';
-import 'package:flutter_html/style.dart';
 import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:Medschoolcoach/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:Medschoolcoach/widgets/others/error_icon.dart';
@@ -56,7 +55,7 @@ class AnswerListCell extends StatelessWidget {
                   FlutterI18n.translate(
                     context,
                     "question_screen.question_index",
-                    {
+                    translationParams: {
                       "index": (index + 1).toString(),
                     },
                   ),
@@ -77,14 +76,11 @@ class AnswerListCell extends StatelessWidget {
               margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
               child: Html(
                 data: question.stem,
-                style: {
-                  "html": Style.fromTextStyle(
+                defaultTextStyle:
                     normalResponsiveFont(
                       context,
                       fontColor: FontColor.Content2,
                     ),
-                  )
-                },
               )),
         ),
         children: <Widget>[
@@ -113,7 +109,7 @@ class AnswerListCell extends StatelessWidget {
                     FlutterI18n.translate(
                       context,
                       "question_screen.other_users_percentage",
-                      {
+                      translationParams: {
                         "percentage":
                             question.stats.usersAnsweredCorrect.toString(),
                       },
@@ -174,12 +170,10 @@ class AnswerListCell extends StatelessWidget {
           data: isCorrect
               ? _getAnswer(index, question.answer)
               : _getAnswer(index, question.yourAnswer),
-          style: {
-            "html": Style.fromTextStyle(smallResponsiveFont(
+          defaultTextStyle: smallResponsiveFont(
               _context,
               fontColor: FontColor.Content2,
-            ))
-          },
+            ),
         ),
       ],
     );

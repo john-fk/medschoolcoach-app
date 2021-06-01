@@ -151,7 +151,7 @@ class _QuestionBankScreenState extends State<QuestionBankScreen> {
                   itemsWithNumber: FlutterI18n.translate(
                     context,
                     "question_screen.questions_count",
-                    {
+                    translationParams: {
                       "number": subjectWithSettings.subject.amountOfNewQuestions
                           .toString(),
                     },

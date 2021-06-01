@@ -23,7 +23,7 @@ import 'package:injector/injector.dart';
 import 'package:Medschoolcoach/ui/onboarding/local_notification.dart';
 import 'package:Medschoolcoach/utils/api/models/profile_user.dart';
 import 'package:Medschoolcoach/repository/repository_result.dart';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 import 'dart:core';
 
 class WelcomeScreen extends StatefulWidget {
@@ -310,7 +310,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ApiServices apiServices = Injector.appInstance.getDependency<ApiServices>();
     var data = await apiServices.getAccountData();
     final hasOnboarded = data?.onboarded ?? false;
-    QOTD = data.qotd;
+    QOTD = data?.qotd;
 
     return !hasOnboarded;
   }

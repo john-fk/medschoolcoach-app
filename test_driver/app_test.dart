@@ -2,7 +2,6 @@ import 'package:Medschoolcoach/config.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
-import 'isolates_workaround.dart';
 import 'lessons_test/lessons_test.dart';
 import 'login_test/login_test.dart';
 import 'navigation_test/navigation_test.dart';
@@ -10,9 +9,6 @@ import 'register_test/register_test.dart';
 
 void main() async {
   FlutterDriver driver = await FlutterDriver.connect();
-
-  final workaround = IsolatesWorkaround(driver);
-  await workaround.resumeIsolates();
 
   final email = _generateEmail();
   final password = "Password1!";
@@ -26,7 +22,6 @@ void main() async {
 
   tearDownAll(() {
     driver.close();
-    workaround.tearDown();
   });
 }
 

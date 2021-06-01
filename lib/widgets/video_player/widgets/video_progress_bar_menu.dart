@@ -312,14 +312,17 @@ class _VideoProgressBarMenuState extends State<VideoProgressBarMenu>
 
   String _getVideoName() {
     if (widget.customController.commercial)
-      return FlutterI18n.translate(context, "video_screen.commercial", {
+      return FlutterI18n.translate(context, "video_screen.commercial",
+          translationParams:  {
         "name": widget.customController.video.commercial.name,
       });
     return widget.customController.lessonScreenArguments.videos == null
         ? FlutterI18n.translate(context, "lesson_screen.lesson",
-                {"order": "${widget.customController.video.order + 1}"}) +
+          translationParams:
+          {"order": "${widget.customController.video.order + 1}"}) +
             ": ${widget.customController.video.name}"
-        : FlutterI18n.translate(context, "lesson_screen.lesson", {
+        : FlutterI18n.translate(context, "lesson_screen.lesson",
+            translationParams: {
               "order":
                   "${widget.customController.lessonScreenArguments.order + 1}"
             }) +

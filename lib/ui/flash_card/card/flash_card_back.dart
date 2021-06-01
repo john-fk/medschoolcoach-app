@@ -7,8 +7,6 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart' as medstyles;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
-import 'package:injector/injector.dart';
 
 class FlashCardBack extends StatefulWidget {
   final FlashcardModel flashCard;
@@ -73,8 +71,7 @@ class _FlashCardBackState extends State<FlashCardBack>
                             margin: EdgeInsets.fromLTRB(0, 0, width / 15, 0),
                             child: Html(
                               data: _anHtml,
-                              style: {
-                                "html": Style.fromTextStyle(
+                              defaultTextStyle:
                                   medstyles.Style.of(context)
                                       .font
                                       .bold
@@ -84,11 +81,9 @@ class _FlashCardBackState extends State<FlashCardBack>
                                           small: 18.0,
                                           large: 20.0,
                                           tablet: 40.0,
-                                        ),
-                                      ),
-                                )
-                              },
-                            )),
+                                        ))
+                                ),
+                            ),
                         widget.flashCard.definitionImage == null ||
                                 widget.flashCard.definitionImage.isEmpty
                             ? Container(
@@ -96,8 +91,7 @@ class _FlashCardBackState extends State<FlashCardBack>
                                     EdgeInsets.fromLTRB(0, 0, width / 15, 0),
                                 child: Html(
                                   data: _anHtmlDefinition,
-                                  style: {
-                                    "html": Style.fromTextStyle(
+                                  defaultTextStyle:
                                       medstyles.Style.of(context)
                                           .font
                                           .normal
@@ -108,10 +102,8 @@ class _FlashCardBackState extends State<FlashCardBack>
                                               large: 12.0,
                                               tablet: 25.0,
                                             ),
-                                          ),
-                                    )
-                                  },
-                                ))
+                                          ))
+                                )
                             : ConstrainedBox(
                                 constraints:
                                     BoxConstraints(maxHeight: height * 0.15),
@@ -126,9 +118,8 @@ class _FlashCardBackState extends State<FlashCardBack>
                                     EdgeInsets.fromLTRB(0, 0, width / 15, 0),
                                 child: Html(
                                   data: _anHtmlExample,
-                                  style: {
-                                    "html": Style.fromTextStyle(
-                                      medstyles.Style.of(context)
+                                  defaultTextStyle:
+                                    medstyles.Style.of(context)
                                           .font
                                           .normal
                                           .copyWith(
@@ -140,8 +131,7 @@ class _FlashCardBackState extends State<FlashCardBack>
                                             ),
                                           ),
                                     )
-                                  },
-                                ))
+                                )
                             : ConstrainedBox(
                                 constraints:
                                     BoxConstraints(maxHeight: height * 0.15),

@@ -1,9 +1,10 @@
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
-import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class AnalyticsProvider {
   Mixpanel _mixpanel;
@@ -19,6 +20,7 @@ class AnalyticsProvider {
 
 
   Future initialize([String token=Config.prodMixPanelToken]) async {
+    if (kIsWeb)  return;
     if (_mixpanel == null) {
       _mixpanel = await Mixpanel.init(token, optOutTrackingDefault: false);
     }
@@ -26,6 +28,7 @@ class AnalyticsProvider {
   }
 
   void identify(String distinctId) {
+    if (kIsWeb)  return;
     if (distinctId == null || _distinctId == distinctId) return;
     _distinctId = distinctId;
     return _mixpanel.alias("auth",distinctId);
@@ -43,6 +46,7 @@ class AnalyticsProvider {
   }
 
   void setToken({bool remove=false}){
+    if (kIsWeb)  return;
     if (key!=null && token != null) {
       setPeopleProperties(<String, String>{
         key: token
@@ -52,6 +56,7 @@ class AnalyticsProvider {
   }
 
   Future<void> setPeopleProperties(Map<String, dynamic> props,{bool remove=false}) async{
+    if (kIsWeb)  return;
     if (_distinctId == null) return;
     props.forEach((key, dynamic value) {
       _mixpanel.identify(_distinctId);
@@ -65,6 +70,7 @@ class AnalyticsProvider {
   }
 
   void logEvent(String eventName, {dynamic params}) {
+    if (kIsWeb)  return;
     if (isShow)
       Fluttertoast.showToast(
           msg: "key:" + eventName + "\n" + jsonEncode(params),
@@ -99,12 +105,15 @@ class AnalyticsProvider {
     }
     return args;
   }
+
   Future<void> reset() async{
+    if (kIsWeb)  return;
     await setToken(remove: true);
     _distinctId = null;
     _mixpanel.reset();
     _mixpanel.flush();
   }
+
   // ignore: avoid_positional_boolean_parameters
   void logVideoBookMarkEvent(bool isRemove, String videoId, String videoName) {
     logEvent(

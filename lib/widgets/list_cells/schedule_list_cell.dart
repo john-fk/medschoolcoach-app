@@ -111,7 +111,7 @@ class _ScheduleListCellState extends State<ScheduleListCell> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        FlutterI18n.translate(context, "lesson_screen.lesson", {
+                        FlutterI18n.translate(context, "lesson_screen.lesson", translationParams: {
                           "order": widget.index.toString(),
                         }),
                         style: smallResponsiveFont(

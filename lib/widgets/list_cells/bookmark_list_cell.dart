@@ -137,7 +137,7 @@ class _BookmarkListCellState extends State<BookmarkListCell>
     return FlutterI18n.translate(
       context,
       "app_bar.section_subtitle",
-      {
+      translationParams: {
         "number": count.toString(),
       },
     );

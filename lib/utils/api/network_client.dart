@@ -41,7 +41,7 @@ class NetworkClientImpl implements NetworkClient {
   Future<String> get(String url, {Map<String, String> headers}) {
     FirebaseCrashlytics.instance
         .log("Request: GET url: ${url} headers: ${headers}");
-    return http.get(url, headers: headers).then((response) {
+    return http.get(Uri.parse(url), headers: headers).then((response) {
       String body = response.body;
       int statusCode = response.statusCode;
 
@@ -62,7 +62,7 @@ class NetworkClientImpl implements NetworkClient {
         .log("Request: POST url: ${url} headers: ${headers} body: ${body}");
 
     return http
-        .post(url, headers: headers, body: body, encoding: encoding)
+        .post(Uri.parse(url), headers: headers, body: body, encoding: encoding)
         .then((http.Response response) {
       String body = response.body;
       int statusCode = response.statusCode;
@@ -87,7 +87,7 @@ class NetworkClientImpl implements NetworkClient {
     FirebaseCrashlytics.instance
         .log("Request: PUT url: ${url} headers: ${headers} body: ${body}");
     return http
-        .put(url, headers: headers, body: body, encoding: encoding)
+        .put(Uri.parse(url), headers: headers, body: body, encoding: encoding)
         .then((response) {
       String body = response.body;
       int statusCode = response.statusCode;
@@ -148,7 +148,7 @@ class NetworkClientImpl implements NetworkClient {
     FirebaseCrashlytics.instance
         .log("Request: PATCH url: ${url} headrs: ${headers} body: ${body}");
     return http
-        .patch(url, headers: headers, body: body, encoding: encoding)
+        .patch(Uri.parse(url), headers: headers, body: body, encoding: encoding)
         .then((response) {
       String body = response.body;
       int statusCode = response.statusCode;

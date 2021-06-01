@@ -32,6 +32,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:injector/injector.dart';
 import 'dart:convert';
+import 'package:Medschoolcoach/utils/storage.dart';
 class _InheritedSuperState extends InheritedWidget {
   final SuperState data;
   _InheritedSuperState({
@@ -60,7 +61,7 @@ class SuperStateful extends StatefulWidget {
   SuperState createState() => SuperState();
 }
 class PopupData{
-    final storage = FlutterSecureStorage();
+    final storage = localStorage();
     int questions;
     int videos;
     int flashcards;
@@ -142,7 +143,7 @@ class PopupData{
 
 
 class SuperState extends State<SuperStateful> {
-  final storage = FlutterSecureStorage();
+  final storage = localStorage();
   final TopicRepository _topicRepository =
       Injector.appInstance.getDependency<TopicRepository>();
   final LectureNoteRepository _lectureNoteRepository =

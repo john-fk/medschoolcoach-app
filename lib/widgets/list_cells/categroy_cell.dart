@@ -138,7 +138,7 @@ class CategoryCell extends StatelessWidget {
     return FlutterI18n.translate(
       context,
       "app_bar.section_subtitle",
-      {
+      translationParams: {
         "number": section.amountOfVideos.toString(),
       },
     );

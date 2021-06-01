@@ -8,7 +8,6 @@ import 'package:Medschoolcoach/widgets/app_bars/custom_app_bar.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
 
@@ -98,14 +97,12 @@ class _LectureNotesScreenState extends State<LectureNotesScreen> {
                       margin: EdgeInsets.fromLTRB(0, 0, width/15, 0),
                       child: Html(
                         data: _htmlContent ?? "",
-                        style: {
-                          "html": Style.fromTextStyle(
+                        defaultTextStyle:
                             medstyles.Style.of(context)
                                 .font
                                 .normal
                                 .copyWith(fontSize: 20),
-                          )
-                        },
+
                       )),
             ])));
   }

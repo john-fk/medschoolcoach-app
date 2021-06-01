@@ -20,7 +20,6 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:injector/injector.dart';
@@ -348,11 +347,10 @@ class _MultipleChoiceQuestionScreenState
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-              Html(data: explanationText, style: {
-                "html": Style.fromTextStyle(
-                  normalResponsiveFont(context, fontColor: FontColor.Content2),
+              Html(data: explanationText,
+              defaultTextStyle :
+              normalResponsiveFont(context, fontColor: FontColor.Content2),
                 )
-              })
             ]))
       ],
     );
@@ -408,14 +406,11 @@ class _MultipleChoiceQuestionScreenState
                             child: Html(
                                 data:
                                     _questionsList[_currentQuestionIndex].stem,
-                                style: {
-                                  "html":
-                                      Style.fromTextStyle(biggerResponsiveFont(
+                                  defaultTextStyle :biggerResponsiveFont(
                                     context,
                                     fontColor: FontColor.Content2,
                                     fontWeight: FontWeight.bold,
-                                  ))
-                                })),
+                                  ))),
                         AnimatedList(
                           key: _listKey,
                           shrinkWrap: true,

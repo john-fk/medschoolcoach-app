@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'package:universal_io/io.dart'  show Platform;
 
 import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:flutter/cupertino.dart';
