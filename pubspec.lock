@@ -441,9 +441,11 @@ packages:
   flutter_local_notifications:
     dependency: "direct main"
     description:
-      name: flutter_local_notifications
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: flutter_local_notifications
+      ref: HEAD
+      resolved-ref: "17955f86be70e01948c973b14142368ff9436f71"
+      url: "https://github.com/MedSchoolCoach/flutter_local_notifications.git"
+    source: git
     version: "6.0.0"
   flutter_local_notifications_platform_interface:
     dependency: transitive

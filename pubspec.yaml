@@ -5,7 +5,7 @@ version: 1.4.25+33
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
-  flutter : ">=2.0.0"
+  flutter : ">=2.2.0"
 
 dependencies:
   flutter:
@@ -26,6 +26,10 @@ dependencies:
   device_preview: ^0.7.3
   flutter_i18n: ^0.22.3
   flutter_secure_storage: ^4.2.0
+  flutter_local_notifications:
+    git:
+      url: https://github.com/MedSchoolCoach/flutter_local_notifications.git
+      path: flutter_local_notifications
   firebase_performance:
   firebase_messaging: ^10.0.0
   url_launcher: ^6.0.4
@@ -57,7 +61,6 @@ dependencies:
   vector_math: ^2.0.8
   percent_indicator: ^3.0.1
   visibility_detector: ^0.2.0
-  flutter_local_notifications:
   crypto: ^3.0.0
   rxdart: ^0.27.0
 
@@ -67,6 +70,7 @@ dependency_overrides:
       url: https://github.com/MedSchoolCoach/plugins.git
       path: packages/video_player
       ref: always-speed
+
   csslib: ^0.16.2
 
 dev_dependencies:

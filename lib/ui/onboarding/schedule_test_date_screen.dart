@@ -11,6 +11,7 @@ import 'package:Medschoolcoach/widgets/date_picker/date_picker.dart';
 import 'package:Medschoolcoach/widgets/dialog/custom_dialog.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -177,7 +178,7 @@ class _SchedulingTestDateScreenState extends State<SchedulingTestDateScreen> {
           .setTestDate(null);
     }
 
-    Fluttertoast.cancel();
+     if (!kIsWeb) Fluttertoast.cancel();;
 
     if (result is ErrorResponse) {
       Fluttertoast.showToast(

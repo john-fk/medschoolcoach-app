@@ -10,6 +10,7 @@ import 'package:Medschoolcoach/utils/style_provider/style.dart';
 import 'package:Medschoolcoach/utils/user_manager.dart';
 import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -283,7 +284,7 @@ class _ScheduleQuestionOfTheDayState extends State<ScheduleQuestionOfTheDay> {
           .setQoD(null);
     }
 
-    Fluttertoast.cancel();
+     if (!kIsWeb) Fluttertoast.cancel();;
 
     if (result is ErrorResponse) {
       Fluttertoast.showToast(

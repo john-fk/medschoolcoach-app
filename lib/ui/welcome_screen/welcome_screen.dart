@@ -1,4 +1,5 @@
 import 'package:Medschoolcoach/repository/user_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'package:Medschoolcoach/providers/analytics_constants.dart';
@@ -248,11 +249,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     setState(() {
       loading = true;
     });
-    Fluttertoast.cancel();
+    if (!kIsWeb) Fluttertoast.cancel();;
 
     try {
-      var result = await InternetAddress.lookup(Uri.parse(Config.prodApiUrl).host);
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      dynamic result;
+      if (!kIsWeb) result = await InternetAddress.lookup(Uri.parse(Config.prodApiUrl).host);
+      if (kIsWeb || (result.isNotEmpty && result[0].rawAddress.isNotEmpty)) {
         _analyticsProvider.logScreenView("screen_auth", Routes.welcome);
         var response = await _authService.loginAuth0(isLogin);
         if (!response.didSucceed) return;

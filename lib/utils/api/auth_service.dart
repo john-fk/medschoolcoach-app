@@ -52,9 +52,9 @@ class AuthServicesImpl implements AuthServices {
             'audience': Config.prodBaseAuth0Url,
             'action': isLogin ? 'login' : 'signup'
             },
-            issuer: Config.AUTH0_ISSUER,
-            scopes: ['openid', 'profile', 'email', 'offline_access', 'api'],
-            promptValues: ['login'],
+              issuer: Config.AUTH0_ISSUER,
+              scopes: ['openid', 'profile', 'email', 'offline_access', 'api'],
+              promptValues: ['login'],
             )
         );
       }

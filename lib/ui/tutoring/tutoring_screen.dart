@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:Medschoolcoach/repository/user_repository.dart';
 import 'package:Medschoolcoach/config.dart';

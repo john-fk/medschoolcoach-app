@@ -13,6 +13,7 @@ import 'package:Medschoolcoach/widgets/app_bars/transparent_app_bar.dart';
 import 'package:Medschoolcoach/widgets/buttons/primary_button.dart';
 import 'package:Medschoolcoach/widgets/progress_bar/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:injector/injector.dart';
@@ -151,7 +152,7 @@ class _TimePerDayState extends State<TimePerDay> {
       loading = true;
     });
     final result = await apiServices.setTimePerDay(timePerDay);
-    Fluttertoast.cancel();
+     if (!kIsWeb) Fluttertoast.cancel();;
     if (result is ErrorResponse) {
       Fluttertoast.showToast(
           msg: FlutterI18n.translate(context, "general.net_error"),

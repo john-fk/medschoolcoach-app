@@ -14,14 +14,13 @@ import 'providers/analytics_constants.dart';
 import 'package:device_preview/device_preview.dart' as _dp;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final FlutterLocalNotificationsPlugin notifsPlugin =
-FlutterLocalNotificationsPlugin();
+//final FlutterLocalNotificationsPlugin notifsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AnalyticsProvider _analyticsProvider = await AnalyticsProvider();
 
-  await initNotifications(notifsPlugin, navigatorKey);
+//  await initNotifications(notifsPlugin, navigatorKey);
   await _analyticsProvider.initialize(Config.devMixPanelToken);
   _analyticsProvider.logEvent(AnalyticsConstants.eventAppOpen, params: null);
 

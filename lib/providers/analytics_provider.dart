@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Medschoolcoach/config.dart';
 import 'dart:convert';
-import 'dart:io' show Platform;
+import 'package:universal_io/io.dart' show Platform;
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class AnalyticsProvider {
